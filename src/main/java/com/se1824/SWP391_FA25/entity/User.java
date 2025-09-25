@@ -1,27 +1,55 @@
 package com.se1824.SWP391_FA25.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.*;
 
-import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
-@Data
 @Entity
+@Table(name = "Users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    UUID id;
-    String username;
-    String password;
-    String fullname;
-    String email;
-    String phone;
-    String role;
-    boolean is_active;
-    LocalDateTime created_at;
+    @Column(columnDefinition = "binary(16)")
+    private UUID id;
 
+    @Column(nullable = false, unique = true, length = 100)
+    private String username;
+
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
+
+    @Column(name = "full_name", nullable = false, length = 150)
+    private String fullName;
+
+    @Column(unique = true, length = 150)
+    private String email;
+
+    @Column(length = 50)
+    private String phone;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20, nullable = false)
+    private Role role;
+
+    @Column(name = "is_active", nullable = false)
+    private boolean active = true;
+
+    @Column(name = "created_at", nullable = false)
+    private OffsetDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (id == null) id = UUID.randomUUID();
+        if (createdAt == null) createdAt = OffsetDateTime.now();
+    }
+
+    public enum Role {
+        customer, staff, technician, admin
+    }
 }
