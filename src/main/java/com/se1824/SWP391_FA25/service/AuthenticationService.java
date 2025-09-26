@@ -20,8 +20,8 @@ public class AuthenticationService {
 //        User us = authenticationRepository.findByEmail(email);
 //        UserResponse userResponse = modelMapper.map(us, UserResponse.class);
         User us = authenticationRepository.findByEmail(email);
-        UserResponse userResponse = modelMapper.map(us, UserResponse.class);
-        return userResponse;
+        
+        return modelMapper.map(us, UserResponse.class);
     }
 
     public User registerUser(User user) {
