@@ -14,8 +14,11 @@ public class AuthenticationService {
     @Autowired
     ModelMapper modelMapper;
 
+
     public UserResponse getUserByEmail(String email) {
 
+//        User us = authenticationRepository.findByEmail(email);
+//        UserResponse userResponse = modelMapper.map(us, UserResponse.class);
         User us = authenticationRepository.findByEmail(email);
         UserResponse userResponse = modelMapper.map(us, UserResponse.class);
         return userResponse;
