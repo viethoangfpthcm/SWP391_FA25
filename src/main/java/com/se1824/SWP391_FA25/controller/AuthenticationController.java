@@ -1,6 +1,7 @@
 package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.entity.User;
+import com.se1824.SWP391_FA25.model.response.UserResponse;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,11 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
+
     @GetMapping("/getuser")
     public ResponseEntity<?> getUserByEmail(String email) {
-        User user = authenticationService.getUserByEmail(email);
+        UserResponse user = authenticationService.getUserByEmail(email);
+
         return ResponseEntity.ok(user);
     }
 
