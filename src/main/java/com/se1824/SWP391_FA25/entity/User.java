@@ -2,8 +2,10 @@ package com.se1824.SWP391_FA25.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 @Entity
@@ -13,40 +15,41 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
     @Column(columnDefinition = "binary(16)")
-    private UUID id;
+    UUID id;
 
     @Column(nullable = false, unique = true, length = 100)
-    private String username;
+    String username;
 
     @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+     String passwordHash;
 
     @Column(name = "full_name", nullable = false, length = 150)
-    private String fullName;
+    String fullName;
 
     @Column(unique = true, length = 150)
-    private String email;
+     String email;
 
     @Column(length = 50)
-    private String phone;
+    String phone;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
-    private Role role;
+     Role role;
 
     @Column(name = "is_active", nullable = false)
-    private boolean active = true;
+     boolean active = true;
 
     @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt;
+    LocalDateTime createdAt;
 
     @PrePersist
     public void prePersist() {
         if (id == null) id = UUID.randomUUID();
-        if (createdAt == null) createdAt = OffsetDateTime.now();
+        if (createdAt == null) createdAt = LocalDateTime.now();
     }
 
     public enum Role {
