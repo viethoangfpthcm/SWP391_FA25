@@ -27,8 +27,8 @@ public class SecurityConfig {
     }
 
 
-    @Autowired
-    AuthenticationService authenticationService;
+//    @Autowired
+//    AuthenticationService authenticationService;
 
     //    @Autowired
 //    Filter filter;

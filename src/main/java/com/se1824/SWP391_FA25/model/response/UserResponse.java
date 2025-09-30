@@ -21,4 +21,5 @@ public class UserResponse {
     String phone;
     String role;
     OffsetDateTime createdAt;
+    String token;
 }
