@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Date;
 
@@ -20,6 +21,6 @@ public class UserResponse {
     String email;
     String phone;
     String role;
-    OffsetDateTime createdAt;
+    LocalDateTime createdAt;
     String token;
 }
