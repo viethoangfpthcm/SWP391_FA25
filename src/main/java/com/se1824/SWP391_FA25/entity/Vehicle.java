@@ -1,38 +1,46 @@
 package com.se1824.SWP391_FA25.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.List;
 
 @Entity
 @Table(name = "Vehicles")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
 public class Vehicle {
     @Id
-    @Column(name = "id", columnDefinition = "uniqueidentifier")
-     UUID id;
+    @Column(name = "licensePlate", length = 20)
+    String licensePlate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false, columnDefinition = "uniqueidentifier")
-   User customer;
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    User owner;
 
-    @Column(name = "frame_number", nullable = false, unique = true)
-    String frameNumber;
-
-    @Column(name = "model", nullable = false)
+    @Column(name = "model", length = 100, nullable = false)
     String model;
 
     @Column(name = "year")
-     Integer year;
+    Integer year;
 
-    @Column(name = "created_at")
-     LocalDateTime createdAt;
+    @Column(name = "current_km", columnDefinition = "INT DEFAULT 0")
+    Integer currentKm = 0;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
+    @JsonIgnore
+    MaintenanceSchedule maintenanceSchedule;
+
+    // Relationships
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<Booking> bookings;
 }
+
