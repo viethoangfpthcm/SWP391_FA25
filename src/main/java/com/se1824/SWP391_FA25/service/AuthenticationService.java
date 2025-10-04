@@ -1,63 +1,96 @@
 package com.se1824.SWP391_FA25.service;
 
+import com.se1824.SWP391_FA25.entity.Users;
+import com.se1824.SWP391_FA25.model.request.LoginRequest;
 import com.se1824.SWP391_FA25.model.response.UserResponse;
 import com.se1824.SWP391_FA25.repository.AuthenticationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthenticationService implements UserDetailsService {
     @Autowired
     AuthenticationRepository authenticationRepository;
-    @Autowired
-    ModelMapper modelMapper;
+
     @Autowired
     PasswordEncoder passwordEncoder;
+
     @Autowired
     AuthenticationManager authenticationManager;
+
+    @Autowired
+    ModelMapper modelMapper;
+
     @Autowired
     TokenService tokenService;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public Users register(Users us) {
+        //xử lí login của controller đưa qua
+        us.setPassword(passwordEncoder.encode(us.getPassword()));
+        //lưu vào DB
+        return authenticationRepository.save(us);
+
     }
 
-//    public UserResponse getUserByEmail(String email) {
+//    public UserResponse login(LoginRequest loginRequest) {
+//        // xử lí logic & xác thực tài khoản
 //
-////        User us = authenticationRepository.findByEmail(email);
-////        UserResponse userResponse = modelMapper.map(us, UserResponse.class);
-//        User us = authenticationRepository.findByEmail(email);
 //
-//        return modelMapper.map(us, UserResponse.class);
-//    }
+//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+//                loginRequest.getEmail(), loginRequest.getPassword()));
 //
-//    public User registerUser(User user) {
-//        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
-//        return authenticationRepository.save(user);
-//    }
-//
-//    public UserResponse login(String email, String rawPassword) {
-//
-//        User user = authenticationRepository.findByEmail(email);
-//        if (user == null || !passwordEncoder.matches(rawPassword, user.getPasswordHash())) {
-//            throw new BadCredentialsException("Invalid username or password");
-//        }
-//        UserResponse ar = modelMapper.map(user, UserResponse.class);
-//        String token = tokenService.generateToken(user);
+//        Users account = (Users) authentication.getPrincipal();
+//        UserResponse ar = modelMapper.map(account, UserResponse.class);
+//        String token = tokenService.generateToken(account);
 //        ar.setToken(token);
 //        return ar;
-//    }
 //
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return authenticationRepository.findByUsername(username);
+//
 //    }
+
+    public List<Users> getAllAccount() {
+        List<Users> list = authenticationRepository.findAll();
+        return list;
+    }
+
+    public Users getCurrentAccount() {
+        return (Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return (UserDetails) authenticationRepository.findUserByEmail(username);
+    }
+
+
+    // cơ chế:
+    // B1: lấy username người dùng nhập
+    // B2: tìm trong DB xem có account nào trùng với username đó không
+    // B3: authenticationManager => compare tk password dưới DB <=> người dùng nhập
+//
+    public UserResponse login(String email, String rawPassword) {
+
+        Users user = authenticationRepository.findUserByEmail(email);
+        if (user == null || !passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new BadCredentialsException("Invalid username or password");
+        }
+        UserResponse ar = modelMapper.map(user, UserResponse.class);
+        String token = tokenService.generateToken(user);
+        ar.setToken(token);
+        return ar;
+    }
+//
+
 }

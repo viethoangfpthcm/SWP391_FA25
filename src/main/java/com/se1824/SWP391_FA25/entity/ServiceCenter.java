@@ -1,4 +1,5 @@
 package com.se1824.SWP391_FA25.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -32,7 +33,7 @@ public class ServiceCenter {
     // Relationships
     @OneToMany(mappedBy = "serviceCenter", cascade = CascadeType.ALL)
     @JsonIgnore
-    List<User> users;
+    List<Users> users;
 
     @OneToMany(mappedBy = "serviceCenter", cascade = CascadeType.ALL)
     @JsonIgnore

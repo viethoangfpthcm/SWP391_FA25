@@ -20,7 +20,5 @@ public class UserResponse {
     String fullName;
     String email;
     String phone;
-    String role;
-    LocalDateTime createdAt;
     String token;
 }

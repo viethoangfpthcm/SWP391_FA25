@@ -22,7 +22,7 @@ public class Vehicle {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
-    User owner;
+    Users owner;
 
     @Column(name = "model", length = 100, nullable = false)
     String model;

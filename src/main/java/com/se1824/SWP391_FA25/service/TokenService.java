@@ -1,5 +1,6 @@
 package com.se1824.SWP391_FA25.service;
 
+import com.se1824.SWP391_FA25.entity.Users;
 import com.se1824.SWP391_FA25.repository.AuthenticationRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -29,9 +29,9 @@ public class TokenService {
     }
 
     // generate ra token
-    public String generateToken(User user) {
+    public String generateToken(Users user) {
         return Jwts.builder()
-                .subject(user.getId() + "")
+                .subject(user.getUserId() + "")
                 .issuedAt(new Date(System.currentTimeMillis()))  //thoi gian tao ra token
                 .expiration(new Date(System.currentTimeMillis() * 1000 * 60 * 60 * 24 * 7)) // chi ra toke ton tai trong bao lau (giay, phut, gio, ngay, tuan)
                 .signWith(getSignInKey())
@@ -39,11 +39,11 @@ public class TokenService {
     }
 
     //varify token
-    public User extractToken(String token) {
+    public Users extractToken(String token) {
         String value = extractClaim(token, Claims::getSubject);
         //long id = Long.parseLong(value);
-        UUID id = UUID.fromString(value);
-        return authenticationRepository.findById(id);
+        String id = value;
+        return authenticationRepository.findUserByUserId(id);
     }
 
     public Claims extractAllClaims(String token) {

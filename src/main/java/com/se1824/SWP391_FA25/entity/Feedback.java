@@ -1,4 +1,5 @@
 package com.se1824.SWP391_FA25.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -28,7 +29,7 @@ public class Feedback {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
-    User user;
+    Users user;
 
     @Column(name = "rating", nullable = false)
     Integer rating;

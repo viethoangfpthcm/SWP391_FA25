@@ -1,4 +1,5 @@
 package com.se1824.SWP391_FA25.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,7 +25,7 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
-    User customer;
+    Users customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_plate", nullable = false)
@@ -45,7 +46,7 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_technician")
     @JsonIgnore
-    User assignedTechnician;
+    Users assignedTechnician;
 
     @Column(name = "note", length = 255)
     String note;

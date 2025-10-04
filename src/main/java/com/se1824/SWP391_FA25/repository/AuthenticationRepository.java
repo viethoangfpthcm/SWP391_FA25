@@ -1,11 +1,17 @@
 package com.se1824.SWP391_FA25.repository;
 
-import com.se1824.SWP391_FA25.entity.User;
+//import com.se1824.SWP391_FA25.entity.Users;
+
+import com.se1824.SWP391_FA25.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.UUID;
+public interface AuthenticationRepository extends JpaRepository<Users, String> {
 
-public interface AuthenticationRepository extends JpaRepository<User, String> {
+    Users findUserByEmail(String email);
 
+    Users findUserByUserId(String id);
+
+
+    String email(String email);
 
 }

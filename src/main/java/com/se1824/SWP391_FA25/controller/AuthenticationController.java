@@ -1,5 +1,6 @@
 package com.se1824.SWP391_FA25.controller;
 
+import com.se1824.SWP391_FA25.entity.Users;
 import com.se1824.SWP391_FA25.model.request.LoginRequest;
 import com.se1824.SWP391_FA25.model.response.UserResponse;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
@@ -8,12 +9,39 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody Users account) {
+        //nhận yêu cầu từ FE
+        // đẩy qua AuthenticationService
+        Users ac = authenticationService.register(account);
+        return ResponseEntity.ok(ac);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        UserResponse ac = authenticationService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        return ResponseEntity.ok(ac);
+    }
+
+    @GetMapping("/account")
+    public ResponseEntity<?> getAllAccount() {
+        List<Users> list = authenticationService.getAllAccount();
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/account/current")
+    public ResponseEntity<?> getCurrentAccount() {
+
+        return ResponseEntity.ok(authenticationService.getCurrentAccount());
+    }
 
 //    @GetMapping("/getuser")
 //    public ResponseEntity<?> getUserByEmail(String email) {
@@ -23,7 +51,7 @@ public class AuthenticationController {
 //    }
 //
 ////    @PostMapping("/register")
-////    public ResponseEntity<?> registerUser(@RequestBody User user) {
+////    public ResponseEntity<?> registerUser(@RequestBody Users user) {
 ////        return ResponseEntity.ok(authenticationService.registerUser(user));
 ////    }
 //
