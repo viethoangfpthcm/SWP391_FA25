@@ -1,6 +1,5 @@
 package com.se1824.SWP391_FA25.service;
 
-import com.se1824.SWP391_FA25.entity.User;
 import com.se1824.SWP391_FA25.repository.AuthenticationRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

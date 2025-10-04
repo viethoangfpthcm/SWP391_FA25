@@ -1,6 +1,5 @@
 package com.se1824.SWP391_FA25.controller;
 
-import com.se1824.SWP391_FA25.entity.User;
 import com.se1824.SWP391_FA25.model.request.LoginRequest;
 import com.se1824.SWP391_FA25.model.response.UserResponse;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
