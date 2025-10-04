@@ -1,55 +1,54 @@
 package com.se1824.SWP391_FA25.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+import java.util.List;
 
 
-import java.time.OffsetDateTime;
-import java.util.UUID;
 @Entity
 @Table(name = "Users")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
+@Setter
 public class User {
     @Id
-    @Column(columnDefinition = "binary(16)")
-    private UUID id;
+    @Column(name = "user_id", length = 50)
+    String userId;
+    @Column(name = "full_name", length = 100, nullable = false)
+     String fullName;
+    @Column(name = "email", length = 100, nullable = false)
+    String email;
 
-    @Column(nullable = false, unique = true, length = 100)
-    private String username;
+    @Column(name = "phone", length = 20)
+     String phone;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "center_id")
+    @JsonIgnore
+    ServiceCenter serviceCenter;
 
-    @Column(name = "full_name", nullable = false, length = 150)
-    private String fullName;
+    // Relationships
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @JsonIgnore
+     List<Vehicle> vehicles;
 
-    @Column(unique = true, length = 150)
-    private String email;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<Booking> customerBookings;
 
-    @Column(length = 50)
-    private String phone;
+    @OneToMany(mappedBy = "assignedTechnician", cascade = CascadeType.ALL)
+    @JsonIgnore
+     List<Booking> technicianBookings;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
-    private Role role;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+     List<Feedback> feedbacks;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean active = true;
-
-    @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt;
-
-    @PrePersist
-    public void prePersist() {
-        if (id == null) id = UUID.randomUUID();
-        if (createdAt == null) createdAt = OffsetDateTime.now();
-    }
-
-    public enum Role {
-        customer, staff, technician, admin
-    }
+    @OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<MaintenanceChecklist> checklists;
 }

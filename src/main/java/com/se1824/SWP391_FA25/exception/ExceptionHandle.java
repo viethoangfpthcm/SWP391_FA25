@@ -26,7 +26,7 @@ public class ExceptionHandle {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException exception) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("email or password invalid");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("username or password invalid");
     }
 
     @ExceptionHandler(InternalAuthenticationServiceException.class)
