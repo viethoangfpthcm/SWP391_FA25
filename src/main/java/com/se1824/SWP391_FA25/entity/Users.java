@@ -26,9 +26,18 @@ public class Users {
     String email;
     @Column(name = "password", length = 255, nullable = false)
     String password;
-
+    //    @Column(name = "confirm_password", length = 255, nullable = false)
+//    String confirmPassword;
     @Column(name = "phone", length = 20)
     String phone;
+
+    public Users(String userId, String fullName, String email, String phone, String password) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "center_id")
@@ -38,6 +47,7 @@ public class Users {
     // Relationships
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     List<Vehicle> vehicles;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)

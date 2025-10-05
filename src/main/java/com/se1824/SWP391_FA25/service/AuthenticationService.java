@@ -2,6 +2,7 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.entity.Users;
 import com.se1824.SWP391_FA25.model.request.LoginRequest;
+import com.se1824.SWP391_FA25.model.request.RegisterRequest;
 import com.se1824.SWP391_FA25.model.response.UserResponse;
 import com.se1824.SWP391_FA25.repository.AuthenticationRepository;
 import org.modelmapper.ModelMapper;
@@ -36,11 +37,28 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     TokenService tokenService;
 
-    public Users register(Users us) {
+    public UserResponse register(RegisterRequest us) {
         //xử lí login của controller đưa qua
-        us.setPassword(passwordEncoder.encode(us.getPassword()));
+
+        if (authenticationRepository.findUserByEmail(us.getEmail()) != null) {
+            throw new IllegalStateException("Email đã tồn tại");
+        } else {
+            if (!us.getPassword().equals(us.getConfirmPassword())) {
+                throw new IllegalStateException("Mật khẩu không khớp");
+            }
+        }
+        Users users = modelMapper.map(us, Users.class);
+        users.setPassword(passwordEncoder.encode(us.getPassword()));
+        users.setUserId(us.getUserId());
+        Users newUser = authenticationRepository.save(users);
+        UserResponse ur = new UserResponse();
+        ur.setEmail(newUser.getEmail());
+        ur.setFullName(newUser.getFullName());
+        ur.setPhone(newUser.getPhone());
+
+        return ur;
         //lưu vào DB
-        return authenticationRepository.save(us);
+
 
     }
 

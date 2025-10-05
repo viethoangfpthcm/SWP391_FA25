@@ -39,6 +39,11 @@ public class ExceptionHandle {
     public ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email is not found");
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<?> handleIllegalStateException(IllegalStateException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
 //    @ExceptionHandler(AuthenticationException.class)
 //    public ResponseEntity<?> hanleAuthenticationException(AuthenticationException exception){
 //        return ResponseEntity.status(401).body(exception.getMessage());

@@ -2,6 +2,7 @@ package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.entity.Users;
 import com.se1824.SWP391_FA25.model.request.LoginRequest;
+import com.se1824.SWP391_FA25.model.request.RegisterRequest;
 import com.se1824.SWP391_FA25.model.response.UserResponse;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
 import jakarta.validation.Valid;
@@ -18,10 +19,10 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody Users account) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest account) {
         //nhận yêu cầu từ FE
         // đẩy qua AuthenticationService
-        Users ac = authenticationService.register(account);
+        UserResponse ac = authenticationService.register(account);
         return ResponseEntity.ok(ac);
     }
 
