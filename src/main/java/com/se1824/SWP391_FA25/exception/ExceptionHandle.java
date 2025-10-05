@@ -1,5 +1,7 @@
 package com.se1824.SWP391_FA25.exception;
 
+import com.se1824.SWP391_FA25.exception.exception.InvalidDataException;
+import com.se1824.SWP391_FA25.exception.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -38,6 +40,20 @@ public class ExceptionHandle {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email is not found");
+    }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<?> handleInvalidDataException(InvalidDataException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+    // Catch-all cho các exception chưa xử lý
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleGeneralException(Exception exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An unexpected error occurred: " + exception.getMessage());
     }
 //    @ExceptionHandler(AuthenticationException.class)
 //    public ResponseEntity<?> hanleAuthenticationException(AuthenticationException exception){
