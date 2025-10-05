@@ -85,7 +85,7 @@ public class CustomerDashboardService {
             // Parse interval từ tên plan (VD: "Bảo dưỡng 12.000 km / 12 tháng")
             Integer intervalKm = extractIntervalKm(plan.getName());
 
-            if (intervalKm != null && currentKm < intervalKm) {
+            if ( currentKm < intervalKm) {
                 NextMaintenanceDTO dto = new NextMaintenanceDTO();
                 dto.setPlanId(plan.getId());
                 dto.setPlanName(plan.getName());
