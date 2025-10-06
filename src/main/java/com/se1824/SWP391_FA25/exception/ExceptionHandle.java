@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,7 +28,7 @@ public class ExceptionHandle {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException exception) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("username or password invalid");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("email or password invalid");
     }
 
     @ExceptionHandler(InternalAuthenticationServiceException.class)
@@ -40,10 +41,11 @@ public class ExceptionHandle {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email is not found");
     }
 
-    //    @ExceptionHandler(AuthenticationException.class)
-//    public ResponseEntity<?> hanleAuthenticationException(AuthenticationException exception){
-//        return ResponseEntity.status(401).body(exception.getMessage());
-//    }
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<?> hanleAuthenticationException(AuthenticationException exception) {
+        return ResponseEntity.status(401).body(exception.getMessage());
+    }
+
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<?> handleIllegalStateException(IllegalStateException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
