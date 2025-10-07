@@ -1,10 +1,11 @@
 package com.se1824.SWP391_FA25.exception;
 
+import com.se1824.SWP391_FA25.exception.exceptions.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.core.AuthenticationException;
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,7 +43,7 @@ public class ExceptionHandle {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<?> hanleAuthenticationException(AuthenticationException exception) {
+    public ResponseEntity<?> handleAuthenticationException(AuthenticationException exception) {
         return ResponseEntity.status(401).body(exception.getMessage());
     }
 

@@ -4,6 +4,7 @@ import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.model.request.CreateUserRequest;
 import com.se1824.SWP391_FA25.model.request.UpdateUserRequest;
 import com.se1824.SWP391_FA25.service.AdminService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
+@SecurityRequirement(name = "api")
 public class AdminController {
 
     private final AdminService adminService;

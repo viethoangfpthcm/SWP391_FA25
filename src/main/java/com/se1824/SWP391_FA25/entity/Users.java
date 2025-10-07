@@ -6,7 +6,10 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.UniqueElements;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 
 
@@ -18,7 +21,7 @@ import java.util.List;
 @Getter
 @Setter
 @Data
-public class Users {
+public class Users implements UserDetails {
     @Id
     @Column(name = "user_id", length = 50)
     @Pattern(
@@ -76,4 +79,14 @@ public class Users {
     @OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)
     @JsonIgnore
     List<MaintenanceChecklist> checklists;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getEmail();
+    }
 }

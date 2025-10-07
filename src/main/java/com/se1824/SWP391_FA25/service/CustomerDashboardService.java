@@ -1,11 +1,12 @@
 package com.se1824.SWP391_FA25.service;
+
 import com.se1824.SWP391_FA25.dto.CustomerDashboardDTO;
 import com.se1824.SWP391_FA25.dto.CustomerInfoDTO;
 import com.se1824.SWP391_FA25.entity.Booking;
 import com.se1824.SWP391_FA25.entity.Users;
 import com.se1824.SWP391_FA25.entity.Vehicle;
-import com.se1824.SWP391_FA25.exception.exception.InvalidDataException;
-import com.se1824.SWP391_FA25.exception.exception.ResourceNotFoundException;
+import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
+import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.repository.BookingRepository;
 import com.se1824.SWP391_FA25.repository.MaintenancePlanRepository;
 import com.se1824.SWP391_FA25.repository.UserRepository;
@@ -85,7 +86,7 @@ public class CustomerDashboardService {
             // Parse interval từ tên plan (VD: "Bảo dưỡng 12.000 km / 12 tháng")
             Integer intervalKm = extractIntervalKm(plan.getName());
 
-            if ( currentKm < intervalKm) {
+            if (currentKm < intervalKm) {
                 NextMaintenanceDTO dto = new NextMaintenanceDTO();
                 dto.setPlanId(plan.getId());
                 dto.setPlanName(plan.getName());
