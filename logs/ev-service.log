@@ -47,3 +47,42 @@ Action:
 
 Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
 
+2025-10-07T10:05:17.464+07:00  INFO 27072 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.2 with PID 27072 (E:\FPTU\2025FALL\SWP391\SWP391_FA25\target\classes started by LEGION in E:\FPTU\2025FALL\SWP391\SWP391_FA25)
+2025-10-07T10:05:17.465+07:00  INFO 27072 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
+2025-10-07T10:05:17.893+07:00  INFO 27072 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-07T10:05:17.931+07:00  INFO 27072 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 32 ms. Found 6 JPA repository interfaces.
+2025-10-07T10:05:18.220+07:00  INFO 27072 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-10-07T10:05:18.229+07:00  INFO 27072 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-07T10:05:18.230+07:00  INFO 27072 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-10-07T10:05:18.257+07:00  INFO 27072 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-10-07T10:05:18.257+07:00  INFO 27072 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 767 ms
+2025-10-07T10:05:18.374+07:00  INFO 27072 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-10-07T10:05:19.388+07:00  INFO 27072 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: 69af1ffb-a46d-455c-a7c8-bcc86653e37f
+2025-10-07T10:05:19.389+07:00  INFO 27072 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-10-07T10:05:19.417+07:00  INFO 27072 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-07T10:05:19.444+07:00  INFO 27072 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-10-07T10:05:19.464+07:00  INFO 27072 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-10-07T10:05:19.615+07:00  INFO 27072 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-07T10:05:20.231+07:00  INFO 27072 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-10-07T10:05:20.825+07:00  INFO 27072 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-07T10:05:20.827+07:00  INFO 27072 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-07T10:05:21.057+07:00  INFO 27072 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
+2025-10-07T10:05:21.160+07:00  WARN 27072 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-07T10:05:21.488+07:00  INFO 27072 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-10-07T10:05:21.493+07:00  INFO 27072 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 4.304 seconds (process running for 4.67)
+2025-10-07T10:05:32.936+07:00  INFO 27072 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-07T10:05:32.936+07:00  INFO 27072 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-07T10:05:32.937+07:00  INFO 27072 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-10-07T10:05:33.696+07:00  INFO 27072 --- [SWP391_FA25] [http-nio-8080-exec-8] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 294 ms
+2025-10-07T10:19:22.180+07:00  INFO 27072 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-10-07T10:19:22.184+07:00  INFO 27072 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-10-07T10:19:22.187+07:00  INFO 27072 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-07T10:19:22.189+07:00  INFO 27072 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-10-07T10:19:22.191+07:00  INFO 27072 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
