@@ -1,9 +1,11 @@
 package com.se1824.SWP391_FA25.controller;
+
 import com.se1824.SWP391_FA25.dto.CustomerDashboardDTO;
 import com.se1824.SWP391_FA25.service.CustomerDashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/api/customer")
 @RequiredArgsConstructor

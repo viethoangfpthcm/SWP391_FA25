@@ -102,7 +102,7 @@ public class AuthenticationService implements UserDetailsService {
 
         Users user = authenticationRepository.findUserByEmail(email);
         if (user == null || !passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new BadCredentialsException("Email or password invalid");
         }
         UserResponse ar = modelMapper.map(user, UserResponse.class);
         String token = tokenService.generateToken(user);
