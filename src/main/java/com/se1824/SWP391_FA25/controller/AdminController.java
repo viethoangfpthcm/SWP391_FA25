@@ -1,13 +1,17 @@
 package com.se1824.SWP391_FA25.controller;
+
 import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.model.request.CreateUserRequest;
 import com.se1824.SWP391_FA25.model.request.UpdateUserRequest;
 import com.se1824.SWP391_FA25.service.AdminService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
@@ -21,9 +25,9 @@ public class AdminController {
      * POST /api/admin/users?adminId={adminId}
      */
     @PostMapping("/users")
-    public ResponseEntity<UserManagementDTO> createUser(
-            @RequestBody CreateUserRequest request,
-            @RequestParam String adminId) {
+    public ResponseEntity<UserManagementDTO> createUser(@Valid
+                                                        @RequestBody CreateUserRequest request,
+                                                        @RequestParam String adminId) {
         UserManagementDTO user = adminService.createUser(request, adminId);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }

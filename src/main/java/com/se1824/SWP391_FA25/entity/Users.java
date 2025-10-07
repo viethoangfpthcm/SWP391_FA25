@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
 
@@ -33,11 +34,12 @@ public class Users {
     String password;
     //    @Column(name = "confirm_password", length = 255, nullable = false)
 //    String confirmPassword;
-    @Column(name = "phone", length = 20)
+    @Column(name = "phone", length = 20, unique = true)
     @Pattern(
             regexp = "^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-6|8|9]|9[0-4|6-9])[0-9]{7}$",
             message = "Invalid phone number format"
     )
+
     String phone;
 
     public Users(String userId, String fullName, String email, String phone, String password) {

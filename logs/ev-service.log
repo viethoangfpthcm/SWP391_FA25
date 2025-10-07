@@ -1,20 +1,20 @@
-2025-10-06T11:20:38.270+07:00  INFO 300 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 300 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
-2025-10-06T11:20:38.274+07:00  INFO 300 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
-2025-10-06T11:20:39.306+07:00  INFO 300 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-06T11:20:39.389+07:00  INFO 300 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 74 ms. Found 6 JPA repository interfaces.
-2025-10-06T11:20:40.066+07:00  INFO 300 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-06T11:20:40.084+07:00  INFO 300 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-06T11:20:40.085+07:00  INFO 300 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-06T11:20:40.145+07:00  INFO 300 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-06T11:20:40.146+07:00  INFO 300 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1813 ms
-2025-10-06T11:20:40.423+07:00  INFO 300 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-06T11:20:41.876+07:00  INFO 300 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: e394af2f-c10b-44ab-8de5-a7359eaf47ef
-2025-10-06T11:20:41.879+07:00  INFO 300 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-06T11:20:41.931+07:00  INFO 300 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-06T11:20:42.006+07:00  INFO 300 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-06T11:20:42.052+07:00  INFO 300 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-06T11:20:42.408+07:00  INFO 300 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-06T11:20:43.229+07:00  INFO 300 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-10-07T14:07:20.582+07:00  INFO 11364 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 11364 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
+2025-10-07T14:07:20.586+07:00  INFO 11364 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
+2025-10-07T14:07:21.543+07:00  INFO 11364 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-07T14:07:21.632+07:00  INFO 11364 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 77 ms. Found 6 JPA repository interfaces.
+2025-10-07T14:07:22.333+07:00  INFO 11364 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-10-07T14:07:22.355+07:00  INFO 11364 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-07T14:07:22.356+07:00  INFO 11364 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-10-07T14:07:22.440+07:00  INFO 11364 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-10-07T14:07:22.441+07:00  INFO 11364 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1800 ms
+2025-10-07T14:07:22.770+07:00  INFO 11364 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-10-07T14:07:24.714+07:00  INFO 11364 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: 681e7250-f9ad-4ddf-8997-28918126e21f
+2025-10-07T14:07:24.718+07:00  INFO 11364 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-10-07T14:07:24.778+07:00  INFO 11364 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-07T14:07:24.849+07:00  INFO 11364 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-10-07T14:07:24.904+07:00  INFO 11364 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-10-07T14:07:25.394+07:00  INFO 11364 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-07T14:07:26.396+07:00  INFO 11364 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 16.0
@@ -22,55 +22,32 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-10-06T11:20:44.592+07:00  INFO 300 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-06T11:20:44.596+07:00  INFO 300 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:20:45.058+07:00  INFO 300 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2025-10-06T11:20:45.244+07:00  WARN 300 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-06T11:20:45.939+07:00  INFO 300 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-06T11:20:45.950+07:00  INFO 300 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 8.261 seconds (process running for 9.109)
-2025-10-06T11:20:54.349+07:00  INFO 300 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-06T11:20:54.349+07:00  INFO 300 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-06T11:20:54.349+07:00  INFO 300 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2025-10-06T11:20:56.509+07:00  INFO 300 --- [SWP391_FA25] [http-nio-8080-exec-10] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 583 ms
-2025-10-06T11:21:32.043+07:00 ERROR 300 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
+2025-10-07T14:07:28.144+07:00  INFO 11364 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-07T14:07:28.144+07:00  INFO 11364 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-07T14:07:28.623+07:00  INFO 11364 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
+2025-10-07T14:07:28.813+07:00  WARN 11364 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-07T14:07:29.600+07:00  INFO 11364 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-10-07T14:07:29.619+07:00  INFO 11364 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 9.599 seconds (process running for 10.406)
+2025-10-07T14:07:29.714+07:00  INFO 11364 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-07T14:07:29.714+07:00  INFO 11364 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-07T14:07:29.716+07:00  INFO 11364 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-10-07T14:07:30.686+07:00  INFO 11364 --- [SWP391_FA25] [http-nio-8080-exec-9] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 411 ms
+2025-10-07T14:11:17.391+07:00  INFO 11364 --- [SWP391_FA25] [http-nio-8080-exec-4] c.s.SWP391_FA25.service.AdminService     : Admin AD001 creating user with prefix TE473
+2025-10-07T14:11:18.104+07:00 ERROR 11364 --- [SWP391_FA25] [http-nio-8080-exec-4] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: com.se1824.SWP391_FA25.exception.exception.InvalidDataException: User prefix must be ST or TE] with root cause
 
-jakarta.validation.ConstraintViolationException: Validation failed for classes [com.se1824.SWP391_FA25.entity.Users] during update time for groups [jakarta.validation.groups.Default, ]
-List of constraint violations:[
-	ConstraintViolationImpl{interpolatedMessage='User ID must start with CU, ST, or TE followed by 3 digits', propertyPath=userId, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='User ID must start with CU, ST, or TE followed by 3 digits'}
-	ConstraintViolationImpl{interpolatedMessage='Invalid phone number format', propertyPath=phone, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='Invalid phone number format'}
-]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:176) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.onPreUpdate(BeanValidationEventListener.java:98) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.action.internal.EntityUpdateAction.preUpdate(EntityUpdateAction.java:363) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.action.internal.EntityUpdateAction.execute(EntityUpdateAction.java:162) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:644) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:511) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:414) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.internal.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:41) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.doFlush(SessionImpl.java:1429) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.managedFlush(SessionImpl.java:491) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.flushBeforeTransactionCompletion(SessionImpl.java:2354) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.beforeTransactionCompletion(SessionImpl.java:1978) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.beforeTransactionCompletion(JdbcCoordinatorImpl.java:439) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl.beforeCompletionCallback(JdbcResourceLocalTransactionCoordinatorImpl.java:169) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:267) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:563) ~[spring-orm-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.commitTransactionAfterReturning(TransactionAspectSupport.java:698) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:416) ~[spring-tx-6.2.11.jar:6.2.11]
+com.se1824.SWP391_FA25.exception.exception.InvalidDataException: User prefix must be ST or TE
+	at com.se1824.SWP391_FA25.service.AdminService.createUser(AdminService.java:42) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165) ~[spring-data-jpa-3.5.4.jar:3.5.4]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) ~[spring-aop-6.2.11.jar:6.2.11]
-	at jdk.proxy2/jdk.proxy2.$Proxy141.save(Unknown Source) ~[na:na]
-	at com.se1824.SWP391_FA25.service.AuthenticationService.register(AuthenticationService.java:53) ~[classes/:na]
-	at com.se1824.SWP391_FA25.controller.AuthenticationController.register(AuthenticationController.java:25) ~[classes/:na]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.11.jar:6.2.11]
+	at com.se1824.SWP391_FA25.service.AdminService$$SpringCGLIB$$0.createUser(<generated>) ~[classes/:na]
+	at com.se1824.SWP391_FA25.controller.AdminController.createUser(AdminController.java:27) ~[classes/:na]
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.11.jar:6.2.11]
@@ -167,52 +144,138 @@ List of constraint violations:[
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
 	at java.base/java.lang.Thread.run(Thread.java:1447) ~[na:na]
 
-2025-10-06T11:21:51.275+07:00  INFO 300 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-10-06T11:21:51.291+07:00  INFO 300 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-10-06T11:21:51.296+07:00  INFO 300 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:21:51.307+07:00  INFO 300 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-06T11:21:51.315+07:00  INFO 300 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-10-06T11:27:08.217+07:00  INFO 6576 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 6576 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
-2025-10-06T11:27:08.219+07:00  INFO 6576 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
-2025-10-06T11:27:09.063+07:00  INFO 6576 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-06T11:27:09.128+07:00  INFO 6576 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 55 ms. Found 6 JPA repository interfaces.
-2025-10-06T11:27:09.743+07:00  INFO 6576 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-06T11:27:09.760+07:00  INFO 6576 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-06T11:27:09.761+07:00  INFO 6576 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-06T11:27:09.813+07:00  INFO 6576 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-06T11:27:09.813+07:00  INFO 6576 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1542 ms
-2025-10-06T11:27:10.043+07:00  INFO 6576 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-06T11:27:11.275+07:00  INFO 6576 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: 58b7bdd5-8849-4189-a078-cb41bfc1ecfc
-2025-10-06T11:27:11.278+07:00  INFO 6576 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-06T11:27:11.326+07:00  INFO 6576 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-06T11:27:11.372+07:00  INFO 6576 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-06T11:27:11.402+07:00  INFO 6576 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-06T11:27:11.739+07:00  INFO 6576 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-06T11:27:12.388+07:00  INFO 6576 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 16.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-10-06T11:27:13.654+07:00  INFO 6576 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-06T11:27:13.658+07:00  INFO 6576 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:27:14.073+07:00  INFO 6576 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2025-10-06T11:27:14.248+07:00  WARN 6576 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-06T11:27:14.858+07:00  INFO 6576 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-06T11:27:14.870+07:00  INFO 6576 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 7.158 seconds (process running for 7.862)
-2025-10-06T11:27:37.923+07:00  INFO 6576 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-06T11:27:37.923+07:00  INFO 6576 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-06T11:27:37.925+07:00  INFO 6576 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2025-10-06T11:27:44.524+07:00 ERROR 6576 --- [SWP391_FA25] [http-nio-8080-exec-2] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
+2025-10-07T14:11:34.807+07:00  INFO 11364 --- [SWP391_FA25] [http-nio-8080-exec-6] c.s.SWP391_FA25.service.AdminService     : Admin AD001 creating user with prefix TE
+2025-10-07T14:11:35.787+07:00 ERROR 11364 --- [SWP391_FA25] [http-nio-8080-exec-6] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: com.se1824.SWP391_FA25.exception.exception.ResourceNotFoundException: Service center not found with ID: 1] with root cause
 
-jakarta.validation.ConstraintViolationException: Validation failed for classes [com.se1824.SWP391_FA25.entity.Users] during persist time for groups [jakarta.validation.groups.Default, ]
-List of constraint violations:[
-	ConstraintViolationImpl{interpolatedMessage='Invalid phone number format', propertyPath=phone, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='Invalid phone number format'}
-	ConstraintViolationImpl{interpolatedMessage='User ID must start with CU, ST, or TE followed by 3 digits', propertyPath=userId, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='User ID must start with CU, ST, or TE followed by 3 digits'}
-]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:176) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+com.se1824.SWP391_FA25.exception.exception.ResourceNotFoundException: Service center not found with ID: 1
+	at com.se1824.SWP391_FA25.service.AdminService.lambda$createUser$0(AdminService.java:56) ~[classes/:na]
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403) ~[na:na]
+	at com.se1824.SWP391_FA25.service.AdminService.createUser(AdminService.java:55) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380) ~[spring-tx-6.2.11.jar:6.2.11]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.11.jar:6.2.11]
+	at com.se1824.SWP391_FA25.service.AdminService$$SpringCGLIB$$0.createUser(<generated>) ~[classes/:na]
+	at com.se1824.SWP391_FA25.controller.AdminController.createUser(AdminController.java:27) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.46.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.46.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.46.jar:10.1.46]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.5.5.jar:6.5.5]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319) ~[spring-security-config-6.5.5.jar:6.5.5]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240) ~[spring-security-config-6.5.5.jar:6.5.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1776) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:975) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:493) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
+	at java.base/java.lang.Thread.run(Thread.java:1447) ~[na:na]
+
+2025-10-07T14:11:47.076+07:00  INFO 11364 --- [SWP391_FA25] [http-nio-8080-exec-8] c.s.SWP391_FA25.service.AdminService     : Admin AD001 creating user with prefix TE
+2025-10-07T14:11:48.344+07:00  INFO 11364 --- [SWP391_FA25] [http-nio-8080-exec-8] c.s.SWP391_FA25.service.AdminService     : User created successfully with ID: TE002
+2025-10-07T14:11:48.817+07:00 ERROR 11364 --- [SWP391_FA25] [http-nio-8080-exec-8] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
+
+jakarta.validation.UnexpectedTypeException: HV000030: No validator could be found for constraint 'org.hibernate.validator.constraints.UniqueElements' validating type 'java.lang.String'. Check configuration for 'phone'
+	at org.hibernate.validator.internal.engine.constraintvalidation.ConstraintTree.getExceptionForNullValidator(ConstraintTree.java:116) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.constraintvalidation.ConstraintTree.getInitializedConstraintValidator(ConstraintTree.java:162) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.constraintvalidation.SimpleConstraintTree.validateConstraints(SimpleConstraintTree.java:58) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.constraintvalidation.ConstraintTree.validateConstraints(ConstraintTree.java:75) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.metadata.core.MetaConstraint.doValidateConstraint(MetaConstraint.java:130) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.metadata.core.MetaConstraint.validateConstraint(MetaConstraint.java:123) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validateMetaConstraint(ValidatorImpl.java:555) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validateConstraintsForSingleDefaultGroupElement(ValidatorImpl.java:518) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validateConstraintsForDefaultGroup(ValidatorImpl.java:488) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validateConstraintsForCurrentGroup(ValidatorImpl.java:450) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validateInContext(ValidatorImpl.java:400) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validate(ValidatorImpl.java:172) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:153) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
 	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.onPreInsert(BeanValidationEventListener.java:88) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
 	at org.hibernate.action.internal.EntityInsertAction.preInsert(EntityInsertAction.java:251) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
 	at org.hibernate.action.internal.EntityInsertAction.execute(EntityInsertAction.java:106) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
@@ -236,14 +299,9 @@ List of constraint violations:[
 	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:416) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165) ~[spring-data-jpa-3.5.4.jar:3.5.4]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) ~[spring-aop-6.2.11.jar:6.2.11]
-	at jdk.proxy2/jdk.proxy2.$Proxy141.save(Unknown Source) ~[na:na]
-	at com.se1824.SWP391_FA25.service.AuthenticationService.register(AuthenticationService.java:53) ~[classes/:na]
-	at com.se1824.SWP391_FA25.controller.AuthenticationController.register(AuthenticationController.java:25) ~[classes/:na]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.11.jar:6.2.11]
+	at com.se1824.SWP391_FA25.service.AdminService$$SpringCGLIB$$0.createUser(<generated>) ~[classes/:na]
+	at com.se1824.SWP391_FA25.controller.AdminController.createUser(AdminController.java:27) ~[classes/:na]
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.11.jar:6.2.11]
@@ -340,52 +398,24 @@ List of constraint violations:[
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
 	at java.base/java.lang.Thread.run(Thread.java:1447) ~[na:na]
 
-2025-10-06T11:29:06.804+07:00  INFO 6576 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-10-06T11:29:06.811+07:00  INFO 6576 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-10-06T11:29:06.818+07:00  INFO 6576 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:29:06.821+07:00  INFO 6576 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-06T11:29:06.827+07:00  INFO 6576 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-10-06T11:29:11.342+07:00  INFO 7864 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 7864 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
-2025-10-06T11:29:11.346+07:00  INFO 7864 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
-2025-10-06T11:29:12.243+07:00  INFO 7864 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-06T11:29:12.314+07:00  INFO 7864 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 61 ms. Found 6 JPA repository interfaces.
-2025-10-06T11:29:12.873+07:00  INFO 7864 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-06T11:29:12.886+07:00  INFO 7864 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-06T11:29:12.887+07:00  INFO 7864 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-06T11:29:12.939+07:00  INFO 7864 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-06T11:29:12.940+07:00  INFO 7864 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1541 ms
-2025-10-06T11:29:13.183+07:00  INFO 7864 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-06T11:29:14.428+07:00  INFO 7864 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: e7d315b7-16e1-4c42-8468-b4217d5adb84
-2025-10-06T11:29:14.430+07:00  INFO 7864 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-06T11:29:14.477+07:00  INFO 7864 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-06T11:29:14.522+07:00  INFO 7864 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-06T11:29:14.553+07:00  INFO 7864 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-06T11:29:14.842+07:00  INFO 7864 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-06T11:29:15.459+07:00  INFO 7864 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 16.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-10-06T11:29:16.594+07:00  INFO 7864 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-06T11:29:16.597+07:00  INFO 7864 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:29:16.995+07:00  INFO 7864 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2025-10-06T11:29:17.181+07:00  WARN 7864 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-06T11:29:17.782+07:00  INFO 7864 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-06T11:29:17.793+07:00  INFO 7864 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 6.978 seconds (process running for 7.709)
-2025-10-06T11:29:19.770+07:00  INFO 7864 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-06T11:29:19.771+07:00  INFO 7864 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-06T11:29:19.772+07:00  INFO 7864 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2025-10-06T11:29:21.152+07:00 ERROR 7864 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
+2025-10-07T14:12:20.148+07:00  INFO 11364 --- [SWP391_FA25] [http-nio-8080-exec-7] c.s.SWP391_FA25.service.AdminService     : Admin AD001 creating user with prefix TE
+2025-10-07T14:12:21.276+07:00  INFO 11364 --- [SWP391_FA25] [http-nio-8080-exec-7] c.s.SWP391_FA25.service.AdminService     : User created successfully with ID: TE002
+2025-10-07T14:12:21.687+07:00 ERROR 11364 --- [SWP391_FA25] [http-nio-8080-exec-7] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
 
-jakarta.validation.ConstraintViolationException: Validation failed for classes [com.se1824.SWP391_FA25.entity.Users] during persist time for groups [jakarta.validation.groups.Default, ]
-List of constraint violations:[
-	ConstraintViolationImpl{interpolatedMessage='User ID must start with CU, ST, or TE followed by 3 digits', propertyPath=userId, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='User ID must start with CU, ST, or TE followed by 3 digits'}
-	ConstraintViolationImpl{interpolatedMessage='Invalid phone number format', propertyPath=phone, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='Invalid phone number format'}
-]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:176) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
+jakarta.validation.UnexpectedTypeException: HV000030: No validator could be found for constraint 'org.hibernate.validator.constraints.UniqueElements' validating type 'java.lang.String'. Check configuration for 'phone'
+	at org.hibernate.validator.internal.engine.constraintvalidation.ConstraintTree.getExceptionForNullValidator(ConstraintTree.java:116) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.constraintvalidation.ConstraintTree.getInitializedConstraintValidator(ConstraintTree.java:162) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.constraintvalidation.SimpleConstraintTree.validateConstraints(SimpleConstraintTree.java:58) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.constraintvalidation.ConstraintTree.validateConstraints(ConstraintTree.java:75) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.metadata.core.MetaConstraint.doValidateConstraint(MetaConstraint.java:130) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.metadata.core.MetaConstraint.validateConstraint(MetaConstraint.java:123) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validateMetaConstraint(ValidatorImpl.java:555) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validateConstraintsForSingleDefaultGroupElement(ValidatorImpl.java:518) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validateConstraintsForDefaultGroup(ValidatorImpl.java:488) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validateConstraintsForCurrentGroup(ValidatorImpl.java:450) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validateInContext(ValidatorImpl.java:400) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.validator.internal.engine.ValidatorImpl.validate(ValidatorImpl.java:172) ~[hibernate-validator-8.0.3.Final.jar:8.0.3.Final]
+	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:153) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
 	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.onPreInsert(BeanValidationEventListener.java:88) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
 	at org.hibernate.action.internal.EntityInsertAction.preInsert(EntityInsertAction.java:251) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
 	at org.hibernate.action.internal.EntityInsertAction.execute(EntityInsertAction.java:106) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
@@ -409,14 +439,9 @@ List of constraint violations:[
 	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:416) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165) ~[spring-data-jpa-3.5.4.jar:3.5.4]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) ~[spring-aop-6.2.11.jar:6.2.11]
-	at jdk.proxy2/jdk.proxy2.$Proxy141.save(Unknown Source) ~[na:na]
-	at com.se1824.SWP391_FA25.service.AuthenticationService.register(AuthenticationService.java:53) ~[classes/:na]
-	at com.se1824.SWP391_FA25.controller.AuthenticationController.register(AuthenticationController.java:25) ~[classes/:na]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.11.jar:6.2.11]
+	at com.se1824.SWP391_FA25.service.AdminService$$SpringCGLIB$$0.createUser(<generated>) ~[classes/:na]
+	at com.se1824.SWP391_FA25.controller.AdminController.createUser(AdminController.java:27) ~[classes/:na]
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.11.jar:6.2.11]
@@ -513,28 +538,28 @@ List of constraint violations:[
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
 	at java.base/java.lang.Thread.run(Thread.java:1447) ~[na:na]
 
-2025-10-06T11:29:26.343+07:00  INFO 7864 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-10-06T11:29:26.351+07:00  INFO 7864 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-10-06T11:29:26.357+07:00  INFO 7864 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:29:26.360+07:00  INFO 7864 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-06T11:29:26.366+07:00  INFO 7864 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-10-06T11:29:29.274+07:00  INFO 2100 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 2100 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
-2025-10-06T11:29:29.277+07:00  INFO 2100 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
-2025-10-06T11:29:30.199+07:00  INFO 2100 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-06T11:29:30.269+07:00  INFO 2100 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 59 ms. Found 6 JPA repository interfaces.
-2025-10-06T11:29:30.817+07:00  INFO 2100 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-06T11:29:30.831+07:00  INFO 2100 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-06T11:29:30.831+07:00  INFO 2100 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-06T11:29:30.898+07:00  INFO 2100 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-06T11:29:30.899+07:00  INFO 2100 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1562 ms
-2025-10-06T11:29:31.143+07:00  INFO 2100 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-06T11:29:32.507+07:00  INFO 2100 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: d6f171f4-34b4-4d9b-b5ea-3e06f5ca0061
-2025-10-06T11:29:32.509+07:00  INFO 2100 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-06T11:29:32.558+07:00  INFO 2100 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-06T11:29:32.609+07:00  INFO 2100 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-06T11:29:32.641+07:00  INFO 2100 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-06T11:29:32.960+07:00  INFO 2100 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-06T11:29:33.559+07:00  INFO 2100 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-10-07T14:12:46.722+07:00  INFO 11364 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-10-07T14:12:46.732+07:00  INFO 11364 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-10-07T14:12:46.739+07:00  INFO 11364 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-07T14:12:46.744+07:00  INFO 11364 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-10-07T14:12:46.752+07:00  INFO 11364 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-10-07T14:12:52.599+07:00  INFO 22408 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 22408 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
+2025-10-07T14:12:52.602+07:00  INFO 22408 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
+2025-10-07T14:12:53.456+07:00  INFO 22408 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-07T14:12:53.529+07:00  INFO 22408 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 63 ms. Found 6 JPA repository interfaces.
+2025-10-07T14:12:54.308+07:00  INFO 22408 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-10-07T14:12:54.326+07:00  INFO 22408 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-07T14:12:54.327+07:00  INFO 22408 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-10-07T14:12:54.397+07:00  INFO 22408 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-10-07T14:12:54.397+07:00  INFO 22408 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1745 ms
+2025-10-07T14:12:54.627+07:00  INFO 22408 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-10-07T14:12:56.160+07:00  INFO 22408 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: bd813354-8b7b-42b0-baec-09055ab1b1b0
+2025-10-07T14:12:56.163+07:00  INFO 22408 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-10-07T14:12:56.226+07:00  INFO 22408 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-07T14:12:56.287+07:00  INFO 22408 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-10-07T14:12:56.325+07:00  INFO 22408 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-10-07T14:12:56.712+07:00  INFO 22408 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-07T14:12:57.640+07:00  INFO 22408 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 16.0
@@ -542,54 +567,35 @@ List of constraint violations:[
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-10-06T11:29:34.844+07:00  INFO 2100 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-06T11:29:34.847+07:00  INFO 2100 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:29:35.281+07:00  INFO 2100 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2025-10-06T11:29:35.471+07:00  WARN 2100 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-06T11:29:36.076+07:00  INFO 2100 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-06T11:29:36.088+07:00  INFO 2100 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 7.4 seconds (process running for 8.231)
-2025-10-06T11:29:44.071+07:00  INFO 2100 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-06T11:29:44.071+07:00  INFO 2100 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-06T11:29:44.073+07:00  INFO 2100 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2025-10-06T11:29:45.543+07:00 ERROR 2100 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
+2025-10-07T14:12:58.956+07:00  INFO 22408 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-07T14:12:58.960+07:00  INFO 22408 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-07T14:12:59.439+07:00  INFO 22408 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
+2025-10-07T14:12:59.672+07:00  WARN 22408 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-07T14:13:00.350+07:00  INFO 22408 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-10-07T14:13:00.362+07:00  INFO 22408 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 8.308 seconds (process running for 9.092)
+2025-10-07T14:13:03.477+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-07T14:13:03.477+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-07T14:13:03.479+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-10-07T14:13:04.080+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-1] c.s.SWP391_FA25.service.AdminService     : Admin AD001 creating user with prefix TE
+2025-10-07T14:13:06.136+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-1] c.s.SWP391_FA25.service.AdminService     : User created successfully with ID: TE002
+2025-10-07T14:22:57.267+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-3] c.s.SWP391_FA25.service.AdminService     : Admin AD001 deleting user TE001
+2025-10-07T14:22:58.803+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-3] c.s.SWP391_FA25.service.AdminService     : User TE001 deleted successfully
+2025-10-07T14:23:09.400+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-4] c.s.SWP391_FA25.service.AdminService     : Admin AD001 deleting user string
+2025-10-07T14:23:09.943+07:00 ERROR 22408 --- [SWP391_FA25] [http-nio-8080-exec-4] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: com.se1824.SWP391_FA25.exception.exception.InvalidDataException: Can only delete staff or technician accounts] with root cause
 
-jakarta.validation.ConstraintViolationException: Validation failed for classes [com.se1824.SWP391_FA25.entity.Users] during persist time for groups [jakarta.validation.groups.Default, ]
-List of constraint violations:[
-	ConstraintViolationImpl{interpolatedMessage='Invalid phone number format', propertyPath=phone, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='Invalid phone number format'}
-	ConstraintViolationImpl{interpolatedMessage='User ID must start with CU, ST, or TE followed by 3 digits', propertyPath=userId, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='User ID must start with CU, ST, or TE followed by 3 digits'}
-]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:176) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.onPreInsert(BeanValidationEventListener.java:88) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.action.internal.EntityInsertAction.preInsert(EntityInsertAction.java:251) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.action.internal.EntityInsertAction.execute(EntityInsertAction.java:106) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:644) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:511) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:414) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.internal.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:41) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.doFlush(SessionImpl.java:1429) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.managedFlush(SessionImpl.java:491) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.flushBeforeTransactionCompletion(SessionImpl.java:2354) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.beforeTransactionCompletion(SessionImpl.java:1978) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.beforeTransactionCompletion(JdbcCoordinatorImpl.java:439) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl.beforeCompletionCallback(JdbcResourceLocalTransactionCoordinatorImpl.java:169) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:267) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:563) ~[spring-orm-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.commitTransactionAfterReturning(TransactionAspectSupport.java:698) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:416) ~[spring-tx-6.2.11.jar:6.2.11]
+com.se1824.SWP391_FA25.exception.exception.InvalidDataException: Can only delete staff or technician accounts
+	at com.se1824.SWP391_FA25.service.AdminService.deleteUser(AdminService.java:217) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165) ~[spring-data-jpa-3.5.4.jar:3.5.4]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) ~[spring-aop-6.2.11.jar:6.2.11]
-	at jdk.proxy2/jdk.proxy2.$Proxy141.save(Unknown Source) ~[na:na]
-	at com.se1824.SWP391_FA25.service.AuthenticationService.register(AuthenticationService.java:53) ~[classes/:na]
-	at com.se1824.SWP391_FA25.controller.AuthenticationController.register(AuthenticationController.java:25) ~[classes/:na]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.11.jar:6.2.11]
+	at com.se1824.SWP391_FA25.service.AdminService$$SpringCGLIB$$0.deleteUser(<generated>) ~[classes/:na]
+	at com.se1824.SWP391_FA25.controller.AdminController.deleteUser(AdminController.java:83) ~[classes/:na]
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.11.jar:6.2.11]
@@ -601,8 +607,8 @@ List of constraint violations:[
 	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.11.jar:6.2.11]
 	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.11.jar:6.2.11]
 	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.46.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.doDelete(FrameworkServlet.java:936) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:596) ~[tomcat-embed-core-10.1.46.jar:6.0]
 	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.11.jar:6.2.11]
 	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.46.jar:6.0]
 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
@@ -686,83 +692,22 @@ List of constraint violations:[
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
 	at java.base/java.lang.Thread.run(Thread.java:1447) ~[na:na]
 
-2025-10-06T11:30:02.792+07:00  INFO 2100 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-10-06T11:30:02.800+07:00  INFO 2100 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-10-06T11:30:02.806+07:00  INFO 2100 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:30:02.810+07:00  INFO 2100 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-06T11:30:02.817+07:00  INFO 2100 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-10-06T11:30:07.292+07:00  INFO 12724 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 12724 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
-2025-10-06T11:30:07.296+07:00  INFO 12724 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
-2025-10-06T11:30:08.155+07:00  INFO 12724 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-06T11:30:08.223+07:00  INFO 12724 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 59 ms. Found 6 JPA repository interfaces.
-2025-10-06T11:30:08.760+07:00  INFO 12724 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-06T11:30:08.779+07:00  INFO 12724 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-06T11:30:08.779+07:00  INFO 12724 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-06T11:30:08.832+07:00  INFO 12724 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-06T11:30:08.833+07:00  INFO 12724 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1484 ms
-2025-10-06T11:30:09.062+07:00  INFO 12724 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-06T11:30:11.808+07:00  INFO 12724 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: df7513b4-3a82-4c23-974a-f259e331a966
-2025-10-06T11:30:11.810+07:00  INFO 12724 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-06T11:30:11.857+07:00  INFO 12724 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-06T11:30:11.903+07:00  INFO 12724 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-06T11:30:11.933+07:00  INFO 12724 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-06T11:30:12.213+07:00  INFO 12724 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-06T11:30:12.805+07:00  INFO 12724 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 16.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-10-06T11:30:14.069+07:00  INFO 12724 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-06T11:30:14.074+07:00  INFO 12724 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:30:14.531+07:00  INFO 12724 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2025-10-06T11:30:14.721+07:00  WARN 12724 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-06T11:30:15.304+07:00  INFO 12724 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-06T11:30:15.314+07:00  INFO 12724 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 8.566 seconds (process running for 9.285)
-2025-10-06T11:30:18.330+07:00  INFO 12724 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-06T11:30:18.330+07:00  INFO 12724 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-06T11:30:18.332+07:00  INFO 12724 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2025-10-06T11:30:19.722+07:00 ERROR 12724 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
+2025-10-07T14:23:42.524+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-10] c.s.SWP391_FA25.service.AdminService     : Admin AD001 deleting user string
+2025-10-07T14:23:43.464+07:00 ERROR 22408 --- [SWP391_FA25] [http-nio-8080-exec-10] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: com.se1824.SWP391_FA25.exception.exception.InvalidDataException: Can only delete staff or technician accounts] with root cause
 
-jakarta.validation.ConstraintViolationException: Validation failed for classes [com.se1824.SWP391_FA25.entity.Users] during persist time for groups [jakarta.validation.groups.Default, ]
-List of constraint violations:[
-	ConstraintViolationImpl{interpolatedMessage='Invalid phone number format', propertyPath=phone, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='Invalid phone number format'}
-	ConstraintViolationImpl{interpolatedMessage='User ID must start with CU, ST, or TE followed by 3 digits', propertyPath=userId, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='User ID must start with CU, ST, or TE followed by 3 digits'}
-]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:176) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.onPreInsert(BeanValidationEventListener.java:88) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.action.internal.EntityInsertAction.preInsert(EntityInsertAction.java:251) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.action.internal.EntityInsertAction.execute(EntityInsertAction.java:106) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:644) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:511) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:414) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.internal.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:41) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.doFlush(SessionImpl.java:1429) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.managedFlush(SessionImpl.java:491) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.flushBeforeTransactionCompletion(SessionImpl.java:2354) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.beforeTransactionCompletion(SessionImpl.java:1978) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.beforeTransactionCompletion(JdbcCoordinatorImpl.java:439) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl.beforeCompletionCallback(JdbcResourceLocalTransactionCoordinatorImpl.java:169) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:267) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:563) ~[spring-orm-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.commitTransactionAfterReturning(TransactionAspectSupport.java:698) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:416) ~[spring-tx-6.2.11.jar:6.2.11]
+com.se1824.SWP391_FA25.exception.exception.InvalidDataException: Can only delete staff or technician accounts
+	at com.se1824.SWP391_FA25.service.AdminService.deleteUser(AdminService.java:217) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165) ~[spring-data-jpa-3.5.4.jar:3.5.4]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) ~[spring-aop-6.2.11.jar:6.2.11]
-	at jdk.proxy2/jdk.proxy2.$Proxy141.save(Unknown Source) ~[na:na]
-	at com.se1824.SWP391_FA25.service.AuthenticationService.register(AuthenticationService.java:53) ~[classes/:na]
-	at com.se1824.SWP391_FA25.controller.AuthenticationController.register(AuthenticationController.java:25) ~[classes/:na]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.11.jar:6.2.11]
+	at com.se1824.SWP391_FA25.service.AdminService$$SpringCGLIB$$0.deleteUser(<generated>) ~[classes/:na]
+	at com.se1824.SWP391_FA25.controller.AdminController.deleteUser(AdminController.java:83) ~[classes/:na]
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.11.jar:6.2.11]
@@ -774,8 +719,8 @@ List of constraint violations:[
 	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.11.jar:6.2.11]
 	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.11.jar:6.2.11]
 	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.46.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.doDelete(FrameworkServlet.java:936) ~[spring-webmvc-6.2.11.jar:6.2.11]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:596) ~[tomcat-embed-core-10.1.46.jar:6.0]
 	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.11.jar:6.2.11]
 	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.46.jar:6.0]
 	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
@@ -859,49 +804,14 @@ List of constraint violations:[
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
 	at java.base/java.lang.Thread.run(Thread.java:1447) ~[na:na]
 
-2025-10-06T11:30:54.560+07:00  INFO 12724 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-10-06T11:30:54.570+07:00  INFO 12724 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-10-06T11:30:54.598+07:00  INFO 12724 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:30:54.601+07:00  INFO 12724 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-06T11:30:54.606+07:00  INFO 12724 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-10-06T11:31:45.620+07:00  INFO 14700 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 14700 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
-2025-10-06T11:31:45.623+07:00  INFO 14700 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
-2025-10-06T11:31:46.549+07:00  INFO 14700 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-06T11:31:46.647+07:00  INFO 14700 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 86 ms. Found 6 JPA repository interfaces.
-2025-10-06T11:31:47.344+07:00  INFO 14700 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-06T11:31:47.360+07:00  INFO 14700 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-06T11:31:47.360+07:00  INFO 14700 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-06T11:31:47.428+07:00  INFO 14700 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-06T11:31:47.429+07:00  INFO 14700 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1752 ms
-2025-10-06T11:31:47.696+07:00  INFO 14700 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-06T11:31:49.043+07:00  INFO 14700 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: cb8e33c1-60c4-4b5f-8231-42158b284104
-2025-10-06T11:31:49.046+07:00  INFO 14700 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-06T11:31:49.100+07:00  INFO 14700 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-06T11:31:49.156+07:00  INFO 14700 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-06T11:31:49.208+07:00  INFO 14700 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-06T11:31:49.623+07:00  INFO 14700 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-06T11:31:50.385+07:00  INFO 14700 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 16.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-10-06T11:31:51.763+07:00  INFO 14700 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-06T11:31:51.769+07:00  INFO 14700 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:31:52.422+07:00  INFO 14700 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2025-10-06T11:31:52.798+07:00  WARN 14700 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-06T11:31:53.965+07:00  INFO 14700 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-06T11:31:53.997+07:00  INFO 14700 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 8.913 seconds (process running for 10.345)
-2025-10-06T11:31:58.338+07:00  INFO 14700 --- [SWP391_FA25] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-06T11:31:58.338+07:00  INFO 14700 --- [SWP391_FA25] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-06T11:31:58.340+07:00  INFO 14700 --- [SWP391_FA25] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2025-10-06T11:34:01.861+07:00 ERROR 14700 --- [SWP391_FA25] [http-nio-8080-exec-2] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
+2025-10-07T14:24:17.468+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-6] c.s.SWP391_FA25.service.AdminService     : Admin AD001 deleting user ST001
+2025-10-07T14:24:18.870+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-6] c.s.SWP391_FA25.service.AdminService     : User ST001 deleted successfully
+2025-10-07T14:25:00.717+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-7] c.s.SWP391_FA25.service.AdminService     : Admin AD001 creating user with prefix TE
+2025-10-07T14:25:02.499+07:00  INFO 22408 --- [SWP391_FA25] [http-nio-8080-exec-7] c.s.SWP391_FA25.service.AdminService     : User created successfully with ID: TE003
+2025-10-07T14:25:03.011+07:00 ERROR 22408 --- [SWP391_FA25] [http-nio-8080-exec-7] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
 
 jakarta.validation.ConstraintViolationException: Validation failed for classes [com.se1824.SWP391_FA25.entity.Users] during persist time for groups [jakarta.validation.groups.Default, ]
 List of constraint violations:[
-	ConstraintViolationImpl{interpolatedMessage='User ID must start with CU, ST, or TE followed by 3 digits', propertyPath=userId, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='User ID must start with CU, ST, or TE followed by 3 digits'}
 	ConstraintViolationImpl{interpolatedMessage='Invalid phone number format', propertyPath=phone, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='Invalid phone number format'}
 ]
 	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:176) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
@@ -928,14 +838,9 @@ List of constraint violations:[
 	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:416) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165) ~[spring-data-jpa-3.5.4.jar:3.5.4]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) ~[spring-aop-6.2.11.jar:6.2.11]
-	at jdk.proxy2/jdk.proxy2.$Proxy141.save(Unknown Source) ~[na:na]
-	at com.se1824.SWP391_FA25.service.AuthenticationService.register(AuthenticationService.java:53) ~[classes/:na]
-	at com.se1824.SWP391_FA25.controller.AuthenticationController.register(AuthenticationController.java:25) ~[classes/:na]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.11.jar:6.2.11]
+	at com.se1824.SWP391_FA25.service.AdminService$$SpringCGLIB$$0.createUser(<generated>) ~[classes/:na]
+	at com.se1824.SWP391_FA25.controller.AdminController.createUser(AdminController.java:27) ~[classes/:na]
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.11.jar:6.2.11]
@@ -1032,28 +937,28 @@ List of constraint violations:[
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
 	at java.base/java.lang.Thread.run(Thread.java:1447) ~[na:na]
 
-2025-10-06T11:34:47.973+07:00  INFO 14700 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-10-06T11:34:47.981+07:00  INFO 14700 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-10-06T11:34:47.988+07:00  INFO 14700 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:34:47.992+07:00  INFO 14700 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-06T11:34:47.998+07:00  INFO 14700 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-10-06T11:39:43.422+07:00  INFO 26516 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 26516 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
-2025-10-06T11:39:43.425+07:00  INFO 26516 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
-2025-10-06T11:39:44.227+07:00  INFO 26516 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-06T11:39:44.294+07:00  INFO 26516 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 57 ms. Found 6 JPA repository interfaces.
-2025-10-06T11:39:44.800+07:00  INFO 26516 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-06T11:39:44.815+07:00  INFO 26516 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-06T11:39:44.815+07:00  INFO 26516 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-06T11:39:44.868+07:00  INFO 26516 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-06T11:39:44.868+07:00  INFO 26516 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1390 ms
-2025-10-06T11:39:45.102+07:00  INFO 26516 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-06T11:39:46.372+07:00  INFO 26516 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: ff108f1a-a1da-41eb-a7ed-323db4516ee3
-2025-10-06T11:39:46.375+07:00  INFO 26516 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-06T11:39:46.423+07:00  INFO 26516 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-06T11:39:46.469+07:00  INFO 26516 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-06T11:39:46.501+07:00  INFO 26516 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-06T11:39:46.801+07:00  INFO 26516 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-06T11:39:47.420+07:00  INFO 26516 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-10-07T14:25:51.542+07:00  INFO 22408 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-10-07T14:25:51.554+07:00  INFO 22408 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-10-07T14:25:51.562+07:00  INFO 22408 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-07T14:25:51.565+07:00  INFO 22408 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-10-07T14:25:51.570+07:00  INFO 22408 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-10-07T14:25:56.965+07:00  INFO 15060 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 15060 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
+2025-10-07T14:25:56.968+07:00  INFO 15060 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
+2025-10-07T14:25:57.897+07:00  INFO 15060 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-07T14:25:57.979+07:00  INFO 15060 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 72 ms. Found 6 JPA repository interfaces.
+2025-10-07T14:25:58.552+07:00  INFO 15060 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-10-07T14:25:58.567+07:00  INFO 15060 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-07T14:25:58.568+07:00  INFO 15060 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-10-07T14:25:58.627+07:00  INFO 15060 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-10-07T14:25:58.628+07:00  INFO 15060 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1606 ms
+2025-10-07T14:25:58.892+07:00  INFO 15060 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-10-07T14:26:00.407+07:00  INFO 15060 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: 79db931a-2726-4ffc-8648-2540d0d5b2e4
+2025-10-07T14:26:00.410+07:00  INFO 15060 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-10-07T14:26:00.468+07:00  INFO 15060 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-07T14:26:00.523+07:00  INFO 15060 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-10-07T14:26:00.558+07:00  INFO 15060 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-10-07T14:26:00.872+07:00  INFO 15060 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-07T14:26:02.410+07:00  INFO 15060 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 16.0
@@ -1061,55 +966,31 @@ List of constraint violations:[
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-10-06T11:39:48.666+07:00  INFO 26516 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-06T11:39:48.670+07:00  INFO 26516 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:39:49.120+07:00  INFO 26516 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2025-10-06T11:39:49.306+07:00  WARN 26516 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-06T11:39:49.895+07:00  INFO 26516 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-06T11:39:49.906+07:00  INFO 26516 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 7.038 seconds (process running for 7.788)
-2025-10-06T11:39:57.261+07:00  INFO 26516 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-06T11:39:57.261+07:00  INFO 26516 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-06T11:39:57.263+07:00  INFO 26516 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2025-10-06T11:39:58.096+07:00  INFO 26516 --- [SWP391_FA25] [http-nio-8080-exec-9] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 445 ms
-2025-10-06T11:40:04.709+07:00 ERROR 26516 --- [SWP391_FA25] [http-nio-8080-exec-10] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
+2025-10-07T14:26:03.733+07:00  INFO 15060 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-07T14:26:03.737+07:00  INFO 15060 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-07T14:26:04.254+07:00  INFO 15060 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
+2025-10-07T14:26:04.463+07:00  WARN 15060 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-07T14:26:05.080+07:00  INFO 15060 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-10-07T14:26:05.093+07:00  INFO 15060 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 8.653 seconds (process running for 9.333)
+2025-10-07T14:26:25.445+07:00  INFO 15060 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-07T14:26:25.446+07:00  INFO 15060 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-07T14:26:25.448+07:00  INFO 15060 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-10-07T14:27:02.408+07:00  INFO 15060 --- [SWP391_FA25] [http-nio-8080-exec-3] c.s.SWP391_FA25.service.AdminService     : Admin AD001 creating user with prefix TE001
+2025-10-07T14:27:03.637+07:00 ERROR 15060 --- [SWP391_FA25] [http-nio-8080-exec-3] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: com.se1824.SWP391_FA25.exception.exception.InvalidDataException: User prefix must be ST or TE] with root cause
 
-jakarta.validation.ConstraintViolationException: Validation failed for classes [com.se1824.SWP391_FA25.entity.Users] during update time for groups [jakarta.validation.groups.Default, ]
-List of constraint violations:[
-	ConstraintViolationImpl{interpolatedMessage='User ID must start with CU, ST, or TE followed by 3 digits', propertyPath=userId, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='User ID must start with CU, ST, or TE followed by 3 digits'}
-	ConstraintViolationImpl{interpolatedMessage='Invalid phone number format', propertyPath=phone, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='Invalid phone number format'}
-]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:176) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.onPreUpdate(BeanValidationEventListener.java:98) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.action.internal.EntityUpdateAction.preUpdate(EntityUpdateAction.java:363) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.action.internal.EntityUpdateAction.execute(EntityUpdateAction.java:162) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:644) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:511) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:414) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.internal.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:41) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.doFlush(SessionImpl.java:1429) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.managedFlush(SessionImpl.java:491) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.flushBeforeTransactionCompletion(SessionImpl.java:2354) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.beforeTransactionCompletion(SessionImpl.java:1978) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.beforeTransactionCompletion(JdbcCoordinatorImpl.java:439) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl.beforeCompletionCallback(JdbcResourceLocalTransactionCoordinatorImpl.java:169) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:267) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:563) ~[spring-orm-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.commitTransactionAfterReturning(TransactionAspectSupport.java:698) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:416) ~[spring-tx-6.2.11.jar:6.2.11]
+com.se1824.SWP391_FA25.exception.exception.InvalidDataException: User prefix must be ST or TE
+	at com.se1824.SWP391_FA25.service.AdminService.createUser(AdminService.java:42) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.2.11.jar:6.2.11]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.11.jar:6.2.11]
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165) ~[spring-data-jpa-3.5.4.jar:3.5.4]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) ~[spring-aop-6.2.11.jar:6.2.11]
-	at jdk.proxy2/jdk.proxy2.$Proxy141.save(Unknown Source) ~[na:na]
-	at com.se1824.SWP391_FA25.service.AuthenticationService.register(AuthenticationService.java:53) ~[classes/:na]
-	at com.se1824.SWP391_FA25.controller.AuthenticationController.register(AuthenticationController.java:25) ~[classes/:na]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:728) ~[spring-aop-6.2.11.jar:6.2.11]
+	at com.se1824.SWP391_FA25.service.AdminService$$SpringCGLIB$$0.createUser(<generated>) ~[classes/:na]
+	at com.se1824.SWP391_FA25.controller.AdminController.createUser(AdminController.java:31) ~[classes/:na]
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.11.jar:6.2.11]
@@ -1206,28 +1087,28 @@ List of constraint violations:[
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
 	at java.base/java.lang.Thread.run(Thread.java:1447) ~[na:na]
 
-2025-10-06T11:43:37.098+07:00  INFO 26516 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-10-06T11:43:37.109+07:00  INFO 26516 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-10-06T11:43:37.117+07:00  INFO 26516 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:43:37.123+07:00  INFO 26516 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-06T11:43:37.128+07:00  INFO 26516 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-10-06T11:43:41.602+07:00  INFO 23524 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 23524 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
-2025-10-06T11:43:41.605+07:00  INFO 23524 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
-2025-10-06T11:43:42.581+07:00  INFO 23524 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-06T11:43:42.664+07:00  INFO 23524 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 72 ms. Found 6 JPA repository interfaces.
-2025-10-06T11:43:43.217+07:00  INFO 23524 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-06T11:43:43.232+07:00  INFO 23524 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-06T11:43:43.232+07:00  INFO 23524 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-06T11:43:43.284+07:00  INFO 23524 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-06T11:43:43.285+07:00  INFO 23524 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1630 ms
-2025-10-06T11:43:43.526+07:00  INFO 23524 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-06T11:43:44.825+07:00  INFO 23524 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: 20e2db1a-f09e-4488-b2aa-5336181ca4f9
-2025-10-06T11:43:44.828+07:00  INFO 23524 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-06T11:43:44.884+07:00  INFO 23524 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-06T11:43:44.931+07:00  INFO 23524 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-06T11:43:44.965+07:00  INFO 23524 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-06T11:43:45.250+07:00  INFO 23524 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-06T11:43:45.837+07:00  INFO 23524 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-10-07T14:28:43.181+07:00  INFO 15060 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-10-07T14:28:43.196+07:00  INFO 15060 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-10-07T14:28:43.210+07:00  INFO 15060 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-07T14:28:43.214+07:00  INFO 15060 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-10-07T14:28:43.223+07:00  INFO 15060 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-10-07T14:28:48.251+07:00  INFO 11188 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 11188 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
+2025-10-07T14:28:48.254+07:00  INFO 11188 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
+2025-10-07T14:28:49.115+07:00  INFO 11188 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-07T14:28:49.190+07:00  INFO 11188 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 65 ms. Found 6 JPA repository interfaces.
+2025-10-07T14:28:49.799+07:00  INFO 11188 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-10-07T14:28:49.816+07:00  INFO 11188 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-07T14:28:49.816+07:00  INFO 11188 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
+2025-10-07T14:28:49.881+07:00  INFO 11188 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-10-07T14:28:49.882+07:00  INFO 11188 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1572 ms
+2025-10-07T14:28:50.144+07:00  INFO 11188 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-10-07T14:28:52.026+07:00  INFO 11188 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: f497e3d5-7f4b-4a02-b439-36a301c73189
+2025-10-07T14:28:52.029+07:00  INFO 11188 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-10-07T14:28:52.092+07:00  INFO 11188 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-07T14:28:52.144+07:00  INFO 11188 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
+2025-10-07T14:28:52.182+07:00  INFO 11188 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-10-07T14:28:52.516+07:00  INFO 11188 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-07T14:28:53.320+07:00  INFO 11188 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 16.0
@@ -1235,264 +1116,21 @@ List of constraint violations:[
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-10-06T11:43:47.244+07:00  INFO 23524 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-06T11:43:47.249+07:00  INFO 23524 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:43:47.776+07:00  INFO 23524 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2025-10-06T11:43:48.040+07:00  WARN 23524 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-06T11:43:48.762+07:00  INFO 23524 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-06T11:43:48.773+07:00  INFO 23524 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 7.682 seconds (process running for 8.414)
-2025-10-06T11:43:58.198+07:00  INFO 23524 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-06T11:43:58.199+07:00  INFO 23524 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-06T11:43:58.200+07:00  INFO 23524 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2025-10-06T11:45:41.772+07:00  INFO 23524 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-10-06T11:45:41.780+07:00  INFO 23524 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-10-06T11:45:41.788+07:00  INFO 23524 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:45:41.807+07:00  INFO 23524 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-06T11:45:41.811+07:00  INFO 23524 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-10-06T11:45:46.340+07:00  INFO 10308 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 10308 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
-2025-10-06T11:45:46.344+07:00  INFO 10308 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
-2025-10-06T11:45:47.162+07:00  INFO 10308 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-06T11:45:47.235+07:00  INFO 10308 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 63 ms. Found 6 JPA repository interfaces.
-2025-10-06T11:45:47.734+07:00  INFO 10308 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-06T11:45:47.748+07:00  INFO 10308 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-06T11:45:47.748+07:00  INFO 10308 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-06T11:45:47.803+07:00  INFO 10308 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-06T11:45:47.803+07:00  INFO 10308 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1406 ms
-2025-10-06T11:45:48.029+07:00  INFO 10308 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-06T11:45:49.292+07:00  INFO 10308 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: f9492d08-2b23-42bf-b833-a9d2abd244a2
-2025-10-06T11:45:49.295+07:00  INFO 10308 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-06T11:45:49.352+07:00  INFO 10308 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-06T11:45:49.400+07:00  INFO 10308 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-06T11:45:49.435+07:00  INFO 10308 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-06T11:45:49.735+07:00  INFO 10308 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-06T11:45:50.368+07:00  INFO 10308 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 16.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-10-06T11:45:51.514+07:00  INFO 10308 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-06T11:45:51.518+07:00  INFO 10308 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:45:51.936+07:00  INFO 10308 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2025-10-06T11:45:52.109+07:00  WARN 10308 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-06T11:45:52.748+07:00  INFO 10308 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-06T11:45:52.759+07:00  INFO 10308 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 6.916 seconds (process running for 7.638)
-2025-10-06T11:46:00.326+07:00  INFO 10308 --- [SWP391_FA25] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-06T11:46:00.327+07:00  INFO 10308 --- [SWP391_FA25] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-06T11:46:00.328+07:00  INFO 10308 --- [SWP391_FA25] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2025-10-06T11:46:03.174+07:00 ERROR 10308 --- [SWP391_FA25] [http-nio-8080-exec-2] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.transaction.TransactionSystemException: Could not commit JPA transaction] with root cause
-
-jakarta.validation.ConstraintViolationException: Validation failed for classes [com.se1824.SWP391_FA25.entity.Users] during update time for groups [jakarta.validation.groups.Default, ]
-List of constraint violations:[
-	ConstraintViolationImpl{interpolatedMessage='User ID must start with CU, ST, or TE followed by 3 digits', propertyPath=userId, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='User ID must start with CU, ST, or TE followed by 3 digits'}
-	ConstraintViolationImpl{interpolatedMessage='Invalid phone number format', propertyPath=phone, rootBeanClass=class com.se1824.SWP391_FA25.entity.Users, messageTemplate='Invalid phone number format'}
-]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.validate(BeanValidationEventListener.java:176) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.boot.beanvalidation.BeanValidationEventListener.onPreUpdate(BeanValidationEventListener.java:98) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.action.internal.EntityUpdateAction.preUpdate(EntityUpdateAction.java:363) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.action.internal.EntityUpdateAction.execute(EntityUpdateAction.java:162) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:644) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:511) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:414) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.internal.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:41) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.doFlush(SessionImpl.java:1429) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.managedFlush(SessionImpl.java:491) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.flushBeforeTransactionCompletion(SessionImpl.java:2354) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.internal.SessionImpl.beforeTransactionCompletion(SessionImpl.java:1978) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.beforeTransactionCompletion(JdbcCoordinatorImpl.java:439) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl.beforeCompletionCallback(JdbcResourceLocalTransactionCoordinatorImpl.java:169) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:267) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101) ~[hibernate-core-6.6.29.Final.jar:6.6.29.Final]
-	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:563) ~[spring-orm-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:795) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:758) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.commitTransactionAfterReturning(TransactionAspectSupport.java:698) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:416) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138) ~[spring-tx-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:165) ~[spring-data-jpa-3.5.4.jar:3.5.4]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.2.11.jar:6.2.11]
-	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) ~[spring-aop-6.2.11.jar:6.2.11]
-	at jdk.proxy2/jdk.proxy2.$Proxy141.save(Unknown Source) ~[na:na]
-	at com.se1824.SWP391_FA25.service.AuthenticationService.register(AuthenticationService.java:54) ~[classes/:na]
-	at com.se1824.SWP391_FA25.controller.AuthenticationController.register(AuthenticationController.java:26) ~[classes/:na]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565) ~[na:na]
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:991) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:896) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.46.jar:6.0]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.46.jar:6.0]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.46.jar:10.1.46]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:125) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:119) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.5.5.jar:6.5.5]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:319) ~[spring-security-config-6.5.5.jar:6.5.5]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$4(HandlerMappingIntrospector.java:267) ~[spring-webmvc-6.2.11.jar:6.2.11]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:240) ~[spring-security-config-6.5.5.jar:6.5.5]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.11.jar:6.2.11]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1776) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:975) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:493) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.46.jar:10.1.46]
-	at java.base/java.lang.Thread.run(Thread.java:1447) ~[na:na]
-
-2025-10-06T11:50:09.718+07:00  INFO 7596 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 7596 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
-2025-10-06T11:50:09.721+07:00  INFO 7596 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
-2025-10-06T11:50:10.593+07:00  INFO 7596 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-06T11:50:10.679+07:00  INFO 7596 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 64 ms. Found 6 JPA repository interfaces.
-2025-10-06T11:50:11.262+07:00  INFO 7596 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-06T11:50:11.275+07:00  INFO 7596 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-06T11:50:11.275+07:00  INFO 7596 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-06T11:50:11.331+07:00  INFO 7596 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-06T11:50:11.331+07:00  INFO 7596 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1546 ms
-2025-10-06T11:50:11.701+07:00  INFO 7596 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-06T11:50:13.022+07:00  INFO 7596 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: f5a8bedd-da57-44e9-8c99-e1267565a549
-2025-10-06T11:50:13.025+07:00  INFO 7596 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-06T11:50:13.077+07:00  INFO 7596 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-06T11:50:13.124+07:00  INFO 7596 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-06T11:50:13.159+07:00  INFO 7596 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-06T11:50:13.433+07:00  INFO 7596 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-06T11:50:14.071+07:00  INFO 7596 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 16.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-10-06T11:50:15.207+07:00  INFO 7596 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-06T11:50:15.212+07:00  INFO 7596 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:50:15.609+07:00  INFO 7596 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2025-10-06T11:50:15.783+07:00  WARN 7596 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-06T11:50:16.357+07:00  INFO 7596 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-06T11:50:16.367+07:00  INFO 7596 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 7.227 seconds (process running for 7.97)
-2025-10-06T11:50:39.880+07:00  INFO 7596 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-06T11:50:39.880+07:00  INFO 7596 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-06T11:50:39.880+07:00  INFO 7596 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
-2025-10-06T11:50:46.946+07:00  INFO 7596 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-10-06T11:50:46.955+07:00  INFO 7596 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-10-06T11:50:46.961+07:00  INFO 7596 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T11:50:46.964+07:00  INFO 7596 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-06T11:50:46.969+07:00  INFO 7596 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-10-06T12:54:28.921+07:00  INFO 13248 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Starting Swp391Fa25Application using Java 24.0.1 with PID 13248 (D:\JAVA\SWP\SWP391_FA25\target\classes started by NHIM in D:\JAVA\SWP\SWP391_FA25)
-2025-10-06T12:54:28.924+07:00  INFO 13248 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : No active profile set, falling back to 1 default profile: "default"
-2025-10-06T12:54:29.920+07:00  INFO 13248 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-10-06T12:54:30.032+07:00  INFO 13248 --- [SWP391_FA25] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 97 ms. Found 6 JPA repository interfaces.
-2025-10-06T12:54:30.671+07:00  INFO 13248 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-10-06T12:54:30.689+07:00  INFO 13248 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-10-06T12:54:30.689+07:00  INFO 13248 --- [SWP391_FA25] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.46]
-2025-10-06T12:54:30.756+07:00  INFO 13248 --- [SWP391_FA25] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-10-06T12:54:30.757+07:00  INFO 13248 --- [SWP391_FA25] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1775 ms
-2025-10-06T12:54:31.059+07:00  INFO 13248 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-10-06T12:54:32.435+07:00  INFO 13248 --- [SWP391_FA25] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: b67c36f8-8c5b-40e9-97f0-5bb967ebcda1
-2025-10-06T12:54:32.437+07:00  INFO 13248 --- [SWP391_FA25] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-10-06T12:54:32.491+07:00  INFO 13248 --- [SWP391_FA25] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-10-06T12:54:32.561+07:00  INFO 13248 --- [SWP391_FA25] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.29.Final
-2025-10-06T12:54:32.602+07:00  INFO 13248 --- [SWP391_FA25] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-10-06T12:54:32.967+07:00  INFO 13248 --- [SWP391_FA25] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-10-06T12:54:33.708+07:00  INFO 13248 --- [SWP391_FA25] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 16.0
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-10-06T12:54:35.102+07:00  INFO 13248 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-10-06T12:54:35.106+07:00  INFO 13248 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T12:54:35.581+07:00  INFO 13248 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
-2025-10-06T12:54:35.783+07:00  WARN 13248 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-10-06T12:54:36.629+07:00  INFO 13248 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-10-06T12:54:36.639+07:00  INFO 13248 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 8.414 seconds (process running for 9.314)
-2025-10-06T12:57:02.064+07:00  INFO 13248 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-10-06T12:57:02.065+07:00  INFO 13248 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-10-06T12:57:02.066+07:00  INFO 13248 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2025-10-06T12:57:02.243+07:00  WARN 13248 --- [SWP391_FA25] [http-nio-8080-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Illegal unquoted character ((CTRL-CHAR, code 10)): has to be escaped using backslash to be included in string value]
-2025-10-06T12:57:43.770+07:00  INFO 13248 --- [SWP391_FA25] [http-nio-8080-exec-2] c.s.SWP391_FA25.service.AdminService     : User CU123 updating own profile
-2025-10-06T12:57:44.557+07:00  INFO 13248 --- [SWP391_FA25] [http-nio-8080-exec-2] c.s.SWP391_FA25.service.AdminService     : User CU123 updated own profile successfully
-2025-10-06T13:04:28.264+07:00  INFO 13248 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-10-06T13:04:28.270+07:00  INFO 13248 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-10-06T13:04:28.277+07:00  INFO 13248 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-10-06T13:04:28.280+07:00  INFO 13248 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-10-06T13:04:28.285+07:00  INFO 13248 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-10-07T14:28:54.643+07:00  INFO 11188 --- [SWP391_FA25] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-07T14:28:54.647+07:00  INFO 11188 --- [SWP391_FA25] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-07T14:28:55.106+07:00  INFO 11188 --- [SWP391_FA25] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authenticationService
+2025-10-07T14:28:55.317+07:00  WARN 11188 --- [SWP391_FA25] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-07T14:28:55.947+07:00  INFO 11188 --- [SWP391_FA25] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-10-07T14:28:55.958+07:00  INFO 11188 --- [SWP391_FA25] [main] c.s.SWP391_FA25.Swp391Fa25Application    : Started Swp391Fa25Application in 8.212 seconds (process running for 8.899)
+2025-10-07T14:28:58.618+07:00  INFO 11188 --- [SWP391_FA25] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-07T14:28:58.618+07:00  INFO 11188 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-07T14:28:58.620+07:00  INFO 11188 --- [SWP391_FA25] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-10-07T14:28:59.142+07:00  INFO 11188 --- [SWP391_FA25] [http-nio-8080-exec-1] c.s.SWP391_FA25.service.AdminService     : Admin AD001 creating user with prefix TE
+2025-10-07T14:29:00.685+07:00  INFO 11188 --- [SWP391_FA25] [http-nio-8080-exec-1] c.s.SWP391_FA25.service.AdminService     : User created successfully with ID: TE003
+2025-10-07T14:30:23.513+07:00  INFO 11188 --- [SWP391_FA25] [http-nio-8080-exec-3] c.s.SWP391_FA25.service.AdminService     : Admin AD001 creating user with prefix TE
+2025-10-07T14:30:24.539+07:00  INFO 11188 --- [SWP391_FA25] [http-nio-8080-exec-3] c.s.SWP391_FA25.service.AdminService     : User created successfully with ID: TE004
+2025-10-07T14:30:46.708+07:00  INFO 11188 --- [SWP391_FA25] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-10-07T14:30:46.718+07:00  INFO 11188 --- [SWP391_FA25] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-10-07T14:30:46.726+07:00  INFO 11188 --- [SWP391_FA25] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-07T14:30:46.731+07:00  INFO 11188 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-10-07T14:30:46.739+07:00  INFO 11188 --- [SWP391_FA25] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

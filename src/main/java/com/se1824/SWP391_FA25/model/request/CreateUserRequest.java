@@ -1,5 +1,6 @@
 package com.se1824.SWP391_FA25.model.request;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -11,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateUserRequest {
     @Pattern(
-            regexp = "^(ST|TE)\\d{3}$",
+            regexp = "^(ST|TE)$",
             message = "User ID must start with ST or TE followed by 3 digits"
     )
     private String userIdPrefix; // "ST" hoặc "TE"
