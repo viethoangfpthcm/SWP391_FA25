@@ -31,6 +31,11 @@ public class MaintenanceChecklist {
     @JsonIgnore
     Users technician;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", nullable = false)
+    @JsonIgnore
+    Booking booking;
+
     @Column(name = "status", length = 50, nullable = false)
     String status;  // Pending, In Progress, Completed
 

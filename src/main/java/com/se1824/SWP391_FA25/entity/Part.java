@@ -43,6 +43,10 @@ public class Part {
     @JoinColumn(name = "service_center_id", nullable = false)
     @JsonIgnore
     ServiceCenter serviceCenter;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
+    @JsonIgnore
+    MaintenanceSchedule schedule;
 
     // Relationships
     @OneToMany(mappedBy = "part", cascade = CascadeType.ALL)
