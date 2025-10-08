@@ -3,14 +3,18 @@ package com.se1824.SWP391_FA25.service;
 import com.se1824.SWP391_FA25.entity.*;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
+import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistDetailResponse;
+import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
 import com.se1824.SWP391_FA25.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +28,46 @@ public class MaintenanceChecklistService {
    final MaintenancePlanItemRepository planItemRepo;
    final MaintenancePlanRepository planRepo;
    final PartRepository partRepo;
+   final ModelMapper modelMapper;
 
-    public List<MaintenanceChecklist> getChecklistByCustomer(String customerId) {
-        return checklistRepo.findByBooking_Customer_UserId(customerId);
-    }
 
     public List<MaintenanceChecklist> getChecklistByTechnician(String technicianId) {
         return checklistRepo.findByTechnician_UserId(technicianId);
     }
+
+    public List<MaintenanceChecklistResponse> getChecklistByCustomer(String customerId) {
+        List<MaintenanceChecklist> checklists = checklistRepo.findByBooking_Customer_UserId(customerId);
+
+        return checklists.stream().map(checklist -> {
+            MaintenanceChecklistResponse res = modelMapper.map(checklist, MaintenanceChecklistResponse.class);
+
+            List<MaintenanceChecklistDetailResponse> details = detailRepo.findByChecklist_Id(checklist.getId())
+                    .stream()
+                    .map(detail -> {
+
+                        MaintenanceChecklistDetailResponse detailRes =
+                                modelMapper.map(detail, MaintenanceChecklistDetailResponse.class);
+
+
+                        if (detail.getPlanItem() != null) {
+                            detailRes.setItemName(detail.getPlanItem().getItemName());
+                        }
+
+                        if (detail.getPart() != null) {
+                            detailRes.setPartName(detail.getPart().getName());
+                        } else {
+                            detailRes.setPartName(null);
+                        }
+
+                        return detailRes;
+                    })
+                    .collect(Collectors.toList());
+
+            res.setDetails(details);
+            return res;
+        }).collect(Collectors.toList());
+    }
+
 
     /**
      * Technician bắt đầu quá trình bảo dưỡng (Start Maintenance)
@@ -150,19 +186,41 @@ public class MaintenanceChecklistService {
      * Cập nhật chi tiết từng hạng mục trong checklist
      */
     @Transactional
-    public void updateChecklistDetail(Integer detailId, String status, String note, Integer partId) {
+    public void updateChecklistDetail(Integer detailId, String status, String note, Integer partId ,String currentCustomerId) {
         MaintenanceChecklistDetail detail = detailRepo.findById(detailId)
                 .orElseThrow(() -> new ResourceNotFoundException("Checklist detail not found"));
+        String ownerCustomerId = detail.getChecklist().getBooking().getCustomer().getUserId();
+        if (!ownerCustomerId.equals(currentCustomerId)) {
+            throw new InvalidDataException("You are not authorized to update this checklist detail");
+        }
         detail.setStatus(status);
         detail.setNote(note);
+        Integer vehicleScheduleId = detail.getChecklist().getBooking().getVehicle().getMaintenanceSchedule().getId();
         if (partId != null) {
-
             Part part = partRepo.findById(partId)
                     .orElseThrow(() -> new ResourceNotFoundException("Part not found with ID: " + partId));
+
+
+            if (!part.getSchedule().getId().equals(vehicleScheduleId)) {
+                throw new InvalidDataException("Part không phù hợp với mẫu xe");
+            }
+
+
+            if (part.getQuantity() <= 0) {
+                throw new InvalidDataException("Part hết hàng: " + part.getName());
+            }
+
             detail.setPart(part);
+
+
+            part.setQuantity(part.getQuantity() - 1);
+            partRepo.save(part);
         } else {
             detail.setPart(null);
         }
+
+        detailRepo.save(detail);
+        log.info("Updated checklist detail successfully");
 
     }
     @Transactional
@@ -179,7 +237,5 @@ public class MaintenanceChecklistService {
         detail.setCustomerNote(customerNote);
 
         detailRepo.save(detail);
-
-
     }
 }

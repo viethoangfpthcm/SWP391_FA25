@@ -1,10 +1,12 @@
 package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.entity.MaintenanceChecklist;
+import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
 import com.se1824.SWP391_FA25.service.MaintenanceChecklistService;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
@@ -20,7 +22,7 @@ public class MaintenanceChecklistController {
 
     //  Lấy checklist theo customer
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<MaintenanceChecklist>> getByCustomer(@PathVariable String customerId) {
+    public ResponseEntity<List<MaintenanceChecklistResponse>> getByCustomer(@PathVariable String customerId) {
         return ResponseEntity.ok(checklistService.getChecklistByCustomer(customerId));
     }
 
@@ -43,9 +45,11 @@ public class MaintenanceChecklistController {
             @PathVariable Integer detailId,
             @RequestParam String status,
             @RequestParam(required = false) String note,
-            @RequestParam(required = false) Integer partId
+            @RequestParam(required = false) Integer partId,
+            Authentication authentication
     ) {
-        checklistService.updateChecklistDetail(detailId, status, note, partId);
+        String currentUserId = authentication.getName();
+        checklistService.updateChecklistDetail(detailId, status, note, partId, currentUserId);
         return ResponseEntity.ok("Checklist detail updated successfully");
     }
 }
