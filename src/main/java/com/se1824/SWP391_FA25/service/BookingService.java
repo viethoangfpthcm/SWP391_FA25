@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -170,8 +171,11 @@ public class BookingService {
         Integer currentKm = vehicle.getCurrentKm() != null ? vehicle.getCurrentKm() : 0;
         Integer scheduleId = vehicle.getMaintenanceSchedule().getId();
 
-        List<MaintenancePlan> plans = planRepo
-                .findBySchedule_IdOrderByNameAsc(scheduleId);
+        List<MaintenancePlan> plans = planRepo.findBySchedule_Id(scheduleId);
+        plans.sort(Comparator.comparing(plan -> {
+            Integer km = extractIntervalKm(plan.getName());
+            return km != null ? km : Integer.MAX_VALUE;
+        }));
 
         for (MaintenancePlan plan : plans) {
             Integer intervalKm = extractIntervalKm(plan.getName());

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface MaintenancePlanRepository extends JpaRepository<MaintenancePlan, Integer> {
-    List<MaintenancePlan> findBySchedule_IdOrderByNameAsc(Integer scheduleId);
+    List<MaintenancePlan> findBySchedule_Id(Integer scheduleId);
 }

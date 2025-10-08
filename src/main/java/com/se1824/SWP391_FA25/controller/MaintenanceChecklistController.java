@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.List;
 
@@ -13,8 +14,10 @@ import java.util.List;
 @RequestMapping("/api/checklists")
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
+@SecurityRequirement(name = "api")
 public class MaintenanceChecklistController {
     MaintenanceChecklistService checklistService;
+
     //  Lấy checklist theo customer
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<List<MaintenanceChecklist>> getByCustomer(@PathVariable String customerId) {
@@ -39,9 +42,10 @@ public class MaintenanceChecklistController {
     public ResponseEntity<String> updateChecklistDetail(
             @PathVariable Integer detailId,
             @RequestParam String status,
-            @RequestParam(required = false) String note
+            @RequestParam(required = false) String note,
+            @RequestParam(required = false) Integer partId
     ) {
-        checklistService.updateChecklistDetail(detailId, status, note);
+        checklistService.updateChecklistDetail(detailId, status, note, partId);
         return ResponseEntity.ok("Checklist detail updated successfully");
     }
 }

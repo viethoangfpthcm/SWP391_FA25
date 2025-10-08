@@ -6,6 +6,10 @@ import com.se1824.SWP391_FA25.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@SecurityRequirement(name = "api")
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor

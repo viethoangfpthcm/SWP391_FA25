@@ -80,7 +80,7 @@ public class CustomerDashboardService {
 
         // Tìm plan tiếp theo dựa vào current_km
         List<MaintenancePlan> plans = planRepo
-                .findBySchedule_IdOrderByNameAsc(scheduleId);
+                .findBySchedule_Id(scheduleId);
 
         for (MaintenancePlan plan : plans) {
             // Parse interval từ tên plan (VD: "Bảo dưỡng 12.000 km / 12 tháng")
