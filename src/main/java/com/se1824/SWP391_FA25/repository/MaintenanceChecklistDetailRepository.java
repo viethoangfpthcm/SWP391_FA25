@@ -9,8 +9,7 @@ import java.util.List;
 
 @Repository
 public interface MaintenanceChecklistDetailRepository extends JpaRepository<MaintenanceChecklistDetail, Integer> {
-    List<MaintenanceChecklistDetail> findByChecklist_Id(Integer checklistId);
-    List<MaintenanceChecklistDetail> findByChecklist_IdAndStatus(Integer checklistId, String status);
+
 
 
 }

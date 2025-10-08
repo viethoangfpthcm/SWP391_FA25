@@ -15,14 +15,14 @@ public interface MaintenanceChecklistRepository  extends JpaRepository<Maintenan
 
     List<MaintenanceChecklist> findByTechnician_UserId(String technicianId);
 
-    List<MaintenanceChecklist> findByStatus(String status);
 
-    Optional<MaintenanceChecklist> findByBooking_BookingIdAndStatus(Integer bookingId, String status);
 
-    boolean existsByBooking_BookingId(Integer bookingId);
+
+
+
 
     List<MaintenanceChecklist> findByBooking_Customer_UserId(String customerId);
 
-    List<MaintenanceChecklist> findByBooking_ServiceCenter_Id(Integer centerId);
+
 
 }

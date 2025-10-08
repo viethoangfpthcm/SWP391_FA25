@@ -7,6 +7,7 @@ import com.se1824.SWP391_FA25.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Transactional
+@Slf4j
 public class MaintenanceChecklistService {
    final MaintenanceChecklistRepository checklistRepo;
    final MaintenanceChecklistDetailRepository detailRepo;
@@ -36,7 +38,7 @@ public class MaintenanceChecklistService {
      * => cập nhật trạng thái checklist sang "In Progress" và tạo chi tiết.
      */
     public void startMaintenance(Integer bookingId) {
-        // 1. Tìm hoặc khởi tạo Checklist
+
         MaintenanceChecklist checklist = checklistRepo.findByBooking_BookingId(bookingId)
                 .orElse(null);
 
@@ -44,7 +46,7 @@ public class MaintenanceChecklistService {
             var booking = bookingRepo.findById(bookingId)
                     .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
 
-            // 2. LẤY MAINTENANCE PLAN TỪ VEHICLE'S SCHEDULE DỰA TRÊN KM
+
             MaintenancePlan plan = getApplicableMaintenancePlan(booking.getVehicle());
 
             if (plan == null) {
@@ -60,7 +62,7 @@ public class MaintenanceChecklistService {
 
             final MaintenanceChecklist savedChecklist = checklistRepo.save(newChecklist);
 
-            // 4. Sinh checklist detail tự động từ MaintenancePlanItem
+
             List<MaintenancePlanItem> items = planItemRepo.findByPlan_Id(plan.getId());
 
             List<MaintenanceChecklistDetail> details = items.stream()
@@ -137,9 +139,7 @@ public class MaintenanceChecklistService {
                 }
             }
         } catch (Exception e) {
-            // Ghi log lỗi khi không parse được
-            // Không nên throw exception ở đây, chỉ trả về null
-            // vì có thể có các plan không đặt tên theo mốc KM
+            log.error("Error parsing interval km from: {}", planName, e);
         }
         return null;
     }
