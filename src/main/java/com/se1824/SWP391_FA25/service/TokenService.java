@@ -33,7 +33,7 @@ public class TokenService {
         return Jwts.builder()
                 .subject(user.getUserId() + "")
                 .issuedAt(new Date(System.currentTimeMillis()))  //thoi gian tao ra token
-                .expiration(new Date(System.currentTimeMillis() * 1000 * 60 * 60 * 24 * 7)) // chi ra toke ton tai trong bao lau (giay, phut, gio, ngay, tuan)
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // chi ra toke ton tai trong bao lau (giay, phut, gio, ngay, tuan)
                 .signWith(getSignInKey())
                 .compact();
     }

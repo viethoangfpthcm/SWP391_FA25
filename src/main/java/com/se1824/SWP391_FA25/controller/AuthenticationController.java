@@ -5,6 +5,7 @@ import com.se1824.SWP391_FA25.model.request.LoginRequest;
 import com.se1824.SWP391_FA25.model.request.RegisterRequest;
 import com.se1824.SWP391_FA25.model.response.UserResponse;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+//@SecurityRequirement("api")
 public class AuthenticationController {
     @Autowired
     private AuthenticationService authenticationService;

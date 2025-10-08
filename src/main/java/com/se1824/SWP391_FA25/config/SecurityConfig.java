@@ -27,11 +27,12 @@ public class SecurityConfig {
     }
 
 
-//    @Autowired
-//    AuthenticationService authenticationService;
+    @Autowired
+    AuthenticationService authenticationService;
 
-    //    @Autowired
-//    Filter filter;
+    @Autowired
+    Filter filter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -43,9 +44,9 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
 
-                ).build();
-//                .userDetailsService(authenticationService)
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
+                )
+                .userDetailsService(authenticationService)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
     }
 }
