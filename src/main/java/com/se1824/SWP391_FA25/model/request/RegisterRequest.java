@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class RegisterRequest {
     @Pattern(
-            regexp = "^(CU|ST|TE)\\d{3}$",
+            regexp = "^(CU|ST|TE)$",
             message = "User ID must start with CU, ST, or TE followed by 3 digits"
     )
     private String userId;

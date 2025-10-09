@@ -26,7 +26,7 @@ public class AdminController {
      * Tạo user mới (Staff hoặc Technician)
      * POST /api/admin/users?adminId={adminId}
      */
-    @PostMapping("/users")
+    @PostMapping("/userscreate")
     public ResponseEntity<UserManagementDTO> createUser(@Valid
                                                         @RequestBody CreateUserRequest request,
                                                         @RequestParam String adminId) {

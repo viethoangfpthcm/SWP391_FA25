@@ -80,7 +80,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/staff/**").hasRole("STAFF")
 
                         // Các API yêu cầu quyền USER hoặc ADMIN
-                        .requestMatchers("/api/user/**").hasAnyRole("USER")
+                        .requestMatchers("/api/user/**").hasRole("USER")
                         // Các API yêu cầu quyền ADMIN
                         .requestMatchers("/api/admin/**", "/api/staff/technicians", "/api/staff/bookings/assign-technician").hasRole("ADMIN")
 
