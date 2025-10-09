@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping("/api/customer/maintenance")
 @SecurityRequirement(name = "api")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class CustomerMaintenanceController {
     private final MaintenanceChecklistService checklistService;
     /**

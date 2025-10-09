@@ -18,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 @SecurityRequirement(name = "api")
+@CrossOrigin(origins = "*")
 public class MaintenanceChecklistController {
     MaintenanceChecklistService checklistService;
 
