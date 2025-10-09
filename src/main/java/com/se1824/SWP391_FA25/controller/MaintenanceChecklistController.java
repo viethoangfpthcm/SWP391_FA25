@@ -29,8 +29,9 @@ public class MaintenanceChecklistController {
 
     // Lấy checklist theo technician
     @GetMapping("/technician/{technicianId}")
-    public ResponseEntity<List<MaintenanceChecklist>> getByTechnician(@PathVariable String technicianId) {
-        return ResponseEntity.ok(checklistService.getChecklistByTechnician(technicianId));
+    public ResponseEntity<List<MaintenanceChecklistResponse>> getByTechnicianWithVehicle(@PathVariable String technicianId) {
+        List<MaintenanceChecklistResponse> responseList = checklistService.getChecklistByTechnicianWithVehicle(technicianId);
+        return ResponseEntity.ok(responseList);
     }
 
     //  Technician start maintenance (bắt đầu bảo trì)

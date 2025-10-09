@@ -27,5 +27,6 @@ public class MaintenanceChecklistResponse {
    BigDecimal totalCostApproved;
     BigDecimal totalCostDeclined;
      BigDecimal estimatedCost;
+    Integer maintenanceKm;
     List<MaintenanceChecklistDetailResponse> details;
 }

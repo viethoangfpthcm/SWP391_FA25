@@ -33,9 +33,31 @@ public class MaintenanceChecklistService {
    final ModelMapper modelMapper;
 
 
-    public List<MaintenanceChecklist> getChecklistByTechnician(String technicianId) {
-        return checklistRepo.findByTechnician_UserId(technicianId);
+    public List<MaintenanceChecklistResponse> getChecklistByTechnicianWithVehicle(String technicianId) {
+        List<MaintenanceChecklist> checklists = checklistRepo.findByTechnician_UserId(technicianId);
+
+        return checklists.stream().map(checklist -> {
+            MaintenanceChecklistResponse res = modelMapper.map(checklist, MaintenanceChecklistResponse.class);
+
+            // Lấy thông tin xe
+            if (checklist.getBooking() != null && checklist.getBooking().getVehicle() != null) {
+                var vehicle = checklist.getBooking().getVehicle();
+                res.setVehicleNumberPlate(vehicle.getLicensePlate());
+                res.setVehicleModel(vehicle.getModel());
+                res.setCurrentKm(vehicle.getCurrentKm());
+            }
+
+            // Ví dụ lấy km bảo dưỡng (có thể dựa trên thông tin trong MaintenancePlan hay thuộc tính nào đó)
+            if (checklist.getMaintenancePlan() != null) {
+                res.setMaintenanceKm(extractIntervalKm(checklist.getMaintenancePlan().getName()));
+            }
+
+            // Có thể lấy thêm chi tiết tương tự như getChecklistByCustomer
+
+            return res;
+        }).collect(Collectors.toList());
     }
+
 
     public List<MaintenanceChecklistResponse> getChecklistByCustomer(String customerId) {
         List<MaintenanceChecklist> checklists = checklistRepo.findByBooking_Customer_UserId(customerId);
