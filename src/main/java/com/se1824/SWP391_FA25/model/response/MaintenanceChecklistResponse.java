@@ -20,5 +20,8 @@ public class MaintenanceChecklistResponse {
     String createdDate;
     String technicianName;
     String status;
+    String vehicleNumberPlate;
+     String vehicleModel;
+    Integer currentKm;
     List<MaintenanceChecklistDetailResponse> details;
 }

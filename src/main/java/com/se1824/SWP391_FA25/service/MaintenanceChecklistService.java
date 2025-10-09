@@ -41,13 +41,20 @@ public class MaintenanceChecklistService {
         return checklists.stream().map(checklist -> {
             MaintenanceChecklistResponse res = modelMapper.map(checklist, MaintenanceChecklistResponse.class);
 
+            // Lấy thông tin xe
+            if (checklist.getBooking() != null && checklist.getBooking().getVehicle() != null) {
+                var vehicle = checklist.getBooking().getVehicle();
+                res.setVehicleNumberPlate(vehicle.getLicensePlate());
+                res.setVehicleModel(vehicle.getModel());
+                res.setCurrentKm(vehicle.getCurrentKm());
+            }
+
             List<MaintenanceChecklistDetailResponse> details = detailRepo.findByChecklist_Id(checklist.getId())
                     .stream()
                     .map(detail -> {
 
                         MaintenanceChecklistDetailResponse detailRes =
                                 modelMapper.map(detail, MaintenanceChecklistDetailResponse.class);
-
 
                         if (detail.getPlanItem() != null) {
                             detailRes.setItemName(detail.getPlanItem().getItemName());
@@ -67,7 +74,6 @@ public class MaintenanceChecklistService {
             return res;
         }).collect(Collectors.toList());
     }
-
 
     /**
      * Technician bắt đầu quá trình bảo dưỡng (Start Maintenance)
