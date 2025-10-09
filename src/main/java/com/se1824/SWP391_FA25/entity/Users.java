@@ -101,4 +101,15 @@ public class Users implements UserDetails {
     public String getUsername() {
         return this.userId;
     }
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "userId='" + userId + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", phone='" + phone + '\''
+                ;
+    }
 }

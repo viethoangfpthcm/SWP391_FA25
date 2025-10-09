@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import "./LoginForm.css";
 
 const LoginForm = () => {
@@ -9,31 +9,88 @@ const LoginForm = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
+    const redirectToDashboard = (role) => {
+        // Chuyển role về chữ in hoa để đảm bảo so sánh chính xác
+        const upperCaseRole = role.toUpperCase();
+
+        switch (upperCaseRole) {
+            case 'ADMIN':
+                window.location.href = '/admin/dashboard'; // Đường dẫn cho Admin
+                break;
+            case 'STAFF':
+                window.location.href = '/staff/dashboard'; // Đường dẫn cho Staff
+                break;
+            case 'TECHNICIAN':
+                window.location.href = '/technician-task'; // Đường dẫn cho Technician
+                break;
+            case 'CUSTOMER':
+                window.location.href = '/checklist'; // Đường dẫn cho Customer
+                break;
+            default:
+                // Nếu không khớp với role nào, chuyển về trang chủ
+                window.location.href = '/';
+                break;
+        }
+    };
+
     const handleLogin = async (e) => {
+        // e.preventDefault();
+        // setError("");
+        // try {
+        //     const response = await fetch("http://localhost:8080/api/users/login", {
+        //         method: "POST",
+        //         headers: {"Content-Type": "application/json"},
+        //         body: JSON.stringify({email, password}),
+        //     });
+        //
+        //     if (!response.ok) throw new Error("Đăng nhập không thành công.");
+        //
+        //     const data = await response.json();
+        //
+        //     // ✅ Lưu token và role vào localStorage
+        //     localStorage.setItem("token", data.token);
+        //     localStorage.setItem("role", data.role);
+        //
+        //     console.log("Login success", data);
+        //
+        //     // Chuyển sang trang checklist/dashboard
+        //     window.location.href = "/checklists";
+        // } catch (err) {
+        //     setError(err.message);
+        // }
+
         e.preventDefault();
         setError("");
         try {
             const response = await fetch("http://localhost:8080/api/users/login", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({email, password}),
             });
 
-            if (!response.ok) throw new Error("Đăng nhập không thành công.");
+            if (!response.ok) {
+                // Lấy thông báo lỗi từ body của response nếu có
+                const errorData = await response.text();
+                throw new Error(errorData || "Đăng nhập không thành công.");
+            }
 
             const data = await response.json();
 
-            // ✅ Lưu token và role vào localStorage
+
+            // Lưu token và role vào localStorage
+
             localStorage.setItem("token", data.token);
             localStorage.setItem("role", data.role);
-
+            localStorage.setItem("userId", data.userId); // Lưu userId nếu cần
             console.log("Login success", data);
 
-            // Chuyển sang trang checklist/dashboard
-            window.location.href = "/checklist";
+            // ✅ Thay thế dòng code cũ bằng lệnh gọi hàm chuyển hướng mới
+            redirectToDashboard(data.role);
+
         } catch (err) {
             setError(err.message);
         }
+
     };
     return (
         <div className="login-wrapper">
@@ -73,12 +130,12 @@ const LoginForm = () => {
                     />
 
                     <div className="checkbox-wrapper">
-                        <input type="checkbox" id="remember" />
+                        <input type="checkbox" id="remember"/>
                         <label htmlFor="remember">Ghi nhớ đăng nhập</label>
                     </div>
 
                     <button type="submit" className="login-btn">ĐĂNG NHẬP</button>
-                    {error && <div style={{ color: "red" }}>{error}</div>}
+                    {error && <div style={{color: "red"}}>{error}</div>}
                 </form>
             )}
         </div>

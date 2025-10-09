@@ -56,6 +56,14 @@ public class SecurityConfig {
 //                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
         return http
+                .cors(cors -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Thay đổi theo nguồn gốc của bạn
+                    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    configuration.setAllowedHeaders(List.of("*"));
+                    configuration.setAllowCredentials(true);
+                    cors.configurationSource(request -> configuration);
+                })
                 .csrf(AbstractHttpConfigurer::disable)
                 // <<< PHẦN QUAN TRỌNG NHẤT ĐÃ ĐƯỢC SỬA LẠI
                 .authorizeHttpRequests(req -> req
@@ -64,7 +72,8 @@ public class SecurityConfig {
                                 "/api/users/login",
                                 "/api/users/register",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/localhost:5173/**"
                         ).permitAll()
 
                         // Các API yêu cầu quyền ADMIN

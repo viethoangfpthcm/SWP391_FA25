@@ -17,6 +17,7 @@ import java.util.Date;
 @Setter
 @Component
 public class UserResponse {
+    String userId;
     String fullName;
     String email;
     String phone;
