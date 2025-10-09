@@ -1,0 +1,144 @@
+.technician-container {
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f7f8fa;
+  min-height: 100vh;
+  padding: 20px 40px;
+  color: #333;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.role-badge {
+  background: #e0e0e0;
+  color: #444;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+/* STATUS BOX */
+.status-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.status-box {
+  background: white;
+  border-radius: 12px;
+  text-align: center;
+  padding: 16px 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.status-label {
+  color: #777;
+  font-size: 14px;
+}
+
+.status-box h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.status-box.orange h2 {
+  color: #ff7f50;
+}
+
+.status-box.blue h2 {
+  color: #1e90ff;
+}
+
+.status-box.green h2 {
+  color: #32cd32;
+}
+
+.status-box.gray h2 {
+  color: #555;
+}
+
+/* TASK LIST */
+.task-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 30px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.task-section h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.no-task {
+  text-align: center;
+  color: #888;
+  font-size: 15px;
+  padding: 20px 0;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-card {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.2s ease;
+}
+
+.task-card:hover {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+}
+
+.task-id {
+  font-weight: 600;
+  color: #333;
+}
+
+.task-note {
+  font-size: 14px;
+  color: #666;
+}
+
+.task-status {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.status-pending {
+  background: #fff1e6;
+  color: #ff7f50;
+}
+
+.status-progress {
+  background: #e6f0ff;
+  color: #1e90ff;
+}
+
+.status-done {
+  background: #e6ffe6;
+  color: #32cd32;
+}
