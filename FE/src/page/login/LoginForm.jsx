@@ -1,6 +1,7 @@
 // src/LoginForm.jsx
 import React, { useState } from "react";
-import "./LoginForm.css";
+import  "./LoginForm.css";
+
 
 const LoginForm = () => {
   const [activeTab, setActiveTab] = useState("login"); // login | register
@@ -8,12 +9,13 @@ const LoginForm = () => {
   return (
     <div className="login-wrapper">
       <div className="tabs">
-        <button
-          className={`tab ${activeTab === "login" ? "active" : ""}`}
-          onClick={() => setActiveTab("login")}
-        >
-          Đăng nhập
-        </button>
+       <button
+  className={`tab ${activeTab === "login" ? "active" : ""}`}
+  onClick={() => setActiveTab("login")}
+>
+  Đăng nhập
+</button>
+
         <button
           className={`tab ${activeTab === "register" ? "active" : ""}`}
           onClick={() => setActiveTab("register")}
@@ -22,7 +24,7 @@ const LoginForm = () => {
         </button>
       </div>
 
-      {/* Form đăng nhập */}
+      
       {activeTab === "login" && (
         <div className="form">
           <label>Email</label>

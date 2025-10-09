@@ -1,0 +1,80 @@
+.checklist-container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 30px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.checklist-container h2 {
+  color: #1e40af;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #1e40af;
+  padding-bottom: 4px;
+}
+
+.vehicle-info {
+  background: #f8fafc;
+  padding: 12px 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.vehicle-info p {
+  margin: 4px 0;
+}
+
+h3 {
+  margin-top: 20px;
+  color: #0f172a;
+}
+
+.checklist-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.checklist-table th, .checklist-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.checklist-table th {
+  background-color: #f1f5f9;
+  color: #111827;
+}
+
+.status.good {
+  color: green;
+  font-weight: 600;
+}
+
+.status.replace {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.approval.approved {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.approval.declined {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.approval.pending {
+  color: #ca8a04;
+  font-weight: 600;
+}
+
+.loading, .error, .empty {
+  text-align: center;
+  color: #555;
+  margin-top: 30px;
+}
