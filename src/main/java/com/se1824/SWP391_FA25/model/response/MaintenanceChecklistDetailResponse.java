@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
@@ -19,4 +21,6 @@ public class MaintenanceChecklistDetailResponse {
     String partName;
     Integer partQuantityUsed;
     String customerNote;
+    BigDecimal laborCost;
+    BigDecimal materialCost;
 }

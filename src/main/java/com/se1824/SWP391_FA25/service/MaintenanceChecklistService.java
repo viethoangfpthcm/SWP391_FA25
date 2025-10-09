@@ -65,6 +65,17 @@ public class MaintenanceChecklistService {
                         } else {
                             detailRes.setPartName(null);
                         }
+                        if (detail.getPart() != null) {
+                            detailRes.setPartName(detail.getPart().getName());
+
+                            // Lấy giá từ Part
+                            detailRes.setLaborCost(detail.getPart().getLaborCost());
+                            detailRes.setMaterialCost(detail.getPart().getMaterialCost());
+                        } else {
+                            detailRes.setPartName(null);
+                            detailRes.setLaborCost(null);
+                            detailRes.setMaterialCost(null);
+                        }
 
                         return detailRes;
                     })
