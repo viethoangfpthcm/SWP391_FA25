@@ -24,5 +24,8 @@ public class MaintenanceChecklistResponse {
     String vehicleNumberPlate;
      String vehicleModel;
     Integer currentKm;
+   BigDecimal totalCostApproved;
+    BigDecimal totalCostDeclined;
+     BigDecimal estimatedCost;
     List<MaintenanceChecklistDetailResponse> details;
 }

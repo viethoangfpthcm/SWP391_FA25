@@ -13,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,6 +84,32 @@ public class MaintenanceChecklistService {
                     .collect(Collectors.toList());
 
             res.setDetails(details);
+            BigDecimal totalApproved = BigDecimal.ZERO;
+            BigDecimal totalDeclined = BigDecimal.ZERO;
+            BigDecimal estimatedTotal = BigDecimal.ZERO;
+
+            for (MaintenanceChecklistDetailResponse Detail : details) {
+
+                // approvalStatus (APPROVED/DECLINED/PENDING)
+                // laborCost, materialCost
+
+                BigDecimal laborCost = Optional.ofNullable(Detail.getLaborCost()).orElse(BigDecimal.ZERO);
+                BigDecimal materialCost = Optional.ofNullable(Detail.getMaterialCost()).orElse(BigDecimal.ZERO);
+                BigDecimal cost = laborCost.add(materialCost);
+
+                if ("APPROVED".equalsIgnoreCase(Detail.getApprovalStatus())) {
+                    totalApproved = totalApproved.add(cost);
+                } else if ("DECLINED".equalsIgnoreCase(Detail.getApprovalStatus())) {
+                    totalDeclined = totalDeclined.add(cost);
+                }
+                // Với chi phí dự kiến, có thể cộng tất cả chi phí hoặc logic riêng
+                estimatedTotal = estimatedTotal.add(cost);
+            }
+
+            res.setTotalCostApproved(totalApproved);
+            res.setTotalCostDeclined(totalDeclined);
+            res.setEstimatedCost(estimatedTotal);
+
             return res;
         }).collect(Collectors.toList());
     }
