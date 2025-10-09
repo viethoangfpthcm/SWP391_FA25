@@ -40,81 +40,147 @@ public class Filter extends OncePerRequestFilter {
             "POST:/api/users/login"
     );
 
-    public boolean isPublicAPI(String uri, String method) {
-        AntPathMatcher matcher = new AntPathMatcher();
+//    public boolean isPublicAPI(String uri, String method) {
+//        AntPathMatcher matcher = new AntPathMatcher();
+//
+    /// /        if (method.equals("GET")) return true;
+//
+//        return PUBLIC_API.stream().anyMatch(pattern -> {
+//            String[] parts = pattern.split(":", 2);
+//            if (parts.length != 2) return false;
+//
+//            String allowedMethod = parts[0];
+//            String allowedUri = parts[1];
+//
+//            return matcher.match(allowedUri, uri);
+//        });
+//    }
+//
+//    public String getToken(HttpServletRequest request) {
+//        String authHeader = request.getHeader("Authorization");
+//        if (authHeader == null) return null;
+//        return authHeader.substring(7);
+//    }
+//
+//    @Override
+//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+//        System.out.println("filter is running. . . . .  .");
+//        String uri = request.getRequestURI();
+//        String method = request.getMethod();
+//        if (isPublicAPI(uri, method)) {
+//            //API public
+//            // => access
+//            filterChain.doFilter(request, response);
+//        } else {
+//            //API theo role
+//            // => check xem có quyền không
+//            // => check token
+//            String token = getToken(request);
+//
+//            if (token != null) {
+//                // => có token
+//                // => verify lại cái token
+//                //Users account = null;
+//                try {
+//                    Users account = tokenService.extractToken(token);
+//                    UsernamePasswordAuthenticationToken
+//                            authenToken =
+//                            new UsernamePasswordAuthenticationToken(account, token, account.getAuthorities());
+//                    authenToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//                    SecurityContextHolder.getContext().setAuthentication(authenToken);
+//                } catch (ExpiredJwtException e) {
+//                    // 1. Token hết hạn
+//                    resolver.resolveException(request, response, new AuthenticationException("Expired token"), e);
+//                    return;
+//                } catch (MalformedJwtException e) {
+//                    // 2. Token sai
+//                    resolver.resolveException(request, response, new AuthenticationException("Invalid token"), e);
+//                    return;
+//                } catch (Exception e) {
+//                    // Bắt các lỗi khác có thể xảy ra
+//                    resolver.resolveException(request, response, new AuthenticationException("Authentication error"), e);
+//                    return; // QUAN TRỌNG: Dừng thực thi tại đây
+//                }
+//                ;
+//                // lưu thông tin thằng đang request
+//
+//
+//                // => token chuẩn
+//                // => được phép truy cập vào hệ thống
+//                filterChain.doFilter(request, response);
+//
+//            } else {
+//                resolver.resolveException(request, response, null, new AuthenticationException("má thằng chó đéo có token"));
+//            }
+//        }
+//
+//
+//    }
 
-//        if (method.equals("GET")) return true;
+// Sử dụng AntPathMatcher để so khớp đường dẫn kiểu wildcard (VD: /swagger-ui/**)
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
+    private boolean isPublicAPI(HttpServletRequest request) {
+        String requestMethod = request.getMethod();
+        String requestURI = request.getRequestURI();
 
         return PUBLIC_API.stream().anyMatch(pattern -> {
             String[] parts = pattern.split(":", 2);
-            if (parts.length != 2) return false;
-
-            String allowedMethod = parts[0];
-            String allowedUri = parts[1];
-
-            return matcher.match(allowedUri, uri);
+            String method = parts[0];
+            String path = parts[1];
+            // <<< SỬA LỖI: Kiểm tra cả method và URI
+            return requestMethod.equalsIgnoreCase(method) && pathMatcher.match(path, requestURI);
         });
     }
 
-    public String getToken(HttpServletRequest request) {
+    private String getToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-        if (authHeader == null) return null;
-        return authHeader.substring(7);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("filter is running. . . . .  .");
-        String uri = request.getRequestURI();
-        String method = request.getMethod();
-        if (isPublicAPI(uri, method)) {
-            //API public
-            // => access
-            filterChain.doFilter(request, response);
-        } else {
-            //API theo role
-            // => check xem có quyền không
-            // => check token
-            String token = getToken(request);
-
-            if (token != null) {
-                // => có token
-                // => verify lại cái token
-                //Users account = null;
-                try {
-                    Users account = tokenService.extractToken(token);
-                    UsernamePasswordAuthenticationToken
-                            authenToken =
-                            new UsernamePasswordAuthenticationToken(account, token, account.getAuthorities());
-                    authenToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authenToken);
-                } catch (ExpiredJwtException e) {
-                    // 1. Token hết hạn
-                    resolver.resolveException(request, response, new AuthenticationException("Expired token"), e);
-                    return;
-                } catch (MalformedJwtException e) {
-                    // 2. Token sai
-                    resolver.resolveException(request, response, new AuthenticationException("Invalid token"), e);
-                    return;
-                } catch (Exception e) {
-                    // Bắt các lỗi khác có thể xảy ra
-                    resolver.resolveException(request, response, new AuthenticationException("Authentication error"), e);
-                    return; // QUAN TRỌNG: Dừng thực thi tại đây
-                }
-                ;
-                // lưu thông tin thằng đang request
-
-
-                // => token chuẩn
-                // => được phép truy cập vào hệ thống
-                filterChain.doFilter(request, response);
-
-            } else {
-                resolver.resolveException(request, response, null, new AuthenticationException("má thằng chó đéo có token"));
-            }
+        if (isPublicAPI(request)) {
+            filterChain.doFilter(request, response); // Cho qua nếu là API public
+            return;
         }
 
+        String token = getToken(request);
+        if (token == null) {
+            // <<< THAY ĐỔI: Thông báo lỗi chuyên nghiệp
+            resolver.resolveException(request, response, null, new AuthenticationException("Authorization token is missing."));
+            return;
+        }
 
+        try {
+            Users account = tokenService.extractToken(token);
+
+            // Quan trọng: Kiểm tra xem user có tồn tại và token chưa được xác thực trong context
+            if (account != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                // Tạo đối tượng xác thực
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        account, // Principal: đối tượng người dùng
+                        null,    // Credentials: null vì đã xác thực bằng token
+                        account.getAuthorities() // Authorities: các quyền của người dùng
+                );
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                // Lưu vào SecurityContext để Spring Security có thể sử dụng
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+
+            filterChain.doFilter(request, response); // Cho phép request đi tiếp
+
+        } catch (ExpiredJwtException e) {
+            resolver.resolveException(request, response, null, new AuthenticationException("Token has expired."));
+        } catch (MalformedJwtException e) {
+            resolver.resolveException(request, response, null, new AuthenticationException("Invalid token format."));
+        } catch (Exception e) {
+            resolver.resolveException(request, response, null, new AuthenticationException("Authentication failed."));
+        }
     }
 }
 

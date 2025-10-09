@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -30,7 +32,20 @@ public class TokenService {
 
     // generate ra token
     public String generateToken(Users user) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        String role;
+        if (user.getUserId().startsWith("AD")) {
+            role = "ADMIN";
+        } else if (user.getUserId().startsWith("CU")) {
+            role = "CUSTOMER";
+        } else if (user.getUserId().startsWith("ST")) {
+            role = "STAFF";
+        } else {
+            role = "TECHNICIAN";
+        }
+        extraClaims.put("role", role);
         return Jwts.builder()
+                .claims(extraClaims)
                 .subject(user.getUserId() + "")
                 .issuedAt(new Date(System.currentTimeMillis()))  //thoi gian tao ra token
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // chi ra toke ton tai trong bao lau (giay, phut, gio, ngay, tuan)
@@ -44,6 +59,10 @@ public class TokenService {
         //long id = Long.parseLong(value);
         String id = value;
         return authenticationRepository.findUserByUserId(id);
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
     }
 
     public Claims extractAllClaims(String token) {

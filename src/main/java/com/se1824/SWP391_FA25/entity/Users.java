@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -82,11 +83,22 @@ public class Users implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if (this.userId != null && this.userId.startsWith("AD")) {
+            // Nếu ID bắt đầu bằng "AD", trả về quyền ADMIN
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } else if (this.userId != null && this.userId.startsWith("TE")) {
+            // Nếu ID bắt đầu bằng "TE", trả về quyền TECHNICIAN
+            return List.of(new SimpleGrantedAuthority("ROLE_TECHNICIAN"));
+        } else if (this.userId != null && this.userId.startsWith("ST")) {
+            // Nếu ID bắt đầu bằng "ST", trả về quyền STAFF
+            return List.of(new SimpleGrantedAuthority("ROLE_STAFF"));
+        }
+        // Mặc định, tất cả những người dùng khác có quyền USER
+        return List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
     }
 
     @Override
     public String getUsername() {
-        return this.getEmail();
+        return this.userId;
     }
 }

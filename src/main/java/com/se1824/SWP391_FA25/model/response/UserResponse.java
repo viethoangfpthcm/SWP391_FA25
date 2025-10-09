@@ -21,4 +21,5 @@ public class UserResponse {
     String email;
     String phone;
     String token;
+    String role;
 }

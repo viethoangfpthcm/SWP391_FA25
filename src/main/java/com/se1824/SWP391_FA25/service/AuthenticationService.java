@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -107,6 +108,12 @@ public class AuthenticationService implements UserDetailsService {
         UserResponse ar = modelMapper.map(user, UserResponse.class);
         String token = tokenService.generateToken(user);
         ar.setToken(token);
+        String role = user.getAuthorities().stream()
+                .findFirst() // Lấy quyền đầu tiên
+                .map(GrantedAuthority::getAuthority) // Lấy tên quyền (VD: "ROLE_ADMIN")
+                .map(r -> r.replace("ROLE_", "")) // Bỏ tiền tố "ROLE_"
+                .orElse("UNKNOWN");
+        ar.setRole(role);
         return ar;
     }
 //
