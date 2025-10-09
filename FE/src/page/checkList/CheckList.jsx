@@ -6,22 +6,30 @@ export default function CheckList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("http://localhost:8080/api/customer/maintenance/checklists");
-        if (!res.ok) throw new Error("Không thể tải dữ liệu kiểm tra bảo dưỡng từ máy chủ.");
-        const data = await res.json();
-        if (data.length > 0) setChecklist(data[0]);
-        else setError("Không có dữ liệu bảo dưỡng.");
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const res = await fetch("http://localhost:8080/api/customer/maintenance/checklists", {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (!res.ok) throw new Error("Không thể tải dữ liệu (chưa xác thực hoặc token hết hạn).");
+
+                const data = await res.json();
+                if (data.length > 0) setChecklist(data[0]);
+                else setError("Không có dữ liệu bảo dưỡng.");
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
 
   if (loading) return <p className="loading">Đang tải dữ liệu...</p>;
   if (error) return <p className="error">{error}</p>;

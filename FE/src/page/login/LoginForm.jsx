@@ -1,67 +1,88 @@
-// src/LoginForm.jsx
 import React, { useState } from "react";
-import  "./LoginForm.css";
-
+import { useNavigate } from "react-router-dom";
+import "./LoginForm.css";
 
 const LoginForm = () => {
-  const [activeTab, setActiveTab] = useState("login"); // login | register
+    const [activeTab, setActiveTab] = useState("login");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-  return (
-    <div className="login-wrapper">
-      <div className="tabs">
-       <button
-  className={`tab ${activeTab === "login" ? "active" : ""}`}
-  onClick={() => setActiveTab("login")}
->
-  Đăng nhập
-</button>
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setError("");
+        try {
+            const response = await fetch("http://localhost:8080/api/users/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
 
-        <button
-          className={`tab ${activeTab === "register" ? "active" : ""}`}
-          onClick={() => setActiveTab("register")}
-        >
-          Đăng ký
-        </button>
-      </div>
+            if (!response.ok) throw new Error("Đăng nhập không thành công.");
 
-      
-      {activeTab === "login" && (
-        <div className="form">
-          <label>Email</label>
-          <input type="email" placeholder="Email" />
+            const data = await response.json();
 
-          <label>Mật khẩu</label>
-          <input type="password" placeholder="Mật khẩu" />
+            // ✅ Lưu token và role vào localStorage
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("role", data.role);
 
-          <div className="checkbox-wrapper">
-            <input type="checkbox" id="remember" />
-            <label htmlFor="remember">Ghi nhớ đăng nhập</label>
-          </div>
+            console.log("Login success", data);
 
-          <button className="login-btn">ĐĂNG NHẬP</button>
+            // Chuyển sang trang checklist/dashboard
+            window.location.href = "/checklist";
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+    return (
+        <div className="login-wrapper">
+            <div className="tabs">
+                <button
+                    className={`tab ${activeTab === "login" ? "active" : ""}`}
+                    onClick={() => setActiveTab("login")}
+                >
+                    Đăng nhập
+                </button>
+                <button
+                    className={`tab ${activeTab === "register" ? "active" : ""}`}
+                    onClick={() => setActiveTab("register")}
+                >
+                    Đăng ký
+                </button>
+            </div>
+
+            {activeTab === "login" && (
+                <form onSubmit={handleLogin} className="form">
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+
+                    <label>Mật khẩu</label>
+                    <input
+                        type="password"
+                        placeholder="Mật khẩu"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+
+                    <div className="checkbox-wrapper">
+                        <input type="checkbox" id="remember" />
+                        <label htmlFor="remember">Ghi nhớ đăng nhập</label>
+                    </div>
+
+                    <button type="submit" className="login-btn">ĐĂNG NHẬP</button>
+                    {error && <div style={{ color: "red" }}>{error}</div>}
+                </form>
+            )}
         </div>
-      )}
-
-      {/* Form đăng ký */}
-      {activeTab === "register" && (
-        <div className="form">
-          <label>Họ và tên</label>
-          <input type="text" placeholder="Họ và tên" />
-
-          <label>Email</label>
-          <input type="email" placeholder="Email" />
-
-          <label>Mật khẩu</label>
-          <input type="password" placeholder="Mật khẩu" />
-
-          <label>Xác nhận mật khẩu</label>
-          <input type="password" placeholder="Nhập lại mật khẩu" />
-
-          <button className="login-btn">ĐĂNG KÝ</button>
-        </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default LoginForm;
