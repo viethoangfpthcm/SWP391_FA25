@@ -1,6 +1,7 @@
 package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.entity.MaintenanceChecklist;
+import com.se1824.SWP391_FA25.entity.Users;
 import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
 import com.se1824.SWP391_FA25.service.MaintenanceChecklistService;
@@ -49,9 +50,11 @@ public class MaintenanceChecklistController {
             @RequestParam String status,
             @RequestParam(required = false) String note,
             @RequestParam(required = false) Integer partId,
-            AuthenticationService authentication
+            Authentication authentication
     ) {
-        String currentUserId = authentication.getCurrentAccount().getUserId();
+        Users currentUser = (Users) authentication.getPrincipal();
+        String currentUserId = currentUser.getUserId();
+
         checklistService.updateChecklistDetail(detailId, status, note, partId, currentUserId);
         return ResponseEntity.ok("Checklist detail updated successfully");
     }
