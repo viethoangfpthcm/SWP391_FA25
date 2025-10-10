@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class MaintenanceChecklistService {
-   final MaintenanceChecklistRepository checklistRepo;
-   final MaintenanceChecklistDetailRepository detailRepo;
-   final BookingRepository bookingRepo;
-   final MaintenancePlanItemRepository planItemRepo;
-   final MaintenancePlanRepository planRepo;
-   final PartRepository partRepo;
-   final ModelMapper modelMapper;
+    final MaintenanceChecklistRepository checklistRepo;
+    final MaintenanceChecklistDetailRepository detailRepo;
+    final BookingRepository bookingRepo;
+    final MaintenancePlanItemRepository planItemRepo;
+    final MaintenancePlanRepository planRepo;
+    final PartRepository partRepo;
+    final ModelMapper modelMapper;
 
 
     public List<MaintenanceChecklistResponse> getChecklistByTechnicianWithVehicle(String technicianId) {
@@ -253,7 +253,7 @@ public class MaintenanceChecklistService {
      * Cập nhật chi tiết từng hạng mục trong checklist
      */
     @Transactional
-    public void updateChecklistDetail(Integer detailId, String status, String note, Integer partId ,String currentCustomerId) {
+    public void updateChecklistDetail(Integer detailId, String status, String note, Integer partId, String currentCustomerId) {
         MaintenanceChecklistDetail detail = detailRepo.findById(detailId)
                 .orElseThrow(() -> new ResourceNotFoundException("Checklist detail not found"));
         String ownerCustomerId = detail.getChecklist().getBooking().getCustomer().getUserId();
@@ -290,6 +290,7 @@ public class MaintenanceChecklistService {
         log.info("Updated checklist detail successfully");
 
     }
+
     @Transactional
     public void updateCustomerApproval(Integer detailId, String approvalStatus, String customerNote) {
         MaintenanceChecklistDetail detail = detailRepo.findById(detailId)
