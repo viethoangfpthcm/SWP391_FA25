@@ -134,17 +134,17 @@ public class MaintenanceChecklistService {
                         detailRes.setItemName(detail.getPlanItem().getItemName());
                     }
 
-                    // Lấy tên Part nếu có
+
                     if (detail.getPart() != null) {
                         detailRes.setPartName(detail.getPart().getName());
-                        // Giả định Part Quantity Used = 1 nếu Part được gán
+
                         detailRes.setPartQuantityUsed(1);
                     } else {
                         detailRes.setPartName(null);
                         detailRes.setPartQuantityUsed(0);
                     }
 
-                    // Chi phí laborCost và materialCost LẤY TRỰC TIẾP TỪ ENTITY
+
                     detailRes.setLaborCost(detail.getLaborCost());
                     detailRes.setMaterialCost(detail.getMaterialCost());
 
@@ -297,7 +297,7 @@ public class MaintenanceChecklistService {
 
         // 2. Cập nhật chi phí dựa trên trạng thái
         if (STATUS_REPLACE.equalsIgnoreCase(normalizedStatus) && partId != null) {
-            // Lógica cho "THAY THẾ" (DÙNG PART)
+
             Part part = partRepo.findById(partId)
                     .orElseThrow(() -> new ResourceNotFoundException("Part not found with ID: " + partId));
 
@@ -318,12 +318,12 @@ public class MaintenanceChecklistService {
             partRepo.save(part);
 
         } else if (STATUS_ADJUSTMENT.equalsIgnoreCase(normalizedStatus) || STATUS_REPAIR.equalsIgnoreCase(normalizedStatus)) {
-            // Lógica cho "HIỆU CHỈNH" hoặc "SỬA CHỮA" (CHỈ CÓ LABOR CỐ ĐỊNH)
+
             detail.setLaborCost(getStandardLaborCost(status));
             detail.setMaterialCost(BigDecimal.ZERO);
 
         }
-        // Trạng thái 'Tốt' ('GOOD') hoặc khác sẽ có cost = 0
+        // Trạng thái 'Tốt'  cost = 0
 
         detailRepo.save(detail);
         log.info("Updated checklist detail successfully");
