@@ -134,19 +134,12 @@ public class MaintenanceChecklistService {
                         detailRes.setItemName(detail.getPlanItem().getItemName());
                     }
 
-
-                    if (detail.getPart() != null) {
-                        detailRes.setPartName(detail.getPart().getName());
-
-                        detailRes.setPartQuantityUsed(1);
-                    } else {
-                        detailRes.setPartName(null);
-                        detailRes.setPartQuantityUsed(0);
-                    }
-
-
-                    detailRes.setLaborCost(detail.getLaborCost());
-                    detailRes.setMaterialCost(detail.getMaterialCost());
+                    detailRes.setLaborCost(
+                            detail.getLaborCost() != null ? detail.getLaborCost() : BigDecimal.ZERO
+                    );
+                    detailRes.setMaterialCost(
+                            detail.getMaterialCost() != null ? detail.getMaterialCost() : BigDecimal.ZERO
+                    );
 
                     return detailRes;
                 })
@@ -310,8 +303,10 @@ public class MaintenanceChecklistService {
 
             detail.setPart(part);
             // LƯU CHI PHÍ TỪ PART VÀO DETAIL
-            detail.setLaborCost(part.getLaborCost());
-            detail.setMaterialCost(part.getMaterialCost());
+            BigDecimal laborCost = Optional.ofNullable(part.getLaborCost()).orElse(BigDecimal.ZERO);
+            BigDecimal materialCost = Optional.ofNullable(part.getMaterialCost()).orElse(BigDecimal.ZERO);
+            detail.setLaborCost(Optional.ofNullable(part.getLaborCost()).orElse(BigDecimal.ZERO));
+            detail.setMaterialCost(Optional.ofNullable(part.getMaterialCost()).orElse(BigDecimal.ZERO));
 
             // Giảm quantity và lưu Part
             part.setQuantity(part.getQuantity() - 1);
