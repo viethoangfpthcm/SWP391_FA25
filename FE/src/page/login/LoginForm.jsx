@@ -180,10 +180,10 @@ const LoginForm = () => {
                 window.location.href = '/staff/dashboard';
                 break;
             case 'TECHNICIAN':
-                window.location.href = '/technician-task';
+                window.location.href = '/technicantask';
                 break;
             case 'CUSTOMER':
-                window.location.href = '/checklist';
+                window.location.href = '/Home';
                 break;
             default:
                 window.location.href = '/';
