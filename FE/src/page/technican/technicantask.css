@@ -1,144 +1,143 @@
-.technician-container {
-  font-family: "Segoe UI", sans-serif;
-  background-color: #f7f8fa;
-  min-height: 100vh;
-  padding: 20px 40px;
-  color: #333;
+:root {
+  --sidebar-width: 250px;
+  --primary-color: #0066cc;
+  --bg-color: #f8fafc;
 }
 
-/* HEADER */
+.technician-page {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-color);
+}
+
+.sidebar {
+  position: fixed;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: #fff;
+  border-right: 1px solid #e0e0e0;
+  transition: transform 0.3s ease;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar.closed {
+  transform: translateX(-100%);
+}
+
+.content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar-closed .content {
+  margin-left: 0;
+}
+
+/* Header */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #ffffff;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 99;
 }
 
-.header h1 {
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.role-badge {
-  background: #e0e0e0;
-  color: #444;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-}
-
-/* STATUS BOX */
-.status-summary {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-top: 25px;
-}
-
-.status-box {
-  background: white;
-  border-radius: 12px;
-  text-align: center;
-  padding: 16px 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.status-label {
-  color: #777;
-  font-size: 14px;
-}
-
-.status-box h2 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-top: 5px;
-}
-
-.status-box.orange h2 {
-  color: #ff7f50;
-}
-
-.status-box.blue h2 {
-  color: #1e90ff;
-}
-
-.status-box.green h2 {
-  color: #32cd32;
-}
-
-.status-box.gray h2 {
-  color: #555;
-}
-
-/* TASK LIST */
-.task-section {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 30px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.task-section h2 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
-
-.no-task {
-  text-align: center;
-  color: #888;
-  font-size: 15px;
-  padding: 20px 0;
-}
-
-.task-list {
+.header-left {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 12px;
 }
 
-.task-card {
-  border: 1px solid #eee;
-  border-radius: 10px;
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: box-shadow 0.2s ease;
+.menu-icon {
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--primary-color);
 }
 
-.task-card:hover {
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
-}
-
-.task-id {
+.header-text h1 {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 18px;
   font-weight: 600;
+}
+
+.header-text p {
+  margin: 0;
+  font-size: 12px;
+  color: #777;
+}
+
+.header-right {
+  font-weight: 500;
   color: #333;
 }
 
-.task-note {
-  font-size: 14px;
-  color: #666;
+.inner {
+  padding: 24px;
 }
 
-.task-status {
-  padding: 6px 12px;
+/* Summary */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border-radius: 10px;
+  text-align: center;
+  padding: 18px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.card svg {
+  font-size: 26px;
+  margin-bottom: 8px;
+}
+
+.card.pending svg {
+  color: #ff9800;
+}
+.card.in-progress svg {
+  color: #2196f3;
+}
+.card.completed svg {
+  color: #4caf50;
+}
+.card.total svg {
+  color: #9e9e9e;
+}
+
+/* Table */
+.task-section {
+  margin-top: 36px;
+}
+
+.task-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
   border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
+  overflow: hidden;
 }
 
-.status-pending {
-  background: #fff1e6;
-  color: #ff7f50;
+.task-table th,
+.task-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f1f1;
 }
 
-.status-progress {
-  background: #e6f0ff;
-  color: #1e90ff;
-}
-
-.status-done {
-  background: #e6ffe6;
-  color: #32cd32;
+.task-table th {
+  background: #f1f1f1;
+  font-weight: 600;
+  color: #a62b2b;
 }
