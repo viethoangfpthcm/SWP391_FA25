@@ -1,9 +1,8 @@
 import React from "react";
-import Footer from "../components/Footer";
 
-import "../pagecss/Contact.css";
-import Navbar from "../components/Navbar";
-
+import Footer from "../../components/Footer.jsx";
+import Navbar from "../../components/Navbar.jsx";
+import "../home/Contact.css";
 export default function Contact() {
   return (
     <div className="app">

@@ -1,9 +1,8 @@
 import React from "react";
 
-import Footer from "../components/Footer";
-import "../pagecss/AboutUs.css";
-import Navbar from "../components/Navbar";
-
+import Footer from "../../components/Footer.jsx";
+import Navbar from "../../components/Navbar.jsx";
+import "../home/AboutUs.css";
 
 export default function About() {
   return (

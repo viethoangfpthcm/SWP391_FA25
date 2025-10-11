@@ -1,7 +1,7 @@
 import React from "react";
-import Home from "../components/Home";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+import Home from "../../components/Home.jsx";
+import Footer from "../../components/Footer.jsx";
+import Navbar from "../../components/Navbar.jsx";
 
 
 export default function Homepage() {

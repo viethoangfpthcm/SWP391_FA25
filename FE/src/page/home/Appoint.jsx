@@ -1,8 +1,7 @@
 import React from "react";
-import Footer from "../components/Footer";
-import "../pagecss/Appoint.css";
-import Navbar from "../components/Navbar";
-
+import Footer from "../../components/Footer.jsx";
+import Navbar from "../../components/Navbar.jsx";
+import "../home/Appoint.css";
 export default function Appoint() {
   return (
     <div className="app">
