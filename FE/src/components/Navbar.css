@@ -1,0 +1,107 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 18px 60px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  color: #0a4ff0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.navbar-center {
+  display: flex;
+  gap: 35px;
+}
+
+.navbar-center a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 1.05rem;
+  position: relative;
+  padding: 4px 0;
+}
+
+.navbar-center a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background: #0a4ff0;
+  left: 0;
+  bottom: -4px;
+  transition: width 0.3s;
+}
+
+.navbar-center a:hover::after {
+  width: 100%;
+}
+
+.navbar-right {
+  display: flex;
+  gap: 14px;
+}
+
+.btn {
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.login {
+  background: #0a4ff0;
+  color: white;
+}
+
+.login:hover {
+  background: #083fc2;
+}
+
+.logout {
+  background: transparent;
+  color: #0a4ff0;
+  border: 1.5px solid #0a4ff0;
+}
+
+.logout:hover {
+  background: #0a4ff0;
+  color: white;
+}
+.btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.btn.login {
+  background-color: #0a4ff0;
+  color: white;
+}
+
+.btn.login:hover {
+  background-color: #003cd6;
+}
+
+.btn.logout {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn.logout:hover {
+  background-color: #c0392b;
+}
