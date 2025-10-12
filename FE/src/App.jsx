@@ -15,8 +15,8 @@ function App() {
     <Routes>
       <Route path="/" element={<LoginForm />} />
       <Route path="/checklist" element={<CheckList />} />
-      <Route path="/technician-task" element={<TechnicanTask />} /> {/* ✅ Sửa tên */}
-      <Route path="/report" element={<Report1 />} /> {/* ✅ thêm dòng này */}
+      <Route path="/technician-task" element={<TechnicanTask />} /> 
+      <Route path="/report" element={<Report1 />} /> 
       <Route path="/report3" element={<Report3 />} />
        <Route path="/payment" element={<Payment />} /> 
        <Route path="/home" element={<Homepage />} />

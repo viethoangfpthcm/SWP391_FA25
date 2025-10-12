@@ -1,40 +1,48 @@
-
+/* ---- Layout chính ---- */
 .login-wrapper {
-  width: 380px;
-  margin: 50px auto;
-  background: #f3f3f3; 
-  padding: 32px 28px;
-  border-radius: 6px;
-  font-family: Arial, sans-serif;
+  width: 420px;
+  margin: 100px auto;
+  background: #fff;
+  padding: 40px 36px;
+  border-radius: 16px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #111;
+  transition: all 0.3s ease-in-out;
 }
 
+.login-wrapper:hover {
+  transform: translateY(-4px);
+}
 
+/* ---- Tabs ---- */
 .tabs {
   display: flex;
   justify-content: center;
-  gap: 4px;
-  margin-bottom: 28px;
+  gap: 8px;
+  margin-bottom: 30px;
 }
 
 .tab {
   flex: 1;
-  padding: 10px 0;
+  padding: 12px 0;
   font-size: 15px;
   font-weight: bold;
-  color: #000; 
-  background: transparent;
-  border: none;
+  color: #0a4ff0;
+  background: #f2f6ff;
+  border: 1.5px solid transparent;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.3s;
-  border-radius: 4px 4px 0 0;
+  transition: all 0.25s ease-in-out;
 }
 
 .tab.active {
-  background: #000;   
-  color: #fff;        
+  background: #0a4ff0;
+  color: #fff;
+  transform: scale(1.02);
 }
 
-
+/* ---- Form ---- */
 .form {
   display: flex;
   flex-direction: column;
@@ -43,48 +51,75 @@
 
 .form label {
   font-size: 14px;
-  color: #000;
-  font-weight: bold;
+  color: #0a4ff0;
+  font-weight: 600;
 }
 
-/* Input */
 .form input {
   width: 100%;
   padding: 12px 14px;
-  border: none;
-  border-radius: 20px;
+  border: 1.8px solid #d6e1ff;
+  border-radius: 10px;
   outline: none;
   font-size: 14px;
-  background: #fff;
-  box-sizing: border-box;
+  background: #f8faff;
+  transition: all 0.25s ease;
 }
 
+.form input:focus {
+  border-color: #0a4ff0;
+  background: #fff;
+  box-shadow: 0 0 5px rgba(10, 79, 240, 0.25);
+}
 
+/* ---- Checkbox ---- */
 .checkbox-wrapper {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* đẩy nội dung về bên trái */
-  gap: 6px; /* khoảng cách nhỏ giữa checkbox và chữ */
+  gap: 8px;
   font-size: 14px;
   color: #333;
-  margin-top: 10px;
+  margin-top: 6px;
 }
 
-
-
-
+/* ---- Button ---- */
 .login-btn {
-  background: #000;
+  background: #0a4ff0;
   color: #fff;
   font-size: 15px;
   font-weight: bold;
   padding: 12px 0;
   border: none;
-  border-radius: 20px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.25s ease-in-out;
 }
 
 .login-btn:hover {
-  opacity: 0.8;
+  background: #003cd6;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(10, 79, 240, 0.3);
+}
+
+/* ---- Thông báo ---- */
+.error-message {
+  margin-top: 12px;
+  color: #ff4d4d;
+  font-size: 14px;
+  text-align: center;
+}
+
+.success-message {
+  margin-top: 12px;
+  color: #008000;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+  .login-wrapper {
+    width: 90%;
+    padding: 30px 24px;
+  }
 }
