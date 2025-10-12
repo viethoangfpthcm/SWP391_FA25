@@ -73,14 +73,30 @@
 }
 
 /* ---- Checkbox ---- */
+/* ---- Checkbox ---- */
 .checkbox-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: flex-start;
+  gap: 4px; /* giảm khoảng cách giữa ô và chữ */
   font-size: 14px;
   color: #333;
   margin-top: 6px;
+  white-space: nowrap; /* tránh chữ bị xuống dòng */
 }
+
+.checkbox-wrapper input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #0a4ff0; /* màu xanh đồng bộ với theme */
+}
+
+.checkbox-wrapper label {
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
 
 /* ---- Button ---- */
 .login-btn {
