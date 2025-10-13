@@ -1,5 +1,6 @@
 package com.se1824.SWP391_FA25.service;
 
+import com.se1824.SWP391_FA25.dto.PartOption;
 import com.se1824.SWP391_FA25.entity.*;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
@@ -146,16 +147,66 @@ public class MaintenanceChecklistService {
      * Hàm helper để map chi tiết checklist ra response
      */
     private List<MaintenanceChecklistDetailResponse> mapDetailsToResponse(Integer checklistId) {
+        MaintenanceChecklist checklist = checklistRepo.findById(checklistId)
+                .orElseThrow(() -> new ResourceNotFoundException("Checklist not found"));
+
+        Integer vehicleScheduleId = checklist.getBooking().getVehicle().getMaintenanceSchedule().getId();
+        Integer serviceCenterId = checklist.getBooking().getServiceCenter().getId();
+
         return detailRepo.findByChecklist_Id(checklistId)
                 .stream()
                 .map(detail -> {
-                    MaintenanceChecklistDetailResponse detailRes =
-                            modelMapper.map(detail, MaintenanceChecklistDetailResponse.class);
+                    MaintenanceChecklistDetailResponse detailRes = new MaintenanceChecklistDetailResponse();
 
+                    detailRes.setId(detail.getId());
+                    detailRes.setStatus(detail.getStatus());
+                    detailRes.setApprovalStatus(detail.getApprovalStatus());
+                    detailRes.setNote(detail.getNote());
+                    detailRes.setCustomerNote(detail.getCustomerNote());
+
+                    // Set plan item info
                     if (detail.getPlanItem() != null) {
+                        detailRes.setPlanItemId(detail.getPlanItem().getId());
                         detailRes.setItemName(detail.getPlanItem().getItemName());
+                        detailRes.setActionType(detail.getPlanItem().getActionType());
+
+
+                        if ("replace".equalsIgnoreCase(detail.getPlanItem().getActionType())) {
+                            Integer partTypeId = getPartTypeIdByItemName(detail.getPlanItem().getItemName());
+
+                            if (partTypeId != null) {
+                                // Lấy parts theo: schedule + partType + serviceCenter
+                                List<Part> availableParts = partRepo.findBySchedule_IdAndPartType_IdAndServiceCenter_Id(
+                                        vehicleScheduleId,
+                                        partTypeId,
+                                        serviceCenterId
+                                );
+
+                                List<PartOption> partOptions = availableParts.stream()
+                                        .filter(part -> part.getQuantity() > 0)  // Chỉ lấy parts còn hàng
+                                        .map(part -> {
+                                            PartOption option = new PartOption();
+                                            option.setPartId(part.getId());
+                                            option.setPartName(part.getName());
+                                            option.setLaborCost(part.getLaborCost());
+                                            option.setMaterialCost(part.getMaterialCost());
+                                            option.setQuantity(part.getQuantity());
+                                            return option;
+                                        })
+                                        .collect(Collectors.toList());
+
+                                detailRes.setAvailableParts(partOptions);
+                            }
+                        }
                     }
 
+                    // Set part hiện tại (nếu đã chọn)
+                    if (detail.getPart() != null) {
+                        detailRes.setPartId(detail.getPart().getId());
+                        detailRes.setPartName(detail.getPart().getName());
+                    }
+
+                    // Set costs
                     detailRes.setLaborCost(
                             detail.getLaborCost() != null ? detail.getLaborCost() : BigDecimal.ZERO
                     );
@@ -359,5 +410,32 @@ public class MaintenanceChecklistService {
         detail.setCustomerNote(customerNote);
 
         detailRepo.save(detail);
+    }
+    /**
+     * Map item name sang part type ID
+     */
+    private Integer getPartTypeIdByItemName(String itemName) {
+        if (itemName == null) return null;
+
+        String normalizedName = itemName.toLowerCase().trim();
+
+        // Mapping theo tên item trong database
+        if (normalizedName.contains("lọc gió điều hòa")) {
+            return 1; // part_type_id = 1
+        } else if (normalizedName.contains("dầu phanh")) {
+            return 2; // part_type_id = 2
+        } else if (normalizedName.contains("hệ thống điều hòa") ||
+                normalizedName.contains("bảo dưỡng hệ thống điều hòa")) {
+            return 3; // part_type_id = 3
+        } else if (normalizedName.contains("pin chìa khóa")) {
+            return 4; // part_type_id = 4
+        } else if (normalizedName.contains("pin t-box") ||
+                normalizedName.contains("pin bộ t-box")) {
+            return 5; // part_type_id = 5
+        } else if (normalizedName.contains("nước làm mát")) {
+            return 6; // part_type_id = 6
+        }
+
+        return null; // Không tìm thấy part type phù hợp
     }
 }

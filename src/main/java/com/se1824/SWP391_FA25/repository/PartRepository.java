@@ -10,4 +10,9 @@ import java.util.List;
 
 public interface PartRepository  extends JpaRepository<Part, Integer> {
     List<Part> findByScheduleId(Integer scheduleId);
+    List<Part> findBySchedule_IdAndPartType_IdAndServiceCenter_Id(
+            Integer scheduleId,
+            Integer partTypeId,
+            Integer serviceCenterId
+    );
 }
