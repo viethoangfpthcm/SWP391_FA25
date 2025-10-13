@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
-
 import java.util.List;
+
 @SecurityRequirement(name = "api")
 
 
@@ -27,11 +27,11 @@ public class StaffController {
      * GET /api/staff/bookings/pending?centerId={centerId}
      */
     @GetMapping("/bookings/pending")
-    public ResponseEntity<List<StaffBookingDTO>> getPendingBookings(
-            @RequestParam(required = false) Integer centerId) {
-        List<StaffBookingDTO> bookings = staffService.getPendingBookings(centerId);
+    public ResponseEntity<List<StaffBookingDTO>> getPendingBookings() {
+        List<StaffBookingDTO> bookings = staffService.getPendingBookings();
         return ResponseEntity.ok(bookings);
     }
+
     /**
      * Lấy tất cả booking của service center
      * GET /api/staff/bookings
@@ -41,6 +41,7 @@ public class StaffController {
         List<StaffBookingDTO> bookings = staffService.getAllBookings();
         return ResponseEntity.ok(bookings);
     }
+
     /**
      * Approve booking
      * POST /api/staff/bookings/{bookingId}/approve?staffId={staffId}
