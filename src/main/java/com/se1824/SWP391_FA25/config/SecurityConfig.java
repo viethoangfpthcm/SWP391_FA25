@@ -81,7 +81,7 @@ public class SecurityConfig {
                         // Các API yêu cầu quyền TECHNICIAN
                         .requestMatchers("/api/technician/**").hasRole("TECHNICIAN")
                         // Các API yêu cầu quyền Customer
-                        .requestMatchers("/api/customer/**", "/api/feedback/**").hasRole("CUSTOMER")
+                        .requestMatchers("/api/customer/**", "/api/feedback/**", "/api/payment/**" ).hasRole("CUSTOMER")
                         // Các API yêu cầu quyền ADMIN
                         .requestMatchers("/api/admin/**", "/api/staff/technicians", "/api/staff/bookings/assign-technician").hasRole("ADMIN")
 

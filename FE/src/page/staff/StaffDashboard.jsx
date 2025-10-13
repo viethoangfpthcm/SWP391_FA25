@@ -331,8 +331,7 @@ export default function StaffDashboard({ user, userRole }) {
                                       value={tech.userId}
                                       style={{ padding: "8px" }}
                                     >
-                                      {tech.fullName} - {tech.activeBookings}{" "}
-                                      công việc
+                                      {tech.fullName} 
                                     </option>
                                   ))}
                                 </select>
