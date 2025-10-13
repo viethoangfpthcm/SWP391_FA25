@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../sidebar/sidebar"; // ✅ Gọi lại sidebar có sẵn
-import { Save, CheckCircle } from "lucide-react";
+
 import "./CheckList.css";
 
 export default function CheckList() {
