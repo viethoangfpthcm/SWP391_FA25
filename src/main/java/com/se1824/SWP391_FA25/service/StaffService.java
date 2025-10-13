@@ -24,16 +24,19 @@ public class StaffService {
     private final AuthenticationService authService;
 
     /**
-     * Lấy danh sách booking Pending (chờ staff xử lý)
+     * Lấy danh sách booking Pending của Service Center mà staff đang quản lý
      */
-    public List<StaffBookingDTO> getPendingBookings(Integer centerId) {
-        List<Booking> bookings;
+    public List<StaffBookingDTO> getPendingBookings() {
+        Users currentStaff = authService.getCurrentAccount();
+        validateStaffRole(currentStaff.getUserId());
 
-        if (centerId != null) {
-            bookings = bookingRepo.findByServiceCenter_IdAndStatus(centerId, "Pending");
-        } else {
-            bookings = bookingRepo.findByStatus("Pending");
-        }
+        // Lấy center ID từ staff hiện tại
+        Integer centerId = currentStaff.getServiceCenter().getId();
+        log.info("Getting pending bookings for center ID: {} (Staff: {})",
+                centerId, currentStaff.getUserId());
+
+        // Lấy bookings của center này với status Pending
+        List<Booking> bookings = bookingRepo.findByServiceCenter_IdAndStatus(centerId, "Pending");
 
         return bookings.stream()
                 .map(this::mapToStaffBookingDTO)
