@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Ngoctrinh from "../assets/ngoctrinh.png";
 import "./Home.css";
 
 
@@ -7,7 +8,7 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   return (
-    <div className="homepage">
+    <div className="homepage">  
       <section className="hero">
         <div className="hero-text">
           <h1>EV Car Center</h1>
@@ -30,11 +31,11 @@ export default function HomePage() {
           </button>
         </div>
 
-        <div className="hero-image">
-          <img
-            src=""
-            alt="ngoctrinh"
-          />
+        <div className="Ngoctrinh-image">
+         <img
+  src={Ngoctrinh}
+  alt="ngoctrinh"
+/>
         </div>
       </section>
     </div>

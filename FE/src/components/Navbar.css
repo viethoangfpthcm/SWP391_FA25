@@ -1,22 +1,28 @@
+/* ---- Navbar ---- */
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: white;
+  background: #fff;
   padding: 18px 60px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
+/* Logo */
 .logo {
   color: #0a4ff0;
   font-size: 1.8rem;
   font-weight: 700;
   margin: 0;
+  cursor: pointer;
+  letter-spacing: 0.5px;
 }
 
+/* Links trung tâm */
 .navbar-center {
   display: flex;
   gap: 35px;
@@ -29,23 +35,29 @@
   font-size: 1.05rem;
   position: relative;
   padding: 4px 0;
+  transition: all 0.3s ease;
 }
 
 .navbar-center a::after {
   content: "";
   position: absolute;
   width: 0;
-  height: 2px;
+  height: 2.5px;
   background: #0a4ff0;
   left: 0;
   bottom: -4px;
-  transition: width 0.3s;
+  transition: width 0.3s ease;
+}
+
+.navbar-center a:hover {
+  color: #0a4ff0;
 }
 
 .navbar-center a:hover::after {
   width: 100%;
 }
 
+/* ---- Buttons (Login / Logout) ---- */
 .navbar-right {
   display: flex;
   gap: 14px;
@@ -54,54 +66,30 @@
 .btn {
   border: none;
   padding: 10px 22px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s ease, color 0.3s ease;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
-.login {
+.btn.login {
   background: #0a4ff0;
-  color: white;
+  color: #fff;
 }
 
-.login:hover {
-  background: #083fc2;
+.btn.login:hover {
+  background: #003cd6;
+  box-shadow: 0 4px 10px rgba(10, 79, 240, 0.25);
 }
 
-.logout {
+.btn.logout {
   background: transparent;
   color: #0a4ff0;
   border: 1.5px solid #0a4ff0;
 }
 
-.logout:hover {
-  background: #0a4ff0;
-  color: white;
-}
-.btn {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  transition: 0.3s ease;
-}
-
-.btn.login {
-  background-color: #0a4ff0;
-  color: white;
-}
-
-.btn.login:hover {
-  background-color: #003cd6;
-}
-
-.btn.logout {
-  background-color: #e74c3c;
-  color: white;
-}
-
 .btn.logout:hover {
-  background-color: #c0392b;
+  background: #0a4ff0;
+  color: #fff;
 }
