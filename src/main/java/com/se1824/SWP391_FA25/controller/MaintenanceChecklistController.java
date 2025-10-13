@@ -24,10 +24,10 @@ public class MaintenanceChecklistController {
     MaintenanceChecklistService checklistService;
 
     //  Lấy checklist theo customer
-    @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<MaintenanceChecklistResponse>> getByCustomer(@PathVariable String customerId) {
-        return ResponseEntity.ok(checklistService.getChecklistByCustomer(customerId));
-    }
+//    @GetMapping("/customer/{customerId}")
+//    public ResponseEntity<List<MaintenanceChecklistResponse>> getByCustomer() {
+//        return ResponseEntity.ok(checklistService.getChecklistByCustomer());
+//    }
 
     // Lấy checklist theo technician
     @GetMapping("/technician/{technicianId}")
