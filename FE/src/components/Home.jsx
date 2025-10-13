@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Ngoctrinh from "../assets/ngoctrinh.png";
 import "./Home.css";
 
 export default function HomePage() {

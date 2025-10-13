@@ -1,6 +1,7 @@
 package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.entity.MaintenanceChecklist;
+import com.se1824.SWP391_FA25.entity.Users;
 import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
 import com.se1824.SWP391_FA25.service.MaintenanceChecklistService;
@@ -23,15 +24,15 @@ public class MaintenanceChecklistController {
     MaintenanceChecklistService checklistService;
 
     //  Lấy checklist theo customer
-    @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<MaintenanceChecklistResponse>> getByCustomer(@PathVariable String customerId) {
-        return ResponseEntity.ok(checklistService.getChecklistByCustomer(customerId));
-    }
+//    @GetMapping("/customer/{customerId}")
+//    public ResponseEntity<List<MaintenanceChecklistResponse>> getByCustomer() {
+//        return ResponseEntity.ok(checklistService.getChecklistByCustomer());
+//    }
 
-    // Lấy checklist theo technician
-    @GetMapping("/technician/{technicianId}")
-    public ResponseEntity<List<MaintenanceChecklistResponse>> getByTechnicianWithVehicle(@PathVariable String technicianId) {
-        List<MaintenanceChecklistResponse> responseList = checklistService.getChecklistByTechnicianWithVehicle(technicianId);
+    // Lấy checklist của technician đang đăng nhập
+    @GetMapping("/technician/my-checklists")
+    public ResponseEntity<List<MaintenanceChecklistResponse>> getMyChecklists() {
+        List<MaintenanceChecklistResponse> responseList = checklistService.getChecklistByCurrentTechnician();
         return ResponseEntity.ok(responseList);
     }
 
@@ -49,9 +50,11 @@ public class MaintenanceChecklistController {
             @RequestParam String status,
             @RequestParam(required = false) String note,
             @RequestParam(required = false) Integer partId,
-            AuthenticationService authentication
+            Authentication authentication
     ) {
-        String currentUserId = authentication.getCurrentAccount().getUserId();
+        Users currentUser = (Users) authentication.getPrincipal();
+        String currentUserId = currentUser.getUserId();
+
         checklistService.updateChecklistDetail(detailId, status, note, partId, currentUserId);
         return ResponseEntity.ok("Checklist detail updated successfully");
     }

@@ -14,4 +14,10 @@ public interface MaintenanceChecklistDetailRepository extends JpaRepository<Main
 
     @Query("SELECT d FROM MaintenanceChecklistDetail d JOIN FETCH d.planItem LEFT JOIN FETCH d.part WHERE d.checklist.id = :id")
     List<MaintenanceChecklistDetail> findByChecklist_Id(@Param("id") Integer id);
+
+    List<MaintenanceChecklistDetail> findByChecklistIdAndStatusAndApprovalStatus(
+            Integer checklistId,
+            String status,
+            String approvalStatus
+    );
 }

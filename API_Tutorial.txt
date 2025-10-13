@@ -1,0 +1,6 @@
+---/api/checklists/... - Technician
+---/api/customers/... - Customer
+---/api/user/profile - All Users
+---/api/admin/... - Admin
+---/api/users/... - All Users
+---/api/staff/... - Staff

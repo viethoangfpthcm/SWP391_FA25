@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "maintenance_checklist_detail")
@@ -44,4 +45,10 @@ public class MaintenanceChecklistDetail {
 
     @Column(name = "note", length = 255)
     String note;
+
+    @Column(name = "labor_cost", precision = 18, scale = 2)
+    BigDecimal laborCost = BigDecimal.ZERO;
+
+    @Column(name = "material_cost", precision = 18, scale = 2)
+    BigDecimal materialCost = BigDecimal.ZERO;
 }
