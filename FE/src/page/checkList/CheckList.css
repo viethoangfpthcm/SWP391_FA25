@@ -1,80 +1,191 @@
-.checklist-container {
-  max-width: 900px;
-  margin: 40px auto;
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px 30px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  font-family: "Segoe UI", sans-serif;
+/* ========== PAGE WRAPPER ========== */
+.page-container {
+  display: flex;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  color: #0f172a;
+  transition: all 0.3s ease;
 }
 
-.checklist-container h2 {
-  color: #1e40af;
-  margin-bottom: 12px;
-  border-bottom: 2px solid #1e40af;
-  padding-bottom: 4px;
+/* Khi sidebar luôn mở */
+.page-container .content {
+  margin-left: 260px;
+  flex: 1;
+  padding: 24px;
+  transition: all 0.3s ease;
 }
 
-.vehicle-info {
-  background: #f8fafc;
-  padding: 12px 18px;
+/* Responsive: nếu sidebar đóng */
+@media (max-width: 768px) {
+  .page-container .content {
+    margin-left: 80px;
+    padding: 16px;
+  }
+}
+
+/* ========== HEADER BAR ========== */
+.header-bar {
+  background-color: #1e293b;
+  color: #e2e8f0;
+  padding: 14px 20px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.3);
 }
 
-.vehicle-info p {
-  margin: 4px 0;
+.header-bar h2 {
+  font-size: 18px;
+  margin: 0;
+  color: #38bdf8;
 }
 
-h3 {
-  margin-top: 20px;
+.header-bar p {
+  font-size: 13px;
+  margin: 2px 0 0;
+  color: #cbd5e1;
+}
+
+/* ========== BUTTON GROUP ========== */
+.btn-group {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary,
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: #2f71c2;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-secondary {
+  background-color: #334155;
+  color: #cbd5e1;
+}
+
+.btn-secondary:hover {
+  background-color: #475569;
+}
+
+/* ========== VEHICLE CARD ========== */
+.vehicle-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.vehicle-card h3 {
+  color: #1e3a8a;
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px 20px;
+  font-size: 14px;
   color: #0f172a;
 }
 
+/* ========== SECTION TITLE ========== */
+.section-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 16px 0 10px;
+  color: #22387a;
+}
+
+/* ========== CHECKLIST TABLE ========== */
 .checklist-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 8px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.checklist-table th, .checklist-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
+.checklist-table thead {
+  background-color: #0f172a;
+  color: #ffffff;
+  font-size: 14px;
 }
 
-.checklist-table th {
+.checklist-table th,
+.checklist-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.checklist-table tbody tr:hover {
   background-color: #f1f5f9;
-  color: #111827;
 }
 
+/* ========== STATUS COLORS ========== */
 .status.good {
-  color: green;
-  font-weight: 600;
-}
-
-.status.replace {
-  color: #dc2626;
-  font-weight: 600;
-}
-
-.approval.approved {
   color: #16a34a;
   font-weight: 600;
 }
 
+.status.replace {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+/* ========== APPROVAL STATUS ========== */
+.approval.approved {
+  color: #22c55e;
+  font-weight: 600;
+}
+
 .approval.declined {
-  color: #dc2626;
+  color: #ef4444;
   font-weight: 600;
 }
 
 .approval.pending {
-  color: #ca8a04;
+  color: #f59e0b;
   font-weight: 600;
 }
 
-.loading, .error, .empty {
+/* ========== EMPTY / ERROR / LOADING ========== */
+.loading,
+.error,
+.empty {
   text-align: center;
-  color: #555;
-  margin-top: 30px;
+  margin-top: 40px;
+  color: #475569;
+  font-size: 15px;
+}
+
+.error {
+  color: #ef4444;
+}
+
+/* ========== SCROLL FIX FOR LONG TABLES ========== */
+.checklist-table-container {
+  overflow-x: auto;
 }

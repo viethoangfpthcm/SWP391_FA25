@@ -1,0 +1,33 @@
+.about {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 32px 24px;
+  margin: 32px auto;
+  max-width: 700px;
+  color: #222;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.about h1 {
+  color: #1e88e5;
+  margin-bottom: 18px;
+  font-size: 2.2rem;
+  text-align: center;
+}
+
+.about ul {
+  margin: 18px 0;
+  padding-left: 22px;
+}
+
+.about li {
+  margin-bottom: 8px;
+  list-style: disc inside;
+}
+
+.about p {
+  margin-bottom: 14px;
+  line-height: 1.7;
+  text-align: justify;
+}
