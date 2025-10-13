@@ -15,84 +15,87 @@ export default function Appoint() {
     userId: "",
   });
 
-  const [branch, setBranch] = useState("");
+  const [serviceCenters] = useState([
+    { id: 4, name: "EV Center 1", address: "25 Nguyễn Huệ, Quận 1, TP.HCM" },
+    { id: 6, name: "EV Center 2", address: "12 Võ Văn Ngân, Thủ Đức, TP.HCM" },
+    { id: 5, name: "EV Center 3", address: "200 Nguyễn Văn Cừ, Quận 5, TP.HCM" },
+  ]);
+
+  const [selectedCenter, setSelectedCenter] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [note, setNote] = useState("");
+
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
     if (!token || !userId) return;
 
     setCustomerInfo((prev) => ({ ...prev, userId }));
 
-    // Gọi API dashboard customer
+    // Load customer info + vehicles
     fetch(`http://localhost:8080/api/customer/dashboard/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (res) => {
-        if (!res.ok) {
-          const errText = await res.text();
-          throw new Error(errText || "Lấy dữ liệu dashboard thất bại");
-        }
+        if (!res.ok) throw new Error(await res.text());
         return res.json();
       })
       .then((data) => {
-        // Giả sử API trả về data.customerInfo + data.vehicles
-        if (data.customerInfo) {
-          setCustomerInfo({
-            fullName: data.customerInfo.fullName,
-            phone: data.customerInfo.phone,
-            email: data.customerInfo.email,
-            userId: data.customerInfo.userId,
-          });
-        }
-
+        if (data.customerInfo) setCustomerInfo(data.customerInfo);
         if (data.vehicles) setVehicles(data.vehicles);
       })
       .catch((err) => console.log("Fetch dashboard error:", err.message));
-  }, []);
+  }, [token, userId]);
 
   const handleVehicleChange = (e) => {
     const license = e.target.value;
     setSelectedVehicle(license);
-
     const vehicle = vehicles.find((v) => v.licensePlate === license);
     setLicensePlate(vehicle ? vehicle.licensePlate : "");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedVehicle) return alert("Vui lòng chọn xe!");
-    if (!branch || !date || !time) return alert("Vui lòng chọn chi nhánh và thời gian!");
+    if (!selectedVehicle || !selectedCenter || !date || !time) {
+      return alert("Vui lòng điền đầy đủ thông tin!");
+    }
 
-    const token = localStorage.getItem("token");
+    const bookingDate = new Date(`${date}T${time}`).toISOString();
     const payload = {
-      customerInfo,
-      vehicle: vehicles.find((v) => v.licensePlate === selectedVehicle),
-      branch,
-      date,
-      time,
+      userId,
+      vehiclePlate: selectedVehicle,
+      centerId: parseInt(selectedCenter),
+      bookingDate,
+      note,
     };
 
+    console.log("Payload submit:", payload); // Debug payload
+
     try {
-      const res = await fetch("http://localhost:8080/api/appointments", {
+      const res = await fetch("http://localhost:8080/api/customer/bookings", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || "Đặt lịch thất bại!");
-      }
-      alert("Đặt lịch thành công!");
+      if (!res.ok) throw new Error(await res.text());
+
+      const newBooking = await res.json();
+      alert(`Đặt lịch thành công! Mã booking: ${newBooking.bookingId}`);
+
+      // Reset form
       setSelectedVehicle("");
       setLicensePlate("");
-      setBranch("");
+      setSelectedCenter("");
       setDate("");
       setTime("");
+      setNote("");
     } catch (err) {
-      console.log("Submit error:", err.message);
+      console.log("Submit booking error:", err.message);
       alert(err.message);
     }
   };
@@ -107,35 +110,59 @@ export default function Appoint() {
             {/* Thông tin khách hàng */}
             <div className="appoint-row">
               <div>
-                <div className="appoint-section-title"><span>1</span> <span>Thông tin khách hàng</span></div>
+                <div className="appoint-section-title">
+                  <span>1</span> <span>Thông tin khách hàng</span>
+                </div>
                 <div>
-                  <label>Họ và tên <span style={{ color: "red" }}>*</span></label>
-                  <input type="text"
+                  <label>
+                    Họ và tên <span style={{ color: "red" }}>*</span>
+                  </label>
+                  <input
+                    type="text"
                     value={customerInfo.fullName}
-                    onChange={(e) => setCustomerInfo({ ...customerInfo, fullName: e.target.value })}
-                    maxLength={80} required />
+                    onChange={(e) =>
+                      setCustomerInfo({ ...customerInfo, fullName: e.target.value })
+                    }
+                    required
+                  />
                 </div>
                 <div>
-                  <label>Số điện thoại <span style={{ color: "red" }}>*</span></label>
-                  <input type="tel"
+                  <label>
+                    Số điện thoại <span style={{ color: "red" }}>*</span>
+                  </label>
+                  <input
+                    type="tel"
                     value={customerInfo.phone}
-                    onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
-                    required />
+                    onChange={(e) =>
+                      setCustomerInfo({ ...customerInfo, phone: e.target.value })
+                    }
+                    required
+                  />
                 </div>
                 <div>
-                  <label>Email <span style={{ color: "red" }}>*</span></label>
-                  <input type="email"
+                  <label>
+                    Email <span style={{ color: "red" }}>*</span>
+                  </label>
+                  <input
+                    type="email"
                     value={customerInfo.email}
-                    onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
-                    required />
+                    onChange={(e) =>
+                      setCustomerInfo({ ...customerInfo, email: e.target.value })
+                    }
+                    required
+                  />
                 </div>
               </div>
 
               {/* Thông tin xe */}
               <div>
-                <div className="appoint-section-title"><span>2</span> <span>Thông tin xe</span></div>
+                <div className="appoint-section-title">
+                  <span>2</span> <span>Thông tin xe</span>
+                </div>
                 <div>
-                  <label>Xe<span style={{ color: "red" }}>*</span></label>
+                  <label>
+                    Xe<span style={{ color: "red" }}>*</span>
+                  </label>
                   <select value={selectedVehicle} onChange={handleVehicleChange} required>
                     <option value="">Chọn xe của bạn</option>
                     {vehicles.map((v) => (
@@ -147,40 +174,56 @@ export default function Appoint() {
                 </div>
                 {selectedVehicle && (
                   <div>
-                    <label>Biển số xe <span style={{ color: "red" }}>*</span></label>
-                    <input type="text"
-                      value={licensePlate}
-                      onChange={(e) => setLicensePlate(e.target.value)}
-                      required />
+                    <label>Biển số xe</label>
+                    <input type="text" value={licensePlate} readOnly />
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Chi nhánh & Thời gian */}
+            {/* Chi nhánh & thời gian */}
             <div className="appoint-row" style={{ marginTop: 32 }}>
               <div>
-                <div className="appoint-section-title"><span>3</span> <span>Chi nhánh & Thời gian</span></div>
+                <div className="appoint-section-title">
+                  <span>3</span> <span>Chi nhánh & Thời gian</span>
+                </div>
                 <div>
-                  <label>Chi nhánh <span style={{ color: "red" }}>*</span></label>
-                  <select value={branch} onChange={(e) => setBranch(e.target.value)} required>
+                  <label>
+                    Chi nhánh <span style={{ color: "red" }}>*</span>
+                  </label>
+                  <select
+                    value={selectedCenter}
+                    onChange={(e) => setSelectedCenter(e.target.value)}
+                    required
+                  >
                     <option value="">Chọn chi nhánh</option>
-                    <option value="1">123 Lê Văn Việt, TP. Thủ Đức, TP. HCM</option>
-                    <option value="2">Đường D2 Khu Công Nghệ Cao</option>
+                    {serviceCenters.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name} - {c.address}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
-                  <label>Thời gian <span style={{ color: "red" }}>*</span></label>
+                  <label>
+                    Thời gian <span style={{ color: "red" }}>*</span>
+                  </label>
                   <div className="appoint-time-row">
                     <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
                     <input type="time" value={time} onChange={(e) => setTime(e.target.value)} required />
                   </div>
                 </div>
+                <div>
+                  <label>Ghi chú</label>
+                  <input type="text" value={note} onChange={(e) => setNote(e.target.value)} />
+                </div>
               </div>
             </div>
 
             <div style={{ textAlign: "center", marginTop: 32 }}>
-              <button type="submit" className="appoint-submit-btn">Đặt lịch</button>
+              <button type="submit" className="appoint-submit-btn">
+                Đặt lịch
+              </button>
             </div>
           </form>
         </div>
