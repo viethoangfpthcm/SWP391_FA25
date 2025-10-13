@@ -379,9 +379,9 @@ public class MaintenanceChecklistService {
             detail.setLaborCost(Optional.ofNullable(part.getLaborCost()).orElse(BigDecimal.ZERO));
             detail.setMaterialCost(Optional.ofNullable(part.getMaterialCost()).orElse(BigDecimal.ZERO));
 
-            // Giảm quantity và lưu Part
-            part.setQuantity(part.getQuantity() - 1);
-            partRepo.save(part);
+//            // Giảm quantity và lưu Part
+//            part.setQuantity(part.getQuantity() - 1);
+//            partRepo.save(part);
 
         } else if (STATUS_ADJUSTMENT.equalsIgnoreCase(normalizedStatus) || STATUS_REPAIR.equalsIgnoreCase(normalizedStatus)) {
 
@@ -436,5 +436,40 @@ public class MaintenanceChecklistService {
         }
 
         return null; // Không tìm thấy part type phù hợp
+    }
+    @Transactional
+    public void completeChecklist(Integer checklistId) {
+        MaintenanceChecklist checklist = checklistRepo.findById(checklistId)
+                .orElseThrow(() -> new ResourceNotFoundException("Checklist not found."));
+
+        if (!"In Progress".equalsIgnoreCase(checklist.getStatus())) {
+            throw new InvalidDataException("Checklist must be 'In Progress' to complete.");
+        }
+
+        // Lấy tất cả chi tiết đã được khách hàng phê duyệt
+        List<MaintenanceChecklistDetail> detailsToProcess = detailRepo
+                .findByChecklist_IdAndApprovalStatus(checklistId, "APPROVED");
+
+        for (MaintenanceChecklistDetail detail : detailsToProcess) {
+            // CHỈ TRỪ PART nếu là hạng mục "THAY THẾ" và đã có Part được gán
+            if (STATUS_REPLACE.equalsIgnoreCase(detail.getStatus()) && detail.getPart() != null) {
+                Part part = detail.getPart();
+
+                // Kiểm tra tồn kho lần cuối
+                if (part.getQuantity() <= 0) {
+                    log.error("Part out of stock during checklist completion: {}", part.getName());
+                    throw new InvalidDataException("Part " + part.getName() + " is currently out of stock. Cannot complete task.");
+                }
+                part.setQuantity(part.getQuantity() - 1);
+                partRepo.save(part);
+
+            }
+        }
+
+
+        checklist.setStatus("Completed");
+        checklistRepo.save(checklist);
+
+
     }
 }
