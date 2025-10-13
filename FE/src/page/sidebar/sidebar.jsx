@@ -37,10 +37,10 @@ const Sidebar = ({ sidebarOpen }) => {
         <Link to="/appointments" className="menu-item">
           <FaCalendarCheck /> Quản lý lịch hẹn
         </Link>
-        <Link to="/tasks" className="menu-item">
+        <Link to="/technician-task" className="menu-item">
           <FaTasks /> Công việc được giao
         </Link>
-        <Link to="/inspection" className="menu-item">
+        <Link to="/checklist" className="menu-item">
           <FaClipboardCheck /> Kiểm tra thực hiện
         </Link>
         <Link to="/reports" className="menu-item">

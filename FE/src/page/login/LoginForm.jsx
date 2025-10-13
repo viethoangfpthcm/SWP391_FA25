@@ -34,7 +34,7 @@ const LoginForm = () => {
         navigate("/staff/dashboard");
         break;
       case "TECHNICIAN":
-        navigate("/technician-task");
+        navigate("technician-task");
         break;
       case "CUSTOMER":
         navigate("/home");
