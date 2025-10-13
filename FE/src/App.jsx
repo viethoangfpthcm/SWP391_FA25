@@ -9,6 +9,7 @@ import Homepage from "./page/home/Homepage.jsx";
 import Appoint from "./page/home/Appoint.jsx";
 import About from "./page/home/AboutUs.jsx";
 import Contact from "./page/home/Contact.jsx";
+import StaffDashboard from "./page/staff/StaffDashboard.jsx";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
        <Route path="/appoint" element={<Appoint />} />
        <Route path="/about" element={<About />} />
        <Route path="/contact" element={<Contact />} />
+       <Route path="/staff" element={<StaffDashboard />} />
     </Routes>
   );
 }
