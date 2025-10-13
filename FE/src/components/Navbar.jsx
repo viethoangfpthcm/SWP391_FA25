@@ -29,6 +29,7 @@ export default function Navbar() {
         <Link to="/appoint">Dịch Vụ</Link>
         <Link to="/about">Về Chúng Tôi</Link>
         <Link to="/contact">Liên Hệ</Link>
+        <Link to="/report">Theo dõi</Link>
       </nav>
 
       {/* Nút đăng nhập / đăng xuất */}

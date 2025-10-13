@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-column">
         <h3>EV Car Center</h3>
-        <p>231 Nguyễn Văn Ngạn, Thủ Đức, TP.HCM</p>
+        <p>231 Nguyễn Văn Ngân, Thủ Đức, TP.HCM</p>
         <p>Hotline: 0787052810</p>
         <p>Email: EVCarCenter@gmail.com</p>
       </div>
