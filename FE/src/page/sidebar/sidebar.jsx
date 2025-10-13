@@ -34,7 +34,7 @@ const Sidebar = ({ sidebarOpen }) => {
         <Link to="/home" className="menu-item">
           <FaHome /> Trang chủ
         </Link>
-        <Link to="/appointments" className="menu-item">
+        <Link to="/staff" className="menu-item">
           <FaCalendarCheck /> Quản lý lịch hẹn
         </Link>
         <Link to="/tasks" className="menu-item">

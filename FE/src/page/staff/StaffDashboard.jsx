@@ -1,280 +1,398 @@
-import React, { useState } from 'react';
-import './StaffDashboard.css';
-import Sidebar from '../../page/sidebar/sidebar.jsx';
+import React, { useState, useEffect } from "react";
+import "./StaffDashboard.css";
+import Sidebar from "../../page/sidebar/sidebar.jsx";
 
 export default function StaffDashboard({ user, userRole }) {
+  const [appointments, setAppointments] = useState([]);
+  const [technicians, setTechnicians] = useState([]);
   const [selectedTechnicians, setSelectedTechnicians] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [actionLoading, setActionLoading] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("all"); // Bộ lọc trạng thái
 
-  // Mock data với ngày tháng đã cập nhật
-  const customers = [
-    {
-      id: '1',
-      name: 'Nguyễn Văn A',
-      phone: '0901234567',
-      carModel: 'VF-E34',
-      vin: '123456789',
-      lastService: '2025-09-10'
-    },
-    {
-      id: '2',
-      name: 'Trần Thị B',
-      phone: '0902345678',
-      carModel: 'VF-8',
-      vin: '234567890',
-      lastService: '2025-08-15'
-    }
-  ];
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
+  const token = localStorage.getItem("token");
 
-  const appointments = [
-    {
-      id: '1',
-      date: '2025-10-15',
-      customer: 'Nguyễn Văn A',
-      service: 'Bảo dưỡng định kỳ',
-      technician: null,
-      status: 'pending',
-      inspectionStatus: 'Chờ phân công'
-    },
-    {
-      id: '2',
-      date: '2025-10-16',
-      customer: 'Trần Thị B',
-      service: 'Thay ắc quy',
-      technician: 'Lê C',
-      status: 'assigned',
-      inspectionStatus: 'Đã phân công'
-    },
-    {
-      id: '3',
-      date: '2025-10-17',
-      customer: 'Hoàng Minh E',
-      service: 'Kiểm tra hệ thống pin',
-      technician: null,
-      status: 'pending',
-      inspectionStatus: 'Chờ phân công'
-    }
-  ];
-
-  const staff = [
-    {
-      id: '1',
-      name: 'Trần B',
-      position: 'Kỹ thuật viên',
-      shift: 'Sáng',
-      certification: 'EV Level 2',
-      performance: 95,
-      currentTasks: 0,
-      status: 'available'
-    },
-    {
-      id: '2',
-      name: 'Lê C',
-      position: 'Kỹ thuật viên',
-      shift: 'Chiều',
-      certification: 'EV Level 1',
-      performance: 88,
-      currentTasks: 1,
-      status: 'busy'
-    },
-    {
-      id: '3',
-      name: 'Phạm D',
-      position: 'Kỹ thuật viên',
-      shift: 'Sáng',
-      certification: 'EV Level 3',
-      performance: 92,
-      currentTasks: 0,
-      status: 'available'
-    },
-    {
-      id: '4',
-      name: 'Vũ E',
-      position: 'Kỹ thuật viên',
-      shift: 'Chiều',
-      certification: 'EV Level 2',
-      performance: 90,
-      currentTasks: 2,
-      status: 'busy'
-    }
-  ];
-
-  const handleTechnicianChange = (appointmentId, technicianId) => {
-    setSelectedTechnicians({
-      ...selectedTechnicians,
-      [appointmentId]: technicianId
+  // Fetch appointments
+  const fetchAppointments = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:8080/api/staff/bookings/pending?centerId=4", {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/json",
+      },
     });
+
+    const data = await response.json();
+
+    // ✅ Kiểm tra xem có phải mảng không
+    console.log("Appointments data:", data);
+
+    if (Array.isArray(data)) {
+      setAppointments(data);
+    } else {
+      setAppointments([]); // fallback nếu backend trả object
+    }
+
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+  }
+};
+
+
+  // Fetch technicians
+  const fetchTechnicians = async () => {
+    try {
+      console.log("🔄 Fetching technicians...");
+      const res = await fetch(`${API_BASE}/api/staff/technicians`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        console.error("Technicians API failed:", res.status);
+        setTechnicians([]);
+        return;
+      }
+
+      const data = await res.json();
+      console.log("Technicians raw:", data);
+
+      if (!Array.isArray(data)) {
+        console.error("Not an array:", data);
+        setTechnicians([]);
+        return;
+      }
+
+      const mapped = data.map((t) => ({
+        userId: String(t.userId || t.id || ""),
+        fullName: t.fullName || t.name || "Unknown",
+        activeBookings: parseInt(t.activeBookings) || 0,
+      }));
+
+      console.log("Technicians mapped:", mapped);
+      setTechnicians(mapped);
+    } catch (err) {
+      console.error("Technicians error:", err);
+      setTechnicians([]);
+    }
   };
 
-  const handleApprove = (appointmentId) => {
-    const technicianId = selectedTechnicians[appointmentId];
+  // Load data on mount
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      await Promise.all([fetchAppointments(), fetchTechnicians()]);
+      setLoading(false);
+    };
+    loadData();
+  }, []);
+
+  // Handle technician selection
+  const handleTechnicianChange = (bookingId, technicianId) => {
+    console.log("📝 Selected:", { bookingId, technicianId });
+    setSelectedTechnicians((prev) => ({
+      ...prev,
+      [bookingId]: technicianId,
+    }));
+  };
+
+  // Assign technician
+  const handleApprove = async (bookingId) => {
+    const technicianId = selectedTechnicians[bookingId];
+
     if (!technicianId) {
-      alert('Vui lòng chọn kỹ thuật viên trước khi xác nhận!');
+      alert("Vui lòng chọn kỹ thuật viên!");
       return;
     }
-    const technician = staff.find(s => s.id === technicianId);
-    alert(`Đã phân công kỹ thuật viên ${technician.name} cho lịch hẹn ${appointmentId}`);
-  };
 
-  const handleDecline = (appointmentId) => {
-    if (window.confirm('Bạn có chắc muốn từ chối lịch hẹn này?')) {
-      alert(`Đã từ chối lịch hẹn ${appointmentId}`);
+    try {
+      setActionLoading(bookingId);
+
+      const res = await fetch(
+        `${API_BASE}/api/staff/bookings/assign-technician`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ bookingId, technicianId }),
+        }
+      );
+
+      if (!res.ok) throw new Error("Assignment failed");
+
+      alert("Phân công thành công!");
+      setSelectedTechnicians((prev) => {
+        const next = { ...prev };
+        delete next[bookingId];
+        return next;
+      });
+
+      await fetchAppointments();
+    } catch (err) {
+      alert(`Lỗi: ${err.message}`);
+    } finally {
+      setActionLoading(null);
     }
   };
 
+  // Decline appointment
+  const handleDecline = async (bookingId) => {
+    if (!confirm("Từ chối lịch hẹn này?")) return;
+
+    try {
+      setActionLoading(bookingId);
+      const res = await fetch(
+        `${API_BASE}/api/staff/bookings/${bookingId}/decline`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!res.ok) throw new Error("Decline failed");
+
+      alert("Đã từ chối");
+      await fetchAppointments();
+    } catch (err) {
+      alert(`Lỗi: ${err.message}`);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Status badge
   const getStatusBadge = (status) => {
-    switch (status) {
-      case 'pending':
-        return <span className="status-badge status-pending">Chờ phân công</span>;
-      case 'assigned':
-        return <span className="status-badge status-assigned">Đã phân công</span>;
-      case 'in_progress':
-        return <span className="status-badge status-inprogress">Đang thực hiện</span>;
-      case 'completed':
-        return <span className="status-badge status-completed">Hoàn tất</span>;
-      default:
-        return <span className="status-badge status-default">{status}</span>;
-    }
+    const map = {
+      pending: "Chờ phân công",
+      assigned: "Đã phân công",
+      in_progress: "Đang thực hiện",
+      completed: "Hoàn tất",
+      declined: "Đã từ chối",
+    };
+    return (
+      <span className={`status-badge status-${status}`}>
+        {map[status] || status}
+      </span>
+    );
   };
+
+  if (loading) {
+    return (
+      <div className="dashboard-container">
+        <Sidebar sidebarOpen={true} />
+        <main className="main-content">
+          <h2>Đang tải...</h2>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="dashboard-container">
+        <Sidebar sidebarOpen={true} />
+        <main className="main-content">
+          <h2>Lỗi: {error}</h2>
+          <button onClick={() => window.location.reload()}>🔄 Tải lại</button>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">
-        <Sidebar sidebarOpen={true} />
-
+      <Sidebar sidebarOpen={true} />
       <main className="main-content">
-        {/* Page Header */}
         <div className="page-header">
           <div className="breadcrumb">
-            <span>Trang chủ</span>
-            <span>/</span>
+            <span>Trang chủ</span> <span>/</span>
             <span className="current">Quản lý lịch hẹn</span>
           </div>
           <div className="header-right">
-            {userRole === 'admin' ? 'Quản trị viên' : 'Nhân viên'}
+            {userRole === "admin" ? "Quản trị viên" : "Nhân viên"}
           </div>
         </div>
 
-        {/* Content Area */}
         <div className="content-area">
           <div className="content-wrapper">
-            {/* Page Title */}
             <div className="page-title-section">
               <h1 className="page-title">Quản lý lịch hẹn & phân công</h1>
-              <p className="page-subtitle">Phân công kỹ thuật viên và quản lý lịch hẹn dịch vụ</p>
+              <p className="page-subtitle">
+                Theo dõi và xử lý các yêu cầu dịch vụ
+              </p>
             </div>
 
-            {/* Actions Bar */}
-            <div className="actions-bar">
-              <div className="action-buttons">
-                <button className="btn btn-secondary">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                  </svg>
-                  Quản lý hàng chờ
-                </button>
-                <button className="btn btn-primary">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="12" y1="5" x2="12" y2="19"/>
-                    <line x1="5" y1="12" x2="19" y2="12"/>
-                  </svg>
-                  Lập lịch mới
-                </button>
-              </div>
+            {/* Bộ lọc trạng thái */}
+            <div
+              style={{
+                marginBottom: "16px",
+                display: "flex",
+                gap: "8px",
+                alignItems: "center",
+              }}
+            >
+              <label htmlFor="statusFilter">Lọc theo trạng thái:</label>
+              <select
+                id="statusFilter"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                style={{
+                  padding: "6px 10px",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  fontSize: "13px",
+                  cursor: "pointer",
+                }}
+              >
+                <option value="all">Tất cả</option>
+                <option value="pending">Chờ phân công</option>
+                <option value="assigned">Đã phân công</option>
+                <option value="in_progress">Đang thực hiện</option>
+                <option value="completed">Hoàn tất</option>
+                <option value="declined">Đã từ chối</option>
+              </select>
             </div>
 
-            {/* Table Card */}
             <div className="table-card">
               <div className="table-wrapper">
                 <table className="data-table">
                   <thead>
                     <tr>
+                      <th style={{ width: "80px" }}>ID</th>
                       <th>Ngày</th>
                       <th>Khách hàng</th>
-                      <th>Dịch vụ</th>
-                      <th>Kỹ thuật viên</th>
+                      <th>Biển số</th>
+                      <th>Dòng xe</th>
+                      <th style={{ minWidth: "250px" }}>Kỹ thuật viên</th>
                       <th>Trạng thái</th>
-                      <th>Thao tác</th>
+                      <th style={{ minWidth: "200px" }}>Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {appointments.map((appointment) => {
-                      const selectedTech = selectedTechnicians[appointment.id];
-                      const techInfo = selectedTech ? staff.find(s => s.id === selectedTech) : null;
-                      
-                      return (
-                        <tr key={appointment.id}>
+                    {appointments
+                      .filter(
+                        (appt) =>
+                          statusFilter === "all" ||
+                          appt.status?.toLowerCase() === statusFilter
+                      )
+                      .map((appt) => (
+                        <tr key={appt.bookingId}>
                           <td>
-                            <div className="cell-main">{appointment.date}</div>
+                            <strong>#{appt.bookingId}</strong>
                           </td>
                           <td>
-                            <div className="cell-main">{appointment.customer}</div>
+                            {new Date(appt.bookingDate).toLocaleDateString(
+                              "vi-VN"
+                            )}
                           </td>
+                          <td>{appt.customerName}</td>
                           <td>
-                            <div className="cell-main">{appointment.service}</div>
+                            <strong>{appt.vehiclePlate}</strong>
                           </td>
+                          <td>{appt.vehicleModel}</td>
+
                           <td>
-                            {appointment.status === 'pending' ? (
-                              <div className="technician-select-wrapper">
-                                <select 
-                                  className="technician-select"
-                                  value={selectedTech || ''}
-                                  onChange={(e) => handleTechnicianChange(appointment.id, e.target.value)}
+                            {appt.status?.toLowerCase() === "pending" ? (
+                              <div>
+                                <select
+                                  value={
+                                    selectedTechnicians[appt.bookingId] || ""
+                                  }
+                                  onChange={(e) =>
+                                    handleTechnicianChange(
+                                      appt.bookingId,
+                                      e.target.value
+                                    )
+                                  }
+                                  style={{
+                                    width: "100%",
+                                    padding: "10px 12px",
+                                    fontSize: "14px",
+                                    border: "2px solid #007bff",
+                                    borderRadius: "6px",
+                                    backgroundColor: "#fff",
+                                    cursor: "pointer",
+                                    outline: "none",
+                                  }}
                                 >
-                                  <option value="">-- Chọn kỹ thuật viên --</option>
-                                  {staff.map((tech) => (
-                                    <option key={tech.id} value={tech.id}>
-                                      {tech.name} {tech.status === 'busy' ? '(Đang bận)' : '(Rảnh)'}
+                                  <option value="">
+                                    -- Chọn kỹ thuật viên --
+                                  </option>
+                                  {technicians.map((tech) => (
+                                    <option
+                                      key={tech.userId}
+                                      value={tech.userId}
+                                      style={{ padding: "8px" }}
+                                    >
+                                      {tech.fullName} - {tech.activeBookings}{" "}
+                                      công việc
                                     </option>
                                   ))}
                                 </select>
-                                {techInfo && techInfo.status === 'busy' && (
-                                  <div className="cell-extra tech-note">
-                                    ⚠️ Kỹ thuật viên đang có {techInfo.currentTasks} công việc
-                                  </div>
-                                )}
+                                <div
+                                  style={{
+                                    fontSize: "12px",
+                                    color:
+                                      technicians.length > 0
+                                        ? "#28a745"
+                                        : "#dc3545",
+                                    marginTop: "6px",
+                                    fontWeight: "600",
+                                  }}
+                                >
+                                  {technicians.length > 0
+                                    ? ` ${technicians.length} kỹ thuật viên sẵn sàng`
+                                    : " Không có kỹ thuật viên"}
+                                </div>
                               </div>
                             ) : (
-                              <div className="cell-main">{appointment.technician}</div>
+                              <span>{appt.technicianName || "—"}</span>
                             )}
                           </td>
+
+                          <td>{getStatusBadge(appt.status)}</td>
+
                           <td>
-                            {getStatusBadge(appointment.status)}
-                          </td>
-                          <td>
-                            {appointment.status === 'pending' ? (
-                              <div className="action-buttons-cell">
-                                <button 
+                            {appt.status?.toLowerCase() === "pending" ? (
+                              <div style={{ display: "flex", gap: "8px" }}>
+                                <button
                                   className="btn-action btn-approve"
-                                  onClick={() => handleApprove(appointment.id)}
+                                  onClick={() =>
+                                    handleApprove(appt.bookingId)
+                                  }
+                                  disabled={actionLoading === appt.bookingId}
                                 >
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <polyline points="20 6 9 17 4 12"/>
-                                  </svg>
-                                  Xác nhận
+                                  {actionLoading === appt.bookingId
+                                    ? "⏳"
+                                    : "Phân công"}
                                 </button>
-                                <button 
+                                <button
                                   className="btn-action btn-decline"
-                                  onClick={() => handleDecline(appointment.id)}
+                                  onClick={() =>
+                                    handleDecline(appt.bookingId)
+                                  }
+                                  disabled={actionLoading === appt.bookingId}
                                 >
-                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <line x1="18" y1="6" x2="6" y2="18"/>
-                                    <line x1="6" y1="6" x2="18" y2="18"/>
-                                  </svg>
-                                  Từ chối
+                                  {actionLoading === appt.bookingId
+                                    ? "⏳"
+                                    : "Từ chối"}
                                 </button>
                               </div>
                             ) : (
                               <button className="btn-action btn-view">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                  <circle cx="12" cy="12" r="3"/>
-                                </svg>
-                                Xem
+                                👁 Xem
                               </button>
                             )}
                           </td>
                         </tr>
-                      );
-                    })}
+                      ))}
                   </tbody>
                 </table>
               </div>
