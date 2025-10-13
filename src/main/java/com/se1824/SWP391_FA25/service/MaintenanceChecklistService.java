@@ -171,36 +171,36 @@ public class MaintenanceChecklistService {
                         detailRes.setActionType(detail.getPlanItem().getActionType());
 
 
-                        if ("replace".equalsIgnoreCase(detail.getPlanItem().getActionType())) {
-                            Integer partTypeId = getPartTypeIdByItemName(detail.getPlanItem().getItemName());
+                        // Lấy partTypeId từ itemName
+                        Integer partTypeId = getPartTypeIdByItemName(detail.getPlanItem().getItemName());
 
-                            if (partTypeId != null) {
-                                // Lấy parts theo: schedule + partType + serviceCenter
-                                List<Part> availableParts = partRepo.findBySchedule_IdAndPartType_IdAndServiceCenter_Id(
-                                        vehicleScheduleId,
-                                        partTypeId,
-                                        serviceCenterId
-                                );
+                        if (partTypeId != null) {
+                            // parts theo: schedule + partType + serviceCenter
+                            List<Part> availableParts = partRepo.findBySchedule_IdAndPartType_IdAndServiceCenter_Id(
+                                    vehicleScheduleId,
+                                    partTypeId,
+                                    serviceCenterId
+                            );
 
-                                List<PartOption> partOptions = availableParts.stream()
-                                        .filter(part -> part.getQuantity() > 0)  // Chỉ lấy parts còn hàng
-                                        .map(part -> {
-                                            PartOption option = new PartOption();
-                                            option.setPartId(part.getId());
-                                            option.setPartName(part.getName());
-                                            option.setLaborCost(part.getLaborCost());
-                                            option.setMaterialCost(part.getMaterialCost());
-                                            option.setQuantity(part.getQuantity());
-                                            return option;
-                                        })
-                                        .collect(Collectors.toList());
+                            List<PartOption> partOptions = availableParts.stream()
+                                    .filter(part -> part.getQuantity() > 0)
+                                    .map(part -> {
+                                        PartOption option = new PartOption();
+                                        option.setPartId(part.getId());
+                                        option.setPartName(part.getName());
+                                        option.setLaborCost(part.getLaborCost());
+                                        option.setMaterialCost(part.getMaterialCost());
+                                        option.setQuantity(part.getQuantity());
+                                        return option;
+                                    })
+                                    .collect(Collectors.toList());
 
-                                detailRes.setAvailableParts(partOptions);
-                            }
+                            detailRes.setAvailableParts(partOptions);
                         }
+
+
                     }
 
-                    // Set part hiện tại (nếu đã chọn)
                     if (detail.getPart() != null) {
                         detailRes.setPartId(detail.getPart().getId());
                         detailRes.setPartName(detail.getPart().getName());
@@ -218,7 +218,6 @@ public class MaintenanceChecklistService {
                 })
                 .collect(Collectors.toList());
     }
-
 
     /**
      * Technician bắt đầu quá trình bảo dưỡng (Start Maintenance)
