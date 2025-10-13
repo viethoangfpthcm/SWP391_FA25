@@ -16,6 +16,7 @@
 
         int countByAssignedTechnician_UserIdAndStatusIn(String technicianId, List<String> statuses);
 
-        Booking findByBookingIdAndStatus(Integer bookingId, String status);
         List<Booking> findByServiceCenter_Id(Integer centerId);
+        List<Booking> findByAssignedTechnician_UserId(String technicianId);
+
     }
