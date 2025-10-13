@@ -72,6 +72,12 @@ public class MaintenanceChecklistService {
         return checklists.stream().map(this::mapChecklistToResponseWithDetails).collect(Collectors.toList());
     }
 
+    public MaintenanceChecklistResponse getChecklistByCustomerAndId(Integer bookingId) {
+        MaintenanceChecklist checklist = checklistRepo.findByBooking_BookingId(bookingId).orElse(null);
+
+        return mapChecklistToResponseWithDetails(checklist);
+    }
+
     /**
      * Hàm helper chung để map Checklist Entity sang Response DTO và tính toán tổng chi phí.
      */
@@ -198,7 +204,6 @@ public class MaintenanceChecklistService {
             checklistRepo.save(checklist);
         }
     }
-
 
 
     /**

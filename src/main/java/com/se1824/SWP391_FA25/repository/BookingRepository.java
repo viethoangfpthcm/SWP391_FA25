@@ -9,7 +9,12 @@ import java.util.List;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findByCustomer_UserId(String userId);
+
     List<Booking> findByServiceCenter_IdAndStatus(Integer centerId, String status);
+
     List<Booking> findByStatus(String status);
+
     int countByAssignedTechnician_UserIdAndStatusIn(String technicianId, List<String> statuses);
+
+    Booking findByBookingIdAndStatus(Integer bookingId, String status);
 }
