@@ -32,6 +32,7 @@ public class MaintenanceChecklistService {
     MaintenancePlanRepository planRepo;
     PartRepository partRepo;
     ModelMapper modelMapper;
+    AuthenticationService authService;
     String STATUS_ADJUSTMENT = "HIỆU CHỈNH";
     String STATUS_REPAIR = "SỬA CHỮA";
     String STATUS_REPLACE = "THAY THẾ";
@@ -55,12 +56,22 @@ public class MaintenanceChecklistService {
 
 
     /**
-     * Lấy Checklist cho Technician
+     * Lấy Checklist cho Technician đang đăng nhập
      */
-    public List<MaintenanceChecklistResponse> getChecklistByTechnicianWithVehicle(String technicianId) {
-        List<MaintenanceChecklist> checklists = checklistRepo.findByTechnician_UserId(technicianId);
+    public List<MaintenanceChecklistResponse> getChecklistByCurrentTechnician() {
+        Users currentTechnician = authService.getCurrentAccount();
+
+        // Validate technician role
+        if (!currentTechnician.getUserId().startsWith("TE")) {
+            throw new InvalidDataException("Only technicians can access this resource");
+        }
+
+        List<MaintenanceChecklist> checklists = checklistRepo.findByTechnician_UserId(currentTechnician.getUserId());
+
         // Sử dụng hàm helper chung để lấy thông tin và tính toán chi phí
-        return checklists.stream().map(this::mapChecklistToResponseWithDetails).collect(Collectors.toList());
+        return checklists.stream()
+                .map(this::mapChecklistToResponseWithDetails)
+                .collect(Collectors.toList());
     }
 
 
