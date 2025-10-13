@@ -6,6 +6,7 @@ import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.model.request.CreateBookingRequest;
 import com.se1824.SWP391_FA25.model.response.BookingResponse;
+import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
 import com.se1824.SWP391_FA25.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +29,8 @@ public class BookingService {
     private final BookingRepository bookingRepo;
     private final UserRepository userRepo;
     private final MaintenancePlanRepository planRepo;
+    private final MaintenanceChecklistService maintenanceChecklistService;
+    private final AuthenticationService authenticationService;
 
     /*
      *   Lấy thông tin booking thêm booking id
@@ -70,6 +74,28 @@ public class BookingService {
                 .collect(Collectors.toList()));
 
         return dto;
+    }
+    /**
+     * Lấy danh sách booking đã hoàn thành Checklist và sẵn sàng thanh toán
+     */
+    public List<BookingResponse> getBookingsReadyForPayment(String userId) {
+        List<Booking> allBookings = bookingRepo.findByCustomer_UserId(userId);
+        List<BookingResponse> readyForPaymentList = new ArrayList<>();
+        final String STATUS_COMPLETED = "Completed";
+
+        for (Booking booking : allBookings) {
+            try {
+                MaintenanceChecklistResponse checklist =
+                        maintenanceChecklistService.getChecklistByCustomerAndId(booking.getBookingId());
+
+                if (checklist != null && STATUS_COMPLETED.equalsIgnoreCase(checklist.getStatus())) {
+                    readyForPaymentList.add(mapToBookingResponse(booking));
+                }
+            } catch (Exception e) {
+                log.warn("Could not process booking {}: {}", booking.getBookingId(), e.getMessage());
+            }
+        }
+        return readyForPaymentList;
     }
 
     /**
