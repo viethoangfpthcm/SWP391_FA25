@@ -10,11 +10,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateUserRequest {
-    @Pattern(
-            regexp = "^(CU|ST|TE)\\d{3}$",
-            message = "User ID must start with CU, ST, or TE followed by 3 digits"
-    )
-    String userId;
+    //    @Pattern(
+//            regexp = "^(CU|ST|TE)\\d{3}$",
+//            message = "User ID must start with CU, ST, or TE followed by 3 digits"
+//    )
+//    String userId;
     String fullName;
     @Email(message = "Invalid email format")
     String email;

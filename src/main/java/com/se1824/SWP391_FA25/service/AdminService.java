@@ -11,6 +11,7 @@ import com.se1824.SWP391_FA25.repository.ServiceCenterRepository;
 import com.se1824.SWP391_FA25.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -121,14 +122,17 @@ public class AdminService {
     /**
      * User tự update thông tin của mình (không có centerId)
      */
+    @Autowired
+    AuthenticationService authenticationService;
+
     @Transactional
     public UserManagementDTO updateOwnProfile(UpdateUserRequest request) {
-        log.info("User {} updating own profile", request.getUserId());
+        log.info("User {} updating own profile", authenticationService.getCurrentAccount().getUserId());
 
-        Users user = userRepo.findById(request.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User not found with ID: " + request.getUserId()));
-
+//        Users user = userRepo.findById(authenticationService.getCurrentAccount().getUserId());
+//                .orElseThrow(() -> new ResourceNotFoundException(
+//                        "User not found with ID: " + authenticationService.getCurrentAccount().getUserId()));
+        Users user = authenticationService.getCurrentAccount();
         // Update fields (không cho đổi centerId)
         if (request.getFullName() != null && !request.getFullName().trim().isEmpty()) {
             user.setFullName(request.getFullName());
@@ -147,7 +151,7 @@ public class AdminService {
         }
 
         Users updatedUser = userRepo.save(user);
-        log.info("User {} updated own profile successfully", request.getUserId());
+        log.info("User {} updated own profile successfully", authenticationService.getCurrentAccount().getUserId());
 
         return mapToUserManagementDTO(updatedUser);
     }
@@ -157,14 +161,14 @@ public class AdminService {
      */
     @Transactional
     public UserManagementDTO updateUserByAdmin(UpdateUserRequest request, String adminId) {
-        log.info("Admin {} updating user {}", adminId, request.getUserId());
+        log.info("Admin {} updating user {}", adminId, authenticationService.getCurrentAccount().getUserId());
 
         // Validate admin
         validateAdminRole(adminId);
 
-        Users user = userRepo.findById(request.getUserId())
+        Users user = userRepo.findById(authenticationService.getCurrentAccount().getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "User not found with ID: " + request.getUserId()));
+                        "User not found with ID: " + authenticationService.getCurrentAccount().getUserId()));
 
         // Admin có thể update tất cả (trừ userId vì là PK)
         if (request.getFullName() != null && !request.getFullName().trim().isEmpty()) {
@@ -192,7 +196,7 @@ public class AdminService {
         }
 
         Users updatedUser = userRepo.save(user);
-        log.info("Admin updated user {} successfully", request.getUserId());
+        log.info("Admin updated user {} successfully", authenticationService.getCurrentAccount().getUserId());
 
         return mapToUserManagementDTO(updatedUser);
     }

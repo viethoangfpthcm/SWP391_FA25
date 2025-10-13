@@ -24,15 +24,15 @@ public class MaintenanceChecklistController {
     MaintenanceChecklistService checklistService;
 
     //  Lấy checklist theo customer
-    @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<MaintenanceChecklistResponse>> getByCustomer(@PathVariable String customerId) {
-        return ResponseEntity.ok(checklistService.getChecklistByCustomer(customerId));
-    }
+//    @GetMapping("/customer/{customerId}")
+//    public ResponseEntity<List<MaintenanceChecklistResponse>> getByCustomer() {
+//        return ResponseEntity.ok(checklistService.getChecklistByCustomer());
+//    }
 
-    // Lấy checklist theo technician
-    @GetMapping("/technician/{technicianId}")
-    public ResponseEntity<List<MaintenanceChecklistResponse>> getByTechnicianWithVehicle(@PathVariable String technicianId) {
-        List<MaintenanceChecklistResponse> responseList = checklistService.getChecklistByTechnicianWithVehicle(technicianId);
+    // Lấy checklist của technician đang đăng nhập
+    @GetMapping("/technician/my-checklists")
+    public ResponseEntity<List<MaintenanceChecklistResponse>> getMyChecklists() {
+        List<MaintenanceChecklistResponse> responseList = checklistService.getChecklistByCurrentTechnician();
         return ResponseEntity.ok(responseList);
     }
 

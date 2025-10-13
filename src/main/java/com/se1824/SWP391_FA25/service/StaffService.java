@@ -21,6 +21,7 @@ public class StaffService {
 
     private final BookingRepository bookingRepo;
     private final UserRepository userRepo;
+    private final AuthenticationService authService;
 
     /**
      * Lấy danh sách booking Pending (chờ staff xử lý)
@@ -38,6 +39,18 @@ public class StaffService {
                 .map(this::mapToStaffBookingDTO)
                 .collect(Collectors.toList());
     }
+    public List<StaffBookingDTO> getAllBookings() {
+        Users currentStaff = authService.getCurrentAccount();
+        validateStaffRole(currentStaff.getUserId());
+
+        Integer centerId = currentStaff.getServiceCenter().getId();
+        List<Booking> bookings = bookingRepo.findByServiceCenter_Id(centerId);
+
+        return bookings.stream()
+                .map(this::mapToStaffBookingDTO)
+                .collect(Collectors.toList());
+    }
+
 
     /**
      * Staff approve booking
@@ -90,17 +103,15 @@ public class StaffService {
     }
 
     /**
-     * Lấy danh sách technician có thể assign
+     * Lấy danh sách technician của service center mà staff đang làm việc
      */
-    public List<TechnicianDTO> getAvailableTechnicians(Integer centerId) {
-        List<Users> technicians;
+    public List<TechnicianDTO> getAvailableTechnicians() {
+        Users currentStaff = authService.getCurrentAccount();
+        validateStaffRole(currentStaff.getUserId());
 
-        if (centerId != null) {
-            technicians = userRepo.findByServiceCenter_IdAndUserIdStartingWith(
-                    centerId, "TE");
-        } else {
-            technicians = userRepo.findByUserIdStartingWith("TE");
-        }
+        Integer centerId = currentStaff.getServiceCenter().getId();
+        List<Users> technicians = userRepo.findByServiceCenter_IdAndUserIdStartingWith(
+                centerId, "TE");
 
         return technicians.stream()
                 .map(this::mapToTechnicianDTO)

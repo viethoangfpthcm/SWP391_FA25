@@ -32,7 +32,15 @@ public class StaffController {
         List<StaffBookingDTO> bookings = staffService.getPendingBookings(centerId);
         return ResponseEntity.ok(bookings);
     }
-
+    /**
+     * Lấy tất cả booking của service center
+     * GET /api/staff/bookings
+     */
+    @GetMapping("/bookings")
+    public ResponseEntity<List<StaffBookingDTO>> getAllBookings() {
+        List<StaffBookingDTO> bookings = staffService.getAllBookings();
+        return ResponseEntity.ok(bookings);
+    }
     /**
      * Approve booking
      * POST /api/staff/bookings/{bookingId}/approve?staffId={staffId}
@@ -59,13 +67,12 @@ public class StaffController {
     }
 
     /**
-     * Lấy danh sách technician
-     * GET /api/staff/technicians?centerId={centerId}
+     * Lấy danh sách technician của service center
+     * GET /api/staff/technicians
      */
     @GetMapping("/technicians")
-    public ResponseEntity<List<TechnicianDTO>> getAvailableTechnicians(
-            @RequestParam(required = false) Integer centerId) {
-        List<TechnicianDTO> technicians = staffService.getAvailableTechnicians(centerId);
+    public ResponseEntity<List<TechnicianDTO>> getAvailableTechnicians() {
+        List<TechnicianDTO> technicians = staffService.getAvailableTechnicians();
         return ResponseEntity.ok(technicians);
     }
 

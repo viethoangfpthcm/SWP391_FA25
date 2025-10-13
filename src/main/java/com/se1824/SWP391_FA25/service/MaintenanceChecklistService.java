@@ -11,6 +11,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -31,6 +32,7 @@ public class MaintenanceChecklistService {
     MaintenancePlanRepository planRepo;
     PartRepository partRepo;
     ModelMapper modelMapper;
+    AuthenticationService authService;
     String STATUS_ADJUSTMENT = "HIỆU CHỈNH";
     String STATUS_REPAIR = "SỬA CHỮA";
     String STATUS_REPLACE = "THAY THẾ";
@@ -54,22 +56,42 @@ public class MaintenanceChecklistService {
 
 
     /**
-     * Lấy Checklist cho Technician
+     * Lấy Checklist cho Technician đang đăng nhập
      */
-    public List<MaintenanceChecklistResponse> getChecklistByTechnicianWithVehicle(String technicianId) {
-        List<MaintenanceChecklist> checklists = checklistRepo.findByTechnician_UserId(technicianId);
+    public List<MaintenanceChecklistResponse> getChecklistByCurrentTechnician() {
+        Users currentTechnician = authService.getCurrentAccount();
+
+        // Validate technician role
+        if (!currentTechnician.getUserId().startsWith("TE")) {
+            throw new InvalidDataException("Only technicians can access this resource");
+        }
+
+        List<MaintenanceChecklist> checklists = checklistRepo.findByTechnician_UserId(currentTechnician.getUserId());
+
         // Sử dụng hàm helper chung để lấy thông tin và tính toán chi phí
-        return checklists.stream().map(this::mapChecklistToResponseWithDetails).collect(Collectors.toList());
+        return checklists.stream()
+                .map(this::mapChecklistToResponseWithDetails)
+                .collect(Collectors.toList());
     }
 
 
     /**
      * Lấy Checklist cho Customer
      */
-    public List<MaintenanceChecklistResponse> getChecklistByCustomer(String customerId) {
-        List<MaintenanceChecklist> checklists = checklistRepo.findByBooking_Customer_UserId(customerId);
+    @Autowired
+    AuthenticationService authenticationService;
+
+    public List<MaintenanceChecklistResponse> getChecklistByCustomer() {
+        Users currentUser = authenticationService.getCurrentAccount();
+        List<MaintenanceChecklist> checklists = checklistRepo.findByBooking_Customer_UserId(currentUser.getUserId());
         // Sử dụng hàm helper chung
         return checklists.stream().map(this::mapChecklistToResponseWithDetails).collect(Collectors.toList());
+    }
+
+    public MaintenanceChecklistResponse getChecklistByCustomerAndId(Integer bookingId) {
+        MaintenanceChecklist checklist = checklistRepo.findByBooking_BookingId(bookingId).orElse(null);
+
+        return mapChecklistToResponseWithDetails(checklist);
     }
 
     /**
@@ -198,7 +220,6 @@ public class MaintenanceChecklistService {
             checklistRepo.save(checklist);
         }
     }
-
 
 
     /**

@@ -76,11 +76,12 @@ public class SecurityConfig {
                                 "/localhost:5173/**"
                         ).permitAll()
 
-                        // Các API yêu cầu quyền ADMIN
+                        // Các API yêu cầu quyền STAFF
                         .requestMatchers("/api/staff/**").hasRole("STAFF")
-
-                        // Các API yêu cầu quyền USER hoặc ADMIN
-                        .requestMatchers("/api/user/**").hasRole("USER")
+                        // Các API yêu cầu quyền TECHNICIAN
+                        .requestMatchers("/api/checklists/**").hasRole("TECHNICIAN")
+                        // Các API yêu cầu quyền Customer
+                        .requestMatchers("/api/customer/**", "/api/feedback/**").hasRole("CUSTOMER")
                         // Các API yêu cầu quyền ADMIN
                         .requestMatchers("/api/admin/**", "/api/staff/technicians", "/api/staff/bookings/assign-technician").hasRole("ADMIN")
 
