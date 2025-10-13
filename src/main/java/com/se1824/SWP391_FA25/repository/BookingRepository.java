@@ -1,20 +1,21 @@
-package com.se1824.SWP391_FA25.repository;
+    package com.se1824.SWP391_FA25.repository;
 
-import com.se1824.SWP391_FA25.entity.Booking;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+    import com.se1824.SWP391_FA25.entity.Booking;
+    import org.springframework.data.jpa.repository.JpaRepository;
+    import org.springframework.stereotype.Repository;
 
-import java.util.List;
+    import java.util.List;
 
-@Repository
-public interface BookingRepository extends JpaRepository<Booking, Integer> {
-    List<Booking> findByCustomer_UserId(String userId);
+    @Repository
+    public interface BookingRepository extends JpaRepository<Booking, Integer> {
+        List<Booking> findByCustomer_UserId(String userId);
 
-    List<Booking> findByServiceCenter_IdAndStatus(Integer centerId, String status);
+        List<Booking> findByServiceCenter_IdAndStatus(Integer centerId, String status);
 
-    List<Booking> findByStatus(String status);
+        List<Booking> findByStatus(String status);
 
-    int countByAssignedTechnician_UserIdAndStatusIn(String technicianId, List<String> statuses);
+        int countByAssignedTechnician_UserIdAndStatusIn(String technicianId, List<String> statuses);
 
-    Booking findByBookingIdAndStatus(Integer bookingId, String status);
-}
+        Booking findByBookingIdAndStatus(Integer bookingId, String status);
+        List<Booking> findByServiceCenter_Id(Integer centerId);
+    }
