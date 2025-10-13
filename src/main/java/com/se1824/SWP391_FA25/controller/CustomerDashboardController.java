@@ -16,8 +16,8 @@ public class CustomerDashboardController {
     private final CustomerDashboardService dashboardService;
 
     @GetMapping("/dashboard/{userId}")
-    public ResponseEntity<CustomerDashboardDTO> getDashboard(
-            @PathVariable String userId) {
-        return ResponseEntity.ok(dashboardService.getDashboard(userId));
+    public ResponseEntity<CustomerDashboardDTO> getDashboard()
+            {
+        return ResponseEntity.ok(dashboardService.getDashboard());
     }
 }
