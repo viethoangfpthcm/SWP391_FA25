@@ -11,6 +11,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -66,8 +67,12 @@ public class MaintenanceChecklistService {
     /**
      * Lấy Checklist cho Customer
      */
-    public List<MaintenanceChecklistResponse> getChecklistByCustomer(String customerId) {
-        List<MaintenanceChecklist> checklists = checklistRepo.findByBooking_Customer_UserId(customerId);
+    @Autowired
+    AuthenticationService authenticationService;
+
+    public List<MaintenanceChecklistResponse> getChecklistByCustomer() {
+        Users currentUser = authenticationService.getCurrentAccount();
+        List<MaintenanceChecklist> checklists = checklistRepo.findByBooking_Customer_UserId(currentUser.getUserId());
         // Sử dụng hàm helper chung
         return checklists.stream().map(this::mapChecklistToResponseWithDetails).collect(Collectors.toList());
     }
