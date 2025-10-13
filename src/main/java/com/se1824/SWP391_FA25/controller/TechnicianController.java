@@ -1,6 +1,8 @@
 package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.entity.Users;
+import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
+import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.model.response.AssignedBookingTechnicianResponse;
 import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
 import com.se1824.SWP391_FA25.service.MaintenanceChecklistService;
@@ -80,6 +82,24 @@ public class TechnicianController {
 
         checklistService.updateChecklistDetail(detailId, status, note, partId, currentUserId);
         return ResponseEntity.ok("Checklist detail updated successfully");
+    }
+    /**
+     * API để Technician đánh dấu Checklist đã hoàn thành.
+     * Logic trừ Part sẽ được thực hiện bên trong service.
+     */
+    @PostMapping("/{checklistId}/complete")
+    public ResponseEntity<String> completeChecklist(@PathVariable Integer checklistId) {
+        try {
+            checklistService.completeChecklist(checklistId);
+            return ResponseEntity.ok("Checklist for ID " + checklistId + " completed successfully. Part inventory updated.");
+
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (InvalidDataException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An unexpected error occurred: " + e.getMessage());
+        }
     }
 
 }
