@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { FaBars, FaClock, FaTools, FaCheckCircle, FaClipboardList } from "react-icons/fa";
+import {
+  FaBars,
+  FaClock,
+  FaTools,
+  FaCheckCircle,
+  FaClipboardList,
+  FaPlay,
+} from "react-icons/fa";
 import Sidebar from "../sidebar/sidebar";
+import { useNavigate } from "react-router-dom";
 import "./technicantask.css";
 
-const TechnicianTask = ({ technicianId }) => {
+export default function TechnicianTask() {
   const [tasks, setTasks] = useState([]);
   const [summary, setSummary] = useState({
     pending: 0,
@@ -12,46 +20,93 @@ const TechnicianTask = ({ technicianId }) => {
     total: 0,
   });
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  // 🟢 Lấy danh sách nhiệm vụ
+  const fetchTasks = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:8080/api/technician/my-tasks", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Không thể tải danh sách nhiệm vụ");
+      const data = await res.json();
+
+      const pending = data.filter((t) => t.status === "Chờ xử lý").length;
+      const inProgress = data.filter((t) => t.status === "Đang thực hiện").length;
+      const completed = data.filter((t) => t.status === "Hoàn thành").length;
+
+      setTasks(data);
+      setSummary({
+        pending,
+        inProgress,
+        completed,
+        total: data.length,
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch(`/api/checklists/technician/${technicianId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setTasks(data);
-        const pending = data.filter((t) => t.status === "Pending").length;
-        const inProgress = data.filter((t) => t.status === "In Progress").length;
-        const completed = data.filter((t) => t.status === "Completed").length;
-        setSummary({
-          pending,
-          inProgress,
-          completed,
-          total: data.length,
-        });
-      })
-      .catch((err) => console.error("Error:", err));
-  }, [technicianId]);
+    fetchTasks();
+  }, []);
+
+  // 🟡 Bắt đầu nhiệm vụ → gọi API + chuyển checklist
+  const handleStartTask = async (bookingId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `http://localhost:8080/api/technician/start/${bookingId}`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!res.ok) throw new Error("Không thể bắt đầu nhiệm vụ này");
+      navigate("/checklist");
+    } catch (err) {
+      console.error("Lỗi khi bắt đầu nhiệm vụ:", err);
+      alert("Không thể bắt đầu nhiệm vụ. Vui lòng thử lại!");
+    }
+  };
+
+  if (loading) return <p className="loading">⏳ Đang tải dữ liệu...</p>;
 
   return (
-    <div className={`technician-page ${sidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
+    <div
+      className={`technician-page ${
+        sidebarOpen ? "sidebar-open" : "sidebar-closed"
+      }`}
+    >
       <Sidebar sidebarOpen={sidebarOpen} />
 
       <div className="content">
         {/* Header */}
         <header className="header">
           <div className="header-left">
-            <FaBars className="menu-icon" onClick={() => setSidebarOpen(!sidebarOpen)} />
+            <FaBars
+              className="menu-icon"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            />
             <div className="header-text">
               <h1>EV SERVICE</h1>
-              <p>Management System</p>
+              <p>Technician Management System</p>
             </div>
           </div>
           <div className="header-right">
-            <span className="technician-name">Technician</span>
+            <span className="technician-name">Kỹ thuật viên</span>
           </div>
         </header>
 
+        {/* Nội dung */}
         <div className="inner">
-          {/* Summary */}
+          {/* Thống kê */}
           <div className="summary-cards">
             <div className="card pending">
               <FaClock />
@@ -75,34 +130,71 @@ const TechnicianTask = ({ technicianId }) => {
             </div>
           </div>
 
-          {/* Task Table */}
+          {/* Danh sách nhiệm vụ */}
           <div className="task-section">
-            <h2>Danh sách nhiệm vụ</h2>
-            <table className="task-table">
-              <thead>
-                <tr>
-                  <th>Mã nhiệm vụ</th>
-                  <th>Tên nhiệm vụ</th>
-                  <th>Trạng thái</th>
-                  <th>Thời gian</th>
-                </tr>
-              </thead>
-              <tbody>
+            <h2>Nhiệm vụ được giao</h2>
+
+            {tasks.length === 0 ? (
+              <p className="no-task">Không có nhiệm vụ nào được giao.</p>
+            ) : (
+              <div className="task-list">
                 {tasks.map((task) => (
-                  <tr key={task.id}>
-                    <td>{task.id}</td>
-                    <td>{task.name}</td>
-                    <td>{task.status}</td>
-                    <td>{task.time}</td>
-                  </tr>
+                  <div key={task.bookingId} className="task-card">
+                    <div className="task-header">
+                      <span
+                        className={`status-badge ${
+                          task.status === "Chờ xử lý"
+                            ? "pending"
+                            : task.status === "Đang thực hiện"
+                            ? "in-progress"
+                            : "completed"
+                        }`}
+                      >
+                        {task.status}
+                      </span>
+                      <span className="task-id">
+                        Mã nhiệm vụ: {task.bookingId}
+                      </span>
+                    </div>
+
+                    <div className="task-body">
+                      <p>
+                        <strong>Tên khách hàng:</strong> {task.customerName}
+                      </p>
+                      <p>
+                        <strong>Biển số xe:</strong> {task.vehiclePlate}
+                      </p>
+                      <p>
+                        <strong>Ngày hẹn:</strong>{" "}
+                        {new Date(task.bookingDate).toLocaleDateString()}
+                      </p>
+                      <p>
+                        <strong>Kỹ thuật viên:</strong>{" "}
+                        {task.assignedTechnician || "—"}
+                      </p>
+                      <p>
+                        <strong>Địa chỉ:</strong> {task.address || "Không có"}
+                      </p>
+                      <p>
+                        <strong>Ghi chú:</strong> {task.note || "Không có"}
+                      </p>
+                    </div>
+
+                    <div className="task-footer">
+                      <button
+                        className="btn-start"
+                        onClick={() => handleStartTask(task.bookingId)}
+                      >
+                        <FaPlay /> Bắt đầu
+                      </button>
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default TechnicianTask;
+}

@@ -1,191 +1,185 @@
-/* ========== PAGE WRAPPER ========== */
+/* Cấu trúc trang chính */
 .page-container {
   display: flex;
-  background-color: #f8fafc;
   min-height: 100vh;
-  color: #0f172a;
-  transition: all 0.3s ease;
+  background-color: #f8fafc;
 }
 
-/* Khi sidebar luôn mở */
-.page-container .content {
-  margin-left: 260px;
+/* Chừa khoảng cho sidebar cố định */
+.content {
   flex: 1;
-  padding: 24px;
+  margin-left: 260px; /* = độ rộng sidebar */
+  padding: 25px;
   transition: all 0.3s ease;
 }
 
-/* Responsive: nếu sidebar đóng */
-@media (max-width: 768px) {
-  .page-container .content {
-    margin-left: 80px;
-    padding: 16px;
-  }
+/* Nếu sidebar đóng (width = 80px) */
+.sidebar.closed + .content {
+  margin-left: 80px;
 }
 
-/* ========== HEADER BAR ========== */
+/* Header */
 .header-bar {
-  background-color: #1e293b;
-  color: #e2e8f0;
-  padding: 14px 20px;
-  border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.3);
+  background-color: #e0f2fe;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
 }
 
 .header-bar h2 {
-  font-size: 18px;
+  color: #0369a1;
+  font-size: 20px;
+  font-weight: 700;
   margin: 0;
-  color: #38bdf8;
 }
 
-.header-bar p {
-  font-size: 13px;
-  margin: 2px 0 0;
-  color: #cbd5e1;
-}
-
-/* ========== BUTTON GROUP ========== */
+/* Nút hành động */
 .btn-group {
   display: flex;
   gap: 10px;
 }
 
 .btn-primary,
-.btn-secondary {
+.btn-success {
   display: flex;
   align-items: center;
   gap: 6px;
   border: none;
-  cursor: pointer;
-  font-size: 14px;
+  border-radius: 8px;
   padding: 8px 14px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  font-weight: 500;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
 }
 
 .btn-primary {
-  background-color: #2f71c2;
-  color: #fff;
+  background-color: #0ea5e9;
+  color: white;
 }
 
 .btn-primary:hover {
-  background-color: #1d4ed8;
+  background-color: #0284c7;
 }
 
-.btn-secondary {
-  background-color: #334155;
-  color: #cbd5e1;
+.btn-success {
+  background-color: #22c55e;
+  color: white;
 }
 
-.btn-secondary:hover {
-  background-color: #475569;
+.btn-success:hover {
+  background-color: #16a34a;
 }
 
-/* ========== VEHICLE CARD ========== */
-.vehicle-card {
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+/* Tổng quan */
+.overview-section {
+  background: white;
+  border-radius: 12px;
   padding: 20px;
-  margin-bottom: 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 25px;
 }
 
-.vehicle-card h3 {
-  color: #1e3a8a;
-  font-size: 16px;
-  margin-bottom: 12px;
+.overview-section h3 {
+  color: #0369a1;
+  margin-bottom: 15px;
 }
 
-.vehicle-grid {
+.overview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 8px 20px;
-  font-size: 14px;
-  color: #0f172a;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 20px;
 }
 
-/* ========== SECTION TITLE ========== */
-.section-title {
-  font-size: 17px;
+.btn-toggle-details {
+  background-color: #0284c7;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
   font-weight: 600;
-  margin: 16px 0 10px;
-  color: #22387a;
+  margin-top: 15px;
+  cursor: pointer;
 }
 
-/* ========== CHECKLIST TABLE ========== */
+.btn-toggle-details:hover {
+  background-color: #0369a1;
+}
+
+/* Bảng chi tiết checklist */
 .checklist-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #ffffff;
+  background: white;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.checklist-table thead {
-  background-color: #0f172a;
-  color: #ffffff;
+.checklist-table th {
+  background-color: #0ea5e9;
+  color: white;
+  text-align: left;
+  padding: 12px;
   font-size: 14px;
 }
 
-.checklist-table th,
 .checklist-table td {
   padding: 10px 12px;
-  border-bottom: 1px solid #e2e8f0;
-  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.checklist-table tbody tr:hover {
-  background-color: #f1f5f9;
+.checklist-table tr:nth-child(even) {
+  background-color: #f9fafb;
 }
 
-/* ========== STATUS COLORS ========== */
-.status.good {
-  color: #16a34a;
+.checklist-table select,
+.checklist-table input[type="text"] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.total-row {
+  background-color: #e0f2fe;
+  font-weight: bold;
+}
+
+.total-row td {
+  border-top: 2px solid #0ea5e9;
+}
+
+/* Thông báo */
+.saving {
+  margin-top: 15px;
+  color: #0284c7;
   font-weight: 600;
 }
+/* ====== FIX SIDEBAR CHE MẤT CHECKLIST ====== */
 
-.status.replace {
-  color: #f59e0b;
-  font-weight: 600;
+/* Tạo khoảng cách bên trái bằng đúng chiều rộng sidebar */
+.page-container {
+  display: flex;
+  background-color: #f8fafc;
 }
 
-/* ========== APPROVAL STATUS ========== */
-.approval.approved {
-  color: #22c55e;
-  font-weight: 600;
+/* Nội dung chính cách ra để không bị che */
+.content {
+  flex: 1;
+  padding: 25px;
+  margin-left: 260px !important; /* Sidebar width */
+  transition: all 0.3s ease;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: #f9fafb;
 }
 
-.approval.declined {
-  color: #ef4444;
-  font-weight: 600;
-}
-
-.approval.pending {
-  color: #f59e0b;
-  font-weight: 600;
-}
-
-/* ========== EMPTY / ERROR / LOADING ========== */
-.loading,
-.error,
-.empty {
-  text-align: center;
-  margin-top: 40px;
-  color: #475569;
-  font-size: 15px;
-}
-
-.error {
-  color: #ef4444;
-}
-
-/* ========== SCROLL FIX FOR LONG TABLES ========== */
-.checklist-table-container {
-  overflow-x: auto;
+/* Nếu sau này sidebar có thể đóng (width: 80px) */
+.sidebar.closed ~ .content {
+  margin-left: 80px !important;
 }

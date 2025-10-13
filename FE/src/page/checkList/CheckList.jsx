@@ -1,124 +1,269 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../sidebar/sidebar"; // ✅ Gọi lại sidebar có sẵn
-
+import Sidebar from "../sidebar/sidebar";
+import { Send, CheckCircle } from "lucide-react"; // 🆕 thêm icon
 import "./CheckList.css";
+import { useNavigate } from "react-router-dom"; // ✅ đổi từ Navigate sang useNavigate
 
 export default function CheckList() {
   const [checklist, setChecklist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [updating, setUpdating] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+
+  const navigate = useNavigate(); // ✅ thêm hook điều hướng
+
+  const statusOptions = [
+    { value: "TỐT", label: "Tốt" },
+    { value: "HIỆU CHỈNH", label: "Hiệu chỉnh" },
+    { value: "SỬA CHỮA", label: "Sửa chữa" },
+    { value: "THAY THẾ", label: "Thay thế" },
+  ];
+
+  // 🟢 Fetch checklist
+  const fetchChecklist = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Thiếu token");
+
+      const res = await fetch("http://localhost:8080/api/technician/my-checklists", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error(`Không thể tải checklist (status ${res.status})`);
+      const data = await res.json();
+      if (!data || data.length === 0) {
+        setError("Không có checklist cho kỹ thuật viên này");
+        return;
+      }
+
+      setChecklist(data[0]);
+    } catch (err) {
+      setError(err.message || "Lỗi khi tải checklist");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const customerId = localStorage.getItem("userId");
-        const res = await fetch(
-          `http://localhost:8080/api/customer/maintenance/checklists?customerId=${customerId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (!res.ok)
-          throw new Error("Không thể tải dữ liệu (token hết hạn hoặc chưa đăng nhập).");
-
-        const data = await res.json();
-        if (data.length > 0) setChecklist(data[0]);
-        else setError("Không có dữ liệu bảo dưỡng.");
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    fetchChecklist();
   }, []);
 
-  if (loading) return <p className="loading">Đang tải dữ liệu...</p>;
+  // 🟡 Cập nhật backend + reload giá mới
+  const handleUpdate = async (detailId, field, value) => {
+    if (!checklist) return;
+
+    // Cập nhật local UI tạm thời
+    setChecklist((prev) => {
+      const updated = { ...prev };
+      updated.details = updated.details.map((item) =>
+        item.id === detailId ? { ...item, [field]: value } : item
+      );
+      return updated;
+    });
+
+    // Gọi API PUT
+    try {
+      const token = localStorage.getItem("token");
+      const item = checklist.details.find((d) => d.id === detailId);
+
+      const status = field === "status" ? value : item?.status || "";
+      const note = field === "note" ? value : item?.note || "";
+      const partId = field === "partId" ? value : item?.partId || "";
+
+      const url = `http://localhost:8080/api/technician/detail/${detailId}?status=${encodeURIComponent(
+        status
+      )}&note=${encodeURIComponent(note)}&partId=${partId}`;
+
+      setUpdating(true);
+      await fetch(url, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      await fetchChecklist();
+    } catch (err) {
+      console.error("❌ Lỗi khi cập nhật:", err);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  // 🟢 Nút gửi checklist (chỉ hiển thị thông báo)
+  const handleSendToCustomer = () => {
+    alert("📨 Gửi checklist cho Customer !");
+  };
+
+  // 🟢 Nút hoàn thành checklist (gọi API thật)
+  const handleCompleteChecklist = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const url = `http://localhost:8080/api/technician/${checklist.id}/complete`;
+
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error(`Không thể hoàn thành checklist (status ${res.status})`);
+
+      alert("✅ Checklist đã được đánh dấu là hoàn thành!");
+      
+      await fetchChecklist(); // reload lại dữ liệu
+
+      navigate("/staff"); // ✅ chuyển hướng về staff sau khi hoàn thành
+
+    } catch (err) {
+      console.error("❌ Lỗi khi hoàn thành checklist:", err);
+      alert("❌ Lỗi khi hoàn thành checklist!");
+    }
+  };
+
+  if (loading) return <p>⏳ Đang tải dữ liệu...</p>;
   if (error) return <p className="error">{error}</p>;
+  if (!checklist) return <p>Không có dữ liệu hiển thị</p>;
+
+  const totalLaborCost = checklist.details.reduce(
+    (sum, d) => sum + (d.laborCost || 0),
+    0
+  );
+  const totalMaterialCost = checklist.details.reduce(
+    (sum, d) => sum + (d.materialCost || 0),
+    0
+  );
 
   return (
     <div className="page-container">
-      {/* ✅ Sidebar tái sử dụng */}
       <Sidebar sidebarOpen={true} />
-
-      {/* ✅ Main content */}
       <main className="content">
         <div className="header-bar">
           <div>
-            <h2>Bảng Kiểm Tra Xe</h2>
-            <p>Work Order: <strong>WO-2024-001</strong></p>
+            <h2>🧰 Bảng kiểm tra bảo dưỡng</h2>
           </div>
           <div className="btn-group">
-            <button className="btn-secondary">
-              <Save size={16}/> Lưu nháp
+            <button className="btn-primary" onClick={handleSendToCustomer}>
+              <Send size={16} /> Gửi cho Customer
             </button>
-            <button className="btn-primary">
-              <CheckCircle size={16}/> Hoàn thành kiểm tra
+
+            <button
+              className="btn-success"
+              onClick={handleCompleteChecklist}
+              style={{ marginLeft: "10px" }}
+            >
+              <CheckCircle size={16} /> Hoàn thành
             </button>
           </div>
         </div>
 
-        {/* Thông tin xe */}
-        <div className="vehicle-card">
-          <h3>🚗 Thông tin xe</h3>
-          <div className="vehicle-grid">
-            <p><strong>Biển số:</strong> {checklist.vehicleNumberPlate}</p>
-            <p><strong>Hãng xe:</strong> {checklist.brand || "VinFast"}</p>
-            <p><strong>Model:</strong> {checklist.vehicleModel}</p>
-            <p><strong>Năm SX:</strong> 2023</p>
-            <p><strong>Số km:</strong> {checklist.currentKm} km</p>
-            <p><strong>Kỹ thuật viên:</strong> {checklist.technicianName}</p>
+        {/* 🟢 Tổng quan việc cần làm */}
+        <div className="overview-section">
+          <h3>📋 Tổng quan bảo dưỡng</h3>
+          <div className="overview-grid">
+            <p><strong>Tên lịch trình:</strong> {checklist.scheduleName}</p>
+            <p><strong>Ngày tạo:</strong> {new Date(checklist.createdDate).toLocaleDateString()}</p>
             <p><strong>Trạng thái:</strong> {checklist.status}</p>
+            <p><strong>Kỹ thuật viên:</strong> {checklist.technicianName}</p>
+            <p><strong>Xe:</strong> {checklist.vehicleModel} ({checklist.vehicleNumberPlate})</p>
+            <p><strong>Km hiện tại:</strong> {checklist.currentKm?.toLocaleString()} km</p>
+            <p><strong>Km bảo dưỡng:</strong> {checklist.maintenanceKm?.toLocaleString()} km</p>
+            <p><strong>Chi phí ước tính:</strong> {checklist.estimatedCost?.toLocaleString()}₫</p>
+            <p><strong>Đã duyệt:</strong> {checklist.totalCostApproved?.toLocaleString()}₫</p>
+            <p><strong>Từ chối:</strong> {checklist.totalCostDeclined?.toLocaleString()}₫</p>
           </div>
+
+          <button
+            className="btn-toggle-details"
+            onClick={() => setShowDetails(!showDetails)}
+          >
+            {showDetails ? "Ẩn chi tiết" : "Xem chi tiết"}
+          </button>
         </div>
 
-        {/* Danh sách hạng mục */}
-        <h3 className="section-title">📋 Danh sách kiểm tra</h3>
-        {checklist.details && checklist.details.length > 0 ? (
-          <table className="checklist-table">
-            <thead>
-              <tr>
-                <th>STT</th>
-                <th>Hạng mục</th>
-                <th>Trạng thái</th>
-                <th>Phê duyệt</th>
-                <th>Phụ tùng</th>
-                <th>Ghi chú</th>
-              </tr>
-            </thead>
-            <tbody>
-              {checklist.details.map((item, index) => (
-                <tr key={item.id}>
-                  <td>{index + 1}</td>
-                  <td>{item.itemName}</td>
-                  <td className={`status ${item.status === "Tốt" ? "good" : "replace"}`}>
-                    {item.status}
-                  </td>
-                  <td
-                    className={`approval ${
-                      item.approvalStatus === "APPROVED"
-                        ? "approved"
-                        : item.approvalStatus === "DECLINED"
-                        ? "declined"
-                        : "pending"
-                    }`}
-                  >
-                    {item.approvalStatus}
-                  </td>
-                  <td>{item.partName || "—"}</td>
-                  <td>{item.customerNote || "—"}</td>
+        {/* 🟡 Chi tiết checklist */}
+        {showDetails && (
+          <>
+            <table className="checklist-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Hạng mục</th>
+                  <th>Trạng thái</th>
+                  <th>Phụ tùng (nếu thay thế)</th>
+                  <th>Chi phí công</th>
+                  <th>Chi phí vật tư</th>
+                  <th>Ghi chú</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="empty">Không có hạng mục nào.</p>
+              </thead>
+              <tbody>
+                {checklist.details.map((item, idx) => (
+                  <tr key={item.id}>
+                    <td>{idx + 1}</td>
+                    <td>{item.itemName}</td>
+
+                    <td>
+                      <select
+                        value={item.status || ""}
+                        onChange={(e) =>
+                          handleUpdate(item.id, "status", e.target.value)
+                        }
+                      >
+                        <option value="">-- Chọn trạng thái --</option>
+                        {statusOptions.map((s) => (
+                          <option key={s.value} value={s.value}>
+                            {s.label}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+
+                    <td>
+                      {item.status === "THAY THẾ" ? (
+                        <select
+                          value={item.partId || ""}
+                          onChange={(e) =>
+                            handleUpdate(item.id, "partId", e.target.value)
+                          }
+                        >
+                          <option value="">-- Chọn phụ tùng --</option>
+                          {item.availableParts?.map((p) => (
+                            <option key={p.partId} value={p.partId}>
+                              {p.partName}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+
+                    <td>{item.laborCost ? `${item.laborCost.toLocaleString()}₫` : "—"}</td>
+                    <td>{item.materialCost ? `${item.materialCost.toLocaleString()}₫` : "—"}</td>
+
+                    <td>
+                      <input
+                        type="text"
+                        value={item.note || ""}
+                        placeholder="Nhập ghi chú..."
+                        onChange={(e) => handleUpdate(item.id, "note", e.target.value)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+
+                <tr className="total-row">
+                  <td colSpan={4} style={{ textAlign: "right", fontWeight: "bold" }}>
+                    Tổng:
+                  </td>
+                  <td style={{ fontWeight: "bold" }}>{totalLaborCost.toLocaleString()}₫</td>
+                  <td style={{ fontWeight: "bold" }}>{totalMaterialCost.toLocaleString()}₫</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </>
         )}
+
+        {updating && <p className="saving">💾 Đang lưu thay đổi...</p>}
       </main>
     </div>
   );
