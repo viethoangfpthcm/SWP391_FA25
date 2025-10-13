@@ -34,16 +34,17 @@ public class CustomerDashboardService {
     private final MaintenancePlanRepository planRepo;
     private final UserRepository userRepo;
 
-    public CustomerDashboardDTO getDashboard(String userId) {
+    public CustomerDashboardDTO getDashboard() {
+        AuthenticationService authentication = new AuthenticationService();
+        Users currentUser = authentication.getCurrentAccount();
         CustomerDashboardDTO dashboard = new CustomerDashboardDTO();
 
         // Get customer info
-        Users customer = userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-        dashboard.setCustomerInfo(mapToCustomerInfo(customer));
+
+        dashboard.setCustomerInfo(mapToCustomerInfo(currentUser));
 
         // Get vehicles
-        List<Vehicle> vehicles = vehicleRepo.findByOwner_UserId(userId);
+        List<Vehicle> vehicles = vehicleRepo.findByOwner_UserId(currentUser.getUserId());
         dashboard.setVehicles(vehicles.stream()
                 .map(this::mapToVehicleOverview)
                 .collect(Collectors.toList()));
@@ -53,7 +54,7 @@ public class CustomerDashboardService {
                 generateMaintenanceReminders(vehicles));
 
         // Get booking stats
-        dashboard.setBookingStats(getBookingStats(userId));
+        dashboard.setBookingStats(getBookingStats(currentUser.getUserId()));
 
         return dashboard;
     }

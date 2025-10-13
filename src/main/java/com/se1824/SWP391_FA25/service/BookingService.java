@@ -28,6 +28,15 @@ public class BookingService {
     private final UserRepository userRepo;
     private final MaintenancePlanRepository planRepo;
 
+    /*
+     *   Lấy thông tin booking thêm booking id
+     */
+    public Booking getBookingById(Integer bookingId) {
+        return bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Booking not found with ID: " + bookingId));
+    }
+
     /**
      * Lấy thông tin xe để chuẩn bị đặt lịch
      */

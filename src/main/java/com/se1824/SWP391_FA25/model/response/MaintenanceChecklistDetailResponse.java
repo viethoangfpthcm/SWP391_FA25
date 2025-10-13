@@ -18,8 +18,6 @@ public class MaintenanceChecklistDetailResponse {
     String status;
     String approvalStatus;
     String note;
-    String partName;
-    Integer partQuantityUsed;
     String customerNote;
     BigDecimal laborCost;
     BigDecimal materialCost;

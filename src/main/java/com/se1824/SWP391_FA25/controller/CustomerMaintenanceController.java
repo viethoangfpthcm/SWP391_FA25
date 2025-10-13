@@ -19,23 +19,27 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class CustomerMaintenanceController {
     private final MaintenanceChecklistService checklistService;
+
     /**
      * Lấy danh sách checklist của khách hàng theo customerId
+     *
      * @param customerId ID khách hàng (user)
      * @return danh sách checklist
      */
     @GetMapping("/checklists")
     public ResponseEntity<List<MaintenanceChecklistResponse>> getCustomerChecklists(
-            @RequestParam String customerId) {
+    ) {
 
-        List<MaintenanceChecklistResponse> responses = checklistService.getChecklistByCustomer(customerId);
+        List<MaintenanceChecklistResponse> responses = checklistService.getChecklistByCustomer();
         return ResponseEntity.ok(responses);
     }
+
     /**
      * Cập nhật trạng thái phê duyệt và ghi chú của khách hàng cho một chi tiết checklist
-     * @param detailId ID chi tiết checklist
+     *
+     * @param detailId       ID chi tiết checklist
      * @param approvalStatus Trạng thái phê duyệt: APPROVED, DECLINED, PENDING
-     * @param customerNote Ghi chú của khách hàng (có thể null)
+     * @param customerNote   Ghi chú của khách hàng (có thể null)
      * @return thông báo thành công
      */
     @PutMapping("/checklists/details/{detailId}/approval")
