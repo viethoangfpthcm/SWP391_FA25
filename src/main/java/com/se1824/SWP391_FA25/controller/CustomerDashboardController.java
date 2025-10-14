@@ -24,13 +24,15 @@ public class CustomerDashboardController {
     private final CustomerDashboardService dashboardService;
 
     private final BookingService bookingService;
-    private final AuthenticationService authenticationService;
+    //private final AuthenticationService authenticationService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @GetMapping("/dashboard/{userId}")
-    public ResponseEntity<CustomerDashboardDTO> getDashboard()
-            {
+    public ResponseEntity<CustomerDashboardDTO> getDashboard() {
         return ResponseEntity.ok(dashboardService.getDashboard());
     }
+
     /**
      * Endpoint để lấy danh sách các Booking đã sẵn sàng thanh toán
      */
