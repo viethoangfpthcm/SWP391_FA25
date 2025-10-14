@@ -27,7 +27,7 @@ public class PaymentService {
 
     public PaymentResponse savePayment(Payment payment, Integer bookingId) {
         payment.setBooking(bookingService.getBookingById(bookingId));
-        Users currentUser = authenticationService.getCurrentAccount();
+        //Users currentUser = authenticationService.getCurrentAccount();
         MaintenanceChecklistResponse checklistDetails = maintenanceChecklistService.getChecklistByCustomerAndId(bookingId);
         BigDecimal totalAmount = BigDecimal.ZERO;
         BigDecimal laborCost = BigDecimal.ZERO;
