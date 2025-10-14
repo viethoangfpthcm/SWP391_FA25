@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import "./Payment.css";
 
 export default function PaymentReady() {
@@ -50,14 +50,24 @@ export default function PaymentReady() {
                             <h3>{item.centerName || "Trung tâm không xác định"}</h3>
                             <p>Xe: {item.vehicleModel || "Không rõ"} - {item.vehiclePlate || "Không rõ"}</p>
                             <p>Địa chỉ: {item.centerAddress || "Không có thông tin"}</p>
-                            <p>Ngày đặt: {item.bookingDate ? new Date(item.bookingDate).toLocaleString() : "Không rõ"}</p>
+                            <p>Ngày
+                                đặt: {item.bookingDate ? new Date(item.bookingDate).toLocaleString() : "Không rõ"}</p>
                             <p>Trạng thái: {item.status || "Không rõ"}</p>
                             <p>Ghi chú: {item.note || "Không có"}</p>
                             <p>Số tiền: {Number(item.amount || 0).toLocaleString()} VND</p>
 
                             <button
                                 className="btn-pay"
-                                onClick={() => navigate(`/payment/process/${item.bookingId || item.id}`)}
+                                // onClick={() => navigate(`/payment/process/${item.bookingId || item.id}`)}
+                                onClick={() => {
+                                    const bookingId = item.bookingId || item.id;
+                                    console.log("Navigating with booking ID:", bookingId); // Thêm dòng này
+                                    if (bookingId) {
+                                        navigate(`/payment/process/${bookingId}`);
+                                    } else {
+                                        console.error("Booking ID is undefined!");
+                                    }
+                                }}
                             >
                                 Thanh toán
                             </button>

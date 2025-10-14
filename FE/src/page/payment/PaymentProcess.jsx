@@ -1,67 +1,68 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useParams, useNavigate} from "react-router-dom";
 import "./Payment.css";
 
 export default function PaymentProcess() {
-    const { id } = useParams();
+    const {id} = useParams();
     const navigate = useNavigate();
     const [payment, setPayment] = useState(null);
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState(false);
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        const fetchPaymentDetail = async () => {
-            try {
-                const token = localStorage.getItem("token");
-
-                if (!token) {
-                    setError("Bạn chưa đăng nhập hoặc token hết hạn!");
-                    navigate("/login");
-                    return;
-                }
-
-                const res = await fetch(`http://localhost:8080/api/booking/${id}`, {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Accept": "application/json",
-                    },
-                });
-
-                if (res.status === 401) {
-                    setError("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
-                    navigate("/login");
-                    return;
-                }
-
-                if (res.status === 403) {
-                    setError("Bạn không có quyền truy cập thông tin đơn hàng này!");
-                    return;
-                }
-
-                if (!res.ok) {
-                    setError(`Lỗi máy chủ: ${res.status}`);
-                    return;
-                }
-
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.includes("application/json")) {
-                    const data = await res.json();
-                    setPayment(data);
-                } else {
-                    setError("Phản hồi từ server không phải JSON hợp lệ!");
-                }
-            } catch (err) {
-                console.error("Lỗi khi tải chi tiết thanh toán:", err);
-                setError("Lỗi kết nối đến server!");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPaymentDetail();
-    }, [id, navigate]);
+    // useEffect(() => {
+    //     const fetchPaymentDetail = async () => {
+    //         try {
+    //             const token = localStorage.getItem("token");
+    //             const bookingId = parseInt(id, 10);
+    //
+    //             if (!token) {
+    //                 setError("Bạn chưa đăng nhập hoặc token hết hạn!");
+    //                 navigate("/login");
+    //                 return;
+    //             }
+    //
+    //             const res = await fetch(`http://localhost:8080/api/customer/customerBookings/${bookingId}`, {
+    //                 method: "GET",
+    //                 headers: {
+    //                     "Authorization": `Bearer ${token}`,
+    //                     "Accept": "application/json",
+    //                 },
+    //             });
+    //
+    //             if (res.status === 401) {
+    //                 setError("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
+    //                 navigate("/login");
+    //                 return;
+    //             }
+    //
+    //             if (res.status === 403) {
+    //                 setError("Bạn không có quyền truy cập thông tin đơn hàng này!");
+    //                 return;
+    //             }
+    //
+    //             if (!res.ok) {
+    //                 setError(`Lỗi máy chủ: ${res.status}`);
+    //                 return;
+    //             }
+    //
+    //             const contentType = res.headers.get("content-type");
+    //             if (contentType && contentType.includes("application/json")) {
+    //                 const data = await res.json();
+    //                 setPayment(data);
+    //             } else {
+    //                 setError("Phản hồi từ server không phải JSON hợp lệ!");
+    //             }
+    //         } catch (err) {
+    //             console.error("Lỗi khi tải chi tiết thanh toán:", err);
+    //             setError("Lỗi kết nối đến server!");
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //
+    //     fetchPaymentDetail();
+    // }, [id, navigate]);
 
     const handlePayment = async () => {
         setProcessing(true);

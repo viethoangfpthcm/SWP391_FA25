@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import {Routes, Route} from "react-router-dom";
 import LoginForm from "./page/login/LoginForm.jsx";
 import CheckList from "./page/checkList/CheckList.jsx";
 import TechnicanTask from "./page/technican/technicantask.jsx";
@@ -13,22 +13,22 @@ import PaymentReady from "./page/payment/PaymentReady.jsx";
 import PaymentProcess from "./page/payment/PaymentProcess.jsx";
 
 function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<LoginForm />} />
-      <Route path="/checklist" element={<CheckList />} />
-      <Route path="/technician-task" element={<TechnicanTask />} />
-      <Route path="/report" element={<Report1 />} />
-      <Route path="/report3" element={<Report3 />} />
-      <Route path="/home" element={<Homepage />} />
-      <Route path="/appoint" element={<Appoint />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/staff" element={<StaffDashboard />} />
-      <Route path="/payment/ready" element={<PaymentReady />} />
-      <Route path="/payment/process/:id" element={<PaymentProcess />} />
-    </Routes>
-  );
+    return (
+        <Routes>
+            <Route path="/" element={<LoginForm/>}/>
+            <Route path="/checklist" element={<CheckList/>}/>
+            <Route path="/technician-task" element={<TechnicanTask/>}/>
+            <Route path="/report" element={<Report1/>}/>
+            <Route path="/report3" element={<Report3/>}/>
+            <Route path="/home" element={<Homepage/>}/>
+            <Route path="/appoint" element={<Appoint/>}/>
+            <Route path="/about" element={<About/>}/>
+            <Route path="/contact" element={<Contact/>}/>
+            <Route path="/staff" element={<StaffDashboard/>}/>
+            <Route path="/payment/ready" element={<PaymentReady/>}/>
+            <Route path="/payment/process/:id" element={<PaymentProcess/>}/>
+        </Routes>
+    );
 }
 
 export default App;
