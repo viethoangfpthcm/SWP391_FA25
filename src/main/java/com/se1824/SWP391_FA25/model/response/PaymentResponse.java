@@ -9,16 +9,19 @@ import java.util.List;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentResponse {
-    Integer bookingId;
-    String customerName;
-    String serviceCenterName;
-    String technicianName;
-    LocalDateTime paymentDate;
-    String status;
-    String note;
-    String vehicleModel;
-    String vehicleLicensePlate;
-    List<MaintenanceChecklistDetailResponse> checklistDetail;
-    BigDecimal totalAmount;
+    private Integer paymentId;
+    private Integer bookingId;
+    private String customerName;
+    private String serviceCenterName;
+    private LocalDateTime paymentDate;
+    private String paymentMethod;
+    private String status;
+    private String note;
+    private String vehicleModel;
+    private String vehicleLicensePlate;
+    private List<MaintenanceChecklistDetailResponse> checklistDetails;
+    private BigDecimal laborCost;
+    private BigDecimal materialCost;
+    private BigDecimal totalAmount;
 
 }

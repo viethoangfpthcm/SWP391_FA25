@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,18 +16,18 @@ import java.util.List;
 @AllArgsConstructor
 
 public class MaintenanceChecklistDetailResponse {
-    Integer id;
-    Integer planItemId;
-    Integer partId;
-    String itemName;
-    String partName;
-    String actionType;
-    String status;
-    String approvalStatus;
-    String note;
-    String customerNote;
-    BigDecimal laborCost;
-    BigDecimal materialCost;
-    List<PartOption> availableParts;
+    private Integer id;
+    private String planName;
+    private LocalDateTime createdDate;
+    private String technicianName;
+    private String status;
+    private String vehicleNumberPlate;
+    private String vehicleModel;
+    private Integer currentKm;
+    private Integer maintenanceKm;
+    private BigDecimal estimatedCost;
+    private BigDecimal totalCostApproved;
+    private BigDecimal totalCostDeclined;
+    private List<MaintenanceChecklistDetailResponse> details;
 }
 

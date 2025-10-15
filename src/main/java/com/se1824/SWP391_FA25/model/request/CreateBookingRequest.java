@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateBookingRequest {
-    String userId;
+    Integer userId;
     String vehiclePlate;
     Integer centerId;
     LocalDateTime bookingDate;

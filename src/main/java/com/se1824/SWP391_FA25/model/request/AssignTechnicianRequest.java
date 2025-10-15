@@ -9,6 +9,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AssignTechnicianRequest {
     Integer bookingId;
-    String technicianId;
-    String staffId;
+    Integer technicianId;
+    Integer staffId;
 }

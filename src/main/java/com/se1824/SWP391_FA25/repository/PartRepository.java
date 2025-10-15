@@ -15,4 +15,5 @@ public interface PartRepository  extends JpaRepository<Part, Integer> {
             Integer partTypeId,
             Integer serviceCenterId
     );
+    List<Part> findByPartType_IdAndServiceCenter_Id(Integer partTypeId, Integer serviceCenterId);
 }
