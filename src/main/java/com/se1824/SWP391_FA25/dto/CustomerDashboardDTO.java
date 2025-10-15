@@ -12,6 +12,5 @@ import java.util.List;
 public class CustomerDashboardDTO {
     CustomerInfoDTO customerInfo;
     List<VehicleOverviewDTO> vehicles;
-    List<MaintenanceReminderDTO> upcomingMaintenance;
      BookingStatsDTO bookingStats;
 }

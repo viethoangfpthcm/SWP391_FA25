@@ -33,32 +33,20 @@ public class TokenService {
     // generate ra token
     public String generateToken(Users user) {
         Map<String, Object> extraClaims = new HashMap<>();
-        String role;
-        if (user.getUserId().startsWith("AD")) {
-            role = "ADMIN";
-        } else if (user.getUserId().startsWith("CU")) {
-            role = "CUSTOMER";
-        } else if (user.getUserId().startsWith("ST")) {
-            role = "STAFF";
-        } else {
-            role = "TECHNICIAN";
-        }
-        extraClaims.put("role", role);
+        extraClaims.put("role", user.getRole().name()); // Lấy role trực tiếp
         return Jwts.builder()
                 .claims(extraClaims)
-                .subject(user.getUserId() + "")
-                .issuedAt(new Date(System.currentTimeMillis()))  //thoi gian tao ra token
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // chi ra toke ton tai trong bao lau (giay, phut, gio, ngay, tuan)
+                .subject(user.getUserId().toString()) // Chuyển Integer thành String
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
                 .signWith(getSignInKey())
                 .compact();
     }
-
     //varify token
     public Users extractToken(String token) {
-        String value = extractClaim(token, Claims::getSubject);
-        //long id = Long.parseLong(value);
-        String id = value;
-        return authenticationRepository.findUserByUserId(id);
+        String userIdStr = extractClaim(token, Claims::getSubject);
+        Integer userId = Integer.parseInt(userIdStr); // Chuyển String thành Integer
+        return authenticationRepository.findById(userId).orElse(null);
     }
 
     public String extractRole(String token) {

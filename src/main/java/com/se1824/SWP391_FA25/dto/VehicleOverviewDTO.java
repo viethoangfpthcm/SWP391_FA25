@@ -16,7 +16,7 @@ public class VehicleOverviewDTO {
     private Integer year;
     private Integer currentKm;
     private Integer scheduleId;
-    private String scheduleName; // VF3, VF5, VF7, VF9
-    private NextMaintenanceDTO nextMaintenance;
+    private String scheduleName;
+
 
 }

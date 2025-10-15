@@ -9,8 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<Users, String> {
+public interface UserRepository extends JpaRepository<Users, Integer> {
     Users findUserByEmail(String email);
     List<Users> findByServiceCenter_IdAndRole(Integer centerId, UserRole role);
     List<Users> findByRole(UserRole role);
+
 }

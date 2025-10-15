@@ -2,6 +2,7 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.entity.*;
+import com.se1824.SWP391_FA25.enums.UserRole;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.model.request.AssignTechnicianRequest;
@@ -30,28 +31,19 @@ public class StaffService {
         Users currentStaff = authService.getCurrentAccount();
         validateStaffRole(currentStaff.getUserId());
 
-        // Lấy center ID từ staff hiện tại
-        Integer centerId = currentStaff.getServiceCenter().getId();
-        log.info("Getting pending bookings for center ID: {} (Staff: {})",
-                centerId, currentStaff.getUserId());
+        Integer centerId = currentStaff.getCenter().getId();
+        log.info("Getting pending bookings for center ID: {} (Staff: {})", centerId, currentStaff.getUserId());
 
-        // Lấy bookings của center này với status Pending
         List<Booking> bookings = bookingRepo.findByServiceCenter_IdAndStatus(centerId, "Pending");
-
-        return bookings.stream()
-                .map(this::mapToStaffBookingDTO)
-                .collect(Collectors.toList());
+        return bookings.stream().map(this::mapToStaffBookingDTO).collect(Collectors.toList());
     }
     public List<StaffBookingDTO> getAllBookings() {
         Users currentStaff = authService.getCurrentAccount();
         validateStaffRole(currentStaff.getUserId());
 
-        Integer centerId = currentStaff.getServiceCenter().getId();
+        Integer centerId = currentStaff.getCenter().getId();
         List<Booking> bookings = bookingRepo.findByServiceCenter_Id(centerId);
-
-        return bookings.stream()
-                .map(this::mapToStaffBookingDTO)
-                .collect(Collectors.toList());
+        return bookings.stream().map(this::mapToStaffBookingDTO).collect(Collectors.toList());
     }
 
 
@@ -59,19 +51,15 @@ public class StaffService {
      * Staff approve booking
      */
     @Transactional
-    public void approveBooking(Integer bookingId, String staffId) {
+    public void approveBooking(Integer bookingId, Integer staffId) {
         log.info("Staff {} approving booking {}", staffId, bookingId);
-
-        // Validate staff role
         validateStaffRole(staffId);
 
         Booking booking = bookingRepo.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Booking not found with ID: " + bookingId));
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingId));
 
         if (!"Pending".equals(booking.getStatus())) {
-            throw new InvalidDataException(
-                    "Cannot approve booking with status: " + booking.getStatus());
+            throw new InvalidDataException("Cannot approve booking with status: " + booking.getStatus());
         }
 
         booking.setStatus("Approved");
@@ -83,24 +71,19 @@ public class StaffService {
      * Staff decline booking
      */
     @Transactional
-    public void declineBooking(Integer bookingId, String staffId, String reason) {
+    public void declineBooking(Integer bookingId, Integer staffId, String reason) {
         log.info("Staff {} declining booking {}", staffId, bookingId);
-
-        // Validate staff role
         validateStaffRole(staffId);
 
         Booking booking = bookingRepo.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Booking not found with ID: " + bookingId));
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingId));
 
         if (!"Pending".equals(booking.getStatus())) {
-            throw new InvalidDataException(
-                    "Cannot decline booking with status: " + booking.getStatus());
+            throw new InvalidDataException("Cannot decline booking with status: " + booking.getStatus());
         }
 
         booking.setStatus("Declined");
-        booking.setNote((booking.getNote() != null ? booking.getNote() + " | " : "")
-                + "Declined reason: " + reason);
+        booking.setNote((booking.getNote() != null ? booking.getNote() + " | " : "") + "Declined reason: " + reason);
         bookingRepo.save(booking);
         log.info("Booking {} declined by staff {}", bookingId, staffId);
     }
@@ -112,13 +95,9 @@ public class StaffService {
         Users currentStaff = authService.getCurrentAccount();
         validateStaffRole(currentStaff.getUserId());
 
-        Integer centerId = currentStaff.getServiceCenter().getId();
-        List<Users> technicians = userRepo.findByServiceCenter_IdAndUserIdStartingWith(
-                centerId, "TE");
-
-        return technicians.stream()
-                .map(this::mapToTechnicianDTO)
-                .collect(Collectors.toList());
+        Integer centerId = currentStaff.getCenter().getId();
+        List<Users> technicians = userRepo.findByServiceCenter_IdAndRole(centerId, UserRole.TECHNICIAN);
+        return technicians.stream().map(this::mapToTechnicianDTO).collect(Collectors.toList());
     }
 
     /**
@@ -126,47 +105,35 @@ public class StaffService {
      */
     @Transactional
     public void assignTechnician(AssignTechnicianRequest request) {
-        log.info("Assigning technician {} to booking {}",
-                request.getTechnicianId(), request.getBookingId());
-
-        // Validate staff
+        log.info("Assigning technician {} to booking {}", request.getTechnicianId(), request.getBookingId());
         validateStaffRole(request.getStaffId());
 
-        // Validate booking
         Booking booking = bookingRepo.findById(request.getBookingId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Booking not found with ID: " + request.getBookingId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + request.getBookingId()));
 
         if (!"Approved".equals(booking.getStatus())) {
-            throw new InvalidDataException(
-                    "Can only assign technician to approved bookings");
+            throw new InvalidDataException("Can only assign technician to approved bookings");
         }
 
-        // Validate technician
         Users technician = userRepo.findById(request.getTechnicianId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Technician not found with ID: " + request.getTechnicianId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Technician not found with ID: " + request.getTechnicianId()));
 
-        if (!technician.getUserId().startsWith("TE")) {
+        if (technician.getRole() != UserRole.TECHNICIAN) {
             throw new InvalidDataException("Invalid technician ID");
         }
 
-        // Assign
         booking.setAssignedTechnician(technician);
         bookingRepo.save(booking);
-        log.info("Technician {} assigned to booking {} by staff {}",
-                request.getTechnicianId(), request.getBookingId(), request.getStaffId());
+        log.info("Technician {} assigned to booking {} by staff {}", request.getTechnicianId(), request.getBookingId(), request.getStaffId());
     }
 
     // ==================== Private Helper Methods ====================
 
-    private void validateStaffRole(String userId) {
+    private void validateStaffRole(Integer userId) {
         Users user = userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User not found with ID: " + userId));
-
-        if (!user.getUserId().startsWith("ST")) {
-            throw new InvalidDataException("Only staff can perform this action");
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+        if (user.getRole() != UserRole.STAFF) {
+            throw new InvalidDataException("Only STAFF can perform this action");
         }
     }
 
@@ -190,13 +157,8 @@ public class StaffService {
         dto.setUserId(technician.getUserId());
         dto.setFullName(technician.getFullName());
         dto.setPhone(technician.getPhone());
-
-        // Đếm số booking đang active
-        int activeBookings = bookingRepo.countByAssignedTechnician_UserIdAndStatusIn(
-                technician.getUserId(),
-                List.of("Approved", "In Progress"));
+        int activeBookings = bookingRepo.countByAssignedTechnician_UserIdAndStatusIn(technician.getUserId(), List.of("Approved", "In Progress"));
         dto.setActiveBookings(activeBookings);
-
         return dto;
     }
 }

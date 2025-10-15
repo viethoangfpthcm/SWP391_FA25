@@ -19,6 +19,5 @@ public class VehicleBookingDTO {
     String model;
     Integer year;
     Integer currentKm;
-    NextMaintenanceDTO nextMaintenance;
     List<ServiceCenterDTO> availableCenters;
 }

@@ -9,16 +9,16 @@
 
     @Repository
     public interface BookingRepository extends JpaRepository<Booking, Integer> {
-        List<Booking> findByCustomer_UserId(String userId);
+        List<Booking> findByCustomer_UserId(Integer userId);
 
         List<Booking> findByServiceCenter_IdAndStatus(Integer centerId, String status);
 
         List<Booking> findByStatus(String status);
 
-        int countByAssignedTechnician_UserIdAndStatusIn(String technicianId, List<String> statuses);
+        int countByAssignedTechnician_UserIdAndStatusIn(Integer technicianId, List<String> statuses);
 
         List<Booking> findByServiceCenter_Id(Integer centerId);
-        List<Booking> findByAssignedTechnician_UserId(String technicianId);
+        List<Booking> findByAssignedTechnician_UserId(Integer technicianId);
 
 
     }

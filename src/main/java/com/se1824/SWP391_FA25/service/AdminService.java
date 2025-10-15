@@ -3,6 +3,7 @@ package com.se1824.SWP391_FA25.service;
 import com.se1824.SWP391_FA25.dto.UserManagementDTO;
 import com.se1824.SWP391_FA25.entity.ServiceCenter;
 import com.se1824.SWP391_FA25.entity.Users;
+import com.se1824.SWP391_FA25.enums.UserRole;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.model.request.CreateUserRequest;
@@ -27,51 +28,41 @@ public class AdminService {
     private final UserRepository userRepo;
     private final ServiceCenterRepository serviceCenterRepo;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationService authService;
 
     /**
      * Tạo user mới (Staff hoặc Technician)
      */
     @Transactional
-    public UserManagementDTO createUser(CreateUserRequest request, String adminId) {
-        log.info("Admin {} creating user with prefix {}", adminId, request.getUserIdPrefix());
-
-        // Validate admin
+    public UserManagementDTO createUser(CreateUserRequest request,Integer adminId) {
+        log.info("Admin {} creating user with role {}", adminId, request.getRole());
         validateAdminRole(adminId);
 
-        // Validate prefix
-        if (!"ST".equals(request.getUserIdPrefix()) && !"TE".equals(request.getUserIdPrefix())) {
-            throw new InvalidDataException("User prefix must be ST or TE");
+        if (request.getRole() != UserRole.STAFF && request.getRole() != UserRole.TECHNICIAN) {
+            throw new InvalidDataException("Can only create STAFF or TECHNICIAN roles.");
         }
-
-        // Validate required fields
         validateUserRequest(request);
 
-        // Check email unique
         if (userRepo.findUserByEmail(request.getEmail()) != null) {
             throw new InvalidDataException("Email already exists: " + request.getEmail());
         }
 
-        // Validate service center
         ServiceCenter center = serviceCenterRepo.findById(request.getCenterId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Service center not found with ID: " + request.getCenterId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Service center not found with ID: " + request.getCenterId()));
 
-        // Generate userId
-        String userId = generateUserId(request.getUserIdPrefix());
-
-        // Create user
         Users user = new Users();
-        user.setUserId(userId);
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setServiceCenter(center);
+        user.setCenter(center);
+        user.setRole(request.getRole()); // Gán vai trò từ request
+        user.setIsActive(true);
 
         Users savedUser = userRepo.save(user);
-        log.info("User created successfully with ID: {}", userId);
-
+        log.info("User created successfully with ID: {}", savedUser.getUserId());
         return mapToUserManagementDTO(savedUser);
+
     }
 
     /**
@@ -79,16 +70,12 @@ public class AdminService {
      */
     public List<UserManagementDTO> getAllStaff(Integer centerId) {
         List<Users> staff;
-
         if (centerId != null) {
-            staff = userRepo.findByServiceCenter_IdAndUserIdStartingWith(centerId, "ST");
+            staff = userRepo.findByServiceCenter_IdAndRole(centerId, UserRole.STAFF);
         } else {
-            staff = userRepo.findByUserIdStartingWith("ST");
+            staff = userRepo.findByRole(UserRole.STAFF);
         }
-
-        return staff.stream()
-                .map(this::mapToUserManagementDTO)
-                .collect(Collectors.toList());
+        return staff.stream().map(this::mapToUserManagementDTO).collect(Collectors.toList());
     }
 
     /**
@@ -96,25 +83,20 @@ public class AdminService {
      */
     public List<UserManagementDTO> getAllTechnicians(Integer centerId) {
         List<Users> technicians;
-
         if (centerId != null) {
-            technicians = userRepo.findByServiceCenter_IdAndUserIdStartingWith(centerId, "TE");
+            technicians = userRepo.findByServiceCenter_IdAndRole(centerId, UserRole.TECHNICIAN);
         } else {
-            technicians = userRepo.findByUserIdStartingWith("TE");
+            technicians = userRepo.findByRole(UserRole.TECHNICIAN);
         }
-
-        return technicians.stream()
-                .map(this::mapToUserManagementDTO)
-                .collect(Collectors.toList());
+        return technicians.stream().map(this::mapToUserManagementDTO).collect(Collectors.toList());
     }
 
     /**
      * Lấy tất cả users (trừ Admin)
      */
     public List<UserManagementDTO> getAllUsers() {
-        List<Users> allUsers = userRepo.findAll();
-        return allUsers.stream()
-                .filter(u -> !u.getUserId().startsWith("AD")) // Không hiển thị Admin
+        return userRepo.findAll().stream()
+                .filter(u -> u.getRole() != UserRole.ADMIN)
                 .map(this::mapToUserManagementDTO)
                 .collect(Collectors.toList());
     }
@@ -127,32 +109,24 @@ public class AdminService {
 
     @Transactional
     public UserManagementDTO updateOwnProfile(UpdateUserRequest request) {
-        log.info("User {} updating own profile", authenticationService.getCurrentAccount().getUserId());
+        Users currentUser = authService.getCurrentAccount();
+        log.info("User {} updating own profile", currentUser.getUserId());
 
-//        Users user = userRepo.findById(authenticationService.getCurrentAccount().getUserId());
-//                .orElseThrow(() -> new ResourceNotFoundException(
-//                        "User not found with ID: " + authenticationService.getCurrentAccount().getUserId()));
-        Users user = authenticationService.getCurrentAccount();
-        // Update fields (không cho đổi centerId)
+        Users user = userRepo.findById(currentUser.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         if (request.getFullName() != null && !request.getFullName().trim().isEmpty()) {
             user.setFullName(request.getFullName());
         }
-
         if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
-            Users existingUser = userRepo.findUserByEmail(request.getEmail());
-            if (existingUser != null && !existingUser.getUserId().equals(user.getUserId())) {
-                throw new InvalidDataException("Email already exists: " + request.getEmail());
-            }
             user.setEmail(request.getEmail());
         }
-
         if (request.getPhone() != null && !request.getPhone().trim().isEmpty()) {
             user.setPhone(request.getPhone());
         }
 
         Users updatedUser = userRepo.save(user);
-        log.info("User {} updated own profile successfully", authenticationService.getCurrentAccount().getUserId());
-
+        log.info("User {} updated own profile successfully", updatedUser.getUserId());
         return mapToUserManagementDTO(updatedUser);
     }
 
@@ -160,44 +134,24 @@ public class AdminService {
      * Admin update bất kỳ user nào (bao gồm centerId)
      */
     @Transactional
-    public UserManagementDTO updateUserByAdmin(UpdateUserRequest request, String adminId) {
-        log.info("Admin {} updating user {}", adminId, authenticationService.getCurrentAccount().getUserId());
-
-        // Validate admin
+    public UserManagementDTO updateUserByAdmin(UpdateUserRequest request, Integer adminId, Integer userIdToUpdate) {
+        log.info("Admin {} updating user {}", adminId, userIdToUpdate);
         validateAdminRole(adminId);
 
-        Users user = userRepo.findById(authenticationService.getCurrentAccount().getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User not found with ID: " + authenticationService.getCurrentAccount().getUserId()));
+        Users user = userRepo.findById(userIdToUpdate)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userIdToUpdate));
 
-        // Admin có thể update tất cả (trừ userId vì là PK)
-        if (request.getFullName() != null && !request.getFullName().trim().isEmpty()) {
-            user.setFullName(request.getFullName());
-        }
+        if (request.getFullName() != null) user.setFullName(request.getFullName());
+        if (request.getEmail() != null) user.setEmail(request.getEmail());
+        if (request.getPhone() != null) user.setPhone(request.getPhone());
 
-        if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
-            Users existingUser = userRepo.findUserByEmail(request.getEmail());
-            if (existingUser != null && !existingUser.getUserId().equals(user.getUserId())) {
-                throw new InvalidDataException("Email already exists: " + request.getEmail());
-            }
-            user.setEmail(request.getEmail());
-        }
-
-        if (request.getPhone() != null && !request.getPhone().trim().isEmpty()) {
-            user.setPhone(request.getPhone());
-        }
-
-        // Chỉ admin mới được đổi centerId
         if (request.getCenterId() != null) {
             ServiceCenter center = serviceCenterRepo.findById(request.getCenterId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "Service center not found with ID: " + request.getCenterId()));
-            user.setServiceCenter(center);
+                    .orElseThrow(() -> new ResourceNotFoundException("Service center not found with ID: " + request.getCenterId()));
+            user.setCenter(center);
         }
 
         Users updatedUser = userRepo.save(user);
-        log.info("Admin updated user {} successfully", authenticationService.getCurrentAccount().getUserId());
-
         return mapToUserManagementDTO(updatedUser);
     }
 
@@ -205,36 +159,27 @@ public class AdminService {
      * Xóa user
      */
     @Transactional
-    public void deleteUser(String userId, String adminId) {
+    public void deleteUser(Integer userId, Integer adminId) {
         log.info("Admin {} deleting user {}", adminId, userId);
-
-        // Validate admin
         validateAdminRole(adminId);
 
-        // Validate user exists
         Users user = userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User not found with ID: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
 
-        // Chỉ cho phép xóa ST hoặc TE
-        if (!user.getUserId().startsWith("ST") && !user.getUserId().startsWith("TE")) {
-            throw new InvalidDataException("Can only delete staff or technician accounts");
+        if (user.getRole() != UserRole.STAFF && user.getRole() != UserRole.TECHNICIAN) {
+            throw new InvalidDataException("Can only delete STAFF or TECHNICIAN accounts");
         }
-
-        // Hard delete
         userRepo.delete(user);
         log.info("User {} deleted successfully", userId);
     }
 
     // ==================== Private Helper Methods ====================
 
-    private void validateAdminRole(String userId) {
+    private void validateAdminRole(Integer userId) {
         Users user = userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "User not found with ID: " + userId));
-
-        if (!user.getUserId().startsWith("AD")) {
-            throw new InvalidDataException("Only admin can perform this action");
+                .orElseThrow(() -> new ResourceNotFoundException("Admin user not found with ID: " + userId));
+        if (user.getRole() != UserRole.ADMIN) {
+            throw new InvalidDataException("Only ADMIN can perform this action");
         }
     }
 
@@ -253,29 +198,7 @@ public class AdminService {
         }
     }
 
-    private String generateUserId(String prefix) {
-        // Tìm userId cuối cùng với prefix này
-        List<Users> users = userRepo.findByUserIdStartingWith(prefix);
 
-        if (users.isEmpty()) {
-            return prefix + "001";
-        }
-
-        // Lấy số lớn nhất
-        int maxNumber = users.stream()
-                .map(u -> {
-                    try {
-                        return Integer.parseInt(u.getUserId().substring(2));
-                    } catch (Exception e) {
-                        return 0;
-                    }
-                })
-                .max(Integer::compareTo)
-                .orElse(0);
-
-        int nextNumber = maxNumber + 1;
-        return prefix + String.format("%03d", nextNumber);
-    }
 
     private UserManagementDTO mapToUserManagementDTO(Users user) {
         UserManagementDTO dto = new UserManagementDTO();
@@ -283,23 +206,11 @@ public class AdminService {
         dto.setFullName(user.getFullName());
         dto.setEmail(user.getEmail());
         dto.setPhone(user.getPhone());
-
-        // Set role based on prefix
-        if (user.getUserId().startsWith("CU")) {
-            dto.setRole("CUSTOMER");
-        } else if (user.getUserId().startsWith("ST")) {
-            dto.setRole("STAFF");
-        } else if (user.getUserId().startsWith("TE")) {
-            dto.setRole("TECHNICIAN");
-        } else if (user.getUserId().startsWith("AD")) {
-            dto.setRole("ADMIN");
+        dto.setRole(user.getRole().name());
+        if (user.getCenter() != null) {
+            dto.setCenterId(user.getCenter().getId());
+            dto.setCenterName(user.getCenter().getName());
         }
-
-        if (user.getServiceCenter() != null) {
-            dto.setCenterId(user.getServiceCenter().getId());
-            dto.setCenterName(user.getServiceCenter().getName());
-        }
-
         return dto;
     }
 }
