@@ -20,11 +20,17 @@ public class PartType {
     @Column(name = "id")
     Integer id;
 
-    @Column(name = "name", length = 100, nullable = false, unique = true)
+    @Column(name = "name", nullable = false, unique = true, length = 200)
     String name;
 
-    // Relationships
+    @Column(name = "description", length = 500)
+    String description;
+
     @OneToMany(mappedBy = "partType", cascade = CascadeType.ALL)
     @JsonIgnore
     List<Part> parts;
+
+    @OneToMany(mappedBy = "partType", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<MaintenancePlanItem> planItems;
 }

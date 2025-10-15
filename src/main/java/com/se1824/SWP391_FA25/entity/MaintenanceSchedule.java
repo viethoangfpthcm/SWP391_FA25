@@ -15,21 +15,26 @@ import java.util.List;
 @Getter
 @Setter
 public class MaintenanceSchedule {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     Integer id;
 
-    @Column(name = "name", length = 255, nullable = false)
+    @Column(name = "name", nullable = false, length = 200)
     String name;
 
-    // Relationships
-    @OneToMany(mappedBy = "maintenanceSchedule", cascade = CascadeType.ALL)
-    @JsonIgnore
-    List<Vehicle> vehicles;
+    @Column(name = "description", length = 500)
+    String description;
+
+    @Column(name = "vehicle_model", length = 100)
+    String vehicleModel;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     @JsonIgnore
-    List<MaintenancePlan> maintenancePlans;
+    List<MaintenancePlan> plans;
 
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<VehicleSchedule> vehicleSchedules;
 }

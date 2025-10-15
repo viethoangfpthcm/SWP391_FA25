@@ -22,11 +22,14 @@ public class Part {
     @Column(name = "id")
     Integer id;
 
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", nullable = false, length = 200)
     String name;
 
-    @Column(name = "quantity", nullable = false)
-    Integer quantity = 0;
+    @Column(name = "quantity")
+    Integer quantity;
+
+    @Column(name = "unit_price", precision = 18, scale = 2)
+    BigDecimal unitPrice;
 
     @Column(name = "labor_cost", precision = 18, scale = 2)
     BigDecimal laborCost;
@@ -34,21 +37,21 @@ public class Part {
     @Column(name = "material_cost", precision = 18, scale = 2)
     BigDecimal materialCost;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "part_type_id", nullable = false)
     @JsonIgnore
     PartType partType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "service_center_id", nullable = false)
     @JsonIgnore
     ServiceCenter serviceCenter;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
-    @JsonIgnore
-    MaintenanceSchedule schedule;
 
-    // Relationships
+    @ManyToOne
+    @JoinColumn(name = "vehicle_plate")
+    @JsonIgnore
+    Vehicle vehicle;
+
     @OneToMany(mappedBy = "part", cascade = CascadeType.ALL)
     @JsonIgnore
     List<MaintenanceChecklistDetail> checklistDetails;

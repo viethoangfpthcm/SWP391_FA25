@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -16,31 +17,39 @@ import java.util.List;
 @Setter
 public class Vehicle {
     @Id
-    @Column(name = "licensePlate", length = 20)
+    @Column(name = "license_plate", length = 20)
     String licensePlate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     Users owner;
 
-    @Column(name = "model", length = 100, nullable = false)
+    @Column(name = "model", nullable = false, length = 200)
     String model;
 
     @Column(name = "year")
     Integer year;
 
-    @Column(name = "current_km", columnDefinition = "INT DEFAULT 0")
-    Integer currentKm = 0;
+    @Column(name = "purchase_date", nullable = false)
+    LocalDate purchaseDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
-    @JsonIgnore
-    MaintenanceSchedule maintenanceSchedule;
+    @Column(name = "current_km")
+    Integer currentKm;
 
-    // Relationships
+    @Column(name = "current_maintenance_no")
+    Integer currentMaintenanceNo;
+
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
     @JsonIgnore
     List<Booking> bookings;
+
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<Part> parts;
+
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<VehicleSchedule> schedules;
 }
 

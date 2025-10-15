@@ -22,17 +22,17 @@ public class Booking {
     @Column(name = "booking_id")
     Integer bookingId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     Users customer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "vehicle_plate", nullable = false)
     @JsonIgnore
     Vehicle vehicle;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "center_id", nullable = false)
     @JsonIgnore
     ServiceCenter serviceCenter;
@@ -40,23 +40,29 @@ public class Booking {
     @Column(name = "booking_date", nullable = false)
     LocalDateTime bookingDate;
 
-    @Column(name = "status", length = 50, columnDefinition = "NVARCHAR(50) DEFAULT 'Pending'")
-    String status = "Pending";  // Pending, Approved, Declined, Completed
+    @Column(name = "maintenance_no")
+    Integer maintenanceNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "status", length = 50)
+    String status;
+
+    @ManyToOne
     @JoinColumn(name = "assigned_technician")
     @JsonIgnore
     Users assignedTechnician;
 
-    @Column(name = "note", length = 255)
+    @Column(name = "note", length = 500)
     String note;
 
-    // Relationships
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     @JsonIgnore
     Payment payment;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     @JsonIgnore
-    List<Feedback> feedbacks;
+    java.util.List<Feedback> feedbacks;
+
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    @JsonIgnore
+    MaintenanceChecklist checklist;
 }

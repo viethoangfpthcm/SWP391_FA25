@@ -22,25 +22,28 @@ public class Payment {
     Integer paymentId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_id", nullable = false)
+    @JoinColumn(name = "booking_id", nullable = false, unique = true)
     @JsonIgnore
     Booking booking;
 
-    @Column(name = "payment_date", nullable = false, columnDefinition = "DATETIME DEFAULT GETDATE()")
+    @Column(name = "payment_date")
     LocalDateTime paymentDate = LocalDateTime.now();
 
-    @Column(name = "labor_cost", precision = 18, scale = 2, nullable = false)
+    @Column(name = "labor_cost", precision = 18, scale = 2)
     BigDecimal laborCost = BigDecimal.ZERO;
 
-    @Column(name = "material_cost", precision = 18, scale = 2, nullable = false)
+    @Column(name = "material_cost", precision = 18, scale = 2)
     BigDecimal materialCost = BigDecimal.ZERO;
 
     @Column(name = "total_amount", precision = 18, scale = 2, insertable = false, updatable = false)
     BigDecimal totalAmount;
 
-    @Column(name = "status", length = 50, nullable = false, columnDefinition = "NVARCHAR(50) DEFAULT 'Pending'")
-    String status = "Pending";  // Pending, Paid, Cancelled
+    @Column(name = "payment_method", length = 50)
+    String paymentMethod;
 
-    @Column(name = "note", length = 255)
+    @Column(name = "status", length = 50)
+    String status;
+
+    @Column(name = "note", length = 500)
     String note;
 }
