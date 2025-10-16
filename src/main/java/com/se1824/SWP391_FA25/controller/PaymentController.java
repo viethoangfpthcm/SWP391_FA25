@@ -41,8 +41,8 @@ public class PaymentController {
     public RedirectView vnPayCallback(HttpServletRequest request) {
         int result = paymentService.orderReturn(request);
         // Chuyển hướng về trang kết quả của frontend
-        // Bạn cần thay đổi URL này cho phù hợp với địa chỉ frontend của bạn
-        String frontendUrl = "http://localhost:5173/payment/result";
+        //  URL địa chỉ frontend
+        String frontendUrl = "http://103.90.226.216:3000/payment/result";
         if (result == 0) {
             return new RedirectView(frontendUrl + "?success=true");
         } else {
