@@ -10,5 +10,5 @@ import lombok.experimental.FieldDefaults;
 public class AssignTechnicianRequest {
     Integer bookingId;
     Integer technicianId;
-    Integer staffId;
+
 }

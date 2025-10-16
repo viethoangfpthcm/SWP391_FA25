@@ -4,6 +4,7 @@ import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.model.request.CreateUserRequest;
 import com.se1824.SWP391_FA25.model.request.UpdateUserRequest;
 import com.se1824.SWP391_FA25.service.AdminService;
+import com.se1824.SWP391_FA25.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,15 +22,16 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final AuthenticationService authenticationService;
 
     /**
      * Tạo user mới (Staff hoặc Technician)
      * POST /api/admin/users?adminId={adminId}
      */
-    @PostMapping("/userscreate")
+    @PostMapping("/users-create")
     public ResponseEntity<UserManagementDTO> createUser(@Valid
-                                                        @RequestBody CreateUserRequest request,
-                                                        @RequestParam Integer adminId) {
+                                                        @RequestBody CreateUserRequest request) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
         UserManagementDTO user = adminService.createUser(request, adminId);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
@@ -70,12 +72,12 @@ public class AdminController {
      * Admin update user (có thể đổi centerId)
      * PUT /api/admin/users?adminId={adminId}
      */
-    @PutMapping("/usersupdate")
+    @PutMapping("/users-update")
     public ResponseEntity<UserManagementDTO> updateUserByAdmin(
             @RequestBody UpdateUserRequest request,
-            @RequestParam Integer adminId,
             @RequestParam Integer userIdToUpdate
     ) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
         UserManagementDTO user = adminService.updateUserByAdmin(request, adminId, userIdToUpdate);
         return ResponseEntity.ok(user);
     }
@@ -86,8 +88,8 @@ public class AdminController {
      */
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<String> deleteUser(
-            @PathVariable Integer userId,
-            @RequestParam Integer adminId) {
+            @PathVariable Integer userId) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
         adminService.deleteUser(userId, adminId);
         return ResponseEntity.ok("User deleted successfully");
     }

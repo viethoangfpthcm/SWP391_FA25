@@ -3,6 +3,7 @@ package com.se1824.SWP391_FA25.controller;
 import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.model.request.CreateBookingRequest;
 import com.se1824.SWP391_FA25.model.response.BookingResponse;
+import com.se1824.SWP391_FA25.service.AuthenticationService;
 import com.se1824.SWP391_FA25.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.List;
 public class BookingController {
 
     private final BookingService bookingService;
+    private final AuthenticationService authenticationService;
 
     /**
      * Lấy thông tin xe để đặt lịch
@@ -27,8 +29,8 @@ public class BookingController {
      */
     @GetMapping("/vehicle/{licensePlate}")
     public ResponseEntity<VehicleBookingDTO> getVehicleForBooking(
-            @PathVariable String licensePlate,
-            @RequestParam Integer userId) {
+            @PathVariable String licensePlate) {
+        Integer userId = authenticationService.getCurrentAccount().getUserId();
         VehicleBookingDTO dto = bookingService.getVehicleForBooking(licensePlate, userId);
         return ResponseEntity.ok(dto);
     }
@@ -49,8 +51,8 @@ public class BookingController {
      * GET /api/customer/bookings?userId={userId}
      */
     @GetMapping("/customerBookings/{userId}")
-    public ResponseEntity<List<BookingResponse>> getCustomerBookings(
-            @PathVariable Integer userId) {
+    public ResponseEntity<List<BookingResponse>> getCustomerBookings() {
+        Integer userId = authenticationService.getCurrentAccount().getUserId();
         List<BookingResponse> bookings = bookingService.getCustomerBookings(userId);
         return ResponseEntity.ok(bookings);
     }
@@ -61,8 +63,8 @@ public class BookingController {
      */
     @DeleteMapping("/{bookingId}")
     public ResponseEntity<String> cancelBooking(
-            @PathVariable Integer bookingId,
-            @RequestParam Integer userId) {
+            @PathVariable Integer bookingId) {
+        Integer userId = authenticationService.getCurrentAccount().getUserId();
         bookingService.cancelBooking(bookingId, userId);
         return ResponseEntity.ok("Booking cancelled successfully");
     }

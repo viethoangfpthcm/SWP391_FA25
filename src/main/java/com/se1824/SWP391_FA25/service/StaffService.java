@@ -104,9 +104,9 @@ public class StaffService {
      * Staff assign technician cho booking
      */
     @Transactional
-    public void assignTechnician(AssignTechnicianRequest request) {
+    public void assignTechnician(AssignTechnicianRequest request, Integer staffId) {
         log.info("Assigning technician {} to booking {}", request.getTechnicianId(), request.getBookingId());
-        validateStaffRole(request.getStaffId());
+        validateStaffRole(staffId);
 
         Booking booking = bookingRepo.findById(request.getBookingId())
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + request.getBookingId()));
@@ -124,7 +124,7 @@ public class StaffService {
 
         booking.setAssignedTechnician(technician);
         bookingRepo.save(booking);
-        log.info("Technician {} assigned to booking {} by staff {}", request.getTechnicianId(), request.getBookingId(), request.getStaffId());
+        log.info("Technician {} assigned to booking {} by staff {}", request.getTechnicianId(), request.getBookingId(), staffId);
     }
 
     // ==================== Private Helper Methods ====================
