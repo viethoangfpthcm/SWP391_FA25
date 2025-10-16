@@ -13,10 +13,10 @@ import java.util.Optional;
 public interface MaintenanceChecklistRepository extends JpaRepository<MaintenanceChecklist, Integer> {
     Optional<MaintenanceChecklist> findByBooking_BookingId(Integer bookingId);
 
-    List<MaintenanceChecklist> findByTechnician_UserId(String technicianId);
+    List<MaintenanceChecklist> findByTechnician_UserId(Integer technicianId);
 
 
-    List<MaintenanceChecklist> findByBooking_Customer_UserId(String customerId);
+    List<MaintenanceChecklist> findByBooking_Customer_UserId(Integer customerId);
 
 
 }

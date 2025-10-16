@@ -19,6 +19,7 @@
 
         List<Booking> findByServiceCenter_Id(Integer centerId);
         List<Booking> findByAssignedTechnician_UserId(Integer technicianId);
+        List<Booking> findByVehicle_LicensePlateAndStatus(String licensePlate, String status);
 
 
     }

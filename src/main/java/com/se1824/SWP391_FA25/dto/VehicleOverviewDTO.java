@@ -15,8 +15,7 @@ public class VehicleOverviewDTO {
     private String model;
     private Integer year;
     private Integer currentKm;
-    private Integer scheduleId;
-    private String scheduleName;
+
 
 
 }

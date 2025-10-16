@@ -1,23 +1,18 @@
 package com.se1824.SWP391_FA25.service;
 
-import com.se1824.SWP391_FA25.dto.CustomerDashboardDTO;
-import com.se1824.SWP391_FA25.dto.CustomerInfoDTO;
-import com.se1824.SWP391_FA25.entity.Booking;
-import com.se1824.SWP391_FA25.entity.Users;
-import com.se1824.SWP391_FA25.entity.Vehicle;
+import com.se1824.SWP391_FA25.dto.*;
+import com.se1824.SWP391_FA25.entity.*;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
+import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.repository.BookingRepository;
 import com.se1824.SWP391_FA25.repository.MaintenancePlanRepository;
 import com.se1824.SWP391_FA25.repository.UserRepository;
 import com.se1824.SWP391_FA25.repository.VehicleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.se1824.SWP391_FA25.dto.VehicleOverviewDTO;
-import com.se1824.SWP391_FA25.dto.MaintenanceReminderDTO;
-import com.se1824.SWP391_FA25.dto.BookingStatsDTO;
-import com.se1824.SWP391_FA25.entity.MaintenancePlan;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,139 +26,110 @@ public class CustomerDashboardService {
     private final BookingRepository bookingRepo;
     private final MaintenancePlanRepository planRepo;
     private final UserRepository userRepo;
+    AuthenticationService authenticationService;
 
+    /**
+     * Lấy tất cả thông tin cần thiết cho dashboard của khách hàng.
+     */
     public CustomerDashboardDTO getDashboard() {
-        AuthenticationService authentication = new AuthenticationService();
-        Users currentUser = authentication.getCurrentAccount();
+        // Lấy thông tin người dùng đang đăng nhập
+        Users currentUser = authenticationService.getCurrentAccount();
+
         CustomerDashboardDTO dashboard = new CustomerDashboardDTO();
 
-        // Get customer info
-
+        // 1. Lấy thông tin cá nhân của khách hàng
         dashboard.setCustomerInfo(mapToCustomerInfo(currentUser));
 
-        // Get vehicles
+        // 2. Lấy danh sách xe của khách hàng
         List<Vehicle> vehicles = vehicleRepo.findByOwner_UserId(currentUser.getUserId());
         dashboard.setVehicles(vehicles.stream()
                 .map(this::mapToVehicleOverview)
                 .collect(Collectors.toList()));
 
-        // Get maintenance reminders
-        dashboard.setUpcomingMaintenance(
-                generateMaintenanceReminders(vehicles));
-
-        // Get booking stats
+        // 3. Lấy thống kê về các lịch hẹn
         dashboard.setBookingStats(getBookingStats(currentUser.getUserId()));
+
+        // Lưu ý: Phần "Maintenance Reminders" đã được loại bỏ vì logic cũ không còn phù hợp.
+        // Dữ liệu chi tiết về lịch trình bảo dưỡng sẽ được lấy qua một API riêng.
 
         return dashboard;
     }
 
+
+    /**
+     * Lấy lịch trình bảo dưỡng của xe với trạng thái dựa trên thời gian.
+     */
+    public List<VehicleScheduleStatusDTO> getVehicleMaintenanceSchedule(String licensePlate) {
+        Vehicle vehicle = vehicleRepo.findById(licensePlate)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with license plate: " + licensePlate));
+
+        if (vehicle.getSchedules() == null || vehicle.getSchedules().isEmpty()) {
+            throw new ResourceNotFoundException("No maintenance schedule assigned to this vehicle.");
+        }
+
+        MaintenanceSchedule schedule = vehicle.getSchedules().stream()
+                .findFirst()
+                .map(VehicleSchedule::getSchedule)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle is not linked to a valid Maintenance Schedule."));
+
+        List<MaintenancePlan> plans = planRepo.findBySchedule_Id(schedule.getId());
+        LocalDate purchaseDate = vehicle.getPurchaseDate();
+        LocalDate currentDate = LocalDate.now();
+
+        List<Integer> completedMaintenanceNos = bookingRepo.findByVehicle_LicensePlateAndStatus(licensePlate, "Completed")
+                .stream()
+                .filter(booking -> booking.getMaintenancePlan() != null)
+                .map(booking -> booking.getMaintenancePlan().getMaintenanceNo())
+                .collect(Collectors.toList());
+
+        return plans.stream().map(plan -> {
+            VehicleScheduleStatusDTO dto = new VehicleScheduleStatusDTO();
+            dto.setMaintenancePlanId(plan.getId());
+            dto.setPlanName(plan.getName());
+            dto.setDescription(plan.getDescription());
+            dto.setIntervalKm(plan.getIntervalKm());
+
+
+                // Tính ngày hết hạn dự kiến cho mốc bảo dưỡng này
+                LocalDate dueDate = purchaseDate.plusMonths(plan.getIntervalMonth());
+
+                if (completedMaintenanceNos.contains(plan.getMaintenanceNo())) {
+                    dto.setStatus("ON_TIME"); // Đã hoàn thành trong một booking trước đó
+                } else if (currentDate.isAfter(dueDate)) {
+                    dto.setStatus("EXPIRED"); // Đã quá hạn theo thời gian
+                } else {
+                    dto.setStatus("NEXT_TIME"); // Các mốc trong tương lai, có thể đặt lịch
+                }
+
+
+            return dto;
+        }).collect(Collectors.toList());
+    }
+    // ==================== CÁC HÀM HELPER ====================
     private VehicleOverviewDTO mapToVehicleOverview(Vehicle vehicle) {
         VehicleOverviewDTO dto = new VehicleOverviewDTO();
         dto.setLicensePlate(vehicle.getLicensePlate());
         dto.setModel(vehicle.getModel());
         dto.setYear(vehicle.getYear());
         dto.setCurrentKm(vehicle.getCurrentKm());
-
-        if (vehicle.getMaintenanceSchedule() != null) {
-            dto.setScheduleId(vehicle.getMaintenanceSchedule().getId());
-            dto.setScheduleName(vehicle.getMaintenanceSchedule().getName());
-            dto.setNextMaintenance(calculateNextMaintenance(vehicle));
-        }
-
         return dto;
     }
 
-    private NextMaintenanceDTO calculateNextMaintenance(Vehicle vehicle) {
-        Integer currentKm = vehicle.getCurrentKm();
-        Integer scheduleId = vehicle.getMaintenanceSchedule().getId();
 
-        // Tìm plan tiếp theo dựa vào current_km
-        List<MaintenancePlan> plans = planRepo
-                .findBySchedule_Id(scheduleId);
-
-        for (MaintenancePlan plan : plans) {
-            // Parse interval từ tên plan (VD: "Bảo dưỡng 12.000 km / 12 tháng")
-            Integer intervalKm = extractIntervalKm(plan.getName());
-
-            if (currentKm < intervalKm) {
-                NextMaintenanceDTO dto = new NextMaintenanceDTO();
-                dto.setPlanId(plan.getId());
-                dto.setPlanName(plan.getName());
-                dto.setIntervalKm(intervalKm);
-                dto.setKmUntilMaintenance(intervalKm - currentKm);
-
-                // Xác định status
-                int kmLeft = intervalKm - currentKm;
-                if (kmLeft < 0) {
-                    dto.setStatus("OVERDUE");
-                } else if (kmLeft <= 1000) {
-                    dto.setStatus("DUE_SOON");
-                } else {
-                    dto.setStatus("OK");
-                }
-
-                return dto;
-            }
-        }
-
-        return null;
-    }
-
-    private List<MaintenanceReminderDTO> generateMaintenanceReminders(
-            List<Vehicle> vehicles) {
-        List<MaintenanceReminderDTO> reminders = new ArrayList<>();
-
-        for (Vehicle vehicle : vehicles) {
-            NextMaintenanceDTO nextMaintenance =
-                    calculateNextMaintenance(vehicle);
-
-            if (nextMaintenance != null) {
-                MaintenanceReminderDTO reminder = new MaintenanceReminderDTO();
-                reminder.setLicensePlate(vehicle.getLicensePlate());
-                reminder.setModel(vehicle.getModel());
-                reminder.setCurrentKm(vehicle.getCurrentKm());
-                reminder.setNextMaintenanceKm(nextMaintenance.getIntervalKm());
-
-                String status = nextMaintenance.getStatus();
-                if ("OVERDUE".equals(status)) {
-                    reminder.setSeverity("CRITICAL");
-                    reminder.setMessage("Xe đã quá hạn bảo dưỡng " +
-                            Math.abs(nextMaintenance.getKmUntilMaintenance()) + " km!");
-                } else if ("DUE_SOON".equals(status)) {
-                    reminder.setSeverity("WARNING");
-                    reminder.setMessage("Xe sắp đến hạn bảo dưỡng, còn " +
-                            nextMaintenance.getKmUntilMaintenance() + " km");
-                } else {
-                    reminder.setSeverity("INFO");
-                    reminder.setMessage("Lần bảo dưỡng tiếp theo còn " +
-                            nextMaintenance.getKmUntilMaintenance() + " km");
-                }
-
-                reminders.add(reminder);
-            }
-        }
-
-        return reminders;
-    }
-
-    private BookingStatsDTO getBookingStats(String userId) {
+    private BookingStatsDTO getBookingStats(Integer userId) {
         List<Booking> bookings = bookingRepo.findByCustomer_UserId(userId);
-
         BookingStatsDTO stats = new BookingStatsDTO();
         stats.setTotalBookings(bookings.size());
         stats.setPendingBookings((int) bookings.stream()
-                .filter(b -> "Pending".equals(b.getStatus()) ||
-                        "Approved".equals(b.getStatus()))
+                .filter(b -> "Pending".equals(b.getStatus()) || "Approved".equals(b.getStatus()))
                 .count());
         stats.setCompletedBookings((int) bookings.stream()
                 .filter(b -> "Completed".equals(b.getStatus()))
                 .count());
-
         bookings.stream()
                 .map(Booking::getBookingDate)
                 .max(LocalDateTime::compareTo)
                 .ifPresent(stats::setLastBookingDate);
-
         return stats;
     }
 
@@ -176,23 +142,5 @@ public class CustomerDashboardService {
         return dto;
     }
 
-    private Integer extractIntervalKm(String planName) {
-        if (planName == null || planName.trim().isEmpty()) {
-            throw new InvalidDataException("Plan name cannot be null or empty");
-        }
 
-        try {
-            String[] parts = planName.split(" ");
-            for (int i = 0; i < parts.length - 1; i++) {
-                if (parts[i].contains(".") && "km".equals(parts[i + 1])) {
-                    String kmValue = parts[i].replace(".", "").replace(",", "");
-                    return Integer.parseInt(kmValue);
-                }
-            }
-            // Không tìm thấy km trong plan name
-            throw new InvalidDataException("Invalid plan name format: " + planName);
-        } catch (NumberFormatException e) {
-            throw new InvalidDataException("Cannot parse km value from plan name: " + planName);
-        }
-    }
 }

@@ -109,6 +109,10 @@ public class BookingService {
         ServiceCenter center = serviceCenterRepo.findById(request.getCenterId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service center not found with ID: " + request.getCenterId()));
 
+        // 1. Tìm MaintenancePlan mà khách hàng đã chọn
+        MaintenancePlan selectedPlan = planRepo.findById(request.getMaintenancePlanId())
+                .orElseThrow(() -> new ResourceNotFoundException("Maintenance Plan not found with ID: " + request.getMaintenancePlanId()));
+
         Booking booking = new Booking();
         booking.setCustomer(customer);
         booking.setVehicle(vehicle);
@@ -116,9 +120,10 @@ public class BookingService {
         booking.setBookingDate(request.getBookingDate());
         booking.setStatus("Pending");
         booking.setNote(request.getNote());
+        booking.setMaintenancePlan(selectedPlan); // 2. Gán plan đã chọn vào booking
 
         Booking savedBooking = bookingRepo.save(booking);
-        log.info("Booking created successfully with ID: {}", savedBooking.getBookingId());
+        log.info("Booking created successfully with ID: {} for Plan ID: {}", savedBooking.getBookingId(), selectedPlan.getId());
 
         return mapToBookingResponse(savedBooking);
 
@@ -171,6 +176,11 @@ public class BookingService {
         if (request.getBookingDate().isBefore(LocalDateTime.now())) {
             throw new InvalidDataException("Booking date must be in the future");
         }
+
+        if (request.getMaintenancePlanId() == null) {
+            throw new InvalidDataException("Maintenance Plan ID is required");
+        }
+
     }
     private ServiceCenterDTO mapToServiceCenterDTO(ServiceCenter center) {
         ServiceCenterDTO dto = new ServiceCenterDTO();
