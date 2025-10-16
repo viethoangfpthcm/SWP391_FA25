@@ -18,5 +18,6 @@ public class AssignedBookingTechnicianResponse {
     private LocalDateTime bookingDate;
     private String status;
     private String note;
+    String maintenancePlanName;
 }
 

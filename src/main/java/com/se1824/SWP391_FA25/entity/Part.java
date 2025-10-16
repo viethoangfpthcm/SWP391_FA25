@@ -47,10 +47,6 @@ public class Part {
     @JsonIgnore
     ServiceCenter serviceCenter;
 
-    @ManyToOne
-    @JoinColumn(name = "vehicle_plate")
-    @JsonIgnore
-    Vehicle vehicle;
 
     @OneToMany(mappedBy = "part", cascade = CascadeType.ALL)
     @JsonIgnore

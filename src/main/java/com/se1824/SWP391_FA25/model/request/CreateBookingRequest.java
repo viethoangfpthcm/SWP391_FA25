@@ -14,5 +14,6 @@ public class CreateBookingRequest {
     String vehiclePlate;
     Integer centerId;
     LocalDateTime bookingDate;
+    Integer maintenancePlanId;
     String note;
 }

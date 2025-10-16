@@ -65,4 +65,8 @@ public class Booking {
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     @JsonIgnore
     MaintenanceChecklist checklist;
+    @ManyToOne
+    @JoinColumn(name = "plan_id")
+    @JsonIgnore
+    MaintenancePlan maintenancePlan;
 }
