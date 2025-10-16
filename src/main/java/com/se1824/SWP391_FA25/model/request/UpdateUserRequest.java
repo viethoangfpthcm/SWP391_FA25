@@ -22,6 +22,7 @@ public class UpdateUserRequest {
             regexp = "^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-6|8|9]|9[0-4|6-9])[0-9]{7}$",
             message = "Invalid phone number format"
     )
+    String password;
     String phone;
     Integer centerId; // Chỉ admin mới được đổi
 

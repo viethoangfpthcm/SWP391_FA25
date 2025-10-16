@@ -54,7 +54,7 @@ public class AuthenticationService implements UserDetailsService {
         Users users = modelMapper.map(us, Users.class);
         users.setPassword(passwordEncoder.encode(us.getPassword()));
         users.setRole(UserRole.CUSTOMER); // Gán vai trò mặc định
-        users.setIsActive(false);
+        users.setIsActive(true);
 
         Users newUser = authenticationRepository.save(users);
 
@@ -63,7 +63,6 @@ public class AuthenticationService implements UserDetailsService {
 
         return ur;
     }
-
 
 
 //    public UserResponse login(LoginRequest loginRequest) {

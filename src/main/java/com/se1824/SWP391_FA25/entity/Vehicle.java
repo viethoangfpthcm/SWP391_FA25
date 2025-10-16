@@ -46,10 +46,6 @@ public class Vehicle {
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
     @JsonIgnore
-    List<Part> parts;
-
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    @JsonIgnore
     List<VehicleSchedule> schedules;
 }
 

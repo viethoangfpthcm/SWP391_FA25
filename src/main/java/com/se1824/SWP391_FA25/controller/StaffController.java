@@ -49,7 +49,7 @@ public class StaffController {
     @PostMapping("/bookings/{bookingId}/approve")
     public ResponseEntity<String> approveBooking(
             @PathVariable Integer bookingId,
-            @RequestParam String staffId) {
+            @RequestParam Integer staffId) {
         staffService.approveBooking(bookingId, staffId);
         return ResponseEntity.ok("Booking approved successfully");
     }
@@ -61,7 +61,7 @@ public class StaffController {
     @PostMapping("/bookings/{bookingId}/decline")
     public ResponseEntity<String> declineBooking(
             @PathVariable Integer bookingId,
-            @RequestParam String staffId,
+            @RequestParam Integer staffId,
             @RequestParam String reason) {
         staffService.declineBooking(bookingId, staffId, reason);
         return ResponseEntity.ok("Booking declined successfully");

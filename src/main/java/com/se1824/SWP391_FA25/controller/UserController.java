@@ -2,6 +2,7 @@ package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.dto.UserManagementDTO;
 import com.se1824.SWP391_FA25.model.request.UpdateUserRequest;
+import com.se1824.SWP391_FA25.service.AccountService;
 import com.se1824.SWP391_FA25.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 public class UserController {
 
     private final AdminService adminService;
+    private final AccountService accountService;
 
     /**
      * User tự update profile (không có centerId)
@@ -25,7 +27,7 @@ public class UserController {
     @PutMapping("/profile")
     public ResponseEntity<UserManagementDTO> updateOwnProfile(
             @RequestBody UpdateUserRequest request) {
-        UserManagementDTO user = adminService.updateOwnProfile(request);
+        UserManagementDTO user = accountService.updateOwnProfile(request);
         return ResponseEntity.ok(user);
     }
 }

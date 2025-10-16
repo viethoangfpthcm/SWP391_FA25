@@ -29,7 +29,7 @@ public class AdminController {
     @PostMapping("/userscreate")
     public ResponseEntity<UserManagementDTO> createUser(@Valid
                                                         @RequestBody CreateUserRequest request,
-                                                        @RequestParam String adminId) {
+                                                        @RequestParam Integer adminId) {
         UserManagementDTO user = adminService.createUser(request, adminId);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
@@ -70,11 +70,13 @@ public class AdminController {
      * Admin update user (có thể đổi centerId)
      * PUT /api/admin/users?adminId={adminId}
      */
-    @PutMapping("/users")
+    @PutMapping("/usersupdate")
     public ResponseEntity<UserManagementDTO> updateUserByAdmin(
             @RequestBody UpdateUserRequest request,
-            @RequestParam String adminId) {
-        UserManagementDTO user = adminService.updateUserByAdmin(request, adminId);
+            @RequestParam Integer adminId,
+            @RequestParam Integer userIdToUpdate
+    ) {
+        UserManagementDTO user = adminService.updateUserByAdmin(request, adminId, userIdToUpdate);
         return ResponseEntity.ok(user);
     }
 
@@ -84,8 +86,8 @@ public class AdminController {
      */
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<String> deleteUser(
-            @PathVariable String userId,
-            @RequestParam String adminId) {
+            @PathVariable Integer userId,
+            @RequestParam Integer adminId) {
         adminService.deleteUser(userId, adminId);
         return ResponseEntity.ok("User deleted successfully");
     }

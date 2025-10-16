@@ -47,20 +47,5 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.getCurrentAccount());
     }
 
-//    @GetMapping("/getuser")
-//    public ResponseEntity<?> getUserByEmail(String email) {
-//        UserResponse user = authenticationService.getUserByEmail(email);
-//
-//        return ResponseEntity.ok(user);
-//    }
-//
-////    @PostMapping("/register")
-////    public ResponseEntity<?> registerUser(@RequestBody Users user) {
-////        return ResponseEntity.ok(authenticationService.registerUser(user));
-////    }
-//
-//    @PostMapping("/login")
-//    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
-//        return ResponseEntity.ok(authenticationService.login(loginRequest.getUsername(), loginRequest.getPassword()));
-//    }
+
 }
