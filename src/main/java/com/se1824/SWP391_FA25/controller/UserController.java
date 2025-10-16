@@ -4,7 +4,7 @@ import com.se1824.SWP391_FA25.dto.CustomerInfoDTO;
 import com.se1824.SWP391_FA25.dto.UserManagementDTO;
 import com.se1824.SWP391_FA25.model.request.UpdateUserRequest;
 import com.se1824.SWP391_FA25.service.AccountService;
-import com.se1824.SWP391_FA25.service.AdminService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

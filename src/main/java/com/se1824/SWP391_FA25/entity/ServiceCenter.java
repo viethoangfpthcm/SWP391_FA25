@@ -1,15 +1,14 @@
 package com.se1824.SWP391_FA25.entity;
 
-import com.se1824.SWP391_FA25.enums.UserRole;
+
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
-import jakarta.persistence.*;
-import lombok.*;
+
 
 @Entity
 @Table(name = "ServiceCenter")

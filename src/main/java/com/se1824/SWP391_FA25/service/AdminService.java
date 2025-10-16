@@ -102,13 +102,6 @@ public class AdminService {
     }
 
     /**
-     * User tự update thông tin của mình (không có centerId)
-     */
-    @Autowired
-    AuthenticationService authenticationService;
-
-
-    /**
      * Admin update bất kỳ user nào (bao gồm centerId)
      */
     @Transactional
