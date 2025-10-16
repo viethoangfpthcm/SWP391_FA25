@@ -37,7 +37,7 @@ public class ServiceCenter {
     @JsonIgnore
     List<Part> parts;
 
-    @OneToMany(mappedBy = "center", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "serviceCenter", cascade = CascadeType.ALL) //
     @JsonIgnore
     List<Booking> bookings;
 

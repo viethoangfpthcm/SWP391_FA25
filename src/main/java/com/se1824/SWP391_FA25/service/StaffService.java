@@ -96,7 +96,7 @@ public class StaffService {
         validateStaffRole(currentStaff.getUserId());
 
         Integer centerId = currentStaff.getCenter().getId();
-        List<Users> technicians = userRepo.findByServiceCenter_IdAndRole(centerId, UserRole.TECHNICIAN);
+        List<Users> technicians = userRepo.findByCenter_IdAndRole(centerId, UserRole.TECHNICIAN);
         return technicians.stream().map(this::mapToTechnicianDTO).collect(Collectors.toList());
     }
 

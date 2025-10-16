@@ -71,7 +71,7 @@ public class AdminService {
     public List<UserManagementDTO> getAllStaff(Integer centerId) {
         List<Users> staff;
         if (centerId != null) {
-            staff = userRepo.findByServiceCenter_IdAndRole(centerId, UserRole.STAFF);
+            staff = userRepo.findByCenter_IdAndRole(centerId, UserRole.STAFF);
         } else {
             staff = userRepo.findByRole(UserRole.STAFF);
         }
@@ -84,7 +84,7 @@ public class AdminService {
     public List<UserManagementDTO> getAllTechnicians(Integer centerId) {
         List<Users> technicians;
         if (centerId != null) {
-            technicians = userRepo.findByServiceCenter_IdAndRole(centerId, UserRole.TECHNICIAN);
+            technicians = userRepo.findByCenter_IdAndRole(centerId, UserRole.TECHNICIAN);
         } else {
             technicians = userRepo.findByRole(UserRole.TECHNICIAN);
         }
