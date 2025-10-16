@@ -28,7 +28,7 @@ public class BookingController {
     @GetMapping("/vehicle/{licensePlate}")
     public ResponseEntity<VehicleBookingDTO> getVehicleForBooking(
             @PathVariable String licensePlate,
-            @RequestParam String userId) {
+            @RequestParam Integer userId) {
         VehicleBookingDTO dto = bookingService.getVehicleForBooking(licensePlate, userId);
         return ResponseEntity.ok(dto);
     }
@@ -50,7 +50,7 @@ public class BookingController {
      */
     @GetMapping("/customerBookings/{userId}")
     public ResponseEntity<List<BookingResponse>> getCustomerBookings(
-            @PathVariable String userId) {
+            @PathVariable Integer userId) {
         List<BookingResponse> bookings = bookingService.getCustomerBookings(userId);
         return ResponseEntity.ok(bookings);
     }
@@ -62,7 +62,7 @@ public class BookingController {
     @DeleteMapping("/{bookingId}")
     public ResponseEntity<String> cancelBooking(
             @PathVariable Integer bookingId,
-            @RequestParam String userId) {
+            @RequestParam Integer userId) {
         bookingService.cancelBooking(bookingId, userId);
         return ResponseEntity.ok("Booking cancelled successfully");
     }

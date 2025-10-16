@@ -34,7 +34,7 @@ public class AdminService {
      * Tạo user mới (Staff hoặc Technician)
      */
     @Transactional
-    public UserManagementDTO createUser(CreateUserRequest request,Integer adminId) {
+    public UserManagementDTO createUser(CreateUserRequest request, Integer adminId) {
         log.info("Admin {} creating user with role {}", adminId, request.getRole());
         validateAdminRole(adminId);
 
@@ -107,28 +107,6 @@ public class AdminService {
     @Autowired
     AuthenticationService authenticationService;
 
-    @Transactional
-    public UserManagementDTO updateOwnProfile(UpdateUserRequest request) {
-        Users currentUser = authService.getCurrentAccount();
-        log.info("User {} updating own profile", currentUser.getUserId());
-
-        Users user = userRepo.findById(currentUser.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        if (request.getFullName() != null && !request.getFullName().trim().isEmpty()) {
-            user.setFullName(request.getFullName());
-        }
-        if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
-            user.setEmail(request.getEmail());
-        }
-        if (request.getPhone() != null && !request.getPhone().trim().isEmpty()) {
-            user.setPhone(request.getPhone());
-        }
-
-        Users updatedUser = userRepo.save(user);
-        log.info("User {} updated own profile successfully", updatedUser.getUserId());
-        return mapToUserManagementDTO(updatedUser);
-    }
 
     /**
      * Admin update bất kỳ user nào (bao gồm centerId)
@@ -166,8 +144,8 @@ public class AdminService {
         Users user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
 
-        if (user.getRole() != UserRole.STAFF && user.getRole() != UserRole.TECHNICIAN) {
-            throw new InvalidDataException("Can only delete STAFF or TECHNICIAN accounts");
+        if (user.getRole() != UserRole.STAFF && user.getRole() != UserRole.TECHNICIAN && user.getRole() != UserRole.CUSTOMER) {
+            throw new InvalidDataException("Can only delete STAFF or TECHNICIAN accounts or CUSTOMER accounts");
         }
         userRepo.delete(user);
         log.info("User {} deleted successfully", userId);
@@ -197,7 +175,6 @@ public class AdminService {
             throw new InvalidDataException("Service center is required");
         }
     }
-
 
 
     private UserManagementDTO mapToUserManagementDTO(Users user) {

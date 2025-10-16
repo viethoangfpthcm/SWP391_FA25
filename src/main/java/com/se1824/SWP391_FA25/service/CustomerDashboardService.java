@@ -4,10 +4,7 @@ import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.entity.*;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
-import com.se1824.SWP391_FA25.repository.BookingRepository;
-import com.se1824.SWP391_FA25.repository.MaintenancePlanRepository;
-import com.se1824.SWP391_FA25.repository.UserRepository;
-import com.se1824.SWP391_FA25.repository.VehicleRepository;
+import com.se1824.SWP391_FA25.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +23,9 @@ public class CustomerDashboardService {
     private final BookingRepository bookingRepo;
     private final MaintenancePlanRepository planRepo;
     private final UserRepository userRepo;
-    AuthenticationService authenticationService;
+    private final MaintenanceScheduleRepository maintenanceScheduleRepo;
+    private final AuthenticationService authenticationService;
+    private final VehicleScheduleRepository vehicleScheduleRepo;
 
     /**
      * Lấy tất cả thông tin cần thiết cho dashboard của khách hàng.
@@ -106,7 +105,17 @@ public class CustomerDashboardService {
         }).collect(Collectors.toList());
     }
 
-    
+    /*
+     * Customer theo xe mới
+     */
+    public Vehicle createVehicle(Vehicle vehicle) {
+        Users currentUser = authenticationService.getCurrentAccount();
+        vehicle.setOwner(currentUser);
+        vehicle.setBookings(bookingRepo.findByVehicle_LicensePlate(vehicle.getLicensePlate()));
+        vehicle.setSchedules(vehicleScheduleRepo.findBySchedule_vehicleModel(vehicle.getModel()));
+        return vehicleRepo.save(vehicle);
+    }
+
     // ==================== CÁC HÀM HELPER ====================
     private VehicleOverviewDTO mapToVehicleOverview(Vehicle vehicle) {
         VehicleOverviewDTO dto = new VehicleOverviewDTO();

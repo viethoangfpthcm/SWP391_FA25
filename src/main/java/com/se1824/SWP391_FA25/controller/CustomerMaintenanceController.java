@@ -22,8 +22,9 @@ public class CustomerMaintenanceController {
 
     /**
      * Lấy danh sách checklist của khách hàng theo customerId
+     * <p>
+     * //     * @param customerId ID khách hàng (user)
      *
-     * @param customerId ID khách hàng (user)
      * @return danh sách checklist
      */
     @GetMapping("/checklists")
