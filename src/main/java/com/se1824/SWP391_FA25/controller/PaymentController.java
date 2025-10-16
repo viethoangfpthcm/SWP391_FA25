@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +28,12 @@ public class PaymentController {
 
 
     @PostMapping("/create-vnpay-payment/{bookingId}")
-    public ResponseEntity<?> createVnPayPayment(@PathVariable Integer bookingId) {
+    public ResponseEntity<?> createVnPayPayment(@PathVariable Integer bookingId, HttpServletRequest request) {
         try {
-            String paymentUrl = paymentService.createVnPayPayment(bookingId);
+            String ipAddress = request.getRemoteAddr();
+
+            String paymentUrl = paymentService.createVnPayPayment(bookingId , ipAddress);
+
             Map<String, String> result = new HashMap<>();
             result.put("paymentUrl", paymentUrl);
             return ResponseEntity.ok(result);

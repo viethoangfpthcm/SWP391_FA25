@@ -14,7 +14,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class VNPayService {
     private final VNPayConfig vnPayConfig;
-    public String createOrder(int total, String orderInfo, String paymentId, Users customer) {
+    public String createOrder(int total, String orderInfo, String paymentId, Users customer, String ipAddress) {
         long amount = total * 100L;
         String vnp_TxnRef = paymentId + "_" + System.currentTimeMillis();
 
@@ -29,7 +29,7 @@ public class VNPayService {
         vnp_Params.put("vnp_OrderType", VNPayConfig.VNP_ORDER_TYPE);
         vnp_Params.put("vnp_Locale", "vn");
         vnp_Params.put("vnp_ReturnUrl", vnPayConfig.getVnp_ReturnUrl());
-        vnp_Params.put("vnp_IpAddr", "127.0.0.1");
+        vnp_Params.put("vnp_IpAddr", ipAddress);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");

@@ -37,7 +37,7 @@ public class PaymentService {
     private final VNPayConfig vnPayConfig;
 
     @Transactional
-    public String createVnPayPayment(Integer bookingId) {
+    public String createVnPayPayment(Integer bookingId, String ipAddress) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingId));
 
@@ -66,7 +66,7 @@ public class PaymentService {
 
         String orderInfo = "Thanh toan don hang bao duong xe " + booking.getVehicle().getLicensePlate();
         // Truyền cả thông tin khách hàng
-        return vnPayService.createOrder(totalAmount.intValue(), orderInfo, savedPayment.getPaymentId().toString(), booking.getCustomer());
+        return vnPayService.createOrder(totalAmount.intValue(), orderInfo, savedPayment.getPaymentId().toString(), booking.getCustomer(), ipAddress);
     }
 
     @Transactional
