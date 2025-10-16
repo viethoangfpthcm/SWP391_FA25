@@ -3,68 +3,87 @@ import { useNavigate } from "react-router-dom";
 import "./Payment.css";
 
 export default function PaymentReady() {
-    const [payments, setPayments] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchPayments = async () => {
-            try {
-                const token = localStorage.getItem("token"); // nếu có token lưu trong localStorage
-                const res = await fetch("http://localhost:8080/api/customer/payments/ready", {
-                    headers: {
-                        "Authorization": token ? `Bearer ${token}` : "",
-                        "Accept": "application/json",
-                    },
-                });
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        const token = localStorage.getItem("token");
 
-                if (!res.ok) {
-                    throw new Error("Không thể tải dữ liệu từ API");
-                }
+        if (!token) {
+          setError("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn!");
+          navigate("/login");
+          return;
+        }
 
-                const data = await res.json();
-                setPayments(Array.isArray(data) ? data : []);
-            } catch (err) {
-                console.error("Lỗi khi tải dữ liệu:", err);
-                setPayments([]);
-            } finally {
-                setLoading(false);
-            }
-        };
+        const res = await fetch("http://localhost:8080/api/customer/payments/ready", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
+          },
+        });
 
-        fetchPayments();
-    }, []);
+        if (!res.ok) {
+          throw new Error(`Lỗi tải dữ liệu (mã ${res.status})`);
+        }
 
-    if (loading) return <div className="loading">Đang tải dữ liệu...</div>;
+        const data = await res.json();
+        setPayments(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Lỗi khi tải dữ liệu:", err);
+        setError("Không thể tải danh sách thanh toán từ máy chủ!");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return (
-        <div className="payment-container">
-            <h1 className="payment-title">Danh sách dịch vụ chờ thanh toán</h1>
+    fetchPayments();
+  }, [navigate]);
 
-            {payments.length === 0 ? (
-                <p className="empty">Không có đơn hàng nào cần thanh toán.</p>
-            ) : (
-                <div className="payment-list">
-                    {payments.map((item) => (
-                        <div key={item.bookingId || item.id} className="payment-card">
-                            <h3>{item.centerName || "Trung tâm không xác định"}</h3>
-                            <p>Xe: {item.vehicleModel || "Không rõ"} - {item.vehiclePlate || "Không rõ"}</p>
-                            <p>Địa chỉ: {item.centerAddress || "Không có thông tin"}</p>
-                            <p>Ngày đặt: {item.bookingDate ? new Date(item.bookingDate).toLocaleString() : "Không rõ"}</p>
-                            <p>Trạng thái: {item.status || "Không rõ"}</p>
-                            <p>Ghi chú: {item.note || "Không có"}</p>
-                            <p>Số tiền: {Number(item.amount || 0).toLocaleString()} VND</p>
+  if (loading) return <div className="loading">Đang tải dữ liệu...</div>;
+  if (error) return <div className="error">{error}</div>;
 
-                            <button
-                                className="btn-pay"
-                                onClick={() => navigate(`/payment/process/${item.bookingId || item.id}`)}
-                            >
-                                Thanh toán
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            )}
+  return (
+    <div className="payment-container">
+      <h1 className="payment-title">Danh sách dịch vụ chờ thanh toán</h1>
+
+      {payments.length === 0 ? (
+        <p className="empty">Không có đơn hàng nào cần thanh toán.</p>
+      ) : (
+        <div className="payment-list">
+          {payments.map((item) => (
+            <div key={item.bookingId} className="payment-card">
+              <h3>{item.centerName || "Trung tâm không xác định"}</h3>
+              <p>Xe: {item.vehicleModel || "Không rõ"} - {item.vehiclePlate || "Không rõ"}</p>
+              <p>Địa chỉ: {item.centerAddress || "Không có thông tin"}</p>
+              <p>
+                Ngày đặt:{" "}
+                {item.bookingDate
+                  ? new Date(item.bookingDate).toLocaleString("vi-VN")
+                  : "Không rõ"}
+              </p>
+              <p>Trạng thái: {item.status || "Không rõ"}</p>
+              <p>Ghi chú: {item.note || "Không có"}</p>
+              {/* Số tiền không có trong API /ready, nên nếu cần hiển thị thì phải truyền từ nơi khác */}
+              <p>
+                Số tiền:{" "}
+                {item.amount ? Number(item.amount).toLocaleString() + " VND" : "—"}
+              </p>
+
+              <button
+                className="btn-pay"
+                onClick={() => navigate(`/payment/process/${item.bookingId}`)}
+              >
+                Thanh toán
+              </button>
+            </div>
+          ))}
         </div>
-    );
+      )}
+    </div>
+  );
 }
