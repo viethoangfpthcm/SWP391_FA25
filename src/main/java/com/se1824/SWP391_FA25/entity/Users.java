@@ -23,7 +23,7 @@ import java.util.List;
 @Getter
 @Setter
 @Data
-public class Users {
+public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -74,7 +74,37 @@ public class Users {
     List<Feedback> feedbacks;
 
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Trả về một danh sách chứa quyền (role) của người dùng
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
 
+    @Override
+    public String getUsername() {
+        // Spring Security sẽ dùng email để định danh người dùng
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Tài khoản không bao giờ hết hạn
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Tài khoản không bị khóa
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Mật khẩu không bao giờ hết hạn
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.isActive; // Lấy trạng thái từ trường isActive
+    }
 
     @Override
     public String toString() {
