@@ -25,26 +25,32 @@ public class TechnicianService {
         Users currentTechnician = new AuthenticationService().getCurrentAccount();
 
         List<Booking> assignedBookings = bookingRepo.findByAssignedTechnician_UserId(currentTechnician.getUserId());
-
-
-        return assignedBookings.stream()
-                .map(booking -> new AssignedBookingTechnicianResponse(
+        return assignedBookings.stream().map(
+                booking -> new AssignedBookingTechnicianResponse(
                         booking.getBookingId(),
-
-
-                        booking.getCustomer() != null ? booking.getCustomer().getUserId() : "NULL",
-
-                        booking.getVehicle().getLicensePlate(),
-
-                        booking.getServiceCenter().getId(),
-                        booking.getBookingDate(),
-                        booking.getStatus(),
-
-
-                        booking.getAssignedTechnician().getUserId(),
-                        booking.getNote() // note
-                ))
-                .collect(Collectors.toList());
+                        
+                )
+        )
+//
+//
+//        return assignedBookings.stream()
+//                .map(booking -> new AssignedBookingTechnicianResponse(
+//                        booking.getBookingId(),
+//
+//
+//                        booking.getCustomer() != null ? booking.getCustomer().getUserId() : "NULL",
+//
+//                        booking.getVehicle().getLicensePlate(),
+//
+//                        booking.getServiceCenter().getId(),
+//                        booking.getBookingDate(),
+//                        booking.getStatus(),
+//
+//
+//                        booking.getAssignedTechnician().getUserId(),
+//                        booking.getNote() // note
+//                ))
+//                .collect(Collectors.toList());
     }
 
 }
