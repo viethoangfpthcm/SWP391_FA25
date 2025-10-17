@@ -31,6 +31,7 @@ public class PaymentService {
     private final VNPayService vnPayService;
     private final VNPayConfig vnPayConfig;
     private final VehicleScheduleRepository vehicleScheduleRepository;
+    private final VehicleRepository vehicleRepository;
 
 
     @Transactional
@@ -118,14 +119,18 @@ public class PaymentService {
                     bookingRepository.save(booking);
                 }
                 if (booking.getMaintenanceNo() != null && booking.getVehicle() != null) {
+                    Vehicle vehicle = booking.getVehicle();
+                    vehicle.setCurrentMaintenanceNo(booking.getMaintenanceNo());
+                    vehicleRepository.save(vehicle);
+
                     // Lấy số mốc bảo dưỡng từ Booking vừa hoàn thành
                     Integer completedMaintenanceNo = booking.getMaintenanceNo();
                     String licensePlate = booking.getVehicle().getLicensePlate();
 
-                    // 1. Tìm tất cả VehicleSchedule cho xe này
+                    //  Tìm tất cả VehicleSchedule cho xe này
                     List<VehicleSchedule> schedules = vehicleScheduleRepository.findByVehicle_LicensePlate(licensePlate);
 
-                    // 2. Tìm Schedule có maintenanceNo bằng với Booking vừa hoàn thành
+                    //  Tìm Schedule có maintenanceNo bằng với Booking vừa hoàn thành
                     schedules.stream()
                             .filter(s -> s.getMaintenanceNo() != null && s.getMaintenanceNo().equals(completedMaintenanceNo))
                             .findFirst()
