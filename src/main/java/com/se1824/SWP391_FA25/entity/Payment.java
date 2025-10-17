@@ -35,7 +35,7 @@ public class Payment {
     @Column(name = "material_cost", precision = 18, scale = 2)
     BigDecimal materialCost = BigDecimal.ZERO;
 
-    @Column(name = "total_amount", precision = 18, scale = 2, insertable = false, updatable = false)
+    @Transient
     BigDecimal totalAmount;
 
     @Column(name = "payment_method", length = 50)

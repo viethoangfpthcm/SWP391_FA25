@@ -73,7 +73,8 @@ public class SecurityConfig {
                                 "/api/users/register",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/localhost:5173/**"
+                                "/localhost:5173/**",
+                                "/api/payment/**"
                         ).permitAll()
 
                         // Các API yêu cầu quyền STAFF

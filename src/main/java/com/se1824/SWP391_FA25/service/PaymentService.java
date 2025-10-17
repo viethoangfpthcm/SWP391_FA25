@@ -1,20 +1,15 @@
 package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.config.VNPayConfig;
-import com.se1824.SWP391_FA25.entity.Booking;
-import com.se1824.SWP391_FA25.entity.MaintenanceChecklist;
-import com.se1824.SWP391_FA25.entity.Payment;
+import com.se1824.SWP391_FA25.entity.*;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
+import com.se1824.SWP391_FA25.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
 import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistDetailResponse;
 import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
 import com.se1824.SWP391_FA25.model.response.PaymentResponse;
-import com.se1824.SWP391_FA25.repository.BookingRepository;
-import com.se1824.SWP391_FA25.repository.MaintenanceChecklistDetailRepository;
-import com.se1824.SWP391_FA25.repository.MaintenanceChecklistRepository;
-import com.se1824.SWP391_FA25.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +30,8 @@ public class PaymentService {
     private final MaintenanceChecklistDetailRepository detailRepository;
     private final VNPayService vnPayService;
     private final VNPayConfig vnPayConfig;
+    private final VehicleScheduleRepository vehicleScheduleRepository;
+
 
     @Transactional
     public String createVnPayPayment(Integer bookingId, String ipAddress) {
@@ -44,14 +41,23 @@ public class PaymentService {
         MaintenanceChecklist checklist = checklistRepository.findByBooking_BookingId(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Checklist not found for this booking."));
 
+        List<MaintenanceChecklistDetail> approvedDetails = detailRepository.findByChecklist_IdAndApprovalStatus(checklist.getId(), "APPROVED");
+
+        BigDecimal totalLabor = approvedDetails.stream()
+                .map(MaintenanceChecklistDetail::getLaborCost)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalMaterial = approvedDetails.stream()
+                .map(MaintenanceChecklistDetail::getMaterialCost)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalAmount = totalLabor.add(totalMaterial);
+
         if (!"Completed".equalsIgnoreCase(checklist.getStatus())) {
             throw new InvalidDataException("Cannot create payment for an incomplete checklist.");
         }
-
-        BigDecimal totalAmount = detailRepository.findByChecklist_IdAndApprovalStatus(checklist.getId(), "APPROVED")
-                .stream()
-                .map(detail -> detail.getLaborCost().add(detail.getMaterialCost()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidDataException("Total amount must be greater than zero to create a payment.");
@@ -59,7 +65,8 @@ public class PaymentService {
 
         Payment payment = new Payment();
         payment.setBooking(booking);
-        payment.setTotalAmount(totalAmount);
+        payment.setLaborCost(totalLabor);
+        payment.setMaterialCost(totalMaterial);
         payment.setStatus("PENDING");
         payment.setPaymentDate(LocalDateTime.now());
         Payment savedPayment = paymentRepository.save(payment);
@@ -104,6 +111,29 @@ public class PaymentService {
                 payment.setStatus("PAID");
                 payment.setPaymentMethod("VNPay");
                 paymentRepository.save(payment);
+
+                Booking booking = payment.getBooking();
+                if (booking != null) {
+                    booking.setStatus("Paid");
+                    bookingRepository.save(booking);
+                }
+                if (booking.getMaintenanceNo() != null && booking.getVehicle() != null) {
+                    // Lấy số mốc bảo dưỡng từ Booking vừa hoàn thành
+                    Integer completedMaintenanceNo = booking.getMaintenanceNo();
+                    String licensePlate = booking.getVehicle().getLicensePlate();
+
+                    // 1. Tìm tất cả VehicleSchedule cho xe này
+                    List<VehicleSchedule> schedules = vehicleScheduleRepository.findByVehicle_LicensePlate(licensePlate);
+
+                    // 2. Tìm Schedule có maintenanceNo bằng với Booking vừa hoàn thành
+                    schedules.stream()
+                            .filter(s -> s.getMaintenanceNo() != null && s.getMaintenanceNo().equals(completedMaintenanceNo))
+                            .findFirst()
+                            .ifPresent(schedule -> {
+                                schedule.setStatus("ON_TIME"); // Đánh dấu mốc này đã hoàn thành
+                                vehicleScheduleRepository.save(schedule);
+                            });
+                }
                 log.info("Payment for booking ID {} was successful.", payment.getBooking().getBookingId());
             }
             return 0; // Thành công

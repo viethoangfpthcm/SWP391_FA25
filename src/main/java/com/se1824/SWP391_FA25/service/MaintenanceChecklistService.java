@@ -149,6 +149,11 @@ public class MaintenanceChecklistService {
             MaintenanceChecklist existingChecklist = checklistRepo.findByBooking_BookingId(bookingId).get();
             existingChecklist.setStatus("In Progress");
             checklistRepo.save(existingChecklist);
+
+            Booking booking = bookingRepo.findById(bookingId) // Lấy lại Booking và đổi trạng thái booking thành "In Progress"
+                    .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
+            booking.setStatus("In Progress");
+            bookingRepo.save(booking);
             return;
         }
 
@@ -180,8 +185,11 @@ public class MaintenanceChecklistService {
         newChecklist.setPlan(applicablePlan);
         newChecklist.setActualKm(actualKm);
         newChecklist.setStatus("In Progress");
-
         newChecklist.setStartTime(LocalDateTime.now()); // Ghi lại thời gian bắt đầu
+        newChecklist.setMaintenanceNo(applicablePlan.getMaintenanceNo()); // Gán maintenanceNo từ plan
+
+        booking.setStatus("In Progress");// Đổi trạng thái booking thành "In Progress" nếu chưa có checklist
+        bookingRepo.save(booking);
 
         final MaintenanceChecklist savedChecklist = checklistRepo.save(newChecklist);
 

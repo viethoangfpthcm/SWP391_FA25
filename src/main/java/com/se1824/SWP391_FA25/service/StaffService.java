@@ -123,6 +123,7 @@ public class StaffService {
         }
 
         booking.setAssignedTechnician(technician);
+        booking.setStatus("Assigned");
         bookingRepo.save(booking);
         log.info("Technician {} assigned to booking {} by staff {}", request.getTechnicianId(), request.getBookingId(), staffId);
     }
