@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface VehicleScheduleRepository extends JpaRepository<VehicleSchedule, Integer> {
     List<VehicleSchedule> findBySchedule_vehicleModel(String vehicleModel);
+
+    List<VehicleSchedule> findByVehicle_LicensePlate(String licensePlate);
 }

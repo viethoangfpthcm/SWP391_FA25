@@ -110,11 +110,35 @@ public class CustomerDashboardService {
      */
     public Vehicle createVehicle(Vehicle vehicle) {
         Users currentUser = authenticationService.getCurrentAccount();
+
+        // 1. Gán chủ sở hữu
         vehicle.setOwner(currentUser);
-        vehicle.setBookings(bookingRepo.findByVehicle_LicensePlate(vehicle.getLicensePlate()));
-        vehicle.setSchedules(vehicleScheduleRepo.findBySchedule_vehicleModel(vehicle.getModel()));
-        return vehicleRepo.save(vehicle);
+        // Đảm bảo các thuộc tính List (bookings, schedules) là null khi save object mới
+        // và không gán các giá trị fetch từ repository vào đối tượng transient
+
+        // 2. Lưu Vehicle vào DB để lấy primary key (licensePlate)
+        Vehicle savedVehicle = vehicleRepo.save(vehicle); //
+
+        // 3. Tìm MaintenanceSchedule mặc định cho dòng xe
+        MaintenanceSchedule schedule = maintenanceScheduleRepo.findByVehicleModel(savedVehicle.getModel()); //
+
+        if (schedule != null) {
+            // 4. Tạo đối tượng VehicleSchedule mới để liên kết
+            VehicleSchedule newVehicleSchedule = VehicleSchedule.builder()
+                    .vehicle(savedVehicle) //
+                    .schedule(schedule) //
+                    .maintenanceNo(0) // Khởi tạo mốc bảo dưỡng đầu tiên (có thể điều chỉnh)
+                    .planDate(LocalDate.now())
+                    .deadline(LocalDate.now().plusMonths(1)) // Ví dụ: Deadline sau 1 năm
+                    .status("PENDING") // Trạng thái ban đầu: PENDING
+                    .build(); //
+
+            vehicleScheduleRepo.save(newVehicleSchedule); //
+        }
+
+        return savedVehicle;
     }
+
 
     // ==================== CÁC HÀM HELPER ====================
     private VehicleOverviewDTO mapToVehicleOverview(Vehicle vehicle) {

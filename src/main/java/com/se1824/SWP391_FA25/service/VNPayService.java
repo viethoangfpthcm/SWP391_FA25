@@ -14,6 +14,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class VNPayService {
     private final VNPayConfig vnPayConfig;
+
     public String createOrder(int total, String orderInfo, String paymentId, Users customer, String ipAddress) {
         long amount = total * 100L;
         String vnp_TxnRef = paymentId + "_" + System.currentTimeMillis();
@@ -45,7 +46,7 @@ public class VNPayService {
             vnp_Params.put("vnp_Bill_Mobile", customer.getPhone());
             vnp_Params.put("vnp_Bill_Email", customer.getEmail());
             String fullName = customer.getFullName().trim();
-            if (fullName != null && !fullName.isEmpty()) {
+            if (!fullName.isEmpty()) {
                 int idx = fullName.lastIndexOf(' ');
                 if (idx > 0) {
                     String firstName = fullName.substring(0, idx);

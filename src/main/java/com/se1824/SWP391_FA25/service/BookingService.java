@@ -65,6 +65,7 @@ public class BookingService {
 
         return dto;
     }
+
     /**
      * Lấy danh sách booking đã hoàn thành Checklist và sẵn sàng thanh toán
      */
@@ -92,17 +93,15 @@ public class BookingService {
      * Tạo booking mới
      */
     @Transactional
-    public BookingResponse createBooking(CreateBookingRequest request) {
+    public BookingResponse createBooking(CreateBookingRequest request, Users current) {
         log.info("Creating booking for vehicle: {} at center: {}", request.getVehiclePlate(), request.getCenterId());
-        validateBookingRequest(request);
+        //validateBookingRequest(request);
 
-        Users customer = userRepo.findById(request.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + request.getUserId()));
 
         Vehicle vehicle = vehicleRepo.findById(request.getVehiclePlate())
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with license plate: " + request.getVehiclePlate()));
 
-        if (!vehicle.getOwner().getUserId().equals(request.getUserId())) {
+        if (!vehicle.getOwner().getUserId().equals(current.getUserId())) {
             throw new InvalidDataException("Vehicle does not belong to this user");
         }
 
@@ -114,7 +113,7 @@ public class BookingService {
                 .orElseThrow(() -> new ResourceNotFoundException("Maintenance Plan not found with ID: " + request.getMaintenancePlanId()));
 
         Booking booking = new Booking();
-        booking.setCustomer(customer);
+        booking.setCustomer(current);
         booking.setVehicle(vehicle);
         booking.setServiceCenter(center);
         booking.setBookingDate(request.getBookingDate());
@@ -160,28 +159,27 @@ public class BookingService {
 
     // ==================== Private Helper Methods ====================
 
-    private void validateBookingRequest(CreateBookingRequest request) {
-        if (request.getUserId() == null) {
-            throw new InvalidDataException("User ID is required");
-        }
-        if (request.getVehiclePlate() == null || request.getVehiclePlate().trim().isEmpty()) {
-            throw new InvalidDataException("Vehicle plate is required");
-        }
-        if (request.getCenterId() == null) {
-            throw new InvalidDataException("Service center is required");
-        }
-        if (request.getBookingDate() == null) {
-            throw new InvalidDataException("Booking date is required");
-        }
-        if (request.getBookingDate().isBefore(LocalDateTime.now())) {
-            throw new InvalidDataException("Booking date must be in the future");
-        }
+//    private void validateBookingRequest(CreateBookingRequest request) {
+//
+//        if (request.getVehiclePlate() == null || request.getVehiclePlate().trim().isEmpty()) {
+//            throw new InvalidDataException("Vehicle plate is required");
+//        }
+//        if (request.getCenterId() == null) {
+//            throw new InvalidDataException("Service center is required");
+//        }
+//        if (request.getBookingDate() == null) {
+//            throw new InvalidDataException("Booking date is required");
+//        }
+//        if (request.getBookingDate().isBefore(LocalDateTime.now())) {
+//            throw new InvalidDataException("Booking date must be in the future");
+//        }
+//
+//        if (request.getMaintenancePlanId() == null) {
+//            throw new InvalidDataException("Maintenance Plan ID is required");
+//        }
+//
+//    }
 
-        if (request.getMaintenancePlanId() == null) {
-            throw new InvalidDataException("Maintenance Plan ID is required");
-        }
-
-    }
     private ServiceCenterDTO mapToServiceCenterDTO(ServiceCenter center) {
         ServiceCenterDTO dto = new ServiceCenterDTO();
         dto.setId(center.getId());

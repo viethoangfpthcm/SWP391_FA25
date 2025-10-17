@@ -3,6 +3,7 @@ package com.se1824.SWP391_FA25.controller;
 import com.se1824.SWP391_FA25.dto.CustomerDashboardDTO;
 import com.se1824.SWP391_FA25.dto.VehicleScheduleStatusDTO;
 
+import com.se1824.SWP391_FA25.entity.Vehicle;
 import com.se1824.SWP391_FA25.model.response.BookingResponse;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
 import com.se1824.SWP391_FA25.service.BookingService;
@@ -44,6 +45,7 @@ public class CustomerDashboardController {
         List<BookingResponse> bookings = bookingService.getBookingsReadyForPayment(userId);
         return ResponseEntity.ok(bookings);
     }
+
     /**
      * Lấy danh sách các gói bảo dưỡng cho một xe cụ thể
      * GET /api/customer/maintenance-schedule?licensePlate={licensePlate}
@@ -53,5 +55,10 @@ public class CustomerDashboardController {
             @RequestParam String licensePlate) {
         List<VehicleScheduleStatusDTO> schedule = dashboardService.getVehicleMaintenanceSchedule(licensePlate);
         return ResponseEntity.ok(schedule);
+    }
+
+    @PostMapping("/create-vehicle")
+    public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle) {
+        return ResponseEntity.ok(dashboardService.createVehicle(vehicle));
     }
 }

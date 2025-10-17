@@ -38,9 +38,9 @@ public class MaintenanceChecklistService {
     ModelMapper modelMapper;
     VehicleRepository vehicleRepo;
     AuthenticationService authService;
-    String STATUS_ADJUSTMENT = "HIỆU CHỈNH";
-    String STATUS_REPAIR = "SỬA CHỮA";
-    String STATUS_REPLACE = "THAY THẾ";
+    String STATUS_ADJUSTMENT = "HIỆU_CHỈNH";
+    String STATUS_REPAIR = "SỬA_CHỮA";
+    String STATUS_REPLACE = "THAY_THẾ";
     String STATUS_GOOD = "TỐT";
 
 
@@ -140,6 +140,7 @@ public class MaintenanceChecklistService {
 
         return res;
     }
+
     /**
      * Technician bắt đầu quá trình bảo dưỡng (Start Maintenance) (ĐÃ CẬP NHẬT LOGIC)
      */
@@ -199,7 +200,6 @@ public class MaintenanceChecklistService {
         detailRepo.saveAll(details);
 
     }
-
 
 
     /**
@@ -317,6 +317,7 @@ public class MaintenanceChecklistService {
         detail.setCustomerNote(customerNote);
         detailRepo.save(detail);
     }
+
     /**
      * Hoàn thành checklist (Complete Checklist)
      */

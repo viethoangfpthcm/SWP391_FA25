@@ -1,6 +1,7 @@
 package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.dto.*;
+import com.se1824.SWP391_FA25.entity.Users;
 import com.se1824.SWP391_FA25.model.request.CreateBookingRequest;
 import com.se1824.SWP391_FA25.model.response.BookingResponse;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
@@ -8,6 +9,7 @@ import com.se1824.SWP391_FA25.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
@@ -42,7 +44,8 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<BookingResponse> createBooking(
             @RequestBody CreateBookingRequest request) {
-        BookingResponse response = bookingService.createBooking(request);
+        Users current = authenticationService.getCurrentAccount();
+        BookingResponse response = bookingService.createBooking(request, current);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
