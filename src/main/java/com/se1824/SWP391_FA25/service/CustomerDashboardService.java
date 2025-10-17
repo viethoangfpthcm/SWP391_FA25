@@ -75,11 +75,14 @@ public class CustomerDashboardService {
         LocalDate purchaseDate = vehicle.getPurchaseDate();
         LocalDate currentDate = LocalDate.now();
 
-        List<Integer> completedMaintenanceNos = bookingRepo.findByVehicle_LicensePlateAndStatus(licensePlate, "Completed")
+        List<Integer> completedMaintenanceNos = bookingRepo.findByVehicle_LicensePlateAndStatus(licensePlate, "Paid")
                 .stream()
                 .filter(booking -> booking.getMaintenancePlan() != null)
                 .map(booking -> booking.getMaintenancePlan().getMaintenanceNo())
-                .collect(Collectors.toList());
+                .toList();
+        Integer maxCompletedNo = completedMaintenanceNos.stream()
+                .max(Integer::compareTo)
+                .orElse(0);
 
         return plans.stream().map(plan -> {
             VehicleScheduleStatusDTO dto = new VehicleScheduleStatusDTO();
@@ -91,8 +94,8 @@ public class CustomerDashboardService {
 
             // Tính ngày hết hạn dự kiến cho mốc bảo dưỡng này
             LocalDate dueDate = purchaseDate.plusMonths(plan.getIntervalMonth());
-
-            if (completedMaintenanceNos.contains(plan.getMaintenanceNo())) {
+            Integer planNo = plan.getMaintenanceNo();
+            if (planNo <= maxCompletedNo) {
                 dto.setStatus("ON_TIME"); // Đã hoàn thành trong một booking trước đó
             } else if (currentDate.isAfter(dueDate)) {
                 dto.setStatus("EXPIRED"); // Đã quá hạn theo thời gian

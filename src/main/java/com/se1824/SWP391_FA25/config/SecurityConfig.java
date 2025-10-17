@@ -58,7 +58,7 @@ public class SecurityConfig {
         return http
                 .cors(cors -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Thay đổi theo nguồn gốc của bạn
+                    configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://localhost:5173")); // Thay đổi theo nguồn gốc của bạn
                     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     configuration.setAllowedHeaders(List.of("*"));
                     configuration.setAllowCredentials(true);
