@@ -75,7 +75,7 @@ export default function PaymentProcess() {
                 return;
             }
 
-            const res = await fetch(`http://localhost:8080/api/payment/process?bookingId=${id}`, {
+            const res = await fetch(`https://103.90.226.216:8443/api/payment/process?bookingId=${id}`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,

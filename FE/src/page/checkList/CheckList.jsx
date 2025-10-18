@@ -15,9 +15,9 @@ export default function CheckList() {
 
   const statusOptions = [
     { value: "TỐT", label: "Tốt" },
-    { value: "HIỆU CHỈNH", label: "Hiệu chỉnh" },
-    { value: "SỬA CHỮA", label: "Sửa chữa" },
-    { value: "THAY THẾ", label: "Thay thế" },
+    { value: "HIỆU_CHỈNH", label: "Hiệu chỉnh" },
+    { value: "SỬA_CHỮA", label: "Sửa chữa" },
+    { value: "THAY_THẾ", label: "Thay thế" },
   ];
 
   // 🟢 Fetch checklist
@@ -27,7 +27,7 @@ const fetchChecklist = async () => {
     const token = localStorage.getItem("token");
     if (!token) throw new Error("Thiếu token");
 
-    const res = await fetch("http://localhost:8080/api/technician/my-checklists", {
+    const res = await fetch("https://103.90.226.216:8443/api/technician/my-checklists", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -84,7 +84,7 @@ const fetchChecklist = async () => {
       const note = field === "note" ? value : item?.note || "";
       const partId = field === "partId" ? value : item?.partId || "";
 
-      const url = `http://localhost:8080/api/technician/detail/${detailId}?status=${encodeURIComponent(
+      const url = `https://103.90.226.216:8443/api/technician/detail/${detailId}?status=${encodeURIComponent(
         status
       )}&note=${encodeURIComponent(note)}&partId=${partId}`;
 
@@ -111,7 +111,7 @@ const fetchChecklist = async () => {
   const handleCompleteChecklist = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `http://localhost:8080/api/technician/${checklist.id}/complete`;
+      const url = `https://103.90.226.216:8443/api/technician/${checklist.id}/complete`;
 
       const res = await fetch(url, {
         method: "POST",
@@ -272,7 +272,7 @@ const fetchChecklist = async () => {
           </>
         )}
 
-        {updating && <p className="saving">💾 Đang lưu thay đổi...</p>}
+        {updating && <p className="saving"> Đang lưu thay đổi...</p>}
       </main>
     </div>
   );

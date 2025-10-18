@@ -52,7 +52,7 @@ const LoginForm = () => {
     setSuccessMessage("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/login", {
+      const response = await fetch("https://103.90.226.216:8443/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: loginEmail, password: loginPassword }),
@@ -104,7 +104,7 @@ const LoginForm = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/register", {
+      const response = await fetch("https://103.90.226.216:8443/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSubmit),

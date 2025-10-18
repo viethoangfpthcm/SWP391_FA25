@@ -15,7 +15,7 @@ const Report3 = () => {
   const handleApproval = async (detailId, isApproved) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/customer/maintenance/checklists/details/${detailId}/approval`,
+        `https://103.90.226.216:8443/api/customer/maintenance/checklists/details/${detailId}/approval`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
