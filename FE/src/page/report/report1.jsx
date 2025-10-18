@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Navbar from "../../components/Navbar.jsx";
-import Footer from "../../components/Footer.jsx";
-import "./report1.css";
+  import React, { useEffect, useState } from "react";
+  import Navbar from "../../components/Navbar.jsx";
+  import Footer from "../../components/Footer.jsx";
+  import "./report1.css";
 
-const Report1 = () => {
-  const [reports, setReports] = useState([]);
-  const [loading, setLoading] = useState(true);
+  export default function Report1() {
+    const [reports, setReports] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [toast, setToast] = useState(null);
 
   // 🔹 Tải danh sách checklist bảo dưỡng của khách hàng
   useEffect(() => {
@@ -55,144 +56,247 @@ const Report1 = () => {
         console.error("[Report1] Lỗi khi tải dữ liệu:", error);
       } finally {
         setLoading(false);
-      }
+    }
+  };
+
+  fetchReports();
+}, []);
+
+    // Hiển thị thông báo tạm (toast)
+    const showToast = (msg, type = "success") => {
+      setToast({ msg, type });
+      setTimeout(() => setToast(null), 2800);
     };
 
-    fetchReports();
-  }, []);
+    // Cập nhật trạng thái phê duyệt cục bộ (mock)
+    const handleApproval = (reportId, detailId, action) => {
+      // action = "approved" | "rejected"
+      setReports((prev) =>
+        prev.map((r) =>
+          r.id !== reportId
+            ? r
+            : {
+                ...r,
+                details: r.details.map((d) =>
+                  d.id === detailId
+                    ? {
+                        ...d,
+                        approvalStatus: action === "approved" ? "APPROVED" : "DECLINED",
+                        customerNote:
+                          action === "approved"
+                            ? (d.customerNote || "") + " — Khách đã phê duyệt"
+                            : (d.customerNote || "") + " — Khách đã từ chối",
+                      }
+                    : d
+                ),
+              }
+        )
+      );
 
-  // 🔹 Hàm xử lý phê duyệt / từ chối
-  // 🔹 Hàm xử lý phê duyệt / từ chối (ĐÃ FIX)
-const handleApproval = async (detailId, status) => {
-  try {
-    const token = localStorage.getItem("token");
-    const customerId = localStorage.getItem("userId");
-    if (!token || !customerId) throw new Error("Thiếu token hoặc customerId!");
+      showToast(
+        `Đã ${action === "approved" ? "phê duyệt" : "từ chối"} hạng mục #${detailId}`,
+        action === "approved" ? "success" : "error"
+      );
 
-    // Chuyển status sang dạng BE chấp nhận
-    const approvalStatus = status === "approved" ? "APPROVED" : "DECLINED";
+      // Nếu có API thực tế: gọi PUT ở đây rồi refresh data
+      // fetch(`/api/.../approval`, { method: 'PUT', ... })
+    };
 
-    const customerNote = prompt("Nhập ghi chú (nếu có):", "");
-    const query = new URLSearchParams({
-      approvalStatus,
-      ...(customerNote ? { customerNote } : {}),
-    }).toString();
+    if (loading) return <p className="loading">🔄 Đang tải dữ liệu...</p>;
 
-    const url = `http://localhost:8080/api/customer/maintenance/checklists/details/${detailId}/approval?${query}`;
-    console.log("[Report1] PUT:", url);
+    return (
+      <div className="report-page">
+        <Navbar />
 
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+        <main className="report-container">
+          <h1 className="page-title">Biên bản bảo dưỡng & sửa chữa</h1>
+          <p className="page-subtitle">
+            Xem chi tiết biên bản và phê duyệt từng hạng mục — demo hoạt động ngay trên client.
+          </p>
 
-    if (!response.ok) {
-      const txt = await response.text();
-      console.error("[Report1] Approval error:", txt);
-      alert("❌ Không thể cập nhật trạng thái!");
-      return;
-    }
-
-    alert(`✅ Đã ${status === "approved" ? "phê duyệt" : "từ chối"} thành công!`);
-
-    // 🔁 Gọi lại GET để cập nhật UI đúng theo dữ liệu từ backend
-    const getUrl = `http://localhost:8080/api/customer/maintenance/checklists?customerId=${encodeURIComponent(customerId)}`;
-    const refresh = await fetch(getUrl, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const newData = await refresh.json();
-
-    setReports(Array.isArray(newData) ? newData : [newData]);
-  } catch (error) {
-    console.error("[Report1] Lỗi khi cập nhật:", error);
-    alert("Lỗi khi cập nhật trạng thái!");
-  }
-};
-
-
-  if (loading) return <p className="loading">🔄 Đang tải dữ liệu...</p>;
-
-  return (
-    <div className="report-page">
-      <Navbar />
-
-      <main className="main-content">
-        <h1>🧾 Biên bản bảo dưỡng & sửa chữa</h1>
-        <p className="sub-text">
-          Xem và phê duyệt các hạng mục sửa chữa do kỹ thuật viên đề xuất.
-        </p>
-
-        {reports.length === 0 ? (
-          <p className="no-data">Không có dữ liệu biên bản nào.</p>
-        ) : (
-          reports.map((report) => (
-            <div key={report.id} className="report-card">
-              <div className="report-header">
-                <h3>{report.scheduleName || "Không có tên lịch trình"}</h3>
-                <span className={`status ${report.status || "unknown"}`}>
-                  {report.status || "Không xác định"}
-                </span>
-              </div>
-
-              <div className="report-info">
-                <p><strong>ID:</strong> {report.id}</p>
-                <p><strong>Kỹ thuật viên:</strong> {report.technicianName || "Không rõ"}</p>
-                <p><strong>Xe:</strong> {report.vehicleModel} - {report.vehicleNumberPlate}</p>
-                <p><strong>Số km hiện tại:</strong> {report.currentKm?.toLocaleString() || "N/A"} km</p>
-                <p><strong>Mốc bảo dưỡng:</strong> {report.maintenanceKm?.toLocaleString() || "N/A"} km</p>
-                <p><strong>Ngày tạo:</strong> {report.createdDate || "N/A"}</p>
-                <p><strong>Tổng chi phí dự kiến:</strong> {(report.estimatedCost || 0).toLocaleString()}đ</p>
-                <p><strong>Chi phí đã duyệt:</strong> {(report.totalCostApproved || 0).toLocaleString()}đ</p>
-                <p><strong>Chi phí bị từ chối:</strong> {(report.totalCostDeclined || 0).toLocaleString()}đ</p>
-              </div>
-
-              <h4>🧩 Chi tiết hạng mục</h4>
-              {(report.details && report.details.length > 0) ? (
-                report.details.map((d) => (
-                  <div key={d.id} className="detail-item">
-                    <div className="detail-info">
-                      <p><strong>Tên hạng mục:</strong> {d.itemName || "Không có tên"}</p>
-                      <p><strong>Linh kiện:</strong> {d.partName || "Không rõ"}</p>
-                      <p><strong>Số lượng:</strong> {d.partQuantityUsed || 0}</p>
-                      <p><strong>Trạng thái:</strong> {d.status || "Không xác định"}</p>
-                      <p><strong>Ghi chú kỹ thuật viên:</strong> {d.note || "Không có ghi chú"}</p>
-                      <p><strong>Ghi chú khách hàng:</strong> {d.customerNote || "Không có"}</p>
-                      <p><strong>Chi phí nhân công:</strong> {(d.laborCost || 0).toLocaleString()}đ</p>
-                      <p><strong>Chi phí vật liệu:</strong> {(d.materialCost || 0).toLocaleString()}đ</p>
-                      <p><strong>Trạng thái phê duyệt:</strong> {d.approvalStatus || "Chưa xử lý"}</p>
-                    </div>
-
-                    <div className="action-btns">
-                      <button
-                       className={`approve ${d.approvalStatus === "APPROVED" ? "active" : ""}`}
-                         onClick={() => handleApproval(d.id, "approved")}
-                                      >
-                              ✅ Đồng ý
-                            </button>
-                            <button
-                                   className={`reject ${d.approvalStatus === "DECLINED" ? "active" : ""}`}
-                                onClick={() => handleApproval(d.id, "rejected")}
-                               >
-                             ❌ Từ chối
-                                </button>
-
+          {reports.length === 0 ? (
+            <p className="no-data">Không có dữ liệu biên bản nào.</p>
+          ) : (
+            reports.map((report) => (
+              <article key={report.id} className="report-document">
+                {/* ===== Header ===== */}
+                <header className="document-header">
+                  <div className="doc-left">
+                    <div className="doc-title">BIÊN BẢN BẢO DƯỠNG & SỬA CHỮA</div>
+                    <div className="doc-meta">
+                      <span>
+                        Mã biên bản: <strong>#{report.id}</strong>
+                      </span>
+                      <span>• Ngày: {new Date(report.createdDate).toLocaleDateString("vi-VN")}</span>
                     </div>
                   </div>
-                ))
-              ) : (
-                <p className="no-detail">Không có hạng mục nào.</p>
-              )}
-            </div>
-          ))
+
+                  <div className="doc-status">
+                    <div className={`status-pill ${report.status?.toLowerCase()}`}>
+                      {report.status === "COMPLETED" ? "Hoàn tất" : report.status}
+                    </div>
+                  </div>
+                </header>
+
+                {/* ===== Body ===== */}
+                <section className="document-body">
+                  {/* --- Left side --- */}
+                  <div className="left-col">
+                    <div className="panel">
+                      <h4>Thông tin phương tiện</h4>
+                      <div className="kv">
+                        <div>
+                          <span className="k">Kỹ thuật viên</span>
+                          <span className="v">{report.technicianName}</span>
+                        </div>
+                        <div>
+                          <span className="k">Xe</span>
+                          <span className="v">{report.vehicleModel}</span>
+                        </div>
+                        <div>
+                          <span className="k">Biển số</span>
+                          <span className="v">{report.vehicleNumberPlate}</span>
+                        </div>
+                        <div>
+                          <span className="k">Số km hiện tại</span>
+                          <span className="v">{report.currentKm.toLocaleString()} km</span>
+                        </div>
+                        <div>
+                          <span className="k">Mốc bảo dưỡng</span>
+                          <span className="v">{report.maintenanceKm.toLocaleString()} km</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="panel cost-panel">
+                      <h4>Tổng chi phí</h4>
+                      <div className="cost-row">
+                        <div>
+                          <div className="cost-label">Dự kiến</div>
+                          <div className="cost-value">
+                            {report.estimatedCost.toLocaleString()} đ
+                          </div>
+                        </div>
+                        <div>
+                          <div className="cost-label">Đã duyệt</div>
+                          <div className="cost-value approved">
+                            {report.totalCostApproved.toLocaleString()} đ
+                          </div>
+                        </div>
+                        <div>
+                          <div className="cost-label">Từ chối</div>
+                          <div className="cost-value declined">
+                            {report.totalCostDeclined.toLocaleString()} đ
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* --- Right side --- */}
+                  <div className="right-col">
+                    <h4 className="details-title">Chi tiết hạng mục</h4>
+
+                    {report.details.map((d) => {
+                      const status = (d.approvalStatus || "PENDING").toLowerCase();
+                      const isApproved = d.approvalStatus === "APPROVED";
+                      const isDeclined = d.approvalStatus === "DECLINED";
+
+                      return (
+                        <div key={d.id} className="detail-row">
+                          <div className="detail-main">
+                            <div className="detail-head">
+                              <div className="detail-name">{d.itemName}</div>
+                              <div className={`approval-tag ${status}`}>
+                                {isApproved
+                                  ? "Đã duyệt"
+                                  : isDeclined
+                                  ? "Đã từ chối"
+                                  : "Chờ duyệt"}
+                              </div>
+                            </div>
+
+                            <div className="detail-grid">
+                              <div>
+                                <span className="label">Linh kiện</span>
+                                <div className="val">{d.partName}</div>
+                              </div>
+                              <div>
+                                <span className="label">Số lượng</span>
+                                <div className="val">{d.partQuantityUsed}</div>
+                              </div>
+                              <div>
+                                <span className="label">Nhân công</span>
+                                <div className="val">{d.laborCost.toLocaleString()} đ</div>
+                              </div>
+                              <div>
+                                <span className="label">Vật liệu</span>
+                                <div className="val">{d.materialCost.toLocaleString()} đ</div>
+                              </div>
+                            </div>
+
+                            <div className="detail-note">
+                              <div>
+                                <strong>Ghi chú kỹ thuật:</strong> {d.note || "-"}
+                              </div>
+                              <div>
+                                <strong>Ghi chú khách hàng:</strong> {d.customerNote || "-"}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="detail-actions">
+                            <button
+                              className={`btn small approve ${isApproved ? "active" : ""}`}
+                              onClick={() => handleApproval(report.id, d.id, "approved")}
+                              disabled={isApproved}
+                              title={isApproved ? "Đã phê duyệt" : "Phê duyệt hạng mục"}
+                            >
+                              Đồng ý
+                            </button>
+
+                            <button
+                              className={`btn small reject ${isDeclined ? "active" : ""}`}
+                              onClick={() => handleApproval(report.id, d.id, "rejected")}
+                              disabled={isDeclined}
+                              title={isDeclined ? "Đã từ chối" : "Từ chối hạng mục"}
+                            >
+                              Từ chối
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+
+                {/* ===== Footer ===== */}
+                <footer className="document-footer">
+                  <div className="sign-box">
+                    <div className="label">Kỹ thuật viên</div>
+                    <div className="line" />
+                    <div className="name">{report.technicianName}</div>
+                  </div>
+
+                  <div className="sign-box">
+                    <div className="label">Khách hàng</div>
+                    <div className="line" />
+                    <div className="name">Đã xem & Xác nhận</div>
+                  </div>
+                </footer>
+              </article>
+            ))
+          )}
+        </main>
+
+        <Footer />
+
+        {/* Toast */}
+        {toast && (
+          <div className={`toast ${toast.type === "error" ? "err" : "ok"}`}>
+            {toast.msg}
+          </div>
         )}
-      </main>
-
-      <Footer />
-    </div>
-  );
-};
-
-export default Report1;
+      </div>
+    );
+  }
