@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "maintenance_checklist_detail")
@@ -19,31 +20,31 @@ public class MaintenanceChecklistDetail {
     @Column(name = "id")
     Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "checklist_id", nullable = false)
     @JsonIgnore
     MaintenanceChecklist checklist;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "plan_item_id", nullable = false)
     @JsonIgnore
     MaintenancePlanItem planItem;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "part_id")
     @JsonIgnore
     Part part;
 
-    @Column(name = "status", length = 50, nullable = false)
-        String status;  // tốt – hiệu chỉnh – sửa chữa – thay thế
-
     @Column(name = "approval_status", length = 50)
-    String approvalStatus;  // Pending, Approved, Declined
+    String approvalStatus;
 
-    @Column(name = "customer_note", length = 255)
+    @Column(name = "customer_note", length = 500)
     String customerNote;
 
-    @Column(name = "note", length = 255)
+    @Column(name = "status", length = 50)
+    String status;
+
+    @Column(name = "note", length = 1000)
     String note;
 
     @Column(name = "labor_cost", precision = 18, scale = 2)
@@ -51,4 +52,10 @@ public class MaintenanceChecklistDetail {
 
     @Column(name = "material_cost", precision = 18, scale = 2)
     BigDecimal materialCost = BigDecimal.ZERO;
+
+    @Column(name = "quantity")
+    Integer quantity;
+
+    @Column(name = "completed_at")
+    LocalDateTime completedAt;
 }

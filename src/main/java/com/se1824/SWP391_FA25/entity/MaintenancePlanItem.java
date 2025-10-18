@@ -20,27 +20,25 @@
         @Column(name = "id")
         Integer id;
 
-        @ManyToOne(fetch = FetchType.LAZY)
+        @ManyToOne
         @JoinColumn(name = "plan_id", nullable = false)
         @JsonIgnore
         MaintenancePlan plan;
 
-        @Column(name = "item_name", length = 255, nullable = false)
+        @Column(name = "item_name", nullable = false, length = 200)
         String itemName;
 
-        @Column(name = "action_type", length = 50, nullable = false)
-        String actionType;  // 'check' hoặc 'replace'
+        @Column(name = "action_type", nullable = false, length = 50)
+        String actionType;
 
-        @Column(name = "interval_km")
-        Integer intervalKm;
+        @ManyToOne
+        @JoinColumn(name = "part_type_id", nullable = false)
+        @JsonIgnore
+        PartType partType;
 
-        @Column(name = "interval_month")
-        Integer intervalMonth;
-
-        @Column(name = "note", length = 255)
+        @Column(name = "note", length = 500)
         String note;
 
-        // Relationships
         @OneToMany(mappedBy = "planItem", cascade = CascadeType.ALL)
         @JsonIgnore
         List<MaintenanceChecklistDetail> checklistDetails;

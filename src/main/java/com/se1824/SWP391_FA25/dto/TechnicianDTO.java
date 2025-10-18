@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TechnicianDTO {
-    String userId;
+    Integer userId;
     String fullName;
     String phone;
     Integer activeBookings;

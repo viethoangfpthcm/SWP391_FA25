@@ -21,20 +21,31 @@ public class MaintenancePlan {
     @Column(name = "id")
     Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "schedule_id", nullable = false)
     @JsonIgnore
     MaintenanceSchedule schedule;
 
-    @Column(name = "name", length = 255, nullable = false)
+    @Column(name = "maintenance_no", nullable = false)
+    Integer maintenanceNo;
+
+    @Column(name = "interval_km", nullable = false)
+    Integer intervalKm;
+
+    @Column(name = "interval_month", nullable = false)
+    Integer intervalMonth;
+
+    @Column(name = "name", length = 200)
     String name;
 
-    // Relationships
+    @Column(name = "description", length = 500)
+    String description;
+
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     @JsonIgnore
-    List<MaintenancePlanItem> planItems;
+    List<MaintenancePlanItem> items;
 
-    @OneToMany(mappedBy = "maintenancePlan", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     @JsonIgnore
     List<MaintenanceChecklist> checklists;
 }

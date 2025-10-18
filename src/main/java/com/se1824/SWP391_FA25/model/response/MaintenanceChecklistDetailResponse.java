@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -17,16 +18,19 @@ import java.util.List;
 public class MaintenanceChecklistDetailResponse {
     Integer id;
     Integer planItemId;
-    Integer partId;
     String itemName;
-    String partName;
     String actionType;
-    String status;
-    String approvalStatus;
-    String note;
-    String customerNote;
+
+    String status; // Trạng thái kỹ thuật viên cập nhật (Tốt, Sửa chữa, Thay thế)
+    String approvalStatus; // Trạng thái khách hàng phê duyệt (Approved, Declined)
+    String note; // Ghi chú của kỹ thuật viên
+    String customerNote; // Ghi chú của khách hàng
+
     BigDecimal laborCost;
     BigDecimal materialCost;
+
+    Integer partId;
+    String partName;
     List<PartOption> availableParts;
 }
 

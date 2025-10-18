@@ -23,9 +23,11 @@ import java.util.List;
 public class TechnicianController {
     private final TechnicianService technicianService;
     private final MaintenanceChecklistService checklistService;
+
     /**
      * Lấy danh sách các Booking đã được gán (Assigned) cho Kỹ thuật viên hiện tại.
      * trước khi tạo Checklist.
+     *
      * @return ResponseEntity chứa danh sách AssignedBookingTechnicianResponse.
      */
     @GetMapping("/my-tasks")
@@ -37,6 +39,7 @@ public class TechnicianController {
     /**
      * Lấy danh sách các Maintenance Checklist (Bảng kiểm tra bảo dưỡng) hiện có
      * và đang được xử lý bởi Kỹ thuật viên đang đăng nhập.
+     *
      * @return ResponseEntity chứa danh sách MaintenanceChecklistResponse.
      */
     @GetMapping("/my-checklists")
@@ -48,24 +51,25 @@ public class TechnicianController {
     /**
      * Bắt đầu quy trình bảo dưỡng (Maintenance Start) cho một Booking cụ thể.
      * Hàm này thường tạo ra một Maintenance Checklist mới dựa trên Booking và lịch bảo dưỡng của xe.
+     *
      * @return ResponseEntity với thông báo thành công.
      */
     @PostMapping("/start/{bookingId}")
-    public ResponseEntity<String> startMaintenance(@PathVariable Integer bookingId) {
-        checklistService.startMaintenance(bookingId);
+    public ResponseEntity<String> startMaintenance(@PathVariable Integer bookingId, @RequestParam Integer actualKm) {
+        checklistService.startMaintenance(bookingId, actualKm);
         return ResponseEntity.ok("Maintenance started for booking ID: " + bookingId);
     }
 
     /**
      * Cập nhật chi tiết một hạng mục (detail) trong Maintenance Checklist.
      * Đây là API Kỹ thuật viên sử dụng để ghi nhận trạng thái kiểm tra, ghi chú và chọn phụ tùng.
-     *
+     * <p>
      * Endpoint: PUT /api/technician/detail/{detailId}
      *
-     * @param detailId ID của chi tiết Checklist cần cập nhật.
-     * @param status Trạng thái mới của hạng mục
-     * @param note Ghi chú của Kỹ thuật viên
-     * @param partId ID của phụ tùng được chọn để thay thế
+     * @param detailId       ID của chi tiết Checklist cần cập nhật.
+     * @param status         Trạng thái mới của hạng mục
+     * @param note           Ghi chú của Kỹ thuật viên
+     * @param partId         ID của phụ tùng được chọn để thay thế
      * @param authentication Đối tượng xác thực chứa thông tin của User đang đăng nhập.
      * @return ResponseEntity với thông báo cập nhật thành công.
      */
@@ -78,11 +82,12 @@ public class TechnicianController {
             Authentication authentication
     ) {
         Users currentUser = (Users) authentication.getPrincipal();
-        String currentUserId = currentUser.getUserId();
+        Integer currentUserId = currentUser.getUserId();
 
         checklistService.updateChecklistDetail(detailId, status, note, partId, currentUserId);
         return ResponseEntity.ok("Checklist detail updated successfully");
     }
+
     /**
      * API để Technician đánh dấu Checklist đã hoàn thành.
      * Logic trừ Part sẽ được thực hiện bên trong service.
