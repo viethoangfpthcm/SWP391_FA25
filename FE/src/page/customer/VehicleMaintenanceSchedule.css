@@ -1,0 +1,137 @@
+/* VehicleMaintenanceSchedule.css */
+.schedule-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.schedule-content {
+  flex: 1;
+  max-width: 900px; /* Giới hạn chiều rộng cho dễ đọc */
+  margin: 30px auto;
+  padding: 20px;
+  width: 90%;
+}
+
+.schedule-content h1 {
+  text-align: center;
+  color: #0a4ff0;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+}
+
+.schedule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.schedule-item {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  border-left: 5px solid #ccc; /* Border mặc định */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.schedule-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+.schedule-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.schedule-item-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #111;
+}
+
+.schedule-item p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+/* Status specific styles */
+.status-icon {
+  font-size: 1.5rem; /* Kích thước icon */
+}
+
+.schedule-item.status-on_time {
+  border-left-color: #28a745; /* Green */
+}
+.status-icon.on-time {
+  color: #28a745;
+}
+
+.schedule-item.status-expired {
+  border-left-color: #dc3545; /* Red */
+   background-color: #fff8f8; /* Nền hơi đỏ */
+}
+.status-icon.expired {
+  color: #dc3545;
+}
+
+.schedule-item.status-next_time {
+  border-left-color: #0a4ff0; /* Blue */
+}
+.status-icon.next-time {
+  color: #0a4ff0;
+}
+
+.status-icon.unknown {
+  color: #6c757d; /* Gray */
+}
+
+
+.error-message.centered {
+  text-align: center;
+  color: #dc3545;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.no-data {
+     text-align: center;
+     color: #6c757d;
+     font-size: 1.1rem;
+     margin-top: 30px;
+}
+
+.back-button {
+  display: block; /* Để căn giữa */
+  margin: 30px auto 0; /* Cách trên và căn giữa */
+  padding: 10px 20px;
+  background-color: #6c757d; /* Màu xám */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #5a6268;
+}
+
+/* Loading state (reuse from CustomerDashboard.css if preferred) */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 150px);
+}
+.loading-container p {
+  font-size: 1.2rem;
+  color: #555;
+}
