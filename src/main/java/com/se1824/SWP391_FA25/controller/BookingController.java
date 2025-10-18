@@ -48,9 +48,9 @@ public class BookingController {
      * Lấy danh sách booking của customer
      * GET /api/customer/bookings?userId={userId}
      */
-    @GetMapping
+    @GetMapping("/customerBookings/{userId}")
     public ResponseEntity<List<BookingResponse>> getCustomerBookings(
-            @RequestParam String userId) {
+            @PathVariable String userId) {
         List<BookingResponse> bookings = bookingService.getCustomerBookings(userId);
         return ResponseEntity.ok(bookings);
     }
