@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../sidebar/sidebar";
-import { Send, CheckCircle } from "lucide-react"; // 🆕 thêm icon
+import { Send, CheckCircle } from "lucide-react";
 import "./CheckList.css";
-import { useNavigate } from "react-router-dom"; // ✅ đổi từ Navigate sang useNavigate
+import { useNavigate } from "react-router-dom";
 
 export default function CheckList() {
   const [checklist, setChecklist] = useState(null);
@@ -11,39 +11,54 @@ export default function CheckList() {
   const [updating, setUpdating] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
-  const navigate = useNavigate(); // ✅ thêm hook điều hướng
+  const navigate = useNavigate();
 
   const statusOptions = [
     { value: "TỐT", label: "Tốt" },
-    { value: "HIỆU CHỈNH", label: "Hiệu chỉnh" },
-    { value: "SỬA CHỮA", label: "Sửa chữa" },
-    { value: "THAY THẾ", label: "Thay thế" },
+    { value: "HIỆU_CHỈNH", label: "Hiệu chỉnh" },
+    { value: "SỬA_CHỮA", label: "Sửa chữa" },
+    { value: "THAY_THẾ", label: "Thay thế" },
   ];
 
   // 🟢 Fetch checklist
-  const fetchChecklist = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Thiếu token");
+  // 🟢 Fetch checklist
+const fetchChecklist = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Thiếu token");
 
-      const res = await fetch("http://localhost:8080/api/technician/my-checklists", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    const res = await fetch("https://103.90.226.216:8443/api/technician/my-checklists", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-      if (!res.ok) throw new Error(`Không thể tải checklist (status ${res.status})`);
-      const data = await res.json();
-      if (!data || data.length === 0) {
-        setError("Không có checklist cho kỹ thuật viên này");
-        return;
-      }
+    if (!res.ok) throw new Error(`Không thể tải checklist (status ${res.status})`);
+    const data = await res.json();
 
-      setChecklist(data[0]);
-    } catch (err) {
-      setError(err.message || "Lỗi khi tải checklist");
-    } finally {
-      setLoading(false);
+    // 🧾 Log chi tiết dữ liệu
+    console.log("📦 Toàn bộ dữ liệu checklist nhận được từ API:");
+    console.log(JSON.stringify(data, null, 2)); // log đẹp dễ đọc
+
+    console.log("📦 Tổng số checklist:", data.length);
+    data.forEach((item, idx) => {
+      console.log(
+        `🔹 Checklist ${idx + 1}: ID=${item.id}, Booking ID=${item.bookingId || "N/A"}, Technician=${item.technicianName}`
+      );
+    });
+
+    if (!data || data.length === 0) {
+      setError("Không có checklist cho kỹ thuật viên này");
+      return;
     }
-  };
+
+    setChecklist(data[0]);
+  } catch (err) {
+    console.error("❌ Lỗi khi tải checklist:", err);
+    setError(err.message || "Lỗi khi tải checklist");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchChecklist();
@@ -53,7 +68,6 @@ export default function CheckList() {
   const handleUpdate = async (detailId, field, value) => {
     if (!checklist) return;
 
-    // Cập nhật local UI tạm thời
     setChecklist((prev) => {
       const updated = { ...prev };
       updated.details = updated.details.map((item) =>
@@ -62,7 +76,6 @@ export default function CheckList() {
       return updated;
     });
 
-    // Gọi API PUT
     try {
       const token = localStorage.getItem("token");
       const item = checklist.details.find((d) => d.id === detailId);
@@ -71,7 +84,7 @@ export default function CheckList() {
       const note = field === "note" ? value : item?.note || "";
       const partId = field === "partId" ? value : item?.partId || "";
 
-      const url = `http://localhost:8080/api/technician/detail/${detailId}?status=${encodeURIComponent(
+      const url = `https://103.90.226.216:8443/api/technician/detail/${detailId}?status=${encodeURIComponent(
         status
       )}&note=${encodeURIComponent(note)}&partId=${partId}`;
 
@@ -98,7 +111,7 @@ export default function CheckList() {
   const handleCompleteChecklist = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `http://localhost:8080/api/technician/${checklist.id}/complete`;
+      const url = `https://103.90.226.216:8443/api/technician/${checklist.id}/complete`;
 
       const res = await fetch(url, {
         method: "POST",
@@ -108,11 +121,9 @@ export default function CheckList() {
       if (!res.ok) throw new Error(`Không thể hoàn thành checklist (status ${res.status})`);
 
       alert("✅ Checklist đã được đánh dấu là hoàn thành!");
-      
-      await fetchChecklist(); // reload lại dữ liệu
 
-      navigate("/staff"); // ✅ chuyển hướng về staff sau khi hoàn thành
-
+      await fetchChecklist();
+      navigate("/staff");
     } catch (err) {
       console.error("❌ Lỗi khi hoàn thành checklist:", err);
       alert("❌ Lỗi khi hoàn thành checklist!");
@@ -155,7 +166,6 @@ export default function CheckList() {
           </div>
         </div>
 
-        {/* 🟢 Tổng quan việc cần làm */}
         <div className="overview-section">
           <h3>📋 Tổng quan bảo dưỡng</h3>
           <div className="overview-grid">
@@ -179,7 +189,6 @@ export default function CheckList() {
           </button>
         </div>
 
-        {/* 🟡 Chi tiết checklist */}
         {showDetails && (
           <>
             <table className="checklist-table">
@@ -263,7 +272,7 @@ export default function CheckList() {
           </>
         )}
 
-        {updating && <p className="saving">💾 Đang lưu thay đổi...</p>}
+        {updating && <p className="saving"> Đang lưu thay đổi...</p>}
       </main>
     </div>
   );

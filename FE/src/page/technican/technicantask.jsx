@@ -27,7 +27,7 @@ export default function TechnicianTask() {
     const fetchTasks = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:8080/api/technician/my-tasks", {
+            const res = await fetch("https://103.90.226.216:8443/api/technician/my-tasks", {
                 headers: {Authorization: `Bearer ${token}`},
             });
 
@@ -61,7 +61,7 @@ export default function TechnicianTask() {
         try {
             const token = localStorage.getItem("token");
             const res = await fetch(
-                `http://localhost:8080/api/technician/start/${bookingId}`,
+                `https://103.90.226.216:8443/api/technician/start/${bookingId}`,
                 {
                     method: "POST",
                     headers: {Authorization: `Bearer ${token}`},

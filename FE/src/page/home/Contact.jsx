@@ -1,37 +1,29 @@
 import React from "react";
-
-import Footer from "../../components/Footer.jsx";
 import Navbar from "../../components/Navbar.jsx";
+import Footer from "../../components/Footer.jsx";
 import "../home/Contact.css";
+
 export default function Contact() {
   return (
-    <div className="app">
+    <div className="contact-page">
       <Navbar />
-      <main className="main-content">
-        <div className="contact-container">
-          <h2 className="contact-title">Liên hệ</h2>
-          <p><b>Địa chỉ:</b> 231 Nguyễn Văn Ngân, Thủ Đức, TP.HCM</p>
-          <p><b>Hotline:</b> 0787 052 810</p>
-          <p><b>Email:</b> EVCarCenter@gmail.com</p>
+      <section className="contact-hero">
+        <div className="contact-card">
+          <h2>Liên hệ EV Car Center</h2>
+          <p>Địa chỉ: 231 Nguyễn Văn Ngân, Thủ Đức, TP.HCM</p>
+          <p>Hotline: 0787 052 810</p>
+          <p>Email: EVCarCenter@gmail.com</p>
+        </div>
+        <div className="contact-card form-card">
+          <h2>Gửi thông tin</h2>
           <form className="contact-form">
-            <div>
-              <label>Họ và tên</label>
-              <input type="text" placeholder="Nhập họ tên" />
-            </div>
-            <div>
-              <label>Email</label>
-              <input type="email" placeholder="Nhập email" />
-            </div>
-            <div>
-              <label>Nội dung</label>
-              <textarea placeholder="Nhập nội dung liên hệ" rows={3}></textarea>
-            </div>
-            <button type="submit" className="contact-submit-btn">
-              Gửi liên hệ
-            </button>
+            <input type="text" placeholder="Họ và tên" required/>
+            <input type="email" placeholder="Email" required/>
+            <textarea placeholder="Nội dung" rows={5} required/>
+            <button type="submit">Gửi</button>
           </form>
         </div>
-      </main>
+      </section>
       <Footer />
     </div>
   );

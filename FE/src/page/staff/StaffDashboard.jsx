@@ -18,7 +18,7 @@ export default function StaffDashboard({ user, userRole }) {
   const fetchAppointments = async () => {
   try {
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:8080/api/staff/bookings/pending?centerId=4", {
+    const response = await fetch("http://localhost:8080/api/staff/bookings/pending", {
       headers: {
         "Authorization": `Bearer ${token}`,
         "Accept": "application/json",
@@ -27,7 +27,7 @@ export default function StaffDashboard({ user, userRole }) {
 
     const data = await response.json();
 
-    // ✅ Kiểm tra xem có phải mảng không
+
     console.log("Appointments data:", data);
 
     if (Array.isArray(data)) {
