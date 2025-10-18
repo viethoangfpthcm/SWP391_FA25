@@ -16,6 +16,9 @@ export default function Appoint() {
   const [selectedVehicle, setSelectedVehicle] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
 
+  const [maintenancePlans, setMaintenancePlans] = useState([]);
+  const [selectedPlanId, setSelectedPlanId] = useState("");
+
   const [customerInfo, setCustomerInfo] = useState({
     fullName: "",
     phone: "",
@@ -24,10 +27,10 @@ export default function Appoint() {
   });
 
   const [serviceCenters] = useState([
-    { id: 4, name: "EV Center 1", address: "25 Nguyễn Huệ, Quận 1, TP.HCM" },
-    { id: 6, name: "EV Center 2", address: "12 Võ Văn Ngân, Thủ Đức, TP.HCM" },
-    { id: 5, name: "EV Center 3", address: "200 Nguyễn Văn Cừ, Quận 5, TP.HCM" },
-  ]);
+      { id: 1, name: "EV Center 1", address: "25 Nguyễn Huệ, Quận 1, TP.HCM", phone: "0787052810" },
+      { id: 2, name: "EV Center 2", address: "12 Võ Văn Ngân, Thủ Đức, TP.HCM", phone: "0787052811" },
+      { id: 3, name: "EV Center 3", address: "200 Nguyễn Văn Cừ, Quận 5, TP.HCM", phone: "0787052812" },
+    ]);
 
   const [selectedCenter, setSelectedCenter] = useState("");
   const [date, setDate] = useState("");
@@ -44,7 +47,7 @@ export default function Appoint() {
 
     setCustomerInfo((prev) => ({ ...prev, userId }));
 
-    fetch(`http://localhost:8080/api/customer/dashboard/${userId}`, {
+    fetch(`https://103.90.226.216:8443/api/customer/dashboard/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (res) => {
@@ -81,7 +84,7 @@ export default function Appoint() {
     };
 
     try {
-      const res = await fetch("http://localhost:8080/api/customer/bookings", {
+      const res = await fetch("https://103.90.226.216:8443/api/customer/bookings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

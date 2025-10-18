@@ -83,51 +83,42 @@ export default function PaymentProcess() {
         return;
       }
 
-      const res = await fetch(
-        `http://localhost:8080/api/payment/process?bookingId=${id}`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            paymentId: 0,
-            paymentDate: new Date().toISOString(),
-            laborCost: 0,
-            materialCost: 0,
-            totalAmount: payment?.amount || 0,
-            status: "PENDING",
-            note: "Thanh toán qua React",
-          }),
+            const res = await fetch(`https://103.90.226.216:8443/api/payment/process?bookingId=${id}`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    paymentId: 0,
+                    paymentDate: new Date().toISOString(),
+                    laborCost: 0,
+                    materialCost: 0,
+                    totalAmount: payment?.amount || 0,
+                    status: "PENDING",
+                    note: "Thanh toán qua React",
+                }),
+            });
+
+            if (res.ok) {
+                alert("Thanh toán thành công!");
+                navigate("/payment/ready");
+            } else if (res.status === 401) {
+                alert("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại!");
+                navigate("/login");
+            } else if (res.status === 403) {
+                alert("Tài khoản không có quyền thực hiện hành động này!");
+            } else {
+                alert(`Thanh toán thất bại (mã lỗi: ${res.status})`);
+            }
+        } catch (err) {
+            console.error("Lỗi khi thanh toán:", err);
+            alert("Lỗi kết nối server!");
+        } finally {
+            setProcessing(false);
         }
-      );
-
-      // 🧩 Kiểm tra lỗi thường gặp
-      if (res.status === 401) {
-        alert("Thanh toán thất bại (mã lỗi: 401 — Token hết hạn hoặc không hợp lệ)");
-        localStorage.removeItem("token");
-        navigate("/login");
-        return;
-      }
-
-      if (!res.ok) {
-        alert(`Thanh toán thất bại (mã lỗi: ${res.status})`);
-        return;
-      }
-
-      // ✅ Nếu thành công
-      alert("Thanh toán thành công!");
-      navigate("/payment/ready");
-
-    } catch (err) {
-      alert("Lỗi kết nối đến server!");
-      console.error(err);
-    } finally {
-      setProcessing(false);
-    }
-  };
+    };
 
   // 🎨 Giao diện hiển thị
   if (loading) return <div className="loading">Đang tải dữ liệu...</div>;

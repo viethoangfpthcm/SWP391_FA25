@@ -8,54 +8,53 @@
     const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
 
-    useEffect(() => {
-      // Mock data (hiển thị khi không có backend)
-      const mock = [
-        {
-          id: 1,
-          scheduleName: "Bảo dưỡng định kỳ xe Honda City",
-          status: "COMPLETED",
-          technicianName: "Phạm Văn C",
-          vehicleModel: "Honda City 1.5L",
-          vehicleNumberPlate: "51H-123.45",
-          currentKm: 35600,
-          maintenanceKm: 35000,
-          createdDate: "2025-10-10",
-          estimatedCost: 1450000,
-          totalCostApproved: 1200000,
-          totalCostDeclined: 250000,
-          details: [
-            {
-              id: 101,
-              itemName: "Thay dầu động cơ",
-              partName: "Dầu nhớt Motul 5W30",
-              partQuantityUsed: 4,
-              status: "Hoàn tất",
-              note: "Đã thay dầu và lọc dầu",
-              customerNote: "Đồng ý thay thế",
-              laborCost: 200000,
-              materialCost: 800000,
-              approvalStatus: "APPROVED",
-            },
-            {
-              id: 102,
-              itemName: "Kiểm tra hệ thống phanh",
-              partName: "Má phanh trước",
-              partQuantityUsed: 2,
-              status: "Chờ duyệt",
-              note: "Phanh hơi mòn, đề xuất thay",
-              customerNote: "Đang xem xét",
-              laborCost: 150000,
-              materialCost: 300000,
-              approvalStatus: "PENDING",
-            },
-          ],
-        },
-      ];
+  // 🔹 Tải danh sách checklist bảo dưỡng của khách hàng
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const customerId = localStorage.getItem("userId");
 
-      // Giả lập tải dữ liệu
-      setTimeout(() => {
-        setReports(mock);
+        if (!token || !customerId) {
+          throw new Error("Thiếu token hoặc customerId trong localStorage!");
+        }
+
+        const url = `https://103.90.226.216:8443/api/customer/maintenance/checklists?customerId=${encodeURIComponent(
+          customerId
+        )}`;
+        console.log("[Report1] GET:", url);
+
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          console.error("[Report1] ❌ Response error:", response.status, text);
+          if (response.status === 401) {
+            alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!");
+            localStorage.removeItem("token");
+            window.location.href = "/login";
+          }
+          return;
+        }
+
+        const data = await response.json();
+        const normalized = Array.isArray(data)
+          ? data
+          : Array.isArray(data.data)
+          ? data.data
+          : data
+          ? [data]
+          : [];
+
+        setReports(normalized);
+      } catch (error) {
+        console.error("[Report1] Lỗi khi tải dữ liệu:", error);
+      } finally {
         setLoading(false);
       }, 600);
     }, []);

@@ -8,24 +8,16 @@ export default function PaymentReady() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchPayments = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          setError("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn!");
-          navigate("/login");
-          return;
-        }
-
-        const res = await fetch("http://localhost:8080/api/customer/payments/ready", {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Accept": "application/json",
-          },
-        });
+    useEffect(() => {
+        const fetchPayments = async () => {
+            try {
+                const token = localStorage.getItem("token"); // nếu có token lưu trong localStorage
+                const res = await fetch("https://103.90.226.216:8443/api/customer/payments/ready", {
+                    headers: {
+                        "Authorization": token ? `Bearer ${token}` : "",
+                        "Accept": "application/json",
+                    },
+                });
 
         if (!res.ok) {
           throw new Error(`Lỗi tải dữ liệu (mã ${res.status})`);
