@@ -18,7 +18,7 @@ const Report1 = () => {
           throw new Error("Thiếu token hoặc customerId trong localStorage!");
         }
 
-        const url = `http://localhost:8080/api/customer/maintenance/checklists?customerId=${encodeURIComponent(
+        const url = `https://103.90.226.216:8443/api/customer/maintenance/checklists?customerId=${encodeURIComponent(
           customerId
         )}`;
         console.log("[Report1] GET:", url);

@@ -11,7 +11,7 @@ export default function PaymentReady() {
         const fetchPayments = async () => {
             try {
                 const token = localStorage.getItem("token"); // nếu có token lưu trong localStorage
-                const res = await fetch("http://localhost:8080/api/customer/payments/ready", {
+                const res = await fetch("https://103.90.226.216:8443/api/customer/payments/ready", {
                     headers: {
                         "Authorization": token ? `Bearer ${token}` : "",
                         "Accept": "application/json",

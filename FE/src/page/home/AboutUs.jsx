@@ -1,29 +1,43 @@
 import React from "react";
-
-import Footer from "../../components/Footer.jsx";
 import Navbar from "../../components/Navbar.jsx";
+import Footer from "../../components/Footer.jsx";
 import "../home/AboutUs.css";
 
 export default function About() {
   return (
-    <div className="app">
+    <div className="about-page">
       <Navbar />
-      <main className="main-content">
-        <section className="about">
-          <h1>Về Chúng Tôi</h1>
+      <section className="about-hero">
+        <div className="about-hero-text">
+          <h1>EV Car Center</h1>
           <p>
-            EV Car Center là trung tâm dịch vụ và tư vấn xe điện hàng đầu, cam kết mang đến cho khách hàng những giải pháp tối ưu về xe điện, bảo trì và chăm sóc khách hàng tận tâm.
+            Trung tâm dịch vụ xe điện hàng đầu Việt Nam, cung cấp giải pháp toàn diện từ tư vấn, bảo dưỡng đến chăm sóc khách hàng.
           </p>
-          <ul>
-            <li>Đội ngũ kỹ thuật viên chuyên nghiệp</li>
-            <li>Dịch vụ đa dạng và hiện đại</li>
-            <li>Hỗ trợ khách hàng 24/7</li>
-          </ul>
-          <p>
-            Chúng tôi luôn nỗ lực để trở thành người bạn đồng hành tin cậy của bạn trên mọi hành trình.
-          </p>
-        </section>
-      </main>
+        </div>
+        <div className="about-hero-image">
+          <img src="/images/ev-car-center.jpg" alt="EV Car Center" />
+        </div>
+      </section>
+
+      <section className="about-features">
+        <div className="feature-card">
+          <h3>Chuyên nghiệp & Hiện đại</h3>
+          <p>Đội ngũ kỹ thuật viên chuyên nghiệp, trang thiết bị hiện đại đảm bảo dịch vụ tối ưu.</p>
+        </div>
+        <div className="feature-card">
+          <h3>Dịch vụ đa dạng</h3>
+          <p>Từ bảo dưỡng định kỳ, kiểm tra kỹ thuật, đến sửa chữa chuyên sâu cho mọi loại xe điện.</p>
+        </div>
+        <div className="feature-card">
+          <h3>Hỗ trợ khách hàng</h3>
+          <p>Tư vấn và hỗ trợ trực tuyến 24/7, đồng hành cùng khách hàng mọi lúc mọi nơi.</p>
+        </div>
+        <div className="feature-card">
+          <h3>Cam kết môi trường</h3>
+          <p>Thực hiện quy trình thân thiện môi trường, giảm thiểu tác động carbon.</p>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );
