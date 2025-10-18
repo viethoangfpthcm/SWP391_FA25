@@ -56,8 +56,11 @@
         console.error("[Report1] Lỗi khi tải dữ liệu:", error);
       } finally {
         setLoading(false);
-      }, 600);
-    }, []);
+    }
+  };
+
+  fetchReports();
+}, []);
 
     // Hiển thị thông báo tạm (toast)
     const showToast = (msg, type = "success") => {
