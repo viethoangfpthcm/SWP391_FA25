@@ -14,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -351,12 +352,51 @@ public class MaintenanceChecklistService {
                 partRepo.save(part);
             }
         }
-
         checklist.setEndTime(LocalDateTime.now()); // Ghi lại thời gian kết thúc
 
         checklist.setStatus("Completed");
         checklistRepo.save(checklist);
+    }
+    // *** THÊM PHƯƠNG THỨC MỚI CHO STAFF ***
 
+    /**
+     * Lấy chi tiết Checklist theo Booking ID cho Staff (kiểm tra center)
+     *
+     * @param bookingId ID của Booking
+     * @return MaintenanceChecklistResponse DTO
+     * @throws ResourceNotFoundException Nếu không tìm thấy Checklist
+     * @throws AccessDeniedException     Nếu Staff không thuộc trung tâm quản lý Checklist đó
+     */
+    public MaintenanceChecklistResponse getChecklistByBookingIdForStaff(Integer bookingId) {
+        log.info("Staff attempting to retrieve checklist for booking ID: {}", bookingId);
 
+        // Lấy thông tin Staff đang đăng nhập
+        Users currentStaff = authenticationService.getCurrentAccount();
+        if (currentStaff == null || currentStaff.getRole() != UserRole.STAFF || currentStaff.getCenter() == null) {
+            log.warn("Unauthorized access attempt for checklist by booking ID: {}. User not STAFF or missing center.", bookingId);
+            throw new AccessDeniedException("User is not authorized or not associated with a service center.");
+        }
+        Integer staffCenterId = currentStaff.getCenter().getId();
+
+        // Tìm Checklist dựa trên bookingId
+        MaintenanceChecklist checklist = checklistRepo.findByBooking_BookingId(bookingId)
+                .orElseThrow(() -> {
+                    log.warn("Checklist not found for booking ID: {}", bookingId);
+                    return new ResourceNotFoundException("Checklist not found for booking ID: " + bookingId);
+                });
+
+        // Kiểm tra xem Checklist có thuộc trung tâm của Staff không
+        Integer checklistCenterId = checklist.getBooking().getServiceCenter().getId();
+        if (!staffCenterId.equals(checklistCenterId)) {
+            log.warn("Access denied for staff {} (center {}) trying to access checklist for booking ID {} (center {})",
+                    currentStaff.getUserId(), staffCenterId, bookingId, checklistCenterId);
+            throw new AccessDeniedException("Staff does not have permission to view checklists for this service center.");
+        }
+
+        log.info("Staff {} (center {}) successfully retrieved checklist for booking ID {} (center {})",
+                currentStaff.getUserId(), staffCenterId, bookingId, checklistCenterId);
+
+        // Sử dụng lại hàm map đã có để trả về DTO
+        return mapChecklistToResponseWithDetails(checklist);
     }
 }

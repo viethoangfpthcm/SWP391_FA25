@@ -28,6 +28,7 @@ function App() {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/staff" element={<StaffDashboard />} />
+      <Route path="/staff/checklist/:bookingId" element={<CheckList />} />
       <Route path="/payment/ready" element={<PaymentReady />} />
       <Route path="/payment/process/:id" element={<PaymentProcess />} />
 

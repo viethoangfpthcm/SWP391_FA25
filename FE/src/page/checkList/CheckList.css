@@ -183,3 +183,22 @@
 .sidebar.closed ~ .content {
   margin-left: 80px !important;
 }
+.back-button-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+  
+  /* Sử dụng màu xám trung tính giống .btn-view */
+  background-color: #6b7280; 
+  color: white;
+}
+
+.back-button-header:hover {
+  background-color: #4b5563; /* Xám đậm hơn khi hover */
+}

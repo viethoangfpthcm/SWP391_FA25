@@ -150,6 +150,11 @@ public class StaffService {
         dto.setStatus(booking.getStatus());
         dto.setNote(booking.getNote());
         dto.setCenterName(booking.getServiceCenter().getName());
+        if (booking.getAssignedTechnician() != null) {
+            dto.setTechnicianName(booking.getAssignedTechnician().getFullName());
+        } else {
+            dto.setTechnicianName(null);
+        }
         return dto;
     }
 
