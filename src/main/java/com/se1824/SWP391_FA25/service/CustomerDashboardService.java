@@ -2,7 +2,6 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.entity.*;
-import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +22,6 @@ public class CustomerDashboardService {
     private final VehicleRepository vehicleRepo;
     private final BookingRepository bookingRepo;
     private final MaintenancePlanRepository planRepo;
-    private final UserRepository userRepo;
     private final MaintenanceScheduleRepository maintenanceScheduleRepo;
     private final AuthenticationService authenticationService;
     private final VehicleScheduleRepository vehicleScheduleRepo;

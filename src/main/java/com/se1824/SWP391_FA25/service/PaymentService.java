@@ -7,9 +7,6 @@ import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
-import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistDetailResponse;
-import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
-import com.se1824.SWP391_FA25.model.response.PaymentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -110,7 +107,7 @@ public class PaymentService {
         for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements(); ) {
             String fieldName = params.nextElement();
             String fieldValue = request.getParameter(fieldName);
-            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+            if ((fieldValue != null) && (!fieldValue.isEmpty())) {
                 fields.put(fieldName, fieldValue);
             }
         }
@@ -129,7 +126,7 @@ public class PaymentService {
         while (itr.hasNext()) {
             String fieldName = itr.next();
             String fieldValue = fields.get(fieldName);
-            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+            if ((fieldValue != null) && (!fieldValue.isEmpty())) {
                 try {
                     hashData.append(fieldName);
                     hashData.append('=');

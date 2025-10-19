@@ -1,7 +1,6 @@
 package com.se1824.SWP391_FA25.controller;
 
 
-import com.se1824.SWP391_FA25.entity.Payment;
 import com.se1824.SWP391_FA25.service.PaymentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
 import java.util.Map;
