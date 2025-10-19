@@ -343,45 +343,45 @@ public class MaintenanceChecklistService {
      * Đây là hàm mới thay thế cho hàm cũ chỉ dùng KM.
      */
     public MaintenancePlan getApplicableMaintenancePlanWithTime(Vehicle vehicle, Integer monthsElapsed) {
+        // 0. Lấy thông tin cần thiết
         MaintenanceSchedule schedule = vehicle.getSchedules().stream()
                 .findFirst()
                 .map(VehicleSchedule::getSchedule)
                 .orElse(null);
+
         if (schedule == null) return null;
-
         List<MaintenancePlan> plans = planRepo.findBySchedule_Id(schedule.getId());
-        Integer currentKm = vehicle.getCurrentKm(); // actualKm
-
+        if (plans.isEmpty()) return null;
+        Integer currentKm = vehicle.getCurrentKm();
         MaintenancePlan planByKm = null;
         MaintenancePlan planByMonth = null;
 
-        // 1. Tìm Gói phù hợp dựa trên KM (Mốc KM kế tiếp chưa tới hoặc mốc cuối cùng đã vượt)
+        // 1. Tìm Gói phù hợp dựa trên KM (Mốc KM kế tiếp chưa tới)
         for (MaintenancePlan plan : plans) {
             if (currentKm < plan.getIntervalKm()) {
                 planByKm = plan;
                 break;
             }
-            planByKm = plan;
+        }
+        // Nếu đã vượt qua tất cả mốc KM, chọn gói CUỐI CÙNG (mốc cao nhất)
+        if (planByKm == null) {
+            planByKm = plans.get(plans.size() - 1);
         }
 
-        // 2. Tìm Gói phù hợp dựa trên Thời gian (Mốc Tháng kế tiếp chưa tới hoặc mốc cuối cùng đã vượt)
-
+        // 2. Tìm Gói phù hợp dựa trên Thời gian (Mốc Tháng kế tiếp chưa tới)
         for (MaintenancePlan plan : plans) {
             if (monthsElapsed < plan.getIntervalMonth()) {
                 planByMonth = plan;
                 break;
             }
-            planByMonth = plan;
         }
-
+        // Nếu đã vượt qua tất cả mốc Tháng, chọn gói CUỐI CÙNG (mốc cao nhất)
+        if (planByMonth == null) {
+            planByMonth = plans.get(plans.size() - 1);
+        }
         // 3. ÁP DỤNG LOGIC ƯU TIÊN: Chọn gói bảo dưỡng có mốc cao hơn (IntervalKm lớn hơn) trong 2 gói.
 
-        // Nếu chỉ có Plan KM
-        if (planByMonth == null) return planByKm;
-        // Nếu chỉ có Plan Tháng
-        if (planByKm == null) return planByMonth;
-
-        // Nếu có cả 2, chọn Plan có IntervalKm lớn hơn (vì mốc lớn hơn bao gồm mốc nhỏ hơn)
+        // So sánh 2 gói: Chọn gói có mốc KM lớn hơn.
         if (planByKm.getIntervalKm() >= planByMonth.getIntervalKm()) {
             return planByKm;
         } else {
