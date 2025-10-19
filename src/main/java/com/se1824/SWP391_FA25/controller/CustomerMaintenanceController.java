@@ -1,5 +1,6 @@
 package com.se1824.SWP391_FA25.controller;
 
+import com.se1824.SWP391_FA25.model.request.ApprovalRequest;
 import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
 import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistSummaryResponse; // <-- THÊM IMPORT NÀY
 import com.se1824.SWP391_FA25.service.MaintenanceChecklistService;
@@ -54,17 +55,19 @@ public class CustomerMaintenanceController {
      * Cập nhật trạng thái phê duyệt và ghi chú của khách hàng cho một chi tiết checklist
      *
      * @param detailId ID chi tiết checklist
-     * @param approvalStatus Trạng thái phê duyệt: APPROVED, DECLINED, PENDING
-     * @param customerNote Ghi chú của khách hàng (có thể null)
      * @return thông báo thành công
      */
     @PutMapping("/checklists/details/{detailId}/approval")
     public ResponseEntity<String> updateCustomerApproval(
             @PathVariable Integer detailId,
-            @RequestParam String approvalStatus,
-            @RequestParam(required = false) String customerNote) {
+            @RequestBody ApprovalRequest request) {
 
-        checklistService.updateCustomerApproval(detailId, approvalStatus, customerNote);
+        // Gọi service với dữ liệu từ request body
+        checklistService.updateCustomerApproval(
+                detailId,
+                request.getApprovalStatus(),
+                request.getCustomerNote()
+        );
         return ResponseEntity.ok("Approval status updated successfully");
     }
 }

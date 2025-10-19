@@ -41,7 +41,6 @@ public class VNPayService {
         String vnp_ExpireDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
-        // --- THÊM THÔNG TIN KHÁCH HÀNG ---
         if (customer != null) {
             vnp_Params.put("vnp_Bill_Mobile", customer.getPhone());
             vnp_Params.put("vnp_Bill_Email", customer.getEmail());
@@ -59,7 +58,6 @@ public class VNPayService {
                 }
             }
         }
-        // --- KẾT THÚC THÊM ---
 
         List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
         Collections.sort(fieldNames);
@@ -70,15 +68,22 @@ public class VNPayService {
             String fieldName = itr.next();
             String fieldValue = vnp_Params.get(fieldName);
             if ((fieldValue != null) && (!fieldValue.isEmpty())) {
-                hashData.append(fieldName);
-                hashData.append('=');
-                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
-                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
-                query.append('=');
-                query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
-                if (itr.hasNext()) {
-                    query.append('&');
-                    hashData.append('&');
+
+
+                try {
+                    hashData.append(fieldName);
+                    hashData.append('=');
+                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8));
+                    query.append(URLEncoder.encode(fieldName, StandardCharsets.UTF_8));
+                    query.append('=');
+                    query.append(URLEncoder.encode(fieldValue, StandardCharsets.UTF_8));
+                    if (itr.hasNext()) {
+                        query.append('&');
+                        hashData.append('&');
+                    }
+                } catch (Exception e) {
+
+
                 }
             }
         }

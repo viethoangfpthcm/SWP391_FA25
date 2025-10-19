@@ -43,14 +43,45 @@ public class PaymentController {
     }
     @GetMapping("/vnpay-callback")
     public RedirectView vnPayCallback(HttpServletRequest request) {
-        int result = paymentService.orderReturn(request);
-        // Chuyển hướng về trang kết quả của frontend
-        //  URL địa chỉ frontend
-        String frontendUrl = "http://103.90.226.216:3000/payment/result";
-        if (result == 0) {
-            return new RedirectView(frontendUrl + "?success=true");
-        } else {
-            return new RedirectView(frontendUrl + "?success=false");
+        try {
+            // Lấy các params quan trọng từ VNPay
+            String responseCode = request.getParameter("vnp_ResponseCode");
+            String transactionNo = request.getParameter("vnp_TransactionNo");
+            String amount = request.getParameter("vnp_Amount");
+            String txnRef = request.getParameter("vnp_TxnRef");
+            String bankCode = request.getParameter("vnp_BankCode");
+            String payDate = request.getParameter("vnp_PayDate");
+
+            // Xử lý payment
+            int result = paymentService.orderReturn(request);
+
+            String frontendUrl = "http://103.90.226.216:3000/payment/result";
+
+            // Build URL với các params cần thiết
+            StringBuilder redirectUrl = new StringBuilder(frontendUrl);
+            redirectUrl.append("?vnp_ResponseCode=").append(responseCode != null ? responseCode : "99");
+
+            if (transactionNo != null) {
+                redirectUrl.append("&vnp_TransactionNo=").append(transactionNo);
+            }
+            if (amount != null) {
+                redirectUrl.append("&vnp_Amount=").append(amount);
+            }
+            if (txnRef != null) {
+                redirectUrl.append("&vnp_TxnRef=").append(txnRef);
+            }
+            if (bankCode != null) {
+                redirectUrl.append("&vnp_BankCode=").append(bankCode);
+            }
+            if (payDate != null) {
+                redirectUrl.append("&vnp_PayDate=").append(payDate);
+            }
+
+            return new RedirectView(redirectUrl.toString());
+
+        } catch (Exception e) {
+            String frontendUrl = "http://103.90.226.216:3000/payment/result";
+            return new RedirectView(frontendUrl + "?vnp_ResponseCode=99");
         }
     }
 

@@ -73,7 +73,7 @@ export default function CheckList({ user }) {
     if (checklist && checklist.details) {
       const initialUpdates = {};
       checklist.details.forEach(detail => {
-        const initialPartId = detail.part ? detail.part.partId : null;
+       const initialPartId = detail.partId || (detail.part ? detail.part.partId : null);
         initialUpdates[detail.id] = {
           status: detail.status,
           note: detail.note || "",
@@ -153,7 +153,7 @@ export default function CheckList({ user }) {
       
       const statusChanged = updates.status !== detail.status;
       const noteChanged = updates.note !== (detail.note || "");
-      const partChanged = updates.partId !== (detail.part ? detail.part.partId : null);
+      const partChanged = updates.partId !== (detail.partId || (detail.part ? detail.part.partId : null));
       
       return statusChanged || noteChanged || partChanged;
     });
@@ -170,7 +170,7 @@ export default function CheckList({ user }) {
       
       const statusChanged = updates.status !== detail.status;
       const noteChanged = updates.note !== (detail.note || "");
-      const partChanged = updates.partId !== (detail.part ? detail.part.partId : null);
+      const partChanged = updates.partId !== (detail.partId || (detail.part ? detail.part.partId : null));
       
       return statusChanged || noteChanged || partChanged;
     });
@@ -545,7 +545,7 @@ export default function CheckList({ user }) {
                         return (
                           <option key={part.partId} value={part.partId}>
                             {part.partName} 
-                            {/* 2. HIỂN THỊ CHỈ SỐ LƯỢNG (BỎ CHỮ KHO:) và ẩn nếu là dịch vụ */}
+                           
                             {!isService && ` (${part.quantity})`}
                           </option>
                         );

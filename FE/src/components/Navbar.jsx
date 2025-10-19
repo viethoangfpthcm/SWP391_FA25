@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.jpg";
 import "./Navbar.css";
 
+
 export default function Navbar() {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("token");
@@ -34,7 +35,7 @@ export default function Navbar() {
         <Link to="/appoint">Dịch Vụ</Link>
         <Link to="/about">Về Chúng Tôi</Link>
         <Link to="/contact">Liên Hệ</Link>
-        <Link to="/report">Theo Dõi</Link>
+        <Link to="/report">Biên Bản</Link>
       </nav>
 
       <div className="navbar-right">

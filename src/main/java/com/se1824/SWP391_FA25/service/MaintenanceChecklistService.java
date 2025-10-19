@@ -131,6 +131,7 @@ public class MaintenanceChecklistService {
             Vehicle vehicle = checklist.getBooking().getVehicle();
             res.setVehicleNumberPlate(vehicle.getLicensePlate());
             res.setVehicleModel(vehicle.getModel());
+            res.setBookingStatus(checklist.getBooking().getStatus());
             res.setCurrentKm(checklist.getActualKm() != null ? checklist.getActualKm() : vehicle.getCurrentKm());
         }
 
@@ -497,6 +498,38 @@ public class MaintenanceChecklistService {
 
         checklist.setStatus("Completed");
         checklistRepo.save(checklist);
+        Booking booking = checklist.getBooking();
+        if (booking != null) {
+            // Lấy maintenance_no từ checklist (đã được technician xác nhận)
+            Integer actualMaintenanceNo = checklist.getMaintenanceNo();
+
+            if (actualMaintenanceNo != null) {
+                log.info("Updating booking {} maintenance_no from {} to {}",
+                        booking.getBookingId(),
+                        booking.getMaintenanceNo(),
+                        actualMaintenanceNo);
+
+                booking.setMaintenanceNo(actualMaintenanceNo);
+                bookingRepo.save(booking);
+            }
+
+            // Cập nhật vehicle's currentKm nếu có actual_km
+            Integer actualKm = checklist.getActualKm();
+            if (actualKm != null && booking.getVehicle() != null) {
+                Vehicle vehicle = booking.getVehicle();
+
+                // Chỉ cập nhật nếu actualKm lớn hơn currentKm hiện tại
+                if (vehicle.getCurrentKm() == null || actualKm > vehicle.getCurrentKm()) {
+                    log.info("Updating vehicle {} currentKm from {} to {}",
+                            vehicle.getLicensePlate(),
+                            vehicle.getCurrentKm(),
+                            actualKm);
+
+                    vehicle.setCurrentKm(actualKm);
+                    vehicleRepo.save(vehicle);
+                }
+            }
+        }
     }
     // *** PHƯƠNG THỨC CHO STAFF ***
 

@@ -118,7 +118,7 @@ export default function TechnicianTask() {
         fetchTasks();
     }, []);
 
-    // Lọc nhiệm vụ theo trạng thái
+
     useEffect(() => {
         if (filterStatus === "all") setFilteredTasks(tasks);
         else if (filterStatus === "pending")
@@ -129,7 +129,7 @@ export default function TechnicianTask() {
             setFilteredTasks(tasks.filter((t) => t.status === "Completed"));
     }, [filterStatus, tasks]);
 
-    // Mở modal nhập km
+
     const openKmModal = (bookingId) => {
         setCurrentBookingId(bookingId);
         setActualKm("");
@@ -246,15 +246,15 @@ export default function TechnicianTask() {
                                         <div className="task-header">
                                             <span
                                                 className={`status-badge ${task.status === "Assigned"
-                                                        ? "pending"
-                                                        : task.status === "In Progress"
-                                                            ? "in-progress"
-                                                            : "completed"
+                                                    ? "pending"
+                                                    : task.status === "In Progress"
+                                                        ? "in-progress"
+                                                        : "completed"
                                                     }`}
                                             >
                                                 {translateStatus(task.status)}
                                             </span>
-                                            {/* HIỂN THỊ BOOKING ID RÕ RÀNG */}
+                                          
                                             <span className="task-id">Mã Booking: {task.bookingId}</span>
                                         </div>
 
@@ -263,7 +263,7 @@ export default function TechnicianTask() {
                                                 <strong>Tên khách hàng:</strong> {task.customerName}
                                             </p>
 
-                                            {/* BỔ SUNG: MẪU XE (Thiếu trong code gốc) */}
+                                           
                                             <p>
                                                 <strong>Mẫu xe:</strong> {task.vehicleModel}
                                             </p>
@@ -285,7 +285,30 @@ export default function TechnicianTask() {
                                         </div>
 
                                         <div className="task-footer">
-                                            {/* ... (các nút hành động giữ nguyên) ... */}
+                                            {task.status === "Assigned" && (
+                                                <button
+                                                    className="btn-start"
+                                                    onClick={() => openKmModal(task.bookingId)}
+                                                >
+                                                    <FaPlay /> Bắt đầu
+                                                </button>
+                                            )}
+                                            {task.status === "In Progress" && (
+                                                <button
+                                                    className="btn-view"
+                                                    onClick={() => handleViewTask(task.bookingId)}
+                                                >
+                                                    <FaEye /> Xem chi tiết
+                                                </button>
+                                            )}
+                                            {task.status === "Completed" && (
+                                                <button
+                                                    className="task-btn view completed"
+                                                    onClick={() => handleViewTask(task.bookingId)}
+                                                >
+                                                    <FaEye /> Xem chi tiết
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 ))}

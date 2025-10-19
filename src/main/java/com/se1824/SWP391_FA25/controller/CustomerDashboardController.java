@@ -42,7 +42,6 @@ public class CustomerDashboardController {
     @GetMapping("/payments/ready")
     public ResponseEntity<List<PaymentResponse>> getReadyForPaymentBookings() {
         Integer userId = authenticationService.getCurrentAccount().getUserId();
-
         List<PaymentResponse> payement = bookingService.getBookingsReadyForPayment(userId);
         return ResponseEntity.ok(payement);
     }

@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 public class MaintenanceChecklistSummaryResponse {
     Integer id;
     String planName;
-    LocalDateTime createdDate;
     String technicianName;
     String status;
     Integer bookingId;
@@ -26,7 +25,7 @@ public class MaintenanceChecklistSummaryResponse {
     String vehicleModel;
     Integer currentKm;
     Integer maintenanceKm;
-
+    String bookingStatus;
     BigDecimal estimatedCost;
     BigDecimal totalCostApproved;
     BigDecimal totalCostDeclined;
