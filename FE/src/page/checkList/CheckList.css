@@ -11,6 +11,9 @@
   margin-left: 260px; /* = độ rộng sidebar */
   padding: 25px;
   transition: all 0.3s ease;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: #f9fafb;
 }
 
 /* Nếu sidebar đóng (width = 80px) */
@@ -160,29 +163,7 @@
   color: #0284c7;
   font-weight: 600;
 }
-/* ====== FIX SIDEBAR CHE MẤT CHECKLIST ====== */
 
-/* Tạo khoảng cách bên trái bằng đúng chiều rộng sidebar */
-.page-container {
-  display: flex;
-  background-color: #f8fafc;
-}
-
-/* Nội dung chính cách ra để không bị che */
-.content {
-  flex: 1;
-  padding: 25px;
-  margin-left: 260px !important; /* Sidebar width */
-  transition: all 0.3s ease;
-  min-height: 100vh;
-  box-sizing: border-box;
-  background: #f9fafb;
-}
-
-/* Nếu sau này sidebar có thể đóng (width: 80px) */
-.sidebar.closed ~ .content {
-  margin-left: 80px !important;
-}
 .back-button-header {
   display: flex;
   align-items: center;
@@ -193,12 +174,512 @@
   font-weight: 600;
   cursor: pointer;
   transition: 0.25s;
-  
-  /* Sử dụng màu xám trung tính giống .btn-view */
   background-color: #6b7280; 
   color: white;
 }
 
 .back-button-header:hover {
-  background-color: #4b5563; /* Xám đậm hơn khi hover */
+  background-color: #4b5563;
+}
+
+.loading-container, .empty {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2em;
+    color: #0369a1;
+}
+
+.spinner-icon {
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+    font-size: 1.5em;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Thêm định kiểu cho các thông tin tóm tắt */
+.summary-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px 30px; 
+}
+
+.summary-section p {
+    margin: 0;
+    font-size: 15px;
+    color: #334155;
+}
+
+.summary-section strong {
+    color: #1e293b;
+}
+
+/* Màu sắc cho nút Complete */
+.btn-complete {
+    background-color: #22c55e;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.25s;
+    margin-left: auto;
+}
+
+.btn-complete:hover {
+    background-color: #16a34a;
+}
+
+.btn-complete:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* ========================= STATUS BADGES ========================= */
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85em;
+    color: white;
+    display: inline-block;
+}
+
+.status-badge.in-progress { background-color: #fbbf24; color: #333; }
+.status-badge.completed { background-color: #10b981; }
+
+.cost-approved { 
+    color: #0284c7; 
+    font-weight: bold; 
+    font-size: 1.1em;
+}
+
+/* ========================= CHECKLIST TABLE ========================= */
+
+.item-info strong {
+    font-weight: 600;
+    color: #1e293b;
+    display: block;
+}
+
+.item-info small {
+    color: #64748b;
+    font-size: 0.8em;
+}
+
+/* Căn chỉnh cột chi phí */
+.cost-cell {
+    font-weight: 600;
+    text-align: right;
+    color: #0369a1;
+    min-width: 120px;
+}
+
+/* Hàng được khách hàng duyệt */
+.checklist-table tr.row-approved {
+    background-color: #ecfdf5;
+}
+
+/* --- Status Approval Badges --- */
+.approval-status {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: 600;
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+.approval-pending { background-color: #fef08a; color: #a16207; }
+.approval-approved { background-color: #a7f3d0; color: #065f46; }
+.approval-declined { background-color: #fecaca; color: #991b1b; }
+
+/* --- Nút Lưu Chi tiết (CŨ - ĐÃ XÓA) --- */
+.btn-save-detail {
+    background-color: #0ea5e9;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-save-detail:hover {
+    background-color: #0284c7;
+}
+
+.btn-save-detail:disabled {
+    background-color: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+.checklist-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.checklist-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.checklist-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.checklist-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.booking-id {
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.checklist-card-body p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.checklist-card-body strong {
+  color: #1f2937;
+}
+
+.checklist-card-footer {
+  margin-top: 15px;
+  text-align: right;
+}
+
+.btn-view-detail {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-view-detail:hover {
+  background-color: #2563eb;
+}
+
+/* ====== PAGE HEADER ====== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  color: #0369a1;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.btn-back {
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: #4b5563;
+}
+
+/* ====== EMPTY STATE ====== */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.empty-state h3 {
+  color: #1f2937;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.empty-state p {
+  color: #6b7280;
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+.empty-state small {
+  color: #9ca3af;
+  font-size: 13px;
+  display: block;
+  margin-top: 10px;
+}
+
+/* ====== LOADING CONTAINER ====== */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px;
+  font-size: 18px;
+  color: #278598;
+}
+
+/* ========== 🎉 TOAST NOTIFICATION STYLES (MỚI) ========== */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  min-width: 320px;
+  max-width: 500px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 9999;
+  animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast-notification.toast-success {
+  border-left: 5px solid #10b981;
+}
+
+.toast-notification.toast-error {
+  border-left: 5px solid #ef4444;
+}
+
+.toast-notification.toast-warning {
+  border-left: 5px solid #f59e0b;
+}
+
+.toast-notification.toast-info {
+  border-left: 5px solid #3b82f6;
+}
+
+.toast-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.toast-success .toast-icon {
+  color: #10b981;
+}
+
+.toast-error .toast-icon {
+  color: #ef4444;
+}
+
+.toast-warning .toast-icon {
+  color: #f59e0b;
+}
+
+.toast-info .toast-icon {
+  color: #3b82f6;
+}
+
+.toast-message {
+  flex: 1;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.toast-close:hover {
+  color: #374151;
+}
+
+/* ========== 💾 SAVE CHANGES SECTION (MỚI) ========== */
+.save-changes-section {
+  margin-top: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 2px solid #bae6fd;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.1);
+}
+
+.btn-save-all-changes {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-save-all-changes:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+.btn-save-all-changes:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-save-all-changes .spin {
+  animation: spinRotate 1s linear infinite;
+}
+
+@keyframes spinRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.unsaved-warning {
+  color: #d97706;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #fef3c7;
+  border-radius: 6px;
+  border-left: 3px solid #f59e0b;
+}
+
+.unsaved-warning::before {
+  content: "⚠️";
+  font-size: 16px;
+}
+
+/* Utility class for text colors */
+.text-red-500 {
+  color: #ef4444;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  .checklist-list {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .checklist-card-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  /* Toast responsive */
+  .toast-notification {
+    right: 10px;
+    left: 10px;
+    min-width: auto;
+  }
+  
+  /* Save section responsive */
+  .save-changes-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .btn-save-all-changes {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .unsaved-warning {
+    text-align: center;
+    justify-content: center;
+  }
+
+  .content {
+    margin-left: 0 !important;
+    padding: 15px;
+  }
 }

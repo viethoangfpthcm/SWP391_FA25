@@ -1,405 +1,595 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../sidebar/sidebar"; // Đảm bảo đường dẫn đúng
-// *** THÊM CÁC ICON CẦN THIẾT ***
-import { FaSpinner, FaExclamationTriangle, FaArrowLeft } from "react-icons/fa";
-import { Send, CheckCircle } from "lucide-react"; // Giữ lại icon cũ nếu muốn
-import "./CheckList.css"; // Sử dụng CSS của CheckList
-// *** THÊM useParams và useLocation ***
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import Sidebar from "../../page/sidebar/sidebar.jsx";
+import { FaSpinner, FaFloppyDisk, FaEye, FaCircleCheck, FaTriangleExclamation, FaXmark } from "react-icons/fa6";
+import "./CheckList.css";
 
-export default function CheckList() {
-  // *** LẤY bookingId TỪ URL ***
-  const { bookingId } = useParams(); // Lấy bookingId từ route param ":bookingId" (có thể undefined nếu vào /checklist)
+// Các trạng thái Status đã được định nghĩa trong Backend
+const STATUS_OPTIONS = ["TỐT", "HIỆU_CHỈNH", "SỬA_CHỮA", "THAY_THẾ"];
+// Chi phí lao động cố định cho SỬA_CHỮA (theo logic Backend)
+const FIXED_REPAIR_LABOR_COST = 4000000;
+
+export default function CheckList({ user }) {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
-
   const [checklist, setChecklist] = useState(null);
+  const [checklistList, setChecklistList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [updating, setUpdating] = useState(false); // State cho việc cập nhật (Technician)
-  const [showDetails, setShowDetails] = useState(true); // Mặc định hiển thị chi tiết
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [viewMode, setViewMode] = useState("list");
 
-  // *** XÁC ĐỊNH VAI TRÒ DỰA TRÊN URL ***
-  const isStaffViewing = location.pathname.startsWith('/staff/checklist/');
-  const role = isStaffViewing ? 'STAFF' : 'TECHNICIAN'; // Vai trò hiện tại
+  // Toast notification state
+  const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
-  // API base URL
-  const API_BASE = import.meta.env.VITE_API_URL || "https://103.90.226.216:8443";
-  const token = localStorage.getItem("token");
+  // State để lưu các thay đổi tạm thời của Technician (Status, Note, Part ID)
+  const [detailUpdates, setDetailUpdates] = useState({});
 
-  // Options cho trạng thái hạng mục (giống nhau cho cả 2)
-  const statusOptions = [
-    { value: "TỐT", label: "Tốt" },
-    { value: "HIỆU_CHỈNH", label: "Hiệu chỉnh" },
-    { value: "SỬA_CHỮA", label: "Sửa chữa" },
-    { value: "THAY_THẾ", label: "Thay thế" },
-  ];
+  /**
+   * HÀM HELPER: Hiển thị toast notification
+   */
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+    setTimeout(() => {
+      setToast({ show: false, message: "", type: "" });
+    }, 4000);
+  };
 
-  // --- HÀM FETCH CHECKLIST ĐÃ SỬA ---
-  const fetchChecklist = async () => {
-    setLoading(true);
-    setError("");
-    setChecklist(null); // Reset checklist cũ
-
-    // Xác định API endpoint và logic dựa trên vai trò và bookingId
-    let apiUrl = "";
-    let isFetchingById = false;
-
-    if (isStaffViewing) {
-      if (!bookingId || isNaN(parseInt(bookingId))) {
-        setError("ID Booking không hợp lệ trên URL.");
-        setLoading(false);
-        return;
-      }
-      apiUrl = `${API_BASE}/api/staff/checklist/${bookingId}`;
-      isFetchingById = true;
-    } else { // Là Technician
-        if (bookingId && !isNaN(parseInt(bookingId))) {
-            // Nếu Technician truy cập với bookingId cụ thể (ví dụ từ link nào đó)
-             // Giả sử có API /api/technician/checklist/{bookingId}
-            apiUrl = `${API_BASE}/api/technician/checklist/${bookingId}`; // <<<< THAY ĐỔI API NẾU CẦN
-             isFetchingById = true;
-             console.warn("Technician is fetching by bookingId. Ensure API exists:", apiUrl);
-        } else {
-            // Technician truy cập /checklist (lấy checklist đang làm)
-            apiUrl = `${API_BASE}/api/technician/my-checklists`;
-             isFetchingById = false; // Lấy danh sách
-        }
+  /**
+   * HÀM HELPER: Xử lý nhãn trong dropdown Trạng thái KV
+   */
+  const getCustomStatusLabel = (statusValue, itemName) => {
+    // 1. Logic tùy chỉnh: Áp dụng BẢO DƯỠNG cho THAY_THẾ nếu là hạng mục điều hòa
+    if (
+      statusValue === "THAY_THẾ" &&
+      itemName && itemName.toLowerCase() === "bảo dưỡng hệ thống điều hòa".toLowerCase()
+    ) {
+      return "BẢO DƯỠNG";
     }
 
-    try {
-      if (!token) throw new Error("Vui lòng đăng nhập lại.");
+    // 2. Loại bỏ dấu gạch dưới cho các trạng thái còn lại
+    if (statusValue) {
+      return statusValue.replace(/_/g, ' ');
+    }
+    return statusValue;
+  };
 
-      console.log(`🔄 (${role}) Fetching checklist from:`, apiUrl);
+  // Backend đang dùng /api/technician/my-checklists/{bookingId}, nên ta dùng bookingId để fetch detail
+  const bookingId = searchParams.get('bookingId');
+  const token = localStorage.getItem("token");
+
+  // 1. Fetch dữ liệu khi component được load
+  useEffect(() => {
+    if (bookingId) {
+      setViewMode("detail");
+      fetchChecklist(bookingId);
+    } else {
+      setViewMode("list");
+      fetchChecklistList();
+    }
+  }, [bookingId]);
+
+  // 2. Khởi tạo detailUpdates sau khi fetch dữ liệu lần đầu (Chỉ chạy ở chế độ Detail)
+  useEffect(() => {
+    if (checklist && checklist.details) {
+      const initialUpdates = {};
+      checklist.details.forEach(detail => {
+        const initialPartId = detail.part ? detail.part.partId : null;
+        initialUpdates[detail.id] = {
+          status: detail.status,
+          note: detail.note || "",
+          partId: initialPartId,
+        };
+      });
+      setDetailUpdates(initialUpdates);
+    }
+  }, [checklist]);
+
+  // SỬA ĐỔI: Fetch danh sách tất cả checklist (trả về SUMMARY DTO)
+  const fetchChecklistList = async () => {
+    setLoading(true);
+    try {
+      // API này trả về List<MaintenanceChecklistSummaryResponse>
+      const apiUrl = `https://103.90.226.216:8443/api/technician/my-checklists`;
 
       const res = await fetch(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error(`(${role}) Checklist fetch failed:`, res.status, errorText);
-        if (res.status === 401) { setError("Phiên đăng nhập hết hạn."); setTimeout(() => navigate("/"), 1500); }
-        else if (res.status === 404) { setError(`Không tìm thấy checklist ${isFetchingById ? `cho booking #${bookingId}` : 'nào đang thực hiện'}.`); }
-        else if (res.status === 403) { setError("Bạn không có quyền xem checklist này."); }
-        else { setError(`Lỗi ${res.status}: ${errorText}`); }
-        return; // Dừng lại
-      }
+      if (!res.ok) throw new Error(`Không thể tải danh sách Checklist: ${res.status}`);
 
       const data = await res.json();
-      console.log(`✅ (${role}) Checklist data received:`, JSON.stringify(data, null, 2));
+      setChecklistList(data);
 
-      // Xử lý dữ liệu trả về
-      let checklistData = null;
-      if (isFetchingById && data && typeof data === 'object' && !Array.isArray(data)) {
-         // Nếu fetch theo ID (Staff hoặc Tech), mong đợi 1 object
-         checklistData = data;
-      } else if (!isFetchingById && Array.isArray(data)) {
-         // Nếu Technician fetch list (/my-checklists)
-         if (data.length === 0) {
-             setError("Bạn không có checklist nào đang thực hiện.");
-         } else {
-             // Ưu tiên checklist 'In Progress', nếu không có thì lấy cái mới nhất (hoặc đầu tiên)
-             checklistData = data.find(c => c.status?.toLowerCase() === 'in progress') || data[0];
-             console.log(`Technician: Found ${data.length} checklists, selected ID: ${checklistData?.id}`);
-         }
-      } else {
-         // Trường hợp dữ liệu trả về không đúng định dạng mong đợi
-         console.warn("API response format unexpected:", data);
-         setError("Dữ liệu checklist nhận được không hợp lệ.");
-      }
-
-      if (checklistData) {
-         setChecklist(checklistData);
-      }
-      // Không cần else vì lỗi đã được set ở trên nếu data không hợp lệ
-
-    } catch (err) {
-      console.error(`❌ (${role}) Lỗi khi tải checklist:`, err);
-      setError(err.message || "Lỗi kết nối hoặc xử lý dữ liệu checklist.");
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách checklist:", error);
+      setChecklistList([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Gọi fetchChecklist khi component mount hoặc bookingId/role thay đổi
-  useEffect(() => {
-    fetchChecklist();
-  }, [bookingId, isStaffViewing, navigate]); // Thêm isStaffViewing
+  // Fetch chi tiết 1 checklist theo bookingId (trả về FULL DTO)
+  const fetchChecklist = async (id) => {
+    setLoading(true);
+    try {
+      // API này trả về MaintenanceChecklistResponse (có details)
+      const apiUrl = `https://103.90.226.216:8443/api/technician/my-checklists/${id}`;
 
-  // --- CÁC HÀM XỬ LÝ (Vô hiệu hóa cho Staff) ---
-  const handleUpdate = async (detailId, field, value) => {
-     if (isStaffViewing) {
-        // Không làm gì cả hoặc chỉ log
-        console.log("Staff view: Update prevented.");
-        return;
-     }
-     // Logic cập nhật của Technician
-      setChecklist((prev) => ({
-          ...prev,
-          details: prev.details.map((item) =>
-              item.id === detailId ? { ...item, [field]: value } : item
-          ),
-      }));
+      const res = await fetch(apiUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      setUpdating(true); // Báo hiệu đang lưu
-      try {
-        const item = checklist.details.find((d) => d.id === detailId);
-        // Lấy giá trị mới nhất từ state (phòng trường hợp update nhiều field liên tiếp)
-        const currentDetailState = checklist.details.find((d) => d.id === detailId);
-        const status = field === "status" ? value : currentDetailState?.status || "";
-        const note = field === "note" ? value : currentDetailState?.note || "";
-        const partId = field === "partId" ? value : currentDetailState?.partId || null;
+      if (!res.ok) throw new Error(`Không thể tải chi tiết Checklist: ${res.status}`);
 
-        const queryParams = new URLSearchParams({ status, note });
-         // Chỉ thêm partId nếu nó có giá trị (không phải null, undefined, 0, '')
-        if (partId) queryParams.set('partId', partId);
+      const data = await res.json();
+      setChecklist(data);
 
-        const url = `${API_BASE}/api/technician/detail/${detailId}?${queryParams.toString()}`;
-        console.log("⬆️ Updating detail:", url);
+    } catch (error) {
+      console.error("Lỗi khi tải checklist:", error);
+      setChecklist(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        const res = await fetch(url, { method: "PUT", headers: { Authorization: `Bearer ${token}` } });
-        if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(errorText || `Cập nhật thất bại (${res.status})`);
-        }
-        // Fetch lại toàn bộ checklist để đảm bảo dữ liệu (đặc biệt là giá) được cập nhật
-        await fetchChecklist();
-      } catch (err) {
-        console.error("❌ Lỗi khi cập nhật chi tiết:", err);
-        setError(`Lỗi cập nhật hạng mục #${detailId}: ${err.message}`);
-        // Cân nhắc fetch lại checklist để rollback UI nếu API lỗi
-        // await fetchChecklist();
-      } finally {
-        setUpdating(false); // Kết thúc trạng thái lưu
+  // Hàm xử lý thay đổi trong form (Select Status, Select Part, Input Note)
+  const handleDetailChange = (detailId, field, value) => {
+    setDetailUpdates(prev => ({
+      ...prev,
+      [detailId]: {
+        ...prev[detailId],
+        [field]: value,
       }
+    }));
   };
 
-  const handleSendToCustomer = () => {
-     if (isStaffViewing) return; // Staff không có quyền
-    alert("📨 Gửi checklist cho Customer!");
-    // Logic gọi API gửi (nếu có)
+  // Kiểm tra xem có thay đổi nào chưa lưu không
+  const hasUnsavedChanges = () => {
+    if (!checklist || !checklist.details) return false;
+    
+    return checklist.details.some(detail => {
+      const updates = detailUpdates[detail.id];
+      if (!updates) return false;
+      
+      const statusChanged = updates.status !== detail.status;
+      const noteChanged = updates.note !== (detail.note || "");
+      const partChanged = updates.partId !== (detail.part ? detail.part.partId : null);
+      
+      return statusChanged || noteChanged || partChanged;
+    });
   };
 
+  // Hàm gọi API để cập nhật TẤT CẢ các chi tiết đã thay đổi
+  const handleSaveAllChanges = async () => {
+    if (!checklist || !checklist.details) return;
+
+    // Lọc ra các detail có thay đổi
+    const changedDetails = checklist.details.filter(detail => {
+      const updates = detailUpdates[detail.id];
+      if (!updates) return false;
+      
+      const statusChanged = updates.status !== detail.status;
+      const noteChanged = updates.note !== (detail.note || "");
+      const partChanged = updates.partId !== (detail.part ? detail.part.partId : null);
+      
+      return statusChanged || noteChanged || partChanged;
+    });
+
+    if (changedDetails.length === 0) {
+      showToast("Không có thay đổi nào để lưu", "info");
+      return;
+    }
+
+    // Validation: Kiểm tra THAY_THẾ phải có Part
+    for (const detail of changedDetails) {
+      const updates = detailUpdates[detail.id];
+      if (updates.status === "THAY_THẾ" && !updates.partId) {
+        showToast("Vui lòng chọn Part cần thay thế cho tất cả hạng mục có trạng thái 'THAY_THẾ'", "error");
+        return;
+      }
+    }
+
+    setIsUpdating(true);
+    let successCount = 0;
+    let failCount = 0;
+
+    try {
+      // Cập nhật từng detail
+      for (const detail of changedDetails) {
+        const updates = detailUpdates[detail.id];
+        try {
+          const apiUrl = `https://103.90.226.216:8443/api/technician/update-detail/${detail.id}`;
+
+          const res = await fetch(apiUrl, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              status: updates.status,
+              note: updates.note,
+              partId: updates.status === "THAY_THẾ" ? updates.partId : null,
+            }),
+          });
+
+          if (!res.ok) {
+            throw new Error(`Cập nhật lỗi cho hạng mục ${detail.itemName}`);
+          }
+          successCount++;
+        } catch (error) {
+          console.error(`Lỗi cập nhật detail ${detail.id}:`, error);
+          failCount++;
+        }
+      }
+
+      // Tải lại checklist để thấy chi phí mới từ Backend
+      await fetchChecklist(bookingId);
+
+      if (failCount === 0) {
+        showToast(`Đã lưu thành công ${successCount} thay đổi`, "success");
+      } else {
+        showToast(`Lưu thành công ${successCount} thay đổi, ${failCount} thất bại`, "warning");
+      }
+
+    } catch (error) {
+      console.error("Lỗi cập nhật checklist details:", error);
+      showToast(`Cập nhật thất bại: ${error.message}`, "error");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  // Hàm gọi API để hoàn thành Checklist
   const handleCompleteChecklist = async () => {
-    if (isStaffViewing || !checklist || !checklist.id) return; // Staff không có quyền hoặc thiếu ID
+    // THÊM CHECK VALIDATION TẠM THỜI TRƯỚC KHI CHUYỂN QUA CONFIRM
+    if (isApprovalPending()) {
+      showToast("Vui lòng đợi khách hàng phê duyệt hoặc hủy bỏ tất cả các hạng mục cần sửa chữa/thay thế trước khi hoàn thành Checklist.", "error");
+      return;
+    }
 
-     // Thêm xác nhận trước khi hoàn thành
-     if (!window.confirm("Bạn chắc chắn muốn hoàn thành checklist này? Hành động này sẽ cập nhật kho phụ tùng và không thể hoàn tác trực tiếp.")) {
-       return;
-     }
+    if (!window.confirm("Bạn có chắc chắn muốn HOÀN THÀNH Checklist này không? Hành động này sẽ trừ tồn kho Part và thay đổi trạng thái Booking.")) return;
 
-     setUpdating(true); // Dùng updating để báo hiệu đang xử lý
-     setError(null);
-     try {
-       const url = `${API_BASE}/api/technician/${checklist.id}/complete`;
-       console.log("🏁 Completing checklist:", url);
-       const res = await fetch(url, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
-       if (!res.ok) {
-           const errorText = await res.text();
-           throw new Error(errorText || `Không thể hoàn thành (${res.status})`);
-       }
-       alert("✅ Checklist đã được đánh dấu là hoàn thành!");
-       await fetchChecklist(); // Cập nhật trạng thái trên UI
-       // Cân nhắc chuyển hướng Technician về trang task list sau khi hoàn thành
-       // navigate("/technician-task");
-     } catch (err) {
-       console.error("❌ Lỗi khi hoàn thành checklist:", err);
-       setError(`Lỗi hoàn thành: ${err.message}`);
-     } finally {
-        setUpdating(false);
-     }
+    setIsUpdating(true);
+    try {
+      // API hoàn thành dùng Checklist ID, không phải Booking ID
+      const apiUrl = `https://103.90.226.216:8443/api/technician/${checklist.id}/complete`;
+
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        const errorDetail = await res.text();
+        throw new Error(`Hoàn thành lỗi: ${errorDetail}`);
+      }
+
+      showToast("Checklist đã được hoàn thành thành công!", "success");
+      await fetchChecklist(bookingId);
+
+    } catch (error) {
+      console.error("Lỗi hoàn thành checklist:", error);
+      showToast(`Hoàn thành thất bại: ${error.message}`, "error");
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
-  // --- RENDER ---
-  if (loading) {
-     return (
-        <div className="page-container">
-          <Sidebar sidebarOpen={true} />
-          <main className="content loading-state">
-             <FaSpinner className="spinner" />
-             <p>Đang tải chi tiết checklist...</p>
-          </main>
-        </div>
-     );
-   }
+  // Xem chi tiết checklist
+  const handleViewDetail = (bookingId) => {
+    // Chuyển sang URL với bookingId để trigger fetchChecklist
+    navigate(`/checklist?bookingId=${bookingId}`);
+  };
+  
+  /**
+   * KIỂM TRA LOGIC: Kiểm tra xem có hạng mục nào cần phê duyệt mà chưa được xử lý không.
+   * Cần kiểm tra các hạng mục có status là THAY_THẾ hoặc SỬA_CHỮA mà approvalStatus != APPROVED/DECLINED
+   */
+  const isApprovalPending = () => {
+    if (!checklist || !checklist.details) return false;
 
-  // Hiển thị lỗi hoặc không có dữ liệu
-  if (error || !checklist) {
-     return (
-        <div className="page-container">
-          <Sidebar sidebarOpen={true} />
-           <main className="content error-state">
-                <FaExclamationTriangle size={30} style={{ marginBottom: '15px', color: '#dc2626' }} />
-                <p style={{ fontWeight: 'bold', color: '#b91c1c' }}>{error || "Không có dữ liệu checklist để hiển thị."}</p>
-                <button onClick={() => navigate(-1)} className="back-button" style={{ marginTop: '20px' }}>
-                    <FaArrowLeft style={{ marginRight: '5px' }} /> Quay lại
-                </button>
-           </main>
+    return checklist.details.some(detail => {
+        const needsApproval = detail.status === "THAY_THẾ" || detail.status === "SỬA_CHỮA";
+        
+        // Trạng thái phê duyệt ban đầu là null (hoặc PENDING nếu Backend set)
+        const isPending = !detail.approvalStatus || detail.approvalStatus.toUpperCase() === 'PENDING';
+
+        return needsApproval && isPending;
+    });
+  };
+
+
+  // --- Render Logic ---
+  if (loading) {
+    return (
+      <div className="checklist-page">
+        <Sidebar user={user} />
+        <div className="content">
+          <div className="loading-container">
+            <FaSpinner className="spinner-icon" /> Đang tải dữ liệu...
+          </div>
         </div>
-     );
+      </div>
+    );
   }
 
-  // Tính toán tổng chi phí (an toàn hơn với optional chaining và kiểm tra mảng)
-  const detailsAvailable = checklist.details && Array.isArray(checklist.details);
-  const totalLaborCost = detailsAvailable ? checklist.details.reduce((sum, d) => sum + (Number(d.laborCost) || 0), 0) : 0;
-  const totalMaterialCost = detailsAvailable ? checklist.details.reduce((sum, d) => sum + (Number(d.materialCost) || 0), 0) : 0;
-  const isChecklistCompleted = checklist.status?.toLowerCase() === 'completed'; // Kiểm tra checklist đã hoàn thành chưa
+  // RENDER DANH SÁCH CHECKLIST (ĐÃ SỬA ĐỂ TƯƠNG THÍCH VỚI SUMMARY DTO)
+  if (viewMode === "list") {
+    return (
+      <div className="checklist-page">
+        <Sidebar user={user} />
+        <div className="content">
+          {/* Toast Notification */}
+          {toast.show && (
+            <div className={`toast-notification toast-${toast.type}`}>
+              <div className="toast-icon">
+                {toast.type === "success" && <FaCircleCheck />}
+                {toast.type === "error" && <FaXmark />}
+                {toast.type === "warning" && <FaTriangleExclamation />}
+                {toast.type === "info" && <FaTriangleExclamation />}
+              </div>
+              <span className="toast-message">{toast.message}</span>
+              <button className="toast-close" onClick={() => setToast({ show: false, message: "", type: "" })}>
+                <FaXmark />
+              </button>
+            </div>
+          )}
+
+          <h2 className="page-title">Danh sách Checklist của tôi</h2>
+
+          {checklistList.length === 0 ? (
+            <div className="empty-state">
+              <p>Bạn chưa có checklist nào được tạo.</p>
+              <small>Checklist sẽ được tự động tạo khi bạn bắt đầu một nhiệm vụ.</small>
+            </div>
+          ) : (
+            <div className="checklist-list">
+              {/* Lưu ý: Dữ liệu này là SUMMARY DTO, KHÔNG CÓ TRƯỜNG details */}
+              {checklistList.map((item) => (
+                <div key={item.id} className="checklist-card">
+                  <div className="checklist-card-header">
+                    <span className={`status-badge ${item.status === 'In Progress' ? 'in-progress' : 'completed'}`}>
+                      {item.status}
+                    </span>
+                    {/* Backend trả về Checklist ID là 'id'. Ta cần Booking ID để gọi API Detail */}
+                    <span className="booking-id">Booking ID #{item.bookingId}</span>
+                  </div>
+
+                  <div className="checklist-card-body">
+                    <p>
+                      <strong>Tên khách hàng:</strong> {item.customerName}
+                    </p>
+                    <p>
+                      <strong>Mẫu xe:</strong> {item.vehicleModel}
+                    </p>
+                    <p><strong>Biển số xe:</strong> {item.vehicleNumberPlate}</p>
+                    <p><strong>KM hiện tại:</strong> {item.currentKm} km</p>
+                    <p><strong>Chi phí đã duyệt:</strong> {item.totalCostApproved?.toLocaleString('vi-VN')} VND</p>
+                    <p><strong>Chi phí ước tính:</strong> {item.estimatedCost?.toLocaleString('vi-VN')} VND</p>
+                  </div>
+
+                  <div className="checklist-card-footer">
+                    <button
+                      className="btn-view-detail"
+                      // SỬA ĐỔI: Dùng Booking ID để xem chi tiết
+                      onClick={() => handleViewDetail(item.bookingId)}
+                    >
+                      <FaEye /> Xem chi tiết
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // RENDER CHI TIẾT CHECKLIST (Giữ nguyên)
+  if (!checklist) {
+    return (
+      <div className="checklist-page">
+        <Sidebar user={user} />
+        <div className="content">
+          <div className="empty-state">
+            <h3>Không tìm thấy checklist</h3>
+            <p>Checklist với booking ID <strong>#{bookingId}</strong> không tồn tại hoặc bạn không có quyền truy cập.</p>
+            <button className="btn-back" onClick={() => navigate('/checklist')}>
+              Quay lại danh sách
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const checklistDetails = checklist.details || [];
+  const isCompleted = checklist.status === 'Completed';
 
   return (
-    <div className="page-container">
-      {/* Sidebar có thể cần nhận prop `role` để hiển thị đúng menu */}
-      <Sidebar sidebarOpen={true} />
-      <main className="content">
-        {/* Header */}
-        <div className="header-bar">
-          <div>
-            <h2>{isStaffViewing ? `🔍 Chi tiết Checklist - Booking #${checklist.bookingId || bookingId}` : `🧰 Bảng kiểm tra bảo dưỡng`}</h2>
-          </div>
-          {/* Chỉ hiển thị nút cho Technician VÀ checklist chưa hoàn thành */}
-          {!isStaffViewing && !isChecklistCompleted && (
-              <div className="btn-group">
-                {/* <button className="btn-primary" onClick={handleSendToCustomer} disabled={updating}>
-                  <Send size={16} /> Gửi Customer
-                </button> */}
-                <button className="btn-success" onClick={handleCompleteChecklist} disabled={updating}>
-                  <CheckCircle size={16} /> Hoàn thành
-                </button>
-              </div>
-          )}
-           {/* Nút quay lại cho Staff */}
-           {isStaffViewing && (
-                 <button onClick={() => navigate(-1)} className="back-button-header">
-                     <FaArrowLeft style={{ marginRight: '5px' }} /> Quay lại DS
-                 </button>
-           )}
-           {/* Thông báo đã hoàn thành cho Technician */}
-            {!isStaffViewing && isChecklistCompleted && (
-                <div className="completion-notice">
-                    <CheckCircle size={16} color="#16a34a" /> Đã hoàn thành
-                </div>
-            )}
-        </div>
-
-        {/* Tổng quan */}
-        <div className="overview-section">
-          <h3>📋 Tổng quan bảo dưỡng</h3>
-          <div className="overview-grid">
-            {/* Sử dụng optional chaining ?. để tránh lỗi nếu checklist không có các thuộc tính này */}
-            <p><strong>Tên lịch trình:</strong> {checklist.planName || checklist.scheduleName || 'N/A'}</p>
-            <p><strong>Ngày tạo:</strong> {checklist.createdDate ? new Date(checklist.createdDate).toLocaleDateString("vi-VN") : 'N/A'}</p>
-            <p><strong>Trạng thái Checklist:</strong> {checklist.status || 'N/A'}</p>
-            <p><strong>Kỹ thuật viên:</strong> {checklist.technicianName || 'N/A'}</p>
-            <p><strong>Xe:</strong> {checklist.vehicleModel || 'N/A'} ({checklist.vehicleNumberPlate || 'N/A'})</p>
-            <p><strong>Km hiện tại (thực tế):</strong> {checklist.currentKm?.toLocaleString() || checklist.actualKm?.toLocaleString() || 'N/A'} km</p>
-            <p><strong>Km bảo dưỡng (dự kiến):</strong> {checklist.maintenanceKm?.toLocaleString() || 'N/A'} km</p>
-            {/* Hiển thị chi phí */}
-            <p><strong>Chi phí ước tính:</strong> {(checklist.estimatedCost ?? 0).toLocaleString()}₫</p>
-            <p><strong>Chi phí đã duyệt (KH):</strong> {(checklist.totalCostApproved ?? 0).toLocaleString()}₫</p>
-            <p><strong>Chi phí bị từ chối (KH):</strong> {(checklist.totalCostDeclined ?? 0).toLocaleString()}₫</p>
-          </div>
-        </div>
-
-        {/* Bảng chi tiết */}
-        {detailsAvailable ? ( // Chỉ render bảng nếu có details
-          <>
-            <h3>📊 Chi tiết hạng mục</h3>
-            <div className="table-wrapper" style={{ marginTop: '15px' }}> {/* Bọc table vào wrapper */}
-                <table className="checklist-table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Hạng mục</th>
-                      <th>Trạng thái KTV</th>
-                      <th>Phụ tùng (nếu thay)</th>
-                      <th>Chi phí công</th>
-                      <th>Chi phí vật tư</th>
-                      <th>Ghi chú KTV</th>
-                      <th>Duyệt (KH)</th> {/* Sửa lại label */}
-                      <th>Ghi chú KH</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {checklist.details.map((item, idx) => (
-                      <tr key={item.id}>
-                        <td>{idx + 1}</td>
-                        <td>{item.itemName || 'N/A'}</td>
-                        {/* Trạng thái KTV */}
-                        <td>
-                            {isStaffViewing || isChecklistCompleted ? ( // Staff hoặc checklist đã hoàn thành => chỉ xem
-                                <span className={`status-text status-text-${item.status?.toLowerCase().replace(/[^a-z0-9]/g, '')}`}>
-                                    {statusOptions.find(opt => opt.value === item.status)?.label || item.status || 'N/A'}
-                                </span>
-                            ) : ( // Technician và chưa hoàn thành => select
-                                <select value={item.status || ""} onChange={(e) => handleUpdate(item.id, "status", e.target.value)} disabled={updating} >
-                                    <option value="" disabled>-- Chọn --</option>
-                                    {statusOptions.map((s) => (<option key={s.value} value={s.value}>{s.label}</option>))}
-                                </select>
-                            )}
-                        </td>
-                        {/* Phụ tùng */}
-                        <td>
-                          {isStaffViewing || isChecklistCompleted ? (
-                               <span className="part-name">{item.partName || (item.status === "THAY THẾ" ? 'Chưa chọn' : '—')}</span>
-                          ) : (
-                              item.status === "THAY THẾ" ? (
-                                  <select value={item.partId || ""} onChange={(e) => handleUpdate(item.id, "partId", e.target.value)} disabled={updating} >
-                                    <option value="">-- Chọn phụ tùng --</option>
-                                    {/* Sử dụng Set để loại bỏ part trùng lặp nếu API trả về lỗi */}
-                                    { item.availableParts && [...new Map(item.availableParts.map(p => [p.partId, p])).values()]
-                                        .filter(p => p.quantity > 0 || String(p.partId) === String(item.partId)) // Hiện part đã chọn kể cả hết hàng
-                                        .map((p) => (
-                                            <option key={p.partId} value={p.partId}>
-                                                {p.partName} ({String(p.partId) === String(item.partId) ? 'Đã chọn' : `${p.quantity} có sẵn`})
-                                            </option>
-                                        ))
-                                    }
-                                  </select>
-                              ) : ( "—" )
-                          )}
-                        </td>
-                        {/* Chi phí */}
-                        <td>{item.laborCost ? `${Number(item.laborCost).toLocaleString()}₫` : "0₫"}</td>
-                        <td>{item.materialCost ? `${Number(item.materialCost).toLocaleString()}₫` : "0₫"}</td>
-                        {/* Ghi chú KTV */}
-                        <td>
-                             {isStaffViewing || isChecklistCompleted ? (
-                                  <span className="note-text">{item.note || 'Không có'}</span>
-                             ) : (
-                                <input type="text" value={item.note || ""} placeholder="Ghi chú..." onChange={(e) => handleUpdate(item.id, "note", e.target.value)} disabled={updating} />
-                             )}
-                        </td>
-                         {/* Trạng thái duyệt KH */}
-                         <td>
-                            <span className={`approval-status approval-${(item.approvalStatus || 'pending').toLowerCase()}`}>
-                                { item.approvalStatus === 'APPROVED' ? 'Đã duyệt' :
-                                  item.approvalStatus === 'DECLINED' ? 'Từ chối' : 'Chờ duyệt' }
-                            </span>
-                         </td>
-                         {/* Ghi chú KH */}
-                         <td>
-                            <span className="note-text">{item.customerNote || 'Không có'}</span>
-                         </td>
-                      </tr>
-                    ))}
-                    {/* Dòng tổng cộng */}
-                    <tr className="total-row">
-                      <td colSpan="4" style={{ textAlign: "right" }}><strong>Tổng cộng ước tính:</strong></td>
-                      <td><strong>{totalLaborCost.toLocaleString()}₫</strong></td>
-                      <td><strong>{totalMaterialCost.toLocaleString()}₫</strong></td>
-                      <td colSpan="3"></td> {/* Điều chỉnh colspan */}
-                    </tr>
-                  </tbody>
-                </table>
+    <div className="checklist-page">
+      <Sidebar user={user} />
+      <div className="content">
+        {/* Toast Notification */}
+        {toast.show && (
+          <div className={`toast-notification toast-${toast.type}`}>
+            <div className="toast-icon">
+              {toast.type === "success" && <FaCircleCheck />}
+              {toast.type === "error" && <FaXmark />}
+              {toast.type === "warning" && <FaTriangleExclamation />}
+              {toast.type === "info" && <FaTriangleExclamation />}
             </div>
-          </>
-        ) : (
-             <p className="no-detail-message">Không có chi tiết hạng mục nào trong checklist này.</p>
-         )}
+            <span className="toast-message">{toast.message}</span>
+            <button className="toast-close" onClick={() => setToast({ show: false, message: "", type: "" })}>
+              <FaXmark />
+            </button>
+          </div>
+        )}
 
-        {/* Thông báo đang lưu (chỉ cho Tech) */}
-        {updating && !isStaffViewing && <p className="saving-indicator"><FaSpinner className="spinner-icon" /> Đang lưu thay đổi...</p>}
-      </main>
+        <div className="page-header">
+          <h2 className="page-title">Checklist nhiệm vụ #{bookingId}</h2>
+          <button className="btn-back" onClick={() => navigate('/checklist')}>
+            ← Quay lại danh sách
+          </button>
+        </div>
+
+        {/* THÔNG TIN TỔNG QUAN (ĐÃ SỬA ĐỂ THÊM MODEL VÀ PLAN NAME) */}
+        <div className="summary-section">
+          <p><strong>Trạng thái:</strong> <span className={`status-badge ${checklist.status === 'In Progress' ? 'in-progress' : 'completed'}`}>{checklist.status}</span></p>
+          <p><strong>Biển số xe:</strong> {checklist.vehicleNumberPlate}</p>
+          {/* THÊM MODEL */}
+          <p><strong>Mẫu xe:</strong> {checklist.vehicleModel || 'Đang cập nhật...'}</p>
+          {/* THÊM PLAN NAME */}
+          <p><strong>Gói bảo dưỡng:</strong> {checklist.planName || 'Không có gói'}</p>
+          <p><strong>KM bảo dưỡng:</strong> {checklist.currentKm} km</p>
+          <p><strong>Chi phí ĐÃ DUYỆT:</strong> <span className="cost-approved">{checklist.totalCostApproved?.toLocaleString('vi-VN')} VND</span></p>
+          <p><strong>Chi phí ƯỚC TÍNH (tạm thời):</strong> {checklist.estimatedCost?.toLocaleString('vi-VN')} VND</p>
+
+          {!isCompleted && checklist.status === 'In Progress' && (
+            <button
+              className="btn-complete"
+              onClick={handleCompleteChecklist}
+              disabled={isUpdating || isApprovalPending()}
+            >
+              {isUpdating ? <FaSpinner className="spin" /> : "Hoàn thành Checklist"}
+            </button>
+          )}
+          {isApprovalPending() && !isCompleted && (
+            <small className="text-red-500 mt-2 block">Cần khách hàng phê duyệt các hạng mục thay thế/sửa chữa.</small>
+          )}
+        </div>
+
+        {/* BẢNG CHI TIẾT */}
+        <table className="checklist-table">
+          <thead>
+            <tr>
+              <th>Mục kiểm tra (ActionType)</th>
+              <th>Trạng thái KV</th>
+              <th>Ghi chú</th>
+              <th>Chọn Part</th>
+              <th>Phê duyệt KH</th>
+              <th>Chi phí (Tạm tính)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {checklistDetails.map(detail => {
+              const currentUpdates = detailUpdates[detail.id] || {};
+              const currentStatus = currentUpdates.status || detail.status;
+              const isReplace = currentStatus === "THAY_THẾ";
+
+              const selectedPart = detail.availableParts.find(p => p.partId === currentUpdates.partId);
+              let currentLaborCost = 0;
+              let currentMaterialCost = 0;
+
+              if (currentStatus === "THAY_THẾ" && selectedPart) {
+                currentLaborCost = selectedPart.laborCost;
+                currentMaterialCost = selectedPart.materialCost;
+              } else if (currentStatus === "SỬA_CHỮA") {
+                currentLaborCost = FIXED_REPAIR_LABOR_COST;
+                currentMaterialCost = 0;
+              }
+              const totalCost = currentLaborCost + currentMaterialCost;
+
+              // LƯU Ý: ActionType được giữ nguyên giá trị gốc từ Backend (detail.actionType)
+              const displayActionType = detail.actionType;
+
+              return (
+                <tr key={detail.id} className={detail.approvalStatus === 'APPROVED' ? 'row-approved' : ''}>
+                  <td>
+                    <div className="item-info">
+                      <strong>{detail.itemName}</strong>
+                      <small>({displayActionType})</small>
+                    </div>
+                  </td>
+                  <td>
+                    <select
+                      value={currentStatus}
+                      onChange={(e) => handleDetailChange(detail.id, 'status', e.target.value)}
+                      disabled={isCompleted}
+                    >
+                      <option value="">Chọn</option>
+                      {STATUS_OPTIONS.map(opt => (
+                        <option key={opt} value={opt}>
+                          {/* Áp dụng logic tùy chỉnh */}
+                          {getCustomStatusLabel(opt, detail.itemName)}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={currentUpdates.note || ""}
+                      onChange={(e) => handleDetailChange(detail.id, 'note', e.target.value)}
+                      disabled={isCompleted}
+                    />
+                  </td>
+                  <td>
+                    <select
+                      value={currentUpdates.partId || ""}
+                      onChange={(e) => handleDetailChange(detail.id, 'partId', parseInt(e.target.value) || null)}
+                      disabled={!isReplace || isCompleted || detail.availableParts.length === 0}
+                    >
+                      <option value="">
+                        {detail.availableParts.length > 0
+                          ? "Chọn Part"
+                          : (detail.planItem?.partType?.name ? `Hết hàng (${detail.planItem.partType.name})` : "Không có Part")
+                        }
+                      </option>
+                      {detail.availableParts.map(part => {
+                        // 1. Kiểm tra nếu là dịch vụ điều hòa
+                        const isService = part.partName.toLowerCase().includes("dịch vụ bảo dưỡng điều hòa");
+                        
+                        return (
+                          <option key={part.partId} value={part.partId}>
+                            {part.partName} 
+                            {/* 2. HIỂN THỊ CHỈ SỐ LƯỢNG (BỎ CHỮ KHO:) và ẩn nếu là dịch vụ */}
+                            {!isService && ` (${part.quantity})`}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </td>
+                  <td>
+                    <span className={`approval-status approval-${detail.approvalStatus?.toLowerCase()}`}>
+                      {detail.approvalStatus || "PENDING"}
+                    </span>
+                  </td>
+                  <td className="cost-cell">
+                    {totalCost.toLocaleString('vi-VN')} VND
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+
+        {/* NÚT LƯU THAY ĐỔI - Hiển thị ở cuối bảng */}
+        {!isCompleted && checklist.status === 'In Progress' && (
+          <div className="save-changes-section">
+            <button
+              className="btn-save-all-changes"
+              onClick={handleSaveAllChanges}
+              disabled={isUpdating || !hasUnsavedChanges()}
+            >
+              {isUpdating ? (
+                <>
+                  <FaSpinner className="spin" /> Đang lưu...
+                </>
+              ) : (
+                <>
+                  <FaFloppyDisk /> Lưu tất cả thay đổi
+                </>
+              )}
+            </button>
+            {hasUnsavedChanges() && (
+              <small className="unsaved-warning">Bạn có thay đổi chưa được lưu</small>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

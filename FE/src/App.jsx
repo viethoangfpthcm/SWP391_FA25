@@ -11,6 +11,7 @@ import Contact from "./page/home/Contact.jsx";
 import StaffDashboard from "./page/staff/StaffDashboard.jsx";
 import PaymentReady from "./page/payment/PaymentReady.jsx";
 import PaymentProcess from "./page/payment/PaymentProcess.jsx";
+import StaffCheckList from "./page/checkList/StaffCheckList";
 
 import CustomerDashboard from "./page/customer/CustomerDashboard.jsx";
 import VehicleMaintenanceSchedule from "./page/customer/VehicleMaintenanceSchedule.jsx";
@@ -28,10 +29,10 @@ function App() {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/staff" element={<StaffDashboard />} />
-      <Route path="/staff/checklist/:bookingId" element={<CheckList />} />
+     
       <Route path="/payment/ready" element={<PaymentReady />} />
       <Route path="/payment/process/:id" element={<PaymentProcess />} />
-
+<Route path="/staff/checklist/:bookingId" element={<StaffCheckList />} />
       <Route path="/customer/dashboard" element={<CustomerDashboard />} />
 
       <Route path="/customer/vehicle-schedule/:licensePlate" element={<VehicleMaintenanceSchedule />} />
