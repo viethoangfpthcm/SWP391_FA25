@@ -488,7 +488,7 @@ export default function StaffDashboard({ user, userRole }) {
                   <th>Dòng xe</th>
                   <th>Số KM</th>
                   <th>Kỹ thuật viên</th>
-                  <th>Trạng thái (Booking)</th>
+                  <th>Trạng thái </th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
