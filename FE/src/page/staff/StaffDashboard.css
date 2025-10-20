@@ -415,6 +415,22 @@
   .btn-action:disabled .spinner-icon {
     color: #e2ff61;
   }
+  .btn-action.btn-handover {
+  background-color: #0a4ff0; /* Màu xanh dương */
+  border-color: #0a4ff0;
+  color: white;
+}
+
+.btn-action.btn-handover:hover {
+  background-color: #003cd6; /* Màu xanh đậm hơn khi hover */
+  border-color: #003cd6;
+}
+
+.btn-action.btn-handover:disabled {
+  background-color: #adb5bd; /* Màu xám khi bị disable */
+  border-color: #adb5bd;
+  cursor: not-allowed;
+}
 
   /* --- Trạng thái Loading và Empty --- */
   .loading-state,

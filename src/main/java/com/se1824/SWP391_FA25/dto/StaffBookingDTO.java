@@ -21,4 +21,5 @@ public class StaffBookingDTO {
     String note;
     String centerName;
     String technicianName;
+    String ChecklistStatus;
 }

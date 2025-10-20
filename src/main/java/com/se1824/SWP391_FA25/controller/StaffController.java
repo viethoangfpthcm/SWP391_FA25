@@ -106,5 +106,14 @@ public class StaffController {
         MaintenanceChecklistResponse checklistResponse = maintenanceChecklistService.getChecklistByBookingIdForStaff(bookingId);
         return ResponseEntity.ok(checklistResponse);
     }
+    /**
+     * Staff bàn giao xe (Hoàn tất booking sau khi đã Paid và Checklist Completed)
+     * POST /api/staff/bookings/{bookingId}/handover
+     */
+    @PostMapping("/bookings/{bookingId}/handover")
+    public ResponseEntity<String> handOverVehicle(@PathVariable Integer bookingId) {
+        staffService.handOverVehicle(bookingId);
+        return ResponseEntity.ok("Vehicle handed over and booking completed successfully");
+    }
 
 }

@@ -380,23 +380,56 @@
   text-align: right;
 }
 
-.btn-view-detail {
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
+button.task-btn.view {
+  display: inline-flex; 
+  align-items: center; 
+  padding: 8px 15px; 
+  background-color: #2256d0; 
+  color: white; 
+  border: none; 
+  border-radius: 5px; 
+  font-size: 0.9rem; 
+  font-weight: 500; 
   cursor: pointer;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease; 
+  gap: 6px; 
 }
 
-.btn-view-detail:hover {
-  background-color: #2563eb;
+
+button.task-btn.view:hover {
+  background-color: #003cd6;
 }
+.checklist-card-footer button.btn-view-detail {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 15px;
+  background-color: #0a4ff0; /* Màu xanh mong muốn */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  gap: 6px;
+}
+
+/* Hover effect */
+.checklist-card-footer button.btn-view-detail:hover {
+  background-color: #003cd6; 
+}
+
+
+
+
+.checklist-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  margin-top: 1rem;
+}
+
 
 /* ====== PAGE HEADER ====== */
 .page-header {

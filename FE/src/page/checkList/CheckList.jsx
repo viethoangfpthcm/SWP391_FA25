@@ -73,7 +73,7 @@ export default function CheckList({ user }) {
     if (checklist && checklist.details) {
       const initialUpdates = {};
       checklist.details.forEach(detail => {
-       const initialPartId = detail.partId || (detail.part ? detail.part.partId : null);
+        const initialPartId = detail.partId || (detail.part ? detail.part.partId : null);
         initialUpdates[detail.id] = {
           status: detail.status,
           note: detail.note || "",
@@ -146,15 +146,15 @@ export default function CheckList({ user }) {
   // Kiểm tra xem có thay đổi nào chưa lưu không
   const hasUnsavedChanges = () => {
     if (!checklist || !checklist.details) return false;
-    
+
     return checklist.details.some(detail => {
       const updates = detailUpdates[detail.id];
       if (!updates) return false;
-      
+
       const statusChanged = updates.status !== detail.status;
       const noteChanged = updates.note !== (detail.note || "");
       const partChanged = updates.partId !== (detail.partId || (detail.part ? detail.part.partId : null));
-      
+
       return statusChanged || noteChanged || partChanged;
     });
   };
@@ -167,11 +167,11 @@ export default function CheckList({ user }) {
     const changedDetails = checklist.details.filter(detail => {
       const updates = detailUpdates[detail.id];
       if (!updates) return false;
-      
+
       const statusChanged = updates.status !== detail.status;
       const noteChanged = updates.note !== (detail.note || "");
       const partChanged = updates.partId !== (detail.partId || (detail.part ? detail.part.partId : null));
-      
+
       return statusChanged || noteChanged || partChanged;
     });
 
@@ -281,21 +281,30 @@ export default function CheckList({ user }) {
     // Chuyển sang URL với bookingId để trigger fetchChecklist
     navigate(`/checklist?bookingId=${bookingId}`);
   };
-  
+
   /**
    * KIỂM TRA LOGIC: Kiểm tra xem có hạng mục nào cần phê duyệt mà chưa được xử lý không.
-   * Cần kiểm tra các hạng mục có status là THAY_THẾ hoặc SỬA_CHỮA mà approvalStatus != APPROVED/DECLINED
+   * kiểm tra các hạng mục có status là THAY_THẾ hoặc SỬA_CHỮA mà approvalStatus != APPROVED/DECLINED
    */
   const isApprovalPending = () => {
     if (!checklist || !checklist.details) return false;
 
     return checklist.details.some(detail => {
-        const needsApproval = detail.status === "THAY_THẾ" || detail.status === "SỬA_CHỮA";
-        
-        // Trạng thái phê duyệt ban đầu là null (hoặc PENDING nếu Backend set)
-        const isPending = !detail.approvalStatus || detail.approvalStatus.toUpperCase() === 'PENDING';
+      // Lấy dữ liệu mới nhất từ state (thay đổi chưa lưu)
+      const currentUpdates = detailUpdates[detail.id] || {};
 
-        return needsApproval && isPending;
+      // Ưu tiên trạng thái vừa mới thay đổi, nếu không có thì dùng trạng thái đã lưu
+      const currentStatus = currentUpdates.status || detail.status;
+
+      
+      // Bất kỳ trạng thái nào không phải 'TỐT' (và không rỗng) đều cần phê duyệt
+      const needsApproval = currentStatus && currentStatus !== "TỐT";
+
+      // Kiểm tra xem khách hàng đã duyệt hay chưa
+      const isPending = !detail.approvalStatus || detail.approvalStatus.toUpperCase() === 'PENDING';
+
+      // Nếu cần duyệt VÀ khách chưa duyệt -> true
+      return needsApproval && isPending;
     });
   };
 
@@ -371,8 +380,7 @@ export default function CheckList({ user }) {
 
                   <div className="checklist-card-footer">
                     <button
-                      className="btn-view-detail"
-                      // SỬA ĐỔI: Dùng Booking ID để xem chi tiết
+                      className="btn-view-detail"                     
                       onClick={() => handleViewDetail(item.bookingId)}
                     >
                       <FaEye /> Xem chi tiết
@@ -541,11 +549,11 @@ export default function CheckList({ user }) {
                       {detail.availableParts.map(part => {
                         // 1. Kiểm tra nếu là dịch vụ điều hòa
                         const isService = part.partName.toLowerCase().includes("dịch vụ bảo dưỡng điều hòa");
-                        
+
                         return (
                           <option key={part.partId} value={part.partId}>
-                            {part.partName} 
-                           
+                            {part.partName}
+
                             {!isService && ` (${part.quantity})`}
                           </option>
                         );
