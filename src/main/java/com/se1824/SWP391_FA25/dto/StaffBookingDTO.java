@@ -11,13 +11,14 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StaffBookingDTO {
     Integer bookingId;
-     String customerName;
-     String customerPhone;
-     String vehiclePlate;
-     String vehicleModel;
-     Integer currentKm;
-     LocalDateTime bookingDate;
-     String status;
-     String note;
-     String centerName;
+    String customerName;
+    String customerPhone;
+    String vehiclePlate;
+    String vehicleModel;
+    Integer currentKm;
+    LocalDateTime bookingDate;
+    String status;
+    String note;
+    String centerName;
+    String technicianName;
 }

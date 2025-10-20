@@ -2,6 +2,9 @@ package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.model.request.AssignTechnicianRequest;
+import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
+import com.se1824.SWP391_FA25.service.AuthenticationService;
+import com.se1824.SWP391_FA25.service.MaintenanceChecklistService;
 import com.se1824.SWP391_FA25.service.StaffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,8 @@ import java.util.List;
 public class StaffController {
 
     private final StaffService staffService;
+    private final AuthenticationService authenticationService;
+    private final MaintenanceChecklistService maintenanceChecklistService;
 
     /**
      * Lấy danh sách booking pending
@@ -48,8 +53,8 @@ public class StaffController {
      */
     @PostMapping("/bookings/{bookingId}/approve")
     public ResponseEntity<String> approveBooking(
-            @PathVariable Integer bookingId,
-            @RequestParam String staffId) {
+            @PathVariable Integer bookingId) {
+        Integer staffId = authenticationService.getCurrentAccount().getUserId();
         staffService.approveBooking(bookingId, staffId);
         return ResponseEntity.ok("Booking approved successfully");
     }
@@ -61,8 +66,8 @@ public class StaffController {
     @PostMapping("/bookings/{bookingId}/decline")
     public ResponseEntity<String> declineBooking(
             @PathVariable Integer bookingId,
-            @RequestParam String staffId,
             @RequestParam String reason) {
+        Integer staffId = authenticationService.getCurrentAccount().getUserId();
         staffService.declineBooking(bookingId, staffId, reason);
         return ResponseEntity.ok("Booking declined successfully");
     }
@@ -84,7 +89,22 @@ public class StaffController {
     @PostMapping("/bookings/assign-technician")
     public ResponseEntity<String> assignTechnician(
             @RequestBody AssignTechnicianRequest request) {
-        staffService.assignTechnician(request);
+        Integer staffId = authenticationService.getCurrentAccount().getUserId();
+        staffService.assignTechnician(request, staffId);
         return ResponseEntity.ok("Technician assigned successfully");
     }
+
+
+    /**
+     * Lấy chi tiết checklist bảo dưỡng theo Booking ID (cho Staff)
+     * GET /api/staff/checklist/{bookingId}
+     */
+    @GetMapping("/checklist/{bookingId}")
+    public ResponseEntity<MaintenanceChecklistResponse> getChecklistDetailsForStaff(
+            @PathVariable Integer bookingId) {
+        // Gọi service để lấy và kiểm tra quyền
+        MaintenanceChecklistResponse checklistResponse = maintenanceChecklistService.getChecklistByBookingIdForStaff(bookingId);
+        return ResponseEntity.ok(checklistResponse);
+    }
+
 }

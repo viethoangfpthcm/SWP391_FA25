@@ -17,10 +17,10 @@ import java.util.Date;
 @Setter
 @Component
 public class UserResponse {
-    String userId;
-    String fullName;
-    String email;
-    String phone;
-    String token;
-    String role;
+    Integer userId;
+     String fullName;
+     String email;
+     String phone;
+     String role;
+     String token;
 }

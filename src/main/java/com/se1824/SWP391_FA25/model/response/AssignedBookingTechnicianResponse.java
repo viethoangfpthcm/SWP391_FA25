@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 public class AssignedBookingTechnicianResponse {
 
     private Integer bookingId;
-    private String userId;
+    private String customerName;
     private String vehiclePlate;
-    private Integer centerId;
+    private String vehicleModel;
     private LocalDateTime bookingDate;
     private String status;
-    private String assignedTechnician;
     private String note;
+    String maintenancePlanName;
 }
 

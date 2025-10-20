@@ -1,6 +1,7 @@
 package com.se1824.SWP391_FA25.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.se1824.SWP391_FA25.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -24,45 +25,36 @@ import java.util.List;
 @Data
 public class Users implements UserDetails {
     @Id
-    @Column(name = "user_id", length = 50)
-    @Pattern(
-            regexp = "^(CU|ST|TE)\\d{3}$",
-            message = "User ID must start with CU, ST, or TE followed by 3 digits"
-    )
-    String userId;
-    @Column(name = "full_name", length = 100, nullable = false)
-    String fullName;
-    @Column(name = "email", length = 100, nullable = false)
-    String email;
-    @Column(name = "password", length = 255, nullable = false)
-    String password;
-    //    @Column(name = "confirm_password", length = 255, nullable = false)
-//    String confirmPassword;
-    @Column(name = "phone", length = 20, unique = true)
-    @Pattern(
-            regexp = "^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-6|8|9]|9[0-4|6-9])[0-9]{7}$",
-            message = "Invalid phone number format"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    Integer userId;
 
+    @Column(name = "full_name", nullable = false, length = 200)
+    String fullName;
+
+    @Column(name = "email", nullable = false, unique = true, length = 200)
+    String email;
+
+    @Column(name = "password", nullable = false, length = 255)
+    String password;
+
+    @Column(name = "phone", length = 20)
     String phone;
 
-    public Users(String userId, String fullName, String email, String phone, String password) {
-        this.userId = userId;
-        this.fullName = fullName;
-        this.email = email;
-        this.phone = phone;
-        this.password = password;
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 50)
+    UserRole role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "center_id")
     @JsonIgnore
-    ServiceCenter serviceCenter;
+    ServiceCenter center;
 
-    // Relationships
+    @Column(name = "is_active")
+    Boolean isActive;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     @JsonIgnore
-    @ToString.Exclude
     List<Vehicle> vehicles;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
@@ -73,33 +65,45 @@ public class Users implements UserDetails {
     @JsonIgnore
     List<Booking> technicianBookings;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
-    List<Feedback> feedbacks;
-
     @OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)
     @JsonIgnore
     List<MaintenanceChecklist> checklists;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<Feedback> feedbacks;
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.userId != null && this.userId.startsWith("AD")) {
-            // Nếu ID bắt đầu bằng "AD", trả về quyền ADMIN
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        } else if (this.userId != null && this.userId.startsWith("TE")) {
-            // Nếu ID bắt đầu bằng "TE", trả về quyền TECHNICIAN
-            return List.of(new SimpleGrantedAuthority("ROLE_TECHNICIAN"));
-        } else if (this.userId != null && this.userId.startsWith("ST")) {
-            // Nếu ID bắt đầu bằng "ST", trả về quyền STAFF
-            return List.of(new SimpleGrantedAuthority("ROLE_STAFF"));
-        }
-        // Mặc định, tất cả những người dùng khác có quyền USER
-        return List.of(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+        // Trả về một danh sách chứa quyền (role) của người dùng
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
     public String getUsername() {
-        return this.userId;
+        // Spring Security sẽ dùng email để định danh người dùng
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Tài khoản không bao giờ hết hạn
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Tài khoản không bị khóa
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Mật khẩu không bao giờ hết hạn
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.isActive; // Lấy trạng thái từ trường isActive
     }
 
     @Override

@@ -3,9 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.jpg";
 import "./Navbar.css";
 
+
 export default function Navbar() {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("token");
+  const userRole = localStorage.getItem("role");
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -29,10 +31,11 @@ export default function Navbar() {
 
       <nav className="navbar-center">
         <Link to="/home">Trang Chủ</Link>
+        <Link to="/customer/dashboard">Bảng điều khiển</Link>
         <Link to="/appoint">Dịch Vụ</Link>
         <Link to="/about">Về Chúng Tôi</Link>
         <Link to="/contact">Liên Hệ</Link>
-        <Link to="/report">Theo Dõi</Link>
+        <Link to="/report">Biên Bản</Link>
       </nav>
 
       <div className="navbar-right">

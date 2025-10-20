@@ -2,10 +2,13 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.dto.PartOption;
 import com.se1824.SWP391_FA25.entity.*;
+import com.se1824.SWP391_FA25.enums.UserRole;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
+import com.se1824.SWP391_FA25.model.request.ChecklistDetailUpdateRequest;
 import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistDetailResponse;
 import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
+import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistSummaryResponse;
 import com.se1824.SWP391_FA25.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
@@ -13,9 +16,14 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,10 +41,11 @@ public class MaintenanceChecklistService {
     MaintenancePlanRepository planRepo;
     PartRepository partRepo;
     ModelMapper modelMapper;
+    VehicleRepository vehicleRepo;
     AuthenticationService authService;
-    String STATUS_ADJUSTMENT = "HIỆU CHỈNH";
-    String STATUS_REPAIR = "SỬA CHỮA";
-    String STATUS_REPLACE = "THAY THẾ";
+    String STATUS_ADJUSTMENT = "HIỆU_CHỈNH";
+    String STATUS_REPAIR = "SỬA_CHỮA";
+    String STATUS_REPLACE = "THAY_THẾ";
     String STATUS_GOOD = "TỐT";
 
 
@@ -45,8 +54,8 @@ public class MaintenanceChecklistService {
      */
     private BigDecimal getStandardLaborCost(String status) {
         if (STATUS_ADJUSTMENT.equalsIgnoreCase(status)) {
-            // Chi phí cố định cho hiệu chỉnh (2.000.000 VND)
-            return new BigDecimal("2000000");
+
+            return BigDecimal.ZERO;
         }
         if (STATUS_REPAIR.equalsIgnoreCase(status)) {
             // Chi phí cố định cho sửa chữa (4.000.000 VND)
@@ -57,80 +66,92 @@ public class MaintenanceChecklistService {
 
 
     /**
-     * Lấy Checklist cho Technician đang đăng nhập
+     * Lấy danh sách Checklist TÓM TẮT cho Technician đang đăng nhập
      */
-    public List<MaintenanceChecklistResponse> getChecklistByCurrentTechnician() {
+    public List<MaintenanceChecklistSummaryResponse> getChecklistByCurrentTechnicianSummary() {
         Users currentTechnician = authService.getCurrentAccount();
 
-        // Validate technician role
-        if (!currentTechnician.getUserId().startsWith("TE")) {
+        if (currentTechnician.getRole() != UserRole.TECHNICIAN) {
             throw new InvalidDataException("Only technicians can access this resource");
         }
 
         List<MaintenanceChecklist> checklists = checklistRepo.findByTechnician_UserId(currentTechnician.getUserId());
 
-        // Sử dụng hàm helper chung để lấy thông tin và tính toán chi phí
+        // Sử dụng hàm map Summary mới
         return checklists.stream()
-                .map(this::mapChecklistToResponseWithDetails)
+                .map(this::mapChecklistToSummaryResponse)
                 .collect(Collectors.toList());
     }
 
 
     /**
-     * Lấy Checklist cho Customer
+     * Lấy danh sách Checklist TÓM TẮT cho Customer đang đăng nhập.
      */
     @Autowired
     AuthenticationService authenticationService;
 
-    public List<MaintenanceChecklistResponse> getChecklistByCustomer() {
+    public List<MaintenanceChecklistSummaryResponse> getChecklistByCustomerSummary() {
         Users currentUser = authenticationService.getCurrentAccount();
         List<MaintenanceChecklist> checklists = checklistRepo.findByBooking_Customer_UserId(currentUser.getUserId());
-        // Sử dụng hàm helper chung
-        return checklists.stream().map(this::mapChecklistToResponseWithDetails).collect(Collectors.toList());
-    }
 
-    public MaintenanceChecklistResponse getChecklistByCustomerAndId(Integer bookingId) {
-        MaintenanceChecklist checklist = checklistRepo.findByBooking_BookingId(bookingId).orElse(null);
-
-        return mapChecklistToResponseWithDetails(checklist);
+        // SỬ DỤNG HÀM MAP TÓM TẮT
+        return checklists.stream().map(this::mapChecklistToSummaryResponse).collect(Collectors.toList());
     }
 
     /**
-     * Hàm helper chung để map Checklist Entity sang Response DTO và tính toán tổng chi phí.
+     * Lấy chi tiết Checklist theo Booking ID cho Customer (API Detail).
      */
-    private MaintenanceChecklistResponse mapChecklistToResponseWithDetails(MaintenanceChecklist checklist) {
-        MaintenanceChecklistResponse res = modelMapper.map(checklist, MaintenanceChecklistResponse.class);
+    public MaintenanceChecklistResponse getChecklistByCustomerAndId(Integer bookingId) {
+        Users currentUser = authenticationService.getCurrentAccount();
 
-        // Lấy thông tin xe
+        MaintenanceChecklist checklist = checklistRepo.findByBooking_BookingId(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Checklist not found for booking ID: " + bookingId));
+
+        // Kiểm tra quyền truy cập: Checklist này có thuộc về Customer đang đăng nhập không
+        if (checklist.getBooking() == null || !checklist.getBooking().getCustomer().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("You do not have permission to view this checklist.");
+        }
+
+        // SỬ DỤNG HÀM MAP ĐẦY ĐỦ
+        return mapChecklistToResponseWithDetails(checklist);
+    }
+
+    // --- HÀM HELPER CHUNG ---
+
+    /**
+     * Hàm helper chung để map Checklist Entity sang Response DTO TÓM TẮT (Không có Details).
+     */
+    private MaintenanceChecklistSummaryResponse mapChecklistToSummaryResponse(MaintenanceChecklist checklist) {
+        if (checklist == null) return null;
+
+        // Map sang DTO TÓM TẮT
+        MaintenanceChecklistSummaryResponse res = modelMapper.map(checklist, MaintenanceChecklistSummaryResponse.class);
+
         if (checklist.getBooking() != null && checklist.getBooking().getVehicle() != null) {
-            var vehicle = checklist.getBooking().getVehicle();
+            Vehicle vehicle = checklist.getBooking().getVehicle();
             res.setVehicleNumberPlate(vehicle.getLicensePlate());
             res.setVehicleModel(vehicle.getModel());
-            res.setCurrentKm(vehicle.getCurrentKm());
+            res.setBookingStatus(checklist.getBooking().getStatus());
+            res.setCurrentKm(checklist.getActualKm() != null ? checklist.getActualKm() : vehicle.getCurrentKm());
         }
 
-        // Lấy km bảo dưỡng
-        if (checklist.getMaintenancePlan() != null) {
-            res.setMaintenanceKm(extractIntervalKm(checklist.getMaintenancePlan().getName()));
+        if (checklist.getPlan() != null) {
+            res.setPlanName(checklist.getPlan().getName());
+            res.setMaintenanceKm(checklist.getPlan().getIntervalKm());
         }
 
-        List<MaintenanceChecklistDetailResponse> details = mapDetailsToResponse(checklist.getId());
-        res.setDetails(details);
-
-        // TÍNH TỔNG CHI PHÍ DỰA TRÊN DỮ LIỆU ĐÃ LƯU TRONG DETAIL
+        // Vẫn cần load details để tính toán tổng chi phí (dù không đưa details vào response DTO)
+        List<MaintenanceChecklistDetailResponse> details = mapDetailsToResponse(checklist);
         BigDecimal totalApproved = BigDecimal.ZERO;
         BigDecimal totalDeclined = BigDecimal.ZERO;
         BigDecimal estimatedTotal = BigDecimal.ZERO;
 
-        for (MaintenanceChecklistDetailResponse Detail : details) {
-
-            BigDecimal laborCost = Optional.ofNullable(Detail.getLaborCost()).orElse(BigDecimal.ZERO);
-            BigDecimal materialCost = Optional.ofNullable(Detail.getMaterialCost()).orElse(BigDecimal.ZERO);
-            BigDecimal cost = laborCost.add(materialCost);
-
-            if ("APPROVED".equalsIgnoreCase(Detail.getApprovalStatus())) {
+        for (MaintenanceChecklistDetailResponse detail : details) {
+            BigDecimal cost = Optional.ofNullable(detail.getLaborCost()).orElse(BigDecimal.ZERO)
+                    .add(Optional.ofNullable(detail.getMaterialCost()).orElse(BigDecimal.ZERO));
+            if ("APPROVED".equalsIgnoreCase(detail.getApprovalStatus())) {
                 totalApproved = totalApproved.add(cost);
-            } else if ("DECLINED".equalsIgnoreCase(Detail.getApprovalStatus())) {
+            } else if ("DECLINED".equalsIgnoreCase(detail.getApprovalStatus())) {
                 totalDeclined = totalDeclined.add(cost);
             }
             estimatedTotal = estimatedTotal.add(cost);
@@ -144,47 +165,155 @@ public class MaintenanceChecklistService {
     }
 
     /**
+     * Hàm helper chung để map Checklist Entity sang Response DTO ĐẦY ĐỦ (có Details) và tính toán tổng chi phí.
+     */
+    private MaintenanceChecklistResponse mapChecklistToResponseWithDetails(MaintenanceChecklist checklist) {
+        if (checklist == null) return null;
+
+        MaintenanceChecklistResponse res = modelMapper.map(checklist, MaintenanceChecklistResponse.class);
+
+        if (checklist.getBooking() != null && checklist.getBooking().getVehicle() != null) {
+            Vehicle vehicle = checklist.getBooking().getVehicle();
+            res.setVehicleNumberPlate(vehicle.getLicensePlate());
+            res.setVehicleModel(vehicle.getModel());
+            res.setCurrentKm(checklist.getActualKm() != null ? checklist.getActualKm() : vehicle.getCurrentKm());
+        }
+
+        if (checklist.getPlan() != null) {
+            res.setPlanName(checklist.getPlan().getName());
+            res.setMaintenanceKm(checklist.getPlan().getIntervalKm());
+        }
+
+        List<MaintenanceChecklistDetailResponse> details = mapDetailsToResponse(checklist);
+        res.setDetails(details); // <-- Đưa chi tiết vào response
+
+        BigDecimal totalApproved = BigDecimal.ZERO;
+        BigDecimal totalDeclined = BigDecimal.ZERO;
+        BigDecimal estimatedTotal = BigDecimal.ZERO;
+
+        for (MaintenanceChecklistDetailResponse detail : details) {
+            BigDecimal cost = Optional.ofNullable(detail.getLaborCost()).orElse(BigDecimal.ZERO)
+                    .add(Optional.ofNullable(detail.getMaterialCost()).orElse(BigDecimal.ZERO));
+            if ("APPROVED".equalsIgnoreCase(detail.getApprovalStatus())) {
+                totalApproved = totalApproved.add(cost);
+            } else if ("DECLINED".equalsIgnoreCase(detail.getApprovalStatus())) {
+                totalDeclined = totalDeclined.add(cost);
+            }
+            estimatedTotal = estimatedTotal.add(cost);
+        }
+
+        res.setTotalCostApproved(totalApproved);
+        res.setTotalCostDeclined(totalDeclined);
+        res.setEstimatedCost(estimatedTotal);
+
+        return res;
+    }
+
+    /**
+     * Technician bắt đầu quá trình bảo dưỡng (Start Maintenance) (LOGIC KM VÀ THÁNG)
+     */
+    public void startMaintenance(Integer bookingId, Integer actualKm) {
+        if (checklistRepo.findByBooking_BookingId(bookingId).isPresent()) {
+            MaintenanceChecklist existingChecklist = checklistRepo.findByBooking_BookingId(bookingId).get();
+            existingChecklist.setStatus("In Progress");
+            checklistRepo.save(existingChecklist);
+
+            Booking booking = bookingRepo.findById(bookingId) // Lấy lại Booking và đổi trạng thái booking thành "In Progress"
+                    .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
+            booking.setStatus("In Progress");
+            bookingRepo.save(booking);
+            return;
+        }
+
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
+        Vehicle vehicle = booking.getVehicle();
+
+        if (actualKm < (vehicle.getCurrentKm() != null ? vehicle.getCurrentKm() : 0)) {
+            throw new InvalidDataException("Actual KM cannot be less than the vehicle's current KM.");
+        }
+        vehicle.setCurrentKm(actualKm);
+        vehicleRepo.save(vehicle);
+
+        // Lấy ngày mua xe
+        LocalDate registrationDate = vehicle.getPurchaseDate();
+        if (registrationDate == null) {
+            throw new InvalidDataException("Vehicle must have a purchase date to determine the applicable maintenance plan.");
+        }
+
+
+        Integer monthsElapsed = calculateMonthsElapsed(registrationDate);
+
+
+        MaintenancePlan applicablePlan = getApplicableMaintenancePlanWithTime(vehicle, monthsElapsed);
+
+        if (applicablePlan == null) {
+            throw new InvalidDataException("No applicable Maintenance Plan found for this vehicle based on actual mileage and time.");
+        }
+
+        if (!applicablePlan.getId().equals(booking.getMaintenancePlan().getId())) {
+            log.warn("Mismatched Maintenance Plan for Booking ID {}. Customer chose Plan {}, but Actual KM {} requires Plan {}. Updating...",
+                    bookingId, booking.getMaintenancePlan().getId(), actualKm, applicablePlan.getId());
+            booking.setMaintenancePlan(applicablePlan);
+            bookingRepo.save(booking);
+        }
+
+        MaintenanceChecklist newChecklist = new MaintenanceChecklist();
+        newChecklist.setBooking(booking);
+        newChecklist.setTechnician(booking.getAssignedTechnician());
+        newChecklist.setPlan(applicablePlan);
+        newChecklist.setActualKm(actualKm);
+        newChecklist.setStatus("In Progress");
+        newChecklist.setStartTime(LocalDateTime.now()); // Ghi lại thời gian bắt đầu
+        newChecklist.setMaintenanceNo(applicablePlan.getMaintenanceNo()); // Gán maintenanceNo từ plan
+
+        booking.setStatus("In Progress");// Đổi trạng thái booking thành "In Progress" nếu chưa có checklist
+        bookingRepo.save(booking);
+
+        final MaintenanceChecklist savedChecklist = checklistRepo.save(newChecklist);
+
+        List<MaintenancePlanItem> items = planItemRepo.findByPlan_Id(applicablePlan.getId());
+        List<MaintenanceChecklistDetail> details = items.stream()
+                .map(item -> {
+                    MaintenanceChecklistDetail detail = new MaintenanceChecklistDetail();
+                    detail.setChecklist(savedChecklist);
+                    detail.setPlanItem(item);
+                    detail.setStatus("Pending");
+                    detail.setLaborCost(BigDecimal.ZERO);
+                    detail.setMaterialCost(BigDecimal.ZERO);
+                    return detail;
+                })
+                .toList();
+        detailRepo.saveAll(details);
+
+    }
+
+
+    /**
      * Hàm helper để map chi tiết checklist ra response
      */
-    private List<MaintenanceChecklistDetailResponse> mapDetailsToResponse(Integer checklistId) {
-        MaintenanceChecklist checklist = checklistRepo.findById(checklistId)
-                .orElseThrow(() -> new ResourceNotFoundException("Checklist not found"));
-
-        Integer vehicleScheduleId = checklist.getBooking().getVehicle().getMaintenanceSchedule().getId();
+    private List<MaintenanceChecklistDetailResponse> mapDetailsToResponse(MaintenanceChecklist checklist) {
         Integer serviceCenterId = checklist.getBooking().getServiceCenter().getId();
 
-        return detailRepo.findByChecklist_Id(checklistId)
+        return detailRepo.findByChecklist_Id(checklist.getId())
                 .stream()
                 .map(detail -> {
                     MaintenanceChecklistDetailResponse detailRes = new MaintenanceChecklistDetailResponse();
+                    modelMapper.map(detail, detailRes);
 
-                    detailRes.setId(detail.getId());
-                    detailRes.setStatus(detail.getStatus());
-                    detailRes.setApprovalStatus(detail.getApprovalStatus());
-                    detailRes.setNote(detail.getNote());
-                    detailRes.setCustomerNote(detail.getCustomerNote());
-
-                    // Set plan item info
                     if (detail.getPlanItem() != null) {
-                        detailRes.setPlanItemId(detail.getPlanItem().getId());
                         detailRes.setItemName(detail.getPlanItem().getItemName());
                         detailRes.setActionType(detail.getPlanItem().getActionType());
 
-
-                        // Lấy partTypeId từ itemName
-                        Integer partTypeId = getPartTypeIdByItemName(detail.getPlanItem().getItemName());
-
+                        Integer partTypeId = detail.getPlanItem().getPartType().getId();
                         if (partTypeId != null) {
-                            // parts theo: schedule + partType + serviceCenter
-                            List<Part> availableParts = partRepo.findBySchedule_IdAndPartType_IdAndServiceCenter_Id(
-                                    vehicleScheduleId,
-                                    partTypeId,
-                                    serviceCenterId
-                            );
+                            List<Part> availableParts = partRepo.findByPartType_IdAndServiceCenter_Id(partTypeId, serviceCenterId);
+
 
                             List<PartOption> partOptions = availableParts.stream()
                                     .filter(part -> part.getQuantity() > 0)
                                     .map(part -> {
+
                                         PartOption option = new PartOption();
                                         option.setPartId(part.getId());
                                         option.setPartName(part.getName());
@@ -195,141 +324,86 @@ public class MaintenanceChecklistService {
                                     })
                                     .collect(Collectors.toList());
 
+
                             detailRes.setAvailableParts(partOptions);
+                        } else {
+                            detailRes.setAvailableParts(Collections.emptyList());
                         }
-
-
                     }
 
                     if (detail.getPart() != null) {
-                        detailRes.setPartId(detail.getPart().getId());
                         detailRes.setPartName(detail.getPart().getName());
                     }
-
-                    // Set costs
-                    detailRes.setLaborCost(
-                            detail.getLaborCost() != null ? detail.getLaborCost() : BigDecimal.ZERO
-                    );
-                    detailRes.setMaterialCost(
-                            detail.getMaterialCost() != null ? detail.getMaterialCost() : BigDecimal.ZERO
-                    );
-
                     return detailRes;
                 })
                 .collect(Collectors.toList());
     }
 
     /**
-     * Technician bắt đầu quá trình bảo dưỡng (Start Maintenance)
-     * => cập nhật trạng thái checklist sang "In Progress" và tạo chi tiết.
+     * Phương thức tìm MaintenancePlan áp dụng (Kết hợp KM và Tháng)
+     * Đây là hàm mới thay thế cho hàm cũ chỉ dùng KM.
      */
-    public void startMaintenance(Integer bookingId) {
-
-        MaintenanceChecklist checklist = checklistRepo.findByBooking_BookingId(bookingId)
+    public MaintenancePlan getApplicableMaintenancePlanWithTime(Vehicle vehicle, Integer monthsElapsed) {
+        // 0. Lấy thông tin cần thiết
+        MaintenanceSchedule schedule = vehicle.getSchedules().stream()
+                .findFirst()
+                .map(VehicleSchedule::getSchedule)
                 .orElse(null);
 
-        if (checklist == null) {
-            var booking = bookingRepo.findById(bookingId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
+        if (schedule == null) return null;
+        List<MaintenancePlan> plans = planRepo.findBySchedule_Id(schedule.getId());
+        if (plans.isEmpty()) return null;
+        Integer currentKm = vehicle.getCurrentKm();
+        MaintenancePlan planByKm = null;
+        MaintenancePlan planByMonth = null;
 
-
-            MaintenancePlan plan = getApplicableMaintenancePlan(booking.getVehicle());
-
-            if (plan == null) {
-                throw new InvalidDataException("No applicable Maintenance Plan found for this vehicle/schedule based on current mileage.");
-            }
-
-
-            MaintenanceChecklist newChecklist = new MaintenanceChecklist();
-            newChecklist.setBooking(booking);
-            newChecklist.setTechnician(booking.getAssignedTechnician());
-            newChecklist.setMaintenancePlan(plan);
-            newChecklist.setStatus("In Progress");
-
-            final MaintenanceChecklist savedChecklist = checklistRepo.save(newChecklist);
-
-
-            List<MaintenancePlanItem> items = planItemRepo.findByPlan_Id(plan.getId());
-
-            List<MaintenanceChecklistDetail> details = items.stream()
-                    .map(item -> {
-                        MaintenanceChecklistDetail detail = new MaintenanceChecklistDetail();
-                        detail.setChecklist(savedChecklist);
-                        detail.setPlanItem(item);
-                        detail.setStatus("Pending");
-                        // Chi phí được mặc định là ZERO khi tạo
-                        detail.setLaborCost(BigDecimal.ZERO);
-                        detail.setMaterialCost(BigDecimal.ZERO);
-                        return detail;
-                    })
-                    .toList();
-            detailRepo.saveAll(details);
-
-        } else {
-            checklist.setStatus("In Progress");
-            checklistRepo.save(checklist);
-        }
-    }
-
-
-    /**
-     * Phương thức tìm MaintenancePlan áp dụng (Lấy plan có KM thấp nhất chưa thực hiện)
-     * Sử dụng logic extractIntervalKm() để tìm Plan phù hợp với số KM hiện tại.
-     */
-    private MaintenancePlan getApplicableMaintenancePlan(Vehicle vehicle) {
-        if (vehicle.getMaintenanceSchedule() == null) {
-            return null;
-        }
-
-        Integer scheduleId = vehicle.getMaintenanceSchedule().getId();
-        Integer currentKm = vehicle.getCurrentKm() != null ? vehicle.getCurrentKm() : 0;
-
-        // Lấy tất cả các plan liên quan đến Schedule
-        List<MaintenancePlan> plans = planRepo.findBySchedule_Id(scheduleId);
-
-        MaintenancePlan fallBackPlan = null; // Plan lớn nhất,
-
+        // 1. Tìm Gói phù hợp dựa trên KM (Mốc KM kế tiếp chưa tới)
         for (MaintenancePlan plan : plans) {
-            Integer intervalKm = extractIntervalKm(plan.getName());
-
-            if (intervalKm != null) {
-                fallBackPlan = plan; // Cập nhật plan lớn nhất
-
-                // Trả về Plan đầu tiên (thấp nhất) mà xe CHƯA ĐẠT MỐC
-                if (currentKm < intervalKm) {
-                    return plan;
-                }
+            if (currentKm < plan.getIntervalKm()) {
+                planByKm = plan;
+                break;
             }
         }
+        // Nếu đã vượt qua tất cả mốc KM, chọn gói CUỐI CÙNG (mốc cao nhất)
+        if (planByKm == null) {
+            planByKm = plans.get(plans.size() - 1);
+        }
 
-        // trả về Plan có mốc KM lớn nhất để thực hiện
-        return fallBackPlan;
+        // 2. Tìm Gói phù hợp dựa trên Thời gian (Mốc Tháng kế tiếp chưa tới)
+        for (MaintenancePlan plan : plans) {
+            if (monthsElapsed < plan.getIntervalMonth()) {
+                planByMonth = plan;
+                break;
+            }
+        }
+        // Nếu đã vượt qua tất cả mốc Tháng, chọn gói CUỐI CÙNG (mốc cao nhất)
+        if (planByMonth == null) {
+            planByMonth = plans.get(plans.size() - 1);
+        }
+        // 3. ÁP DỤNG LOGIC ƯU TIÊN: Chọn gói bảo dưỡng có mốc cao hơn (IntervalKm lớn hơn) trong 2 gói.
+
+        // So sánh 2 gói: Chọn gói có mốc KM lớn hơn.
+        if (planByKm.getIntervalKm() >= planByMonth.getIntervalKm()) {
+            return planByKm;
+        } else {
+            return planByMonth;
+        }
     }
 
     /**
-     * Trích xuất mốc KM từ tên Plan (Ví dụ: "Bảo dưỡng 10.000 km")
-     * Logic được lấy từ BookingService.
+     * Tính số tháng đã trôi qua kể từ ngày mua/đăng ký xe đến ngày hiện tại.
+     * @param registrationDate Ngày mua xe (purchaseDate).
+     * @return Số tháng đã trôi qua (làm tròn xuống).
      */
-    private Integer extractIntervalKm(String planName) {
-        if (planName == null || planName.trim().isEmpty()) {
-            return null;
+    private int calculateMonthsElapsed(LocalDate registrationDate) {
+        if (registrationDate == null) {
+            log.error("Purchase date is missing for the vehicle.");
+            // Trả về giá trị lớn để buộc chọn mốc bảo dưỡng cao nhất nếu ngày mua bị thiếu.
+            return 999;
         }
 
-        try {
-            // Tách chuỗi theo khoảng trắng
-            String[] parts = planName.split(" ");
-            for (int i = 0; i < parts.length - 1; i++) {
-                // Nếu tìm thấy "km" và từ trước nó có vẻ là số
-                if ("km".equalsIgnoreCase(parts[i + 1])) {
-                    // Loại bỏ các ký tự phân cách hàng nghìn (.,)
-                    String kmString = parts[i].replace(".", "").replace(",", "");
-                    return Integer.parseInt(kmString);
-                }
-            }
-        } catch (Exception e) {
-            log.error("Error parsing interval km from: {}", planName, e);
-        }
-        return null;
+        // Tính số tháng giữa ngày đăng ký và ngày hiện tại (LocalDate.now())
+        return (int) ChronoUnit.MONTHS.between(registrationDate, LocalDate.now());
     }
 
     // ---
@@ -338,61 +412,47 @@ public class MaintenanceChecklistService {
      * Cập nhật chi tiết từng hạng mục trong checklist
      */
     @Transactional
-    public void updateChecklistDetail(Integer detailId, String status, String note, Integer partId, String currentUserId) {
+    public void updateChecklistDetail(Integer detailId, ChecklistDetailUpdateRequest request) {
+
+        Users currentUser = authService.getCurrentAccount();
+        Integer currentUserId = currentUser.getUserId();
+
         MaintenanceChecklistDetail detail = detailRepo.findById(detailId)
                 .orElseThrow(() -> new ResourceNotFoundException("Checklist detail not found"));
 
-
-        String assignedTechnicianId = detail.getChecklist().getTechnician().getUserId();
-        if (!assignedTechnicianId.equals(currentUserId)) {
+        if (!detail.getChecklist().getTechnician().getUserId().equals(currentUserId)) {
             throw new InvalidDataException("You are not the assigned technician for this checklist.");
         }
 
-        detail.setStatus(status);
-        detail.setNote(note);
-        String normalizedStatus = status.toUpperCase();
 
-        // 1. Reset chi phí và Part
+        String status = request.status();
+        Integer partId = request.partId();
+
+        detail.setStatus(status);
+        detail.setNote(request.note());
         detail.setPart(null);
         detail.setLaborCost(BigDecimal.ZERO);
         detail.setMaterialCost(BigDecimal.ZERO);
 
-        Integer vehicleScheduleId = detail.getChecklist().getBooking().getVehicle().getMaintenanceSchedule().getId();
-
-        // 2. Cập nhật chi phí dựa trên trạng thái
-        if (STATUS_REPLACE.equalsIgnoreCase(normalizedStatus) && partId != null) {
-
+        if (STATUS_REPLACE.equalsIgnoreCase(status) && partId != null) {
             Part part = partRepo.findById(partId)
                     .orElseThrow(() -> new ResourceNotFoundException("Part not found with ID: " + partId));
 
-            if (!part.getSchedule().getId().equals(vehicleScheduleId)) {
-                throw new InvalidDataException("Part không phù hợp với mẫu xe");
-            }
             if (part.getQuantity() <= 0) {
-                throw new InvalidDataException("Part hết hàng: " + part.getName());
+                throw new InvalidDataException("Part is out of stock: " + part.getName());
             }
 
             detail.setPart(part);
-            // LƯU CHI PHÍ TỪ PART VÀO DETAIL
-            BigDecimal laborCost = Optional.ofNullable(part.getLaborCost()).orElse(BigDecimal.ZERO);
-            BigDecimal materialCost = Optional.ofNullable(part.getMaterialCost()).orElse(BigDecimal.ZERO);
             detail.setLaborCost(Optional.ofNullable(part.getLaborCost()).orElse(BigDecimal.ZERO));
             detail.setMaterialCost(Optional.ofNullable(part.getMaterialCost()).orElse(BigDecimal.ZERO));
 
-//            // Giảm quantity và lưu Part
-//            part.setQuantity(part.getQuantity() - 1);
-//            partRepo.save(part);
-
-        } else if (STATUS_ADJUSTMENT.equalsIgnoreCase(normalizedStatus) || STATUS_REPAIR.equalsIgnoreCase(normalizedStatus)) {
-
+        } else if (STATUS_ADJUSTMENT.equalsIgnoreCase(status) || STATUS_REPAIR.equalsIgnoreCase(status)) {
+            // Gọi hàm tính toán chi phí nhân công cố định
             detail.setLaborCost(getStandardLaborCost(status));
-            detail.setMaterialCost(BigDecimal.ZERO);
-
         }
-        // Trạng thái 'Tốt'  cost = 0
 
         detailRepo.save(detail);
-        log.info("Updated checklist detail successfully");
+        log.info("Updated checklist detail successfully by user {}", currentUserId);
     }
 
     @Transactional
@@ -404,39 +464,14 @@ public class MaintenanceChecklistService {
         if (!List.of("APPROVED", "DECLINED", "PENDING").contains(standardizedStatus)) {
             throw new InvalidDataException("Invalid approval status. Must be APPROVED, DECLINED, or PENDING.");
         }
-
         detail.setApprovalStatus(standardizedStatus);
         detail.setCustomerNote(customerNote);
-
         detailRepo.save(detail);
     }
+
     /**
-     * Map item name sang part type ID
+     * Hoàn thành checklist (Complete Checklist)
      */
-    private Integer getPartTypeIdByItemName(String itemName) {
-        if (itemName == null) return null;
-
-        String normalizedName = itemName.toLowerCase().trim();
-
-        // Mapping theo tên item trong database
-        if (normalizedName.contains("lọc gió điều hòa")) {
-            return 1; // part_type_id = 1
-        } else if (normalizedName.contains("dầu phanh")) {
-            return 2; // part_type_id = 2
-        } else if (normalizedName.contains("hệ thống điều hòa") ||
-                normalizedName.contains("bảo dưỡng hệ thống điều hòa")) {
-            return 3; // part_type_id = 3
-        } else if (normalizedName.contains("pin chìa khóa")) {
-            return 4; // part_type_id = 4
-        } else if (normalizedName.contains("pin t-box") ||
-                normalizedName.contains("pin bộ t-box")) {
-            return 5; // part_type_id = 5
-        } else if (normalizedName.contains("nước làm mát")) {
-            return 6; // part_type_id = 6
-        }
-
-        return null; // Không tìm thấy part type phù hợp
-    }
     @Transactional
     public void completeChecklist(Integer checklistId) {
         MaintenanceChecklist checklist = checklistRepo.findById(checklistId)
@@ -446,30 +481,126 @@ public class MaintenanceChecklistService {
             throw new InvalidDataException("Checklist must be 'In Progress' to complete.");
         }
 
-        // Lấy tất cả chi tiết đã được khách hàng phê duyệt
-        List<MaintenanceChecklistDetail> detailsToProcess = detailRepo
-                .findByChecklist_IdAndApprovalStatus(checklistId, "APPROVED");
+        List<MaintenanceChecklistDetail> detailsToProcess = detailRepo.findByChecklist_IdAndApprovalStatus(checklistId, "APPROVED");
 
         for (MaintenanceChecklistDetail detail : detailsToProcess) {
-            // CHỈ TRỪ PART nếu là hạng mục "THAY THẾ" và đã có Part được gán
             if (STATUS_REPLACE.equalsIgnoreCase(detail.getStatus()) && detail.getPart() != null) {
                 Part part = detail.getPart();
-
-                // Kiểm tra tồn kho lần cuối
                 if (part.getQuantity() <= 0) {
                     log.error("Part out of stock during checklist completion: {}", part.getName());
                     throw new InvalidDataException("Part " + part.getName() + " is currently out of stock. Cannot complete task.");
                 }
                 part.setQuantity(part.getQuantity() - 1);
                 partRepo.save(part);
-
             }
         }
-
+        checklist.setEndTime(LocalDateTime.now()); // Ghi lại thời gian kết thúc
 
         checklist.setStatus("Completed");
         checklistRepo.save(checklist);
+        Booking booking = checklist.getBooking();
+        if (booking != null) {
+            // Lấy maintenance_no từ checklist (đã được technician xác nhận)
+            Integer actualMaintenanceNo = checklist.getMaintenanceNo();
+
+            if (actualMaintenanceNo != null) {
+                log.info("Updating booking {} maintenance_no from {} to {}",
+                        booking.getBookingId(),
+                        booking.getMaintenanceNo(),
+                        actualMaintenanceNo);
+
+                booking.setMaintenanceNo(actualMaintenanceNo);
+                bookingRepo.save(booking);
+            }
+
+            // Cập nhật vehicle's currentKm nếu có actual_km
+            Integer actualKm = checklist.getActualKm();
+            if (actualKm != null && booking.getVehicle() != null) {
+                Vehicle vehicle = booking.getVehicle();
+
+                // Chỉ cập nhật nếu actualKm lớn hơn currentKm hiện tại
+                if (vehicle.getCurrentKm() == null || actualKm > vehicle.getCurrentKm()) {
+                    log.info("Updating vehicle {} currentKm from {} to {}",
+                            vehicle.getLicensePlate(),
+                            vehicle.getCurrentKm(),
+                            actualKm);
+
+                    vehicle.setCurrentKm(actualKm);
+                    vehicleRepo.save(vehicle);
+                }
+            }
+        }
+    }
+    // *** PHƯƠNG THỨC CHO STAFF ***
+
+    /**
+     * Lấy chi tiết Checklist theo Booking ID cho Staff (kiểm tra center)
+     *
+     * @param bookingId ID của Booking
+     * @return MaintenanceChecklistResponse DTO
+     * @throws ResourceNotFoundException Nếu không tìm thấy Checklist
+     * @throws AccessDeniedException     Nếu Staff không thuộc trung tâm quản lý Checklist đó
+     */
+    public MaintenanceChecklistResponse getChecklistByBookingIdForStaff(Integer bookingId) {
+        log.info("Staff attempting to retrieve checklist for booking ID: {}", bookingId);
+
+        // Lấy thông tin Staff đang đăng nhập
+        Users currentStaff = authenticationService.getCurrentAccount();
+        if (currentStaff == null || currentStaff.getRole() != UserRole.STAFF || currentStaff.getCenter() == null) {
+            log.warn("Unauthorized access attempt for checklist by booking ID: {}. User not STAFF or missing center.", bookingId);
+            throw new AccessDeniedException("User is not authorized or not associated with a service center.");
+        }
+        Integer staffCenterId = currentStaff.getCenter().getId();
+
+        // Tìm Checklist dựa trên bookingId
+        MaintenanceChecklist checklist = checklistRepo.findByBooking_BookingId(bookingId)
+                .orElseThrow(() -> {
+                    log.warn("Checklist not found for booking ID: {}", bookingId);
+                    return new ResourceNotFoundException("Checklist not found for booking ID: " + bookingId);
+                });
+
+        // Kiểm tra xem Checklist có thuộc trung tâm của Staff không
+        Integer checklistCenterId = checklist.getBooking().getServiceCenter().getId();
+        if (!staffCenterId.equals(checklistCenterId)) {
+            log.warn("Access denied for staff {} (center {}) trying to access checklist for booking ID {} (center {})",
+                    currentStaff.getUserId(), staffCenterId, bookingId, checklistCenterId);
+            throw new AccessDeniedException("Staff does not have permission to view checklists for this service center.");
+        }
+
+        log.info("Staff {} (center {}) successfully retrieved checklist for booking ID {} (center {})",
+                currentStaff.getUserId(), staffCenterId, bookingId, checklistCenterId);
+
+        // Sử dụng lại hàm map đã có để trả về DTO
+        return mapChecklistToResponseWithDetails(checklist);
+    }
+
+    /**
+     * Lấy chi tiết Checklist theo Booking ID cho Technician đang đăng nhập.
+     * * @param bookingId ID của Booking (cũng là ID dùng để tìm Checklist)
+     * @return MaintenanceChecklistResponse DTO
+     * @throws ResourceNotFoundException Nếu không tìm thấy Checklist
+     * @throws AccessDeniedException Nếu Technician không được gán cho Checklist này
+     */
+    public MaintenanceChecklistResponse getChecklistByTechnicianAndBookingId(Integer bookingId) {
+        // 1. Lấy thông tin Technician đang đăng nhập
+        Users currentTechnician = authService.getCurrentAccount();
+
+        if (currentTechnician.getRole() != UserRole.TECHNICIAN) {
+            throw new AccessDeniedException("Only technicians can access this resource.");
+        }
+
+        //  Tìm Checklist dựa trên bookingId
+        MaintenanceChecklist checklist = checklistRepo.findByBooking_BookingId(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Checklist not found for booking ID: " + bookingId));
+
+        // Kiểm tra quyền truy cập: Checklist có được gán cho Technician này không
+        if (checklist.getTechnician() == null || !checklist.getTechnician().getUserId().equals(currentTechnician.getUserId())) {
+            log.warn("Access denied for technician {} trying to access checklist for booking ID {}",
+                    currentTechnician.getUserId(), bookingId);
+            throw new AccessDeniedException("You are not the assigned technician for this checklist.");
+        }
 
 
+        return mapChecklistToResponseWithDetails(checklist);
     }
 }

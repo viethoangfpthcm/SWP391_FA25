@@ -7,18 +7,22 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PaymentResponse {
+    Integer paymentId;
     Integer bookingId;
     String customerName;
     String serviceCenterName;
-    String technicianName;
     LocalDateTime paymentDate;
+    String paymentMethod;
     String status;
     String note;
     String vehicleModel;
     String vehicleLicensePlate;
-    List<MaintenanceChecklistDetailResponse> checklistDetail;
+    List<MaintenanceChecklistDetailResponse> checklistDetails;
+    BigDecimal laborCost;
+    BigDecimal materialCost;
     BigDecimal totalAmount;
 
 }

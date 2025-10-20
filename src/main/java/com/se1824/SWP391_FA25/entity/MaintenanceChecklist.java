@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -21,29 +22,40 @@ public class MaintenanceChecklist {
     @Column(name = "id")
     Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "plan_id", nullable = false)
     @JsonIgnore
-    MaintenancePlan maintenancePlan;
+    MaintenancePlan plan;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
+    @JoinColumn(name = "booking_id", nullable = false, unique = true)
+    @JsonIgnore
+    Booking booking;
+
+    @ManyToOne
     @JoinColumn(name = "technician_id", nullable = false)
     @JsonIgnore
     Users technician;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_id", nullable = false)
-    @JsonIgnore
-    Booking booking;
+    @Column(name = "actual_km")
+    Integer actualKm;
 
-    @Column(name = "status", length = 50, nullable = false)
-    String status;  // Pending, In Progress, Completed
+    @Column(name = "start_time")
+    LocalDateTime startTime;
 
-    @Column(name = "note", length = 255)
+    @Column(name = "end_time")
+    LocalDateTime endTime;
+
+    @Column(name = "status", length = 50)
+    String status;
+
+    @Column(name = "note", length = 1000)
     String note;
 
-    // Relationships
+    @Column(name = "maintenance_no")
+    Integer maintenanceNo;
+
     @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL)
     @JsonIgnore
-    List<MaintenanceChecklistDetail> checklistDetails;
+    List<MaintenanceChecklistDetail> details;
 }
