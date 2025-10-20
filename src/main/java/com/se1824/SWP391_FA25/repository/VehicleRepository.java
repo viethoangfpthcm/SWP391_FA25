@@ -7,6 +7,6 @@ import java.util.List;
 
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, String> {
-    List<Vehicle> findByOwner_UserId(String userId);
+    List<Vehicle> findByOwner_UserId(Integer userId);
 
 }

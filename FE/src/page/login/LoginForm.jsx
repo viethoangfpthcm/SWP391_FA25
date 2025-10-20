@@ -1,10 +1,15 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./LoginForm.css";
 
 const LoginForm = () => {
-  // --- State ---
-  const [activeTab, setActiveTab] = useState("login");
+  // --- Hooks ---
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Nếu từ Home.jsx gửi state defaultTab: "register" thì mở sẵn tab đăng ký
+  const [activeTab, setActiveTab] = useState(location.state?.defaultTab || "login");
+
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -20,8 +25,6 @@ const LoginForm = () => {
     confirmPassword: "",
   });
 
-  const navigate = useNavigate();
-
   // --- Hàm chuyển hướng sau đăng nhập ---
   const redirectToDashboard = (role) => {
     const upperCaseRole = role?.toUpperCase() || "";
@@ -34,7 +37,7 @@ const LoginForm = () => {
         navigate("/staff");
         break;
       case "TECHNICIAN":
-        navigate("technician-task");
+        navigate("/technician-task");
         break;
       case "CUSTOMER":
         navigate("/home");
@@ -124,6 +127,8 @@ const LoginForm = () => {
         password: "",
         confirmPassword: "",
       });
+      // Tự động chuyển sang tab login sau khi đăng ký
+      setTimeout(() => setActiveTab("login"), 1500);
     } catch (err) {
       setError(err.message);
     }
@@ -139,6 +144,7 @@ const LoginForm = () => {
   // --- JSX ---
   return (
     <div className="login-wrapper">
+      {/* Tabs */}
       <div className="tabs">
         <button
           className={`tab ${activeTab === "login" ? "active" : ""}`}
@@ -258,6 +264,7 @@ const LoginForm = () => {
         </form>
       )}
 
+      {/* Thông báo */}
       {error && <div className="error-message">{error}</div>}
       {successMessage && <div className="success-message">{successMessage}</div>}
     </div>

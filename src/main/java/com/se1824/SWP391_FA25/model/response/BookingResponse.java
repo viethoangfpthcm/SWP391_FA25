@@ -9,13 +9,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 
 public class BookingResponse {
-    Integer bookingId;
-    String vehiclePlate;
-    String vehicleModel;
-    String centerName;
-    String centerAddress;
-    LocalDateTime bookingDate;
-    String status;
-    String note;
-    LocalDateTime createdAt;
+    private Integer bookingId;
+    private String vehiclePlate;
+    private String vehicleModel;
+    private String centerName;
+    private String centerAddress;
+    private LocalDateTime bookingDate;
+    private String status;
+    private String note;
 }

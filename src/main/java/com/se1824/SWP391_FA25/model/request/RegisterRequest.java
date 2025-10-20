@@ -6,11 +6,6 @@ import lombok.Data;
 
 @Data
 public class RegisterRequest {
-    @Pattern(
-            regexp = "^(CU|ST|TE)$",
-            message = "User ID must start with CU, ST, or TE followed by 3 digits"
-    )
-    private String userId;
     private String fullName;
     @Email(message = "Invalid email format")
     private String email;

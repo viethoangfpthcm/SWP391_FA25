@@ -21,12 +21,12 @@ public class Feedback {
     @Column(name = "feedback_id")
     Integer feedbackId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "booking_id", nullable = false)
     @JsonIgnore
     Booking booking;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     Users user;
@@ -34,9 +34,15 @@ public class Feedback {
     @Column(name = "rating", nullable = false)
     Integer rating;
 
-    @Column(name = "comment", length = 500)
+    @Column(name = "comment", length = 1000)
     String comment;
 
-    @Column(name = "feedback_date", nullable = false, columnDefinition = "DATETIME DEFAULT GETDATE()")
+    @Column(name = "feedback_date")
     LocalDateTime feedbackDate = LocalDateTime.now();
+
+    @Column(name = "is_published")
+    Boolean isPublished;
+
+    @Column(name = "created_at")
+    LocalDateTime createdAt = LocalDateTime.now();
 }
