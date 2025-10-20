@@ -29,7 +29,7 @@ const Sidebar = ({ userName, userRole }) => {
       defaultHomePath = "/staff";
       break;
     case "technician":
-      defaultHomePath = "/technician-task";
+      defaultHomePath = "/technicantask"; // ✅ khớp với route thật
       break;
     default:
       defaultHomePath = "/home";
@@ -49,33 +49,26 @@ const Sidebar = ({ userName, userRole }) => {
 
   return (
     <div className="sidebar open">
-      {/* THÔNG TIN NGƯỜI DÙNG */}
       <div className="user-info">
         <h3>{currentUserName}</h3>
         <p>{currentUserRole}</p>
       </div>
 
-      {/* Main menu */}
       <div className="menu">
-        {/* MENU ITEM: Trang chủ */}
         <Link to={defaultHomePath} className={`menu-item ${isActive(defaultHomePath) ? "active" : ""}`}>
           <FaHome /> <span>Trang chủ</span>
         </Link>
 
-        {/* Mục Quản lý Lịch hẹn (Staff/Admin) */}
         {(role === "staff" || role === "admin") && (
           <Link to="/staff" className={`menu-item ${isActive("/staff") ? "active" : ""}`}>
             <FaCalendarCheck /> <span>Quản lý lịch hẹn</span>
           </Link>
         )}
 
-        {/* Mục dành cho TECHNICIAN */}
+        
         {role === "technician" && (
           <>
-            <Link
-              to="/technician-task"
-              className={`menu-item ${isActive("/technician-task") ? "active" : ""}`}
-            >
+            <Link to="/technicantask" className={`menu-item ${isActive("/technicantask") ? "active" : ""}`}>
               <FaTasks /> <span>Công việc được giao</span>
             </Link>
 
@@ -85,28 +78,24 @@ const Sidebar = ({ userName, userRole }) => {
           </>
         )}
 
-        {/* Admin - Quản lý người dùng */}
         {role === "admin" && (
           <Link to="/admin" className={`menu-item ${isActive("/admin") ? "active" : ""}`}>
             <FaUserCog /> <span>Quản lý người dùng</span>
           </Link>
         )}
 
-        {/* Biên bản đã tạo */}
         {(role === "technician" || role === "admin") && (
           <Link to="/reports" className={`menu-item ${isActive("/reports") ? "active" : ""}`}>
             <FaFileAlt /> <span>Biên bản đã tạo</span>
           </Link>
         )}
 
-        {/* Lịch làm việc */}
         {role === "technician" && (
           <Link to="/schedule" className={`menu-item ${isActive("/schedule") ? "active" : ""}`}>
             <FaClock /> <span>Lịch làm việc</span>
           </Link>
         )}
 
-        {/* Logout */}
         <button className="logout-btn" onClick={handleLogout}>
           <FaSignOutAlt /> <span>Đăng xuất</span>
         </button>
