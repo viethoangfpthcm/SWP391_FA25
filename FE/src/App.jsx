@@ -10,23 +10,25 @@ import Contact from "./page/home/Contact.jsx";
 import StaffDashboard from "./page/staff/StaffDashboard.jsx";
 import StaffCheckList from "./page/checkList/StaffCheckList.jsx";
 
+// Technician
+import TechnicianTask from "./page/technican/technicantask.jsx";
+import CheckList from "./page/checkList/CheckList.jsx";
+
 // Admin
-import AdminDashboard from "./page/admin/Admindashboard.jsx";
+import AdminDashboard from "./page/admin/AdminDashboard.jsx";
 
 // Customer
 import CustomerDashboard from "./page/customer/CustomerDashboard.jsx";
 import VehicleMaintenanceSchedule from "./page/customer/VehicleMaintenanceSchedule.jsx";
 import Appoint from "./page/home/Appoint.jsx";
+import Report1 from "./page/report/report1.jsx";
 
 // Payment
-import PaymentReady from "./page/payment/PaymentReady.jsx";
-import PaymentProcess from "./page/payment/PaymentProcess.jsx";
 import PaymentResult from "./page/payment/PaymentResult.jsx";
 
 function App() {
   return (
     <Routes>
-      {/* Redirect root "/" về "/home" */}
       <Route path="/" element={<Navigate to="/home" replace />} />
 
       {/* Public routes */}
@@ -35,7 +37,7 @@ function App() {
       <Route path="/contact" element={<Contact />} />
       <Route path="/login" element={<LoginForm />} />
 
-      {/* Staff routes */}
+      {/* Staff */}
       <Route
         path="/staff"
         element={
@@ -53,7 +55,25 @@ function App() {
         }
       />
 
-      {/* Admin routes */}
+  {/* Technician*/}
+      <Route
+        path="/technicantask"
+        element={
+          <ProtectedRoute requiredRole="TECHNICIAN">
+            <TechnicianTask />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/checklist"
+        element={
+          <ProtectedRoute requiredRole="TECHNICIAN">
+            <CheckList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Admin */}
       <Route
         path="/admin"
         element={
@@ -63,7 +83,7 @@ function App() {
         }
       />
 
-      {/* Customer routes */}
+      {/* Customer */}
       <Route
         path="/customer/dashboard"
         element={
@@ -75,7 +95,7 @@ function App() {
       <Route
         path="/appoint"
         element={
-          <ProtectedRoute requiredRole="CUSTOMER"> {}
+          <ProtectedRoute requiredRole="CUSTOMER">
             <Appoint />
           </ProtectedRoute>
         }
@@ -89,7 +109,7 @@ function App() {
         }
       />
 
-      {/* Payment routes */}
+      {/* Payment */}
       <Route
         path="/payment/result"
         element={
@@ -98,19 +118,13 @@ function App() {
           </ProtectedRoute>
         }
       />
+
+      {/* Report */}
       <Route
-        path="/payment/ready"
+        path="/report1"
         element={
-          <ProtectedRoute>
-            <PaymentReady />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/payment/process/:id"
-        element={
-          <ProtectedRoute>
-            <PaymentProcess />
+          <ProtectedRoute requiredRole="CUSTOMER">
+            <Report1 />
           </ProtectedRoute>
         }
       />
