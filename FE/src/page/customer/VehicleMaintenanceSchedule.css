@@ -8,7 +8,7 @@
 
 .schedule-content {
   flex: 1;
-  max-width: 900px; /* Giới hạn chiều rộng cho dễ đọc */
+  max-width: 900px;
   margin: 30px auto;
   padding: 20px;
   width: 90%;
@@ -32,15 +32,14 @@
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
-  border-left: 5px solid #ccc; /* Border mặc định */
+  border-left: 5px solid #ccc;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .schedule-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
-
 
 .schedule-item-header {
   display: flex;
@@ -55,43 +54,123 @@
   color: #111;
 }
 
+/* Status container */
+.status-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #555;
+}
+
 .schedule-item p {
   margin: 5px 0;
   font-size: 0.95rem;
   color: #444;
 }
 
-/* Status specific styles */
-.status-icon {
-  font-size: 1.5rem; /* Kích thước icon */
+.schedule-item p.description {
+  margin-bottom: 10px;
+  color: #666;
+  line-height: 1.5;
 }
 
+/* Status specific styles */
+.status-icon {
+  font-size: 1.5rem;
+}
+
+/* ON_TIME - Đã hoàn thành */
 .schedule-item.status-on_time {
-  border-left-color: #28a745; /* Green */
+  border-left-color: #28a745;
+  background-color: #f8fff9;
 }
 .status-icon.on-time {
   color: #28a745;
 }
 
+/* EXPIRED - Đã bỏ qua */
 .schedule-item.status-expired {
-  border-left-color: #dc3545; /* Red */
-   background-color: #fff8f8; /* Nền hơi đỏ */
+  border-left-color: #6c757d;
+  background-color: #f8f9fa;
+  opacity: 0.85;
 }
 .status-icon.expired {
-  color: #dc3545;
+  color: #6c757d;
 }
 
+/* NEXT_TIME - Có thể đặt lịch */
 .schedule-item.status-next_time {
-  border-left-color: #0a4ff0; /* Blue */
+  border-left-color: #0a4ff0;
+  background-color: #f0f8ff;
+  box-shadow: 0 3px 15px rgba(10, 79, 240, 0.15);
 }
 .status-icon.next-time {
   color: #0a4ff0;
 }
 
-.status-icon.unknown {
-  color: #6c757d; /* Gray */
+/* LOCKED - Chưa thể đặt lịch */
+.schedule-item.status-locked {
+  border-left-color: #adb5bd;
+  background-color: #f8f9fa;
+  opacity: 0.7;
+}
+.status-icon.locked {
+  color: #adb5bd;
 }
 
+.status-icon.unknown {
+  color: #6c757d;
+}
+
+/* Expired info message */
+.expired-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6c757d;
+  font-style: italic;
+  margin: 12px 0 8px 0;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  border: 1px solid #e9ecef;
+}
+
+/* Locked message */
+.locked-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6c757d;
+  font-style: italic;
+  margin: 12px 0 8px 0;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  border: 1px solid #e9ecef;
+}
+
+/* Completed badge */
+.completed-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #28a745;
+  font-weight: 600;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background-color: #e8f5e9;
+  border-radius: 6px;
+  width: fit-content;
+  font-size: 0.95rem;
+}
 
 .error-message.centered {
   text-align: center;
@@ -101,39 +180,43 @@
 }
 
 .no-data {
-     text-align: center;
-     color: #6c757d;
-     font-size: 1.1rem;
-     margin-top: 30px;
+  text-align: center;
+  color: #6c757d;
+  font-size: 1.1rem;
+  margin-top: 30px;
 }
 
-/* ++ Style cho nút Đặt lịch ngay ++ */
+/* Book now button */
 .book-now-button {
-  display: inline-flex; /* Để icon và chữ nằm cạnh nhau */
+  display: inline-flex;
   align-items: center;
-  gap: 8px; /* Khoảng cách giữa icon và chữ */
+  gap: 8px;
   margin-top: 15px;
-  padding: 8px 16px;
-  background-color: #0a4ff0; /* Màu xanh dương */
+  padding: 10px 20px;
+  background-color: #0a4ff0;
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(10, 79, 240, 0.2);
 }
 
 .book-now-button:hover {
-  background-color: #003cd6; /* Xanh đậm hơn khi hover */
-  transform: translateY(-1px); /* Hiệu ứng nhấc nhẹ */
+  background-color: #003cd6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(10, 79, 240, 0.3);
+}
+
+.book-now-button:active {
+  transform: translateY(0);
 }
 
 .book-now-button svg {
-  font-size: 0.9em; /* Kích thước icon nhỏ hơn chữ một chút */
+  font-size: 1em;
 }
-/* ++ Kết thúc Style nút ++ */
-
 
 .back-button {
   display: block;
@@ -159,19 +242,22 @@
   align-items: center;
   min-height: calc(100vh - 150px);
 }
+
 .loading-container p {
   font-size: 1.2rem;
   color: #555;
 }
 
+/* ================================= */
+/* Modal Booking Form Styles        */
+/* ================================= */
 
-/* ++ ================================= ++ */
-/* ++ Style cho Modal đặt lịch         ++ */
-/* ++ ================================= ++ */
-/* --- Modal Overlay --- */
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
@@ -180,14 +266,13 @@
   animation: fadeIn 0.3s ease;
 }
 
-/* --- Modal Content --- */
 .modal-content.booking-form-modal {
   background-color: #ffffff;
   padding: 30px 40px;
   border-radius: 12px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
   width: 90%;
-  max-width: 550px; /* Có thể rộng hơn form thêm xe chút */
+  max-width: 550px;
   animation: slideIn 0.3s ease;
 }
 
@@ -203,109 +288,177 @@
 .modal-header h2 {
   margin: 0;
   color: #0a4ff0;
-  font-size: 1.4rem; /* Giảm cỡ chữ chút */
+  font-size: 1.4rem;
   border: none;
   padding: 0;
 }
 
 .close-modal-btn {
-  background: none; border: none; font-size: 1.5rem;
-  color: #888; cursor: pointer; padding: 5px;
-  line-height: 1; transition: color 0.2s ease;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+  transition: color 0.2s ease;
 }
-.close-modal-btn:hover { color: #333; }
 
-/* --- Booking Form Styles --- */
+.close-modal-btn:hover {
+  color: #333;
+}
+
 .booking-form-modal .form-group {
-  margin-bottom: 18px; /* Giảm khoảng cách chút */
+  margin-bottom: 18px;
 }
 
 .booking-form-modal label {
-  display: block; margin-bottom: 6px; font-weight: 600;
-  color: #333; font-size: 0.9rem;
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
 }
-.booking-form-modal label::after { content: " *"; color: red; }
-.booking-form-modal label[for="note"]::after { content: ""; } /* Bỏ * cho ghi chú */
+
+.booking-form-modal label::after {
+  content: " *";
+  color: red;
+}
+
+.booking-form-modal label[for="note"]::after {
+  content: "";
+}
 
 .booking-form-modal input[type="text"],
 .booking-form-modal input[type="date"],
 .booking-form-modal input[type="time"],
 .booking-form-modal select {
-  width: 100%; padding: 10px 12px; border: 1px solid #ccc;
-  border-radius: 8px; font-size: 1rem; box-sizing: border-box;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fff; appearance: none; -webkit-appearance: none; -moz-appearance: none;
+  background-color: #fff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
-/* Style cho select dropdown */
+
 .booking-form-modal select {
   background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-  background-repeat: no-repeat; background-position: right 12px center;
-  background-size: 10px auto; padding-right: 30px;
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px auto;
+  padding-right: 30px;
 }
 
 .booking-form-modal input:focus,
 .booking-form-modal select:focus {
-  border-color: #0a4ff0; outline: none;
+  border-color: #0a4ff0;
+  outline: none;
   box-shadow: 0 0 0 3px rgba(10, 79, 240, 0.2);
 }
 
-/* Style cho thông tin xe và gói cố định */
 .booking-info {
-    font-size: 0.95rem;
-    color: #555;
-    margin-bottom: 10px;
-    background-color: #f8f9fa;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid #eee;
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 10px;
+  background-color: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #eee;
 }
+
 .booking-info strong {
-    color: #003cd6;
+  color: #003cd6;
 }
 
-/* Style cho group ngày và giờ */
 .form-group.inline-group {
-    display: flex;
-    gap: 15px;
-}
-.form-group.inline-group > div {
-    flex: 1; /* Chia đều không gian */
+  display: flex;
+  gap: 15px;
 }
 
+.form-group.inline-group > div {
+  flex: 1;
+}
 
 .booking-form-modal .error-message {
-  color: #dc3545; font-size: 0.9rem; margin-bottom: 15px;
-  margin-top: -10px; text-align: left;
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  margin-top: -10px;
+  text-align: left;
 }
 
-/* --- Form Actions --- */
-.form-actions { /* Dùng lại style từ CustomerDashboard */
-  display: flex; justify-content: flex-end; gap: 12px; margin-top: 25px;
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
 }
+
 .form-actions button {
-  padding: 10px 25px; border-radius: 8px; border: none;
-  font-weight: 600; font-size: 1rem; cursor: pointer;
+  padding: 10px 25px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
+
 .form-actions .btn-cancel {
-  background-color: #dc3545; /* Đổi màu nút hủy thành đỏ */
+  background-color: #6c757d;
   color: white;
-  border: 1px solid #dc3545;
-}
-.form-actions .btn-cancel:hover {
-  background-color: #c82333;
-  border-color: #bd2130;
-}
-.form-actions .btn-save { /* Đổi chữ nút này */
-  background-color: #0a4ff0; color: white; border: 1px solid #0a4ff0;
-}
-.form-actions .btn-save:hover { background-color: #003cd6; border-color: #003cd6; box-shadow: 0 2px 8px rgba(10, 79, 240, 0.3); }
-.form-actions button:disabled {
-  opacity: 0.6; cursor: not-allowed; background-color: #adb5bd !important;
-  color: #f8f9fa !important; border-color: #adb5bd !important; box-shadow: none;
+  border: 1px solid #6c757d;
 }
 
-/* --- Animations (Dùng lại) --- */
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideIn { from { transform: translateY(-30px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-/* ++ Kết thúc Style Modal đặt lịch ++ */
+.form-actions .btn-cancel:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+.form-actions .btn-save {
+  background-color: #0a4ff0;
+  color: white;
+  border: 1px solid #0a4ff0;
+}
+
+.form-actions .btn-save:hover {
+  background-color: #003cd6;
+  border-color: #003cd6;
+  box-shadow: 0 2px 8px rgba(10, 79, 240, 0.3);
+}
+
+.form-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #adb5bd !important;
+  color: #f8f9fa !important;
+  border-color: #adb5bd !important;
+  box-shadow: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-30px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+  

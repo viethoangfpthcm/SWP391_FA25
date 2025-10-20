@@ -14,11 +14,12 @@ import Appoint from "./page/home/Appoint.jsx";
 import About from "./page/home/AboutUs.jsx";
 import Contact from "./page/home/Contact.jsx";
 import StaffDashboard from "./page/staff/StaffDashboard.jsx";
+import AdminDashboard from "./page/admin/Admindashboard.jsx";
 import PaymentReady from "./page/payment/PaymentReady.jsx";
 import PaymentProcess from "./page/payment/PaymentProcess.jsx";
 import CustomerDashboard from "./page/customer/CustomerDashboard.jsx";
 import VehicleMaintenanceSchedule from "./page/customer/VehicleMaintenanceSchedule.jsx";
-import Navbar from "./components/Navbar.jsx";
+import PaymentResult from "./page/payment/PaymentResult.jsx";
 
 function App() {
   const location = useLocation();
@@ -30,7 +31,7 @@ function App() {
     return () => clearTimeout(timer);
   }, [location]);
 
-  const isLoggedIn = localStorage.getItem("token");
+  const isLoggedIn = !!localStorage.getItem("token");
 
   return (
     <>
@@ -44,10 +45,10 @@ function App() {
         <Route path="/home" element={<Homepage />} />
         <Route
           path="/login"
-          element={
-            isLoggedIn ? <Navigate to="/home" replace /> : <LoginForm />
-          }
+          element={isLoggedIn ? <Navigate to="/home" replace /> : <LoginForm />}
         />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
 
         {/* Các trang chỉ dành cho người đăng nhập */}
         <Route
@@ -61,7 +62,7 @@ function App() {
         <Route
           path="/technician-task"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="TECHNICIAN">
               <TechnicanTask />
             </ProtectedRoute>
           }
@@ -91,25 +92,27 @@ function App() {
           }
         />
         <Route
-          path="/about"
-          element={<About />}
-        />
-        <Route
-          path="/contact"
-          element={<Contact />}
-        />
-        <Route
           path="/staff"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="STAFF">
               <StaffDashboard />
             </ProtectedRoute>
           }
         />
         <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requiredRole="ADMIN">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Customer */}
+        <Route
           path="/customer/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="CUSTOMER">
               <CustomerDashboard />
             </ProtectedRoute>
           }
@@ -117,11 +120,13 @@ function App() {
         <Route
           path="/customer/schedule"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="CUSTOMER">
               <VehicleMaintenanceSchedule />
             </ProtectedRoute>
           }
         />
+
+        {/* Payment */}
         <Route
           path="/payment/ready"
           element={
@@ -135,6 +140,14 @@ function App() {
           element={
             <ProtectedRoute>
               <PaymentProcess />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment/result"
+          element={
+            <ProtectedRoute>
+              <PaymentResult />
             </ProtectedRoute>
           }
         />

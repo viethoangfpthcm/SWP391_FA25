@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import './VehicleMaintenanceSchedule.css';
-import { FaCalendarAlt, FaTools, FaCheckCircle, FaExclamationTriangle, FaCalendarPlus, FaTimes } from 'react-icons/fa';
+import { FaCalendarAlt, FaTools, FaCheckCircle, FaExclamationTriangle, FaCalendarPlus, FaTimes, FaLock } from 'react-icons/fa';
 
 function VehicleMaintenanceSchedule() {
   const { licensePlate } = useParams();
@@ -12,7 +12,8 @@ function VehicleMaintenanceSchedule() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const [firstNextTimePlanId, setFirstNextTimePlanId] = useState(null);
+  // Tìm lần có status NEXT_TIME (chỉ có 1 lần duy nhất)
+  const [nextTimePlanId, setNextTimePlanId] = useState(null);
 
   // State cho Booking Pop-up
   const [showBookingForm, setShowBookingForm] = useState(false);
@@ -74,8 +75,10 @@ function VehicleMaintenanceSchedule() {
         const validSchedule = Array.isArray(scheduleData) ? scheduleData : [];
         setSchedule(validSchedule);
         setError('');
-        const firstNextTime = validSchedule.find(item => item.status === 'NEXT_TIME');
-        setFirstNextTimePlanId(firstNextTime ? firstNextTime.maintenancePlanId : null);
+        
+        // CHỈ TÌM LẦN CÓ STATUS NEXT_TIME (backend đảm bảo chỉ có 1 lần duy nhất)
+        const nextTime = validSchedule.find(item => item.status === 'NEXT_TIME');
+        setNextTimePlanId(nextTime ? nextTime.maintenancePlanId : null);
 
       } catch (err) {
         console.error("Lỗi khi fetch maintenance schedule:", err);
@@ -89,20 +92,35 @@ function VehicleMaintenanceSchedule() {
     fetchSchedule();
   }, [licensePlate, navigate, API_BASE]);
 
-  // ++ Sửa hàm getStatusIcon: Thêm lại phần thân hàm ++
   const getStatusIcon = (status) => {
     switch (status) {
       case 'ON_TIME':
         return <FaCheckCircle className="status-icon on-time" title="Đã hoàn thành" />;
       case 'EXPIRED':
-        return <FaExclamationTriangle className="status-icon expired" title="Quá hạn" />;
+        return <FaExclamationTriangle className="status-icon expired" title="Đã bỏ qua" />;
       case 'NEXT_TIME':
         return <FaCalendarAlt className="status-icon next-time" title="Lượt bảo dưỡng tiếp theo" />;
+      case 'LOCKED':
+        return <FaLock className="status-icon locked" title="Cần hoàn thành lần trước" />;
       default:
         return <FaTools className="status-icon unknown" title="Chưa xác định" />;
     }
   };
-  // ++ Kết thúc sửa getStatusIcon ++
+
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 'ON_TIME':
+        return 'Đã hoàn thành';
+      case 'EXPIRED':
+        return 'Đã bỏ qua';
+      case 'NEXT_TIME':
+        return 'Có thể đặt lịch';
+      case 'LOCKED':
+        return 'Chưa thể đặt lịch';
+      default:
+        return 'Không xác định';
+    }
+  };
 
   const handleBookAppointmentClick = (plan) => {
     setSelectedPlanForBooking(plan);
@@ -176,7 +194,6 @@ function VehicleMaintenanceSchedule() {
     }
   };
 
-  // ++ Sửa if(loading): Thêm lại phần thân hàm ++
    if (loading) {
      return (
        <div className="schedule-page loading-container">
@@ -186,8 +203,6 @@ function VehicleMaintenanceSchedule() {
        </div>
      );
    }
-  // ++ Kết thúc sửa if(loading) ++
-
 
   return (
     <div className="schedule-page">
@@ -256,14 +271,43 @@ function VehicleMaintenanceSchedule() {
               <div key={item.maintenancePlanId} className={`schedule-item status-${item.status?.toLowerCase()}`}>
                 <div className="schedule-item-header">
                   <h3>{item.planName}</h3>
-                  {getStatusIcon(item.status)}
+                  <div className="status-container">
+                    {getStatusIcon(item.status)}
+                    <span className="status-label">{getStatusLabel(item.status)}</span>
+                  </div>
                 </div>
-                <p>{item.description || 'Không có mô tả chi tiết.'}</p>
+                <p className="description">{item.description || 'Không có mô tả chi tiết.'}</p>
                 <p><strong>Mốc KM:</strong> {item.intervalKm?.toLocaleString()} km</p>
-                {item.status === 'NEXT_TIME' && item.maintenancePlanId === firstNextTimePlanId && (
-                  <button className="book-now-button" onClick={() => handleBookAppointmentClick(item)} >
+                
+                {/* Hiển thị thông tin EXPIRED */}
+                {item.status === 'EXPIRED' && (
+                  <p className="expired-info">
+                    <FaExclamationTriangle /> Lần bảo dưỡng này đã bị bỏ qua
+                  </p>
+                )}
+                
+                {/* Hiển thị thông báo LOCKED */}
+                {item.status === 'LOCKED' && (
+                  <p className="locked-message">
+                    <FaLock /> Cần hoàn thành lần bảo dưỡng kế tiếp trước
+                  </p>
+                )}
+                
+                {/* NÚT ĐẶT LỊCH - CHỈ HIỂN THỊ CHO NEXT_TIME */}
+                {item.status === 'NEXT_TIME' && item.maintenancePlanId === nextTimePlanId && (
+                  <button 
+                    className="book-now-button"
+                    onClick={() => handleBookAppointmentClick(item)}
+                  >
                     <FaCalendarPlus /> Đặt lịch ngay
                   </button>
+                )}
+                
+                {/* Badge hoàn thành */}
+                {item.status === 'ON_TIME' && (
+                  <div className="completed-badge">
+                    <FaCheckCircle /> Đã hoàn thành
+                  </div>
                 )}
               </div>
             ))}
