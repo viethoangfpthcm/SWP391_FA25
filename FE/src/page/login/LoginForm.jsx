@@ -1,16 +1,20 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./LoginForm.css";
 
 const LoginForm = () => {
-  // --- State ---
-  const [activeTab, setActiveTab] = useState("login");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // --- Tab mặc định (login hoặc register từ Home) ---
+  const defaultTab = location.state?.defaultTab || "login";
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  // --- State chung ---
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-
   const [registerData, setRegisterData] = useState({
     userId: "CU",
     fullName: "",
@@ -20,9 +24,14 @@ const LoginForm = () => {
     confirmPassword: "",
   });
 
-  const navigate = useNavigate();
+  // --- Xóa state navigate sau khi dùng để tránh refresh giữ tab ---
+  useEffect(() => {
+    if (location.state?.defaultTab) {
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
 
-  // --- Hàm chuyển hướng sau đăng nhập ---
+  // --- Chuyển hướng sau đăng nhập theo role ---
   const redirectToDashboard = (role) => {
     const upperCaseRole = role?.toUpperCase() || "";
 
@@ -34,7 +43,7 @@ const LoginForm = () => {
         navigate("/staff");
         break;
       case "TECHNICIAN":
-        navigate("technician-task");
+        navigate("/technician-task");
         break;
       case "CUSTOMER":
         navigate("/home");
@@ -94,14 +103,7 @@ const LoginForm = () => {
       return;
     }
 
-    const dataToSubmit = {
-      userId: registerData.userId,
-      fullName: registerData.fullName,
-      email: registerData.email,
-      phone: registerData.phone,
-      password: registerData.password,
-      confirmPassword: registerData.confirmPassword,
-    };
+    const dataToSubmit = { ...registerData };
 
     try {
       const response = await fetch("https://103.90.226.216:8443/api/users/register", {
@@ -136,7 +138,6 @@ const LoginForm = () => {
     setSuccessMessage("");
   };
 
-  // --- JSX ---
   return (
     <div className="login-wrapper">
       <div className="tabs">
@@ -244,10 +245,7 @@ const LoginForm = () => {
             placeholder="Nhập lại mật khẩu"
             value={registerData.confirmPassword}
             onChange={(e) =>
-              setRegisterData({
-                ...registerData,
-                confirmPassword: e.target.value,
-              })
+              setRegisterData({ ...registerData, confirmPassword: e.target.value })
             }
             required
           />

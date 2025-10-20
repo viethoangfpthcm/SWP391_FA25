@@ -231,7 +231,6 @@ export default function AdminDashboard() {
               onChange={(e) => setFilterRole(e.target.value)}
             >
               <option value="all">Tất cả</option>
-              <option value="admin">Admin</option>
               <option value="staff">Staff</option>
               <option value="technician">Technician</option>
               <option value="customer">Customer</option>

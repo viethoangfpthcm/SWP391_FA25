@@ -79,12 +79,12 @@
   animation: fadeInUp 0.8s forwards;
 }
 
-.appoint-step-card:nth-child(1) { animation-delay: 0.2s; }
-.appoint-step-card:nth-child(2) { animation-delay: 0.4s; }
-.appoint-step-card:nth-child(3) { animation-delay: 0.6s; }
-.appoint-step-card:nth-child(4) { animation-delay: 0.8s; }
-.appoint-step-card:nth-child(5) { animation-delay: 1s; }
-.appoint-step-card:nth-child(6) { animation-delay: 1.2s; }
+.appoint-step-card:nth-child(1) { animation-delay: 0.6s; }
+.appoint-step-card:nth-child(2) { animation-delay: 0.8s; }
+.appoint-step-card:nth-child(3) { animation-delay: 1s; }
+.appoint-step-card:nth-child(4) { animation-delay: 1.2s; }
+.appoint-step-card:nth-child(5) { animation-delay: 1.4s; }
+.appoint-step-card:nth-child(6) { animation-delay: 1.6s; }
 
 .appoint-step-card:hover {
   transform: translateY(-5px);
