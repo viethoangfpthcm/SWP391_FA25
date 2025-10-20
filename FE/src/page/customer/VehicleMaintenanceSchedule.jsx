@@ -15,6 +15,9 @@ function VehicleMaintenanceSchedule() {
   // Tìm lần có status NEXT_TIME (chỉ có 1 lần duy nhất)
   const [nextTimePlanId, setNextTimePlanId] = useState(null);
 
+  // *** THÊM MỚI: State để kiểm tra active booking ***
+  const [hasActiveBooking, setHasActiveBooking] = useState(false);
+
   // State cho Booking Pop-up
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [selectedPlanForBooking, setSelectedPlanForBooking] = useState(null);
@@ -36,8 +39,10 @@ function VehicleMaintenanceSchedule() {
 
   const API_BASE = import.meta.env.VITE_API_URL || "https://103.90.226.216:8443";
 
+  // *** CẬP NHẬT useEffect ĐỂ KIỂM TRA BOOKING HIỆN TẠI ***
   useEffect(() => {
-    const fetchSchedule = async () => {
+    // Đổi tên hàm để bao gồm cả việc fetch bookings
+    const fetchScheduleAndBookings = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
         setError("Vui lòng đăng nhập.");
@@ -48,6 +53,10 @@ function VehicleMaintenanceSchedule() {
 
       try {
         setLoading(true);
+        setSchedule([]); // Xóa lịch cũ
+        setHasActiveBooking(false); // Reset trạng thái
+
+        // --- 1. Fetch Lịch Bảo Dưỡng ---
         const scheduleResponse = await fetch(`${API_BASE}/api/customer/maintenance-schedule?licensePlate=${encodeURIComponent(licensePlate)}`, {
           headers: {
             "Authorization": `Bearer ${token}`,
@@ -56,40 +65,67 @@ function VehicleMaintenanceSchedule() {
         });
 
         if (!scheduleResponse.ok) {
-           if (scheduleResponse.status === 401 || scheduleResponse.status === 403) {
-              setError("Phiên đăng nhập hết hạn hoặc không có quyền. Vui lòng đăng nhập lại.");
-              localStorage.removeItem("token");
-              localStorage.removeItem("userId");
-              localStorage.removeItem("role");
-              navigate("/");
-           } else if (scheduleResponse.status === 404) {
-             setError(`Không tìm thấy lịch bảo dưỡng cho xe ${licensePlate}.`);
-           } else {
-              throw new Error(`Lỗi ${scheduleResponse.status}: Không thể tải lịch bảo dưỡng.`);
-           }
-           setSchedule([]);
-           return;
+          if (scheduleResponse.status === 401 || scheduleResponse.status === 403) {
+            setError("Phiên đăng nhập hết hạn hoặc không có quyền. Vui lòng đăng nhập lại.");
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("role");
+            navigate("/");
+            return; // Lỗi nghiêm trọng, dừng lại
+          } else if (scheduleResponse.status === 404) {
+            setError(`Không tìm thấy lịch bảo dưỡng cho xe ${licensePlate}.`);
+          } else {
+            throw new Error(`Lỗi ${scheduleResponse.status}: Không thể tải lịch bảo dưỡng.`);
+          }
+          // Không return, vẫn tiếp tục fetch booking
+        } else {
+          const scheduleData = await scheduleResponse.json();
+          const validSchedule = Array.isArray(scheduleData) ? scheduleData : [];
+          setSchedule(validSchedule);
+          setError('');
+
+          // CHỈ TÌM LẦN CÓ STATUS NEXT_TIME
+          const nextTime = validSchedule.find(item => item.status === 'NEXT_TIME');
+          setNextTimePlanId(nextTime ? nextTime.maintenancePlanId : null);
         }
 
-        const scheduleData = await scheduleResponse.json();
-        const validSchedule = Array.isArray(scheduleData) ? scheduleData : [];
-        setSchedule(validSchedule);
-        setError('');
-        
-        // CHỈ TÌM LẦN CÓ STATUS NEXT_TIME (backend đảm bảo chỉ có 1 lần duy nhất)
-        const nextTime = validSchedule.find(item => item.status === 'NEXT_TIME');
-        setNextTimePlanId(nextTime ? nextTime.maintenancePlanId : null);
+
+        const bookingsResponse = await fetch(`${API_BASE}/api/customer/bookings`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
+          },
+        });
+
+        if (bookingsResponse.ok) {
+          const allBookings = await bookingsResponse.json(); // Đây là List<BookingResponse>
+
+          // Tìm xem có booking nào "đang hoạt động" cho xe này không
+          // Dựa theo logic backend: "non-Paid" và "non-Cancelled"
+          const activeBooking = allBookings.find(booking =>
+            booking.vehiclePlate === licensePlate &&
+            booking.status !== 'Paid' &&
+            booking.status !== 'Cancelled'
+          );
+
+          setHasActiveBooking(!!activeBooking); // !!activeBooking sẽ convert thành true/false
+        } else {
+
+          console.warn("Không thể tải danh sách booking hiện tại.");
+          setHasActiveBooking(false);
+        }
 
       } catch (err) {
-        console.error("Lỗi khi fetch maintenance schedule:", err);
+        console.error("Lỗi khi fetch data:", err);
         setError(err.message || "Đã xảy ra lỗi khi tải dữ liệu.");
         setSchedule([]);
+        setHasActiveBooking(false);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSchedule();
+    fetchScheduleAndBookings(); // Gọi hàm đã đổi tên
   }, [licensePlate, navigate, API_BASE]);
 
   const getStatusIcon = (status) => {
@@ -126,10 +162,10 @@ function VehicleMaintenanceSchedule() {
     setSelectedPlanForBooking(plan);
     setBookingError('');
     setBookingFormData({
-        centerId: '',
-        bookingDate: '',
-        bookingTime: '',
-        note: ''
+      centerId: '',
+      bookingDate: '',
+      bookingTime: '',
+      note: ''
     });
     setShowBookingForm(true);
   };
@@ -172,15 +208,25 @@ function VehicleMaintenanceSchedule() {
         body: JSON.stringify(payload),
       });
 
-       if (!response.ok) {
-         const errorText = await response.text();
-          try {
-              const errorJson = JSON.parse(errorText);
-              throw new Error(errorJson.message || errorJson.error || `Lỗi ${response.status}: ${errorText}`);
-          } catch (parseError) {
-              throw new Error(`Lỗi ${response.status}: ${errorText}`);
-          }
-       }
+      if (!response.ok) {
+
+       
+        // Bắt lỗi 401 hoặc 403
+        if (response.status === 401 || response.status === 403) {
+          
+          throw new Error("Không thể đặt lịch");
+        }
+        // *** KẾT THÚC THAY ĐỔI ***
+
+        // Xử lý các lỗi nghiệp vụ khác (vd: Xe đã có booking)
+        const errorText = await response.text();
+        try {
+          const errorJson = JSON.parse(errorText);
+          throw new Error(errorJson.message || errorJson.error || `Lỗi ${response.status}: ${errorText}`);
+        } catch (parseError) {
+          throw new Error(`Lỗi ${response.status}: ${errorText}`);
+        }
+      }
 
       setShowBookingForm(false);
       alert("Đặt lịch thành công!");
@@ -188,21 +234,22 @@ function VehicleMaintenanceSchedule() {
 
     } catch (err) {
       console.error("Lỗi khi đặt lịch:", err);
+      // Lỗi này sẽ được set vào state và hiển thị trên modal
       setBookingError(err.message || "Đã xảy ra lỗi khi đặt lịch.");
     } finally {
       setBookingLoading(false);
     }
   };
 
-   if (loading) {
-     return (
-       <div className="schedule-page loading-container">
-         <Navbar />
-         <p>Đang tải lịch bảo dưỡng...</p>
-         <Footer />
-       </div>
-     );
-   }
+  if (loading) {
+    return (
+      <div className="schedule-page loading-container">
+        <Navbar />
+        <p>Đang tải lịch bảo dưỡng...</p>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="schedule-page">
@@ -210,9 +257,9 @@ function VehicleMaintenanceSchedule() {
       <main className="schedule-content">
         <h1>Lịch trình bảo dưỡng cho xe {licensePlate}</h1>
 
-         {error && <p className="error-message centered">{error}</p>}
+        {error && <p className="error-message centered">{error}</p>}
 
-        {/* --- Modal Form Đặt Lịch --- */}
+        {/* --- Modal Form Đặt Lịch (Không thay đổi) --- */}
         {showBookingForm && selectedPlanForBooking && (
           <div className="modal-overlay">
             <div className="modal-content booking-form-modal">
@@ -237,14 +284,14 @@ function VehicleMaintenanceSchedule() {
                 </div>
 
                 <div className="form-group inline-group">
-                    <div>
-                        <label htmlFor="bookingDate">Chọn ngày *</label>
-                        <input type="date" id="bookingDate" name="bookingDate" value={bookingFormData.bookingDate} onChange={handleBookingFormChange} required min={new Date().toISOString().split('T')[0]} />
-                    </div>
-                    <div>
-                        <label htmlFor="bookingTime">Chọn giờ *</label>
-                        <input type="time" id="bookingTime" name="bookingTime" value={bookingFormData.bookingTime} onChange={handleBookingFormChange} required />
-                    </div>
+                  <div>
+                    <label htmlFor="bookingDate">Chọn ngày *</label>
+                    <input type="date" id="bookingDate" name="bookingDate" value={bookingFormData.bookingDate} onChange={handleBookingFormChange} required min={new Date().toISOString().split('T')[0]} />
+                  </div>
+                  <div>
+                    <label htmlFor="bookingTime">Chọn giờ *</label>
+                    <input type="time" id="bookingTime" name="bookingTime" value={bookingFormData.bookingTime} onChange={handleBookingFormChange} required />
+                  </div>
                 </div>
 
                 <div className="form-group">
@@ -278,31 +325,42 @@ function VehicleMaintenanceSchedule() {
                 </div>
                 <p className="description">{item.description || 'Không có mô tả chi tiết.'}</p>
                 <p><strong>Mốc KM:</strong> {item.intervalKm?.toLocaleString()} km</p>
-                
+
                 {/* Hiển thị thông tin EXPIRED */}
                 {item.status === 'EXPIRED' && (
                   <p className="expired-info">
                     <FaExclamationTriangle /> Lần bảo dưỡng này đã bị bỏ qua
                   </p>
                 )}
-                
+
                 {/* Hiển thị thông báo LOCKED */}
                 {item.status === 'LOCKED' && (
                   <p className="locked-message">
                     <FaLock /> Cần hoàn thành lần bảo dưỡng kế tiếp trước
                   </p>
                 )}
-                
-                {/* NÚT ĐẶT LỊCH - CHỈ HIỂN THỊ CHO NEXT_TIME */}
+
+                {/* *** CẬP NHẬT: LOGIC HIỂN THỊ NÚT ĐẶT LỊCH *** */}
                 {item.status === 'NEXT_TIME' && item.maintenancePlanId === nextTimePlanId && (
-                  <button 
-                    className="book-now-button"
-                    onClick={() => handleBookAppointmentClick(item)}
-                  >
-                    <FaCalendarPlus /> Đặt lịch ngay
-                  </button>
+
+                  hasActiveBooking ? (
+                    // Nếu đã có active booking, hiển thị thông báo
+                    <p className="locked-message" style={{ color: '#ff6b6b', fontWeight: 'bold' }}>
+                      <FaCalendarAlt style={{ marginRight: '8px' }} />
+                      Xe này đã có lịch hẹn (Chờ xử lý hoặc chưa thanh toán).
+                    </p>
+                  ) : (
+                    // Nếu chưa, hiển thị nút đặt lịch
+                    <button
+                      className="book-now-button"
+                      onClick={() => handleBookAppointmentClick(item)}
+                    >
+                      <FaCalendarPlus /> Đặt lịch ngay
+                    </button>
+                  )
+
                 )}
-                
+
                 {/* Badge hoàn thành */}
                 {item.status === 'ON_TIME' && (
                   <div className="completed-badge">
@@ -313,9 +371,9 @@ function VehicleMaintenanceSchedule() {
             ))}
           </div>
         ) : (
-          !error && <p className="no-data">Không có lịch trình bảo dưỡng nào cho xe này.</p>
+          !error && !loading && <p className="no-data">Không có lịch trình bảo dưỡng nào cho xe này.</p>
         )}
-         <button onClick={() => navigate(-1)} className="back-button">Quay lại Dashboard</button>
+        <button onClick={() => navigate(-1)} className="back-button">Quay lại Dashboard</button>
       </main>
       <Footer />
     </div>
