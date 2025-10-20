@@ -40,7 +40,7 @@ export default function PaymentResult() {
 
     // Tự động chuyển hướng sau 5 giây
     const timer = setTimeout(() => {
-      navigate('/report'); // Đổi thành /report để đồng bộ với Report1.jsx
+      navigate('/report1'); // 
     }, 5000);
 
     return () => clearTimeout(timer);
@@ -78,7 +78,7 @@ export default function PaymentResult() {
           )}
           <button
             className={`btn-back ${isSuccess ? 'btn-success' : 'btn-fail'}`}
-            onClick={() => navigate('/report')}
+            onClick={() => navigate('/report1')}
             aria-label="Quay lại danh sách biên bản"
           >
             Về danh sách biên bản
