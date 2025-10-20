@@ -15,6 +15,7 @@ import StaffCheckList from "./page/checkList/StaffCheckList";
 import PaymentResult from './page/payment/PaymentResult.jsx';
 import CustomerDashboard from "./page/customer/CustomerDashboard.jsx";
 import VehicleMaintenanceSchedule from "./page/customer/VehicleMaintenanceSchedule.jsx";
+import AdminDashboard from "./page/admin/AdminDashboard.jsx"; 
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
       <Route path="/payment/ready" element={<PaymentReady />} />
       <Route path="/payment/process/:id" element={<PaymentProcess />} />
 <Route path="/staff/checklist/:bookingId" element={<StaffCheckList />} />
+  <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/customer/dashboard" element={<CustomerDashboard />} />
 
       <Route path="/customer/vehicle-schedule/:licensePlate" element={<VehicleMaintenanceSchedule />} />

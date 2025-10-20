@@ -28,7 +28,7 @@ const LoginForm = () => {
 
     switch (upperCaseRole) {
       case "ADMIN":
-        navigate("/admin/dashboard");
+        navigate("/admin");
         break;
       case "STAFF":
         navigate("/staff");
