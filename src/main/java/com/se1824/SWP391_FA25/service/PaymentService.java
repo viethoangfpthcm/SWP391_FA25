@@ -70,13 +70,25 @@ public class PaymentService {
 
         if (existingPaymentOpt.isPresent()) {
             paymentToProcess = existingPaymentOpt.get();
-            log.info("Payment for booking {} already exists with status {}. Reusing...",
-                    bookingId, paymentToProcess.getStatus());
-            if (!"PENDING".equals(paymentToProcess.getStatus())) {
-                throw new InvalidDataException("Booking này đã được thanh toán (" + paymentToProcess.getStatus() + ") hoặc đã thất bại. Không thể tạo lại.");
+            log.info("Existing payment found with status {}", paymentToProcess.getStatus());
+
+            // Nếu đã thanh toán thành công => không cho phép tạo lại
+            if ("PAID".equals(paymentToProcess.getStatus())) {
+                throw new InvalidDataException("Booking này đã được thanh toán thành công. Không thể tạo lại.");
             }
+
+            // Nếu FAILED hoặc PENDING thì cho phép thanh toán lại
+            if ("FAILED".equals(paymentToProcess.getStatus()) || "PENDING".equals(paymentToProcess.getStatus())) {
+                log.info("Retrying payment for booking {} with status {}", bookingId, paymentToProcess.getStatus());
+                paymentToProcess.setStatus("PENDING");
+                paymentToProcess.setPaymentDate(LocalDateTime.now());
+                paymentToProcess.setLaborCost(totalLabor);
+                paymentToProcess.setMaterialCost(totalMaterial);
+            }
+
             paymentToProcess.setLaborCost(totalLabor);
             paymentToProcess.setMaterialCost(totalMaterial);
+            paymentToProcess.setStatus("PENDING");
             paymentToProcess.setPaymentDate(LocalDateTime.now());
         } else {
             log.info("Creating new payment for booking {}", bookingId);

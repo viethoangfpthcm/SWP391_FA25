@@ -10,7 +10,7 @@ import {
   FaSave,
 } from "react-icons/fa";
 import "./AdminDashboard.css";
-import Sidebar from "../sidebar/sidebar.jsx";
+import Sidebar from "../../page/sidebar/sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 
 if (import.meta.env.MODE !== "development") {
