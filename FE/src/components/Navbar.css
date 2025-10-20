@@ -3,24 +3,45 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
+  background: #ffffff;
   padding: 18px 60px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 100;
   font-family: "Segoe UI", Arial, sans-serif;
+  transition: all 0.3s ease;
+  
+}
+
+/* Khi cuộn trang */
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px 60px;
 }
 
 /* Logo */
-.logo {
-  color: #0a4ff0;
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin: 0;
+/* Logo hình */
+.logo-img {
+  height: 40px;        /* giảm kích thước */
+  width: auto;         /* giữ tỉ lệ gốc */
   cursor: pointer;
-  letter-spacing: 0.5px;
+  transition: transform 0.3s ease;
 }
+
+.logo-img:hover {
+  transform: scale(1.1); /* hover phóng to nhẹ */
+}
+
+/* Responsive trên mobile */
+@media (max-width: 768px) {
+  .logo-img {
+    height: 30px; /* nhỏ hơn trên mobile */
+  }
+}
+
+
 
 /* Links trung tâm */
 .navbar-center {
@@ -43,7 +64,7 @@
   position: absolute;
   width: 0;
   height: 2.5px;
-  background: #0a4ff0;
+  background: linear-gradient(90deg, #0a4ff0, #00a8ff);
   left: 0;
   bottom: -4px;
   transition: width 0.3s ease;
@@ -51,6 +72,7 @@
 
 .navbar-center a:hover {
   color: #0a4ff0;
+  transform: translateY(-2px);
 }
 
 .navbar-center a:hover::after {
@@ -66,30 +88,32 @@
 .btn {
   border: none;
   padding: 10px 22px;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
   font-family: "Segoe UI", Arial, sans-serif;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .btn.login {
-  background: #0a4ff0;
+  background: linear-gradient(90deg, #0a4ff0, #00a8ff);
   color: #fff;
 }
 
 .btn.login:hover {
-  background: #003cd6;
-  box-shadow: 0 4px 10px rgba(10, 79, 240, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(10, 79, 240, 0.3);
 }
 
 .btn.logout {
   background: transparent;
   color: #0a4ff0;
-  border: 1.5px solid #0a4ff0;
+  border: 2px solid #0a4ff0;
 }
 
 .btn.logout:hover {
   background: #0a4ff0;
   color: #fff;
+  transform: translateY(-2px);
 }

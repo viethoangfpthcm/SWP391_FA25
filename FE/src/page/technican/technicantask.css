@@ -5,23 +5,11 @@
   background-color: #f9fafb;
 }
 
-/* Khi sidebar mở */
-.sidebar-open .content {
-  margin-left: 260px; /* bằng sidebar */
-  transition: margin-left 0.3s ease;
-}
-
-/* Khi sidebar thu gọn */
-.sidebar-closed .content {
-  margin-left: 80px;
-  transition: margin-left 0.3s ease;
-}
-
 /* Nội dung chính */
 .content {
   flex: 1;
+  margin-left: 260px;
   padding: 20px 30px;
-  transition: all 0.3s ease;
 }
 
 /* Header */
@@ -40,12 +28,6 @@
   display: flex;
   align-items: center;
   gap: 15px;
-}
-
-.menu-icon {
-  font-size: 22px;
-  cursor: pointer;
-  color: #2bb1de;
 }
 
 .header-text h1 {
@@ -130,12 +112,47 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.task-section h2 {
+/* Header của task section với filter */
+.task-section-header {
+  margin-bottom: 20px;
+}
+
+.task-section-header h2 {
   font-size: 20px;
   color: #278598;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   border-left: 5px solid #2b9a86;
   padding-left: 10px;
+}
+
+/* Bộ lọc trạng thái */
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  border-color: #2b9a86;
+  color: #2b9a86;
+}
+
+.filter-btn.active {
+  background-color: #2b9a86;
+  border-color: #2b9a86;
+  color: white;
 }
 
 .task-list {
@@ -197,9 +214,8 @@
   text-align: right;
 }
 
-.btn-start {
-  background-color: #2b9a86;
-  color: white;
+.btn-start,
+.btn-view {
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
@@ -208,11 +224,24 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.btn-start {
+  background-color: #2b9a86;
 }
 
 .btn-start:hover {
   background-color: #278598;
+}
+
+.btn-view {
+  background-color: #3b82f6;
+}
+
+.btn-view:hover {
+  background-color: #2563eb;
 }
 
 /* Loading */
@@ -223,6 +252,14 @@
   color: #278598;
 }
 
+/* No task message */
+.no-task {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  font-size: 16px;
+}
+
 /* Responsive nhỏ hơn 768px */
 @media (max-width: 768px) {
   .summary-cards {
@@ -230,11 +267,118 @@
   }
 
   .content {
+    margin-left: 0;
     padding: 15px;
   }
 
   .header {
     flex-direction: column;
     gap: 10px;
+  }
+
+  .filter-buttons {
+    justify-content: center;
+  }
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.modal {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.15);
+  animation: scaleIn 0.25s ease-in-out;
+}
+
+.modal h3 {
+  font-size: 18px;
+  color: #278598;
+  margin-bottom: 16px;
+}
+
+.modal input {
+  width: 100%;
+  padding: 10px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 6px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.modal input:focus {
+  border-color: #2b9a86;
+  box-shadow: 0 0 0 3px rgba(43, 154, 134, 0.15);
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.confirm-btn,
+.cancel-btn {
+  flex: 1;
+  border: none;
+  padding: 10px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.confirm-btn {
+  background-color: #2b9a86;
+}
+
+.confirm-btn:hover {
+  background-color: #278598;
+}
+
+.cancel-btn {
+  background-color: #ef4444;
+}
+
+.cancel-btn:hover {
+  background-color: #dc2626;
+}
+
+/* Hiệu ứng animation modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }

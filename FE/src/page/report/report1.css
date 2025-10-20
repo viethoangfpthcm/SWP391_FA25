@@ -1,189 +1,983 @@
-/* ====== Tổng thể ====== */
+/* ================================== */
+/* === report1.css (Theo mẫu CustomerDashboard) === */
+/* ================================== */
+
+/* --- General Page Layout --- */
 .report-page {
-  background: #f9fbff;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: "Segoe UI", Arial, sans-serif;
-  color: #1e293b;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  /* Màu nền nhẹ nhàng */
 }
 
-.main-content {
+.report-container {
   flex: 1;
-  padding: 50px 80px;
-  max-width: 1100px;
-  margin: 0 auto;
+  max-width: 1200px;
+  margin: 30px auto;
+  /* Căn giữa và tạo khoảng cách */
+  padding: 20px;
+  width: 90%;
 }
 
-/* ====== Tiêu đề ====== */
-.main-content h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #0a4ff0;
-  margin-bottom: 8px;
-}
-
-.sub-text {
-  font-size: 1rem;
-  color: #64748b;
-  margin-bottom: 35px;
-}
-
-/* ====== Loading / No Data ====== */
-.loading,
-.no-data,
-.no-detail {
+.report-container h1.page-title {
   text-align: center;
-  color: #64748b;
-  font-size: 1.05rem;
-  margin-top: 30px;
+  color: #0a4ff0;
+  /* Màu xanh chủ đạo */
+  margin-bottom: 15px;
+  /* Giảm margin dưới */
+  font-size: 2rem;
 }
 
-/* ====== Thẻ từng báo cáo ====== */
-.report-card {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 28px 32px;
-  box-shadow: 0 4px 14px rgba(10, 79, 240, 0.08);
-  border: 1px solid #e0e7ff;
+.report-container p.page-subtitle {
+  text-align: center;
+  color: #555;
   margin-bottom: 40px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  font-size: 1rem;
 }
 
-.report-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(10, 79, 240, 0.15);
+/* --- Loading / Error / No Data States --- */
+.loading-state,
+.no-data-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  border: 1px solid #eef;
+  min-height: 200px;
+  /* Chiều cao tối thiểu */
+  color: #555;
 }
 
-/* ====== Header mỗi báo cáo ====== */
-.report-header {
+.loading-state .spinner-icon {
+  font-size: 2.5rem;
+  color: #0a4ff0;
+  margin-bottom: 15px;
+  animation: spin 1.5s linear infinite;
+  /* Hiệu ứng xoay */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.no-data-card .no-data-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  color: #ccc;
+}
+
+.no-data-card h3 {
+  color: #333;
+  margin: 10px 0;
+}
+
+.no-data-card p {
+  color: #777;
+  max-width: 400px;
+}
+
+/* --- Report List Styling (Giống Vehicle List) --- */
+.report-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.report-list-card {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.report-list-card:hover {
+  border-color: #0a4ff0;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.report-card-icon {
+  font-size: 1.8rem;
+  /* Hơi nhỏ hơn */
+  margin-right: 1.25rem;
+  color: #0a4ff0;
+  /* Mặc định */
+  flex-shrink: 0;
+}
+
+
+.report-card-info {
+  flex-grow: 1;
+  overflow: hidden;
+  /* Tránh tràn text */
+}
+
+.report-card-info h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+  /* Hơi nhỏ hơn */
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.report-card-info p {
+  margin: 0;
+  font-size: 0.85rem;
+  /* Nhỏ hơn */
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.report-card-action {
+  font-size: 1rem;
+  /* Nhỏ hơn */
+  color: #aaa;
+  margin-left: 1rem;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.report-list-card:hover .report-card-action {
+  color: #0a4ff0;
+}
+
+/* --- Main Report Detail Modal --- */
+.modal-overlay.report-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  /* Nền mờ */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  /* Trên cùng */
+  padding: 2rem;
+  box-sizing: border-box;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content.report-modal-content {
+  background-color: #f9f9f9;
+  /* Nền xám nhạt cho modal */
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  padding: 0;
+  width: 100%;
+  max-width: 1100px;
+  /* Rộng hơn chút */
+  height: 90vh;
+  /* Cao */
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease;
+  overflow: hidden;
+  /* Ngăn content tràn ra */
+}
+
+/* Nút X đóng modal */
+.report-modal-content .close-modal-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  color: #888;
+  cursor: pointer;
+  z-index: 10;
+  padding: 5px;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.report-modal-content .close-modal-btn:hover {
+  color: #333;
+}
+
+/* Loading bên trong modal */
+.loading-state.modal-loading {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  /* Cho text xuống dưới */
+  color: #555;
+  font-size: 1.1rem;
+}
+
+/* Nội dung report BÊN TRONG MODAL */
+.report-document-modal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* Lấp đầy modal content */
+}
+
+/* Header bên trong modal */
+.report-document-modal .document-header {
+  padding: 1.25rem 2rem;
+  /* Giảm padding chút */
+  border-bottom: 1px solid #e0e0e0;
+  background: #ffffff;
+  /* Nền trắng */
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* Cho status pill xuống dưới nếu cần */
+  gap: 1rem;
+  flex-shrink: 0;
+  /* Không co lại */
+}
+
+.report-document-modal .doc-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.report-document-modal .doc-meta {
+  font-size: 0.85rem;
+  color: #666;
+  display: flex;
+  gap: 10px;
+}
+
+.report-document-modal .doc-meta strong {
+  color: #111;
+}
+
+.report-document-modal .doc-status .status-pill {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+}
+
+/* Pill nhỏ hơn */
+
+/* Body bên trong modal (cho phép scroll) */
+.report-document-modal .document-body {
+  padding: 1.5rem 2rem;
+  overflow-y: auto;
+  /* *** CHO PHÉP SCROLL *** */
+  flex-grow: 1;
+  /* Lấp đầy không gian còn lại */
+  background: #f9f9f9;
+  /* Nền xám nhạt */
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* Left Col và Right Col */
+.report-document-modal .left-col {
+  flex: 0 0 35%;
+  /* Cố định 35% */
+  max-width: 35%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.report-document-modal .right-col {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Phần còn lại */
+
+/* Panel bên trong modal */
+.report-document-modal .panel {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.25rem;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.report-document-modal .panel h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: #0a4ff0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.report-document-modal .kv div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+  font-size: 0.9rem;
+}
+
+.report-document-modal .kv .k {
+  color: #555;
+  font-weight: 500;
+}
+
+.report-document-modal .kv .v {
+  color: #111;
+  font-weight: 600;
+  text-align: right;
+}
+
+.report-document-modal .cost-panel .cost-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.report-document-modal .cost-panel .cost-row>div {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
 }
 
-.report-header h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #0f172a;
-}
-
-/* ====== Trạng thái ====== */
-.status {
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-weight: 600;
+.report-document-modal .cost-label {
   font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
+  color: #555;
 }
 
-.status.COMPLETED {
-  background-color: #e0f7e9;
-  color: #0f9d58;
+.report-document-modal .cost-value {
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.status.PENDING {
-  background-color: #fff4d6;
-  color: #d97706;
+.report-document-modal .cost-value.approved {
+  color: #28a745;
 }
 
-.status.CANCELLED,
-.status.DECLINED {
-  background-color: #fee2e2;
-  color: #b91c1c;
+.report-document-modal .cost-value.declined {
+  color: #dc3545;
 }
 
-.status.unknown {
-  background-color: #e2e8f0;
-  color: #475569;
-}
-
-/* ====== Thông tin báo cáo ====== */
-.report-info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 10px 24px;
-  margin-bottom: 24px;
-}
-
-.report-info p {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #334155;
-}
-
-.report-info strong {
-  color: #0f172a;
-}
-
-/* ====== Chi tiết hạng mục ====== */
-.detail-item {
-  background: #f8faff;
-  border: 1px solid #dbe4ff;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 16px;
-  transition: all 0.2s ease;
-}
-
-.detail-item:hover {
-  background: #eef3ff;
-}
-
-.detail-info {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 10px 18px;
-  margin-bottom: 16px;
-  font-size: 0.93rem;
-  color: #334155;
-}
-
-.detail-info strong {
+/* Chi tiết hạng mục bên trong modal */
+.report-document-modal .details-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
   color: #0a4ff0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
 }
 
-/* ====== Nút hành động ====== */
-.action-btns {
+.report-document-modal .detail-row {
+  background: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  display: flex;
+  overflow: hidden;
+  /* Để bo góc đúng */
+}
+
+.report-document-modal .detail-main {
+  padding: 1rem 1.25rem;
+  flex-grow: 1;
+}
+
+.report-document-modal .detail-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.report-document-modal .detail-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-right: 10px;
+}
+
+.report-document-modal .approval-tag {
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.report-document-modal .approval-tag.pending {
+  background-color: #ffc107;
+  color: #333;
+  border: 1px solid #e0a800;
+}
+
+.report-document-modal .approval-tag.approved {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.report-document-modal .approval-tag.declined {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.report-document-modal .detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.report-document-modal .detail-grid .label {
+  display: block;
+  font-size: 0.8rem;
+  color: #777;
+  margin-bottom: 2px;
+}
+
+.report-document-modal .detail-grid .val {
+  font-size: 0.9rem;
+  color: #111;
+  font-weight: 500;
+}
+
+.report-document-modal .detail-note {
+  font-size: 0.9rem;
+  color: #444;
+  margin-top: 0.75rem;
+  border-top: 1px dashed #eee;
+  padding-top: 0.75rem;
+}
+
+.report-document-modal .detail-note strong {
+  color: #111;
+}
+
+/* Ô nhập note của khách */
+.report-document-modal .customer-note-input {
+  margin-top: 0.75rem;
+}
+
+.report-document-modal .customer-note-input label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.report-document-modal .customer-note-input textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.report-document-modal .customer-note-input textarea:focus {
+  border-color: #0a4ff0;
+  box-shadow: 0 0 0 2px rgba(10, 79, 240, 0.2);
+  outline: none;
+}
+
+/* Nút Đồng ý / Từ chối bên trong modal */
+.report-document-modal .detail-actions {
+  display: flex;
+  flex-direction: column;
+  /* Xếp dọc */
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  /* Nền khác */
+  border-left: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.report-document-modal .detail-actions .btn {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 5px;
+  border: 1.5px solid;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  text-align: center;
+  min-width: 80px;
+  /* Chiều rộng tối thiểu */
+}
+
+/* Nút Approve */
+.report-document-modal .detail-actions .btn.approve {
+  background-color: #fff;
+  color: #28a745;
+  border-color: #28a745;
+}
+
+.report-document-modal .detail-actions .btn.approve:hover {
+  background-color: #e2f7e7;
+}
+
+.report-document-modal .detail-actions .btn.approve.active,
+.report-document-modal .detail-actions .btn.approve:disabled {
+  background-color: #28a745;
+  color: #fff;
+  border-color: #28a745;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Nút Reject */
+.report-document-modal .detail-actions .btn.reject {
+  background-color: #fff;
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.report-document-modal .detail-actions .btn.reject:hover {
+  background-color: #fbebed;
+}
+
+.report-document-modal .detail-actions .btn.reject.active,
+.report-document-modal .detail-actions .btn.reject:disabled {
+  background-color: #dc3545;
+  color: #fff;
+  border-color: #dc3545;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Footer bên trong modal (chứa nút Hoàn tất/Đóng) */
+.document-footer-modal {
+  padding: 1rem 2rem;
+  border-top: 1px solid #e0e0e0;
+  background: #ffffff;
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  /* Nút Hoàn tất bên phải */
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  flex-shrink: 0;
+  /* Không co lại */
 }
 
-.action-btns button {
-  border: none;
-  padding: 9px 20px;
+/* Dùng lại style nút Hoàn tất từ CustomerDashboard */
+.document-footer-modal .btn-complete-review {
+  padding: 10px 25px;
   border-radius: 8px;
-  cursor: pointer;
+  border: none;
   font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+  background-color: #0a4ff0;
+  margin: 0;
+  /* Xóa margin */
+  max-width: none;
+  width: auto;
+}
+
+.document-footer-modal .btn-complete-review:hover {
+  background-color: #003cd6;
+}
+
+
+/* --- Nested Confirm Modal --- */
+.confirm-modal-overlay.nested {
+  position: absolute;
+  /* Lồng bên trong modal chính */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  /* Mờ hơn */
+  z-index: 1001;
+  /* Đè lên modal chính */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  /* Bo góc theo modal cha */
+}
+
+/* Modal xác nhận nhỏ hơn */
+.confirm-modal-content {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  /* Nhỏ hơn */
+  width: 90%;
+  animation: modal-fade-in 0.2s ease-out;
+}
+
+.confirm-modal-content h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1.15rem;
+  color: #333;
+}
+
+.confirm-modal-content p {
   font-size: 0.95rem;
-  transition: all 0.25s ease;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  color: #555;
 }
 
-button.approve {
-  background: #0a4ff0;
+.confirm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.confirm-modal-actions .btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.confirm-modal-actions .btn-cancel {
+  background-color: #6c757d;
   color: white;
+  border: 1px solid #6c757d;
 }
 
-button.approve:hover {
-  background: #003cd6;
+.confirm-modal-actions .btn-cancel:hover {
+  background-color: #5a6268;
 }
 
-button.reject {
-  background: #ef4444;
+.confirm-modal-actions .btn-confirm {
+  background-color: #dc3545;
   color: white;
+  border: 1px solid #dc3545;
 }
 
-button.reject:hover {
-  background: #dc2626;
+/* Mặc định đỏ */
+.confirm-modal-actions .btn-confirm:hover {
+  background-color: #c82333;
 }
 
-button.approve.active {
-  background: #16a34a;
+/* Có thể làm nút confirm xanh nếu action là approved */
+/* .confirm-modal-actions .btn-confirm.approve-action { background-color: #28a745; border-color: #28a745; } */
+/* .confirm-modal-actions .btn-confirm.approve-action:hover { background-color: #218838; } */
+
+
+/* --- Toast Notification (Giữ nguyên) --- */
+.toast-notification {
+  position: fixed;
+  top: 80px;
+  /* Dưới Navbar */
+  right: 20px;
+  z-index: 1050;
+  min-width: 250px;
+  max-width: 400px;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: slideInRight 0.3s ease-out;
 }
 
-button.reject.active {
-  background: #991b1b;
+.toast-notification.toast-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.toast-notification.toast-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.toast-notification.toast-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.toast-icon {
+  font-size: 1.3rem;
+}
+
+.toast-message {
+  flex-grow: 1;
+  font-weight: 500;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .report-container {
+    width: 95%;
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .report-container h1.page-title {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+  }
+
+  .report-container p.page-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+  }
+
+  .report-list-card {
+    padding: 1rem;
+  }
+
+  .report-card-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+  }
+
+  .report-card-info h3 {
+    font-size: 1rem;
+  }
+
+  .report-card-info p {
+    font-size: 0.8rem;
+  }
+
+  .report-card-action {
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+  }
+
+  .modal-overlay.report-modal-overlay {
+    padding: 1rem;
+  }
+
+  .modal-content.report-modal-content {
+    height: 95vh;
+  }
+
+  /* Cao hơn trên mobile */
+
+  .report-document-modal .document-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .report-document-modal .document-body {
+    padding: 1rem 1.5rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Xếp 2 cột thành 1 */
+  .report-document-modal .left-col,
+  .report-document-modal .right-col {
+    max-width: 100%;
+    flex-basis: auto;
+  }
+
+  .report-document-modal .detail-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* 2 cột grid thay vì 3 */
+  .report-document-modal .detail-row {
+    flex-direction: column;
+  }
+
+  /* Xếp nút xuống dưới */
+  .report-document-modal .detail-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+    border-left: none;
+    border-top: 1px solid #eee;
+    background: #fff;
+    padding: 0.75rem 1.25rem;
+  }
+
+  .document-footer-modal {
+    padding: 0.75rem 1.5rem;
+  }
+
+  .document-footer-modal .btn-complete-review {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .report-list-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .report-card-icon {
+    margin-bottom: 0.5rem;
+  }
+
+  .report-card-action {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .report-document-modal .document-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .report-document-modal .doc-status {
+    align-self: flex-start;
+    /* Không đẩy sang phải */
+  }
+
+  .report-document-modal .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* 1 cột grid */
+}
+
+/* ========== THÊM CSS CHO MÀU TRẠNG THÁI ========== */
+
+/* Màu viền bên trái và icon cho từng trạng thái */
+
+/* Trạng thái IN_PROGRESS (Màu Cam) */
+.report-list-card.status-in-progress {
+  border-left: 5px solid #fd7e14;
+  /* Viền trái màu cam */
+  padding-left: calc(1.25rem - 5px);
+  /* Điều chỉnh padding */
+}
+
+.report-list-card.status-in-progress .report-card-icon {
+  color: #fd7e14;
+}
+
+/* --- Trạng thái PENDING_APPROVAL (Màu Vàng) --- */
+.report-list-card.status-pending-approval {
+  border-left: 5px solid #ffc107;
+  /* Viền trái màu vàng */
+  padding-left: calc(1.25rem - 5px);
+  /* Điều chỉnh padding */
+}
+
+.report-list-card.status-pending-approval .report-card-icon {
+  color: #ffc107;
+}
+
+/* --- Trạng thái COMPLETED (Màu Xanh lá) --- */
+.report-list-card.status-completed {
+  border-left: 5px solid #28a745;
+  /* Viền trái màu xanh lá */
+  padding-left: calc(1.25rem - 5px);
+  /* Điều chỉnh padding */
+}
+
+.report-list-card.status-completed .report-card-icon {
+  color: #28a745;
+}
+
+/* --- CSS CHO NÚT THANH TOÁN (Giữ nguyên) --- */
+.document-footer-modal .btn-payment {
+  padding: 10px 25px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+  background-color: #28a745;
+  /* Màu xanh lá cho thanh toán */
+  margin-right: 10px;
+  /* Khoảng cách với nút Đóng */
+}
+
+.document-footer-modal .btn-payment:hover {
+  background-color: #218838;
+  /* Màu xanh đậm hơn khi hover */
+}
+
+.document-footer-modal .btn-payment:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
 }

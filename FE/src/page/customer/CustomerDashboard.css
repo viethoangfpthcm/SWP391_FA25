@@ -1,0 +1,326 @@
+/* CustomerDashboard.css */
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa; /* Màu nền nhẹ nhàng */
+}
+
+.dashboard-content {
+  flex: 1;
+  max-width: 1200px;
+  margin: 30px auto; /* Căn giữa và tạo khoảng cách */
+  padding: 20px;
+  width: 90%;
+}
+
+.dashboard-content h1 {
+  text-align: center;
+  color: #0a4ff0; /* Màu xanh chủ đạo */
+  margin-bottom: 40px;
+  font-size: 2rem;
+}
+
+/* --- Sections --- */
+.dashboard-section {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  border: 1px solid #eef; /* Viền nhẹ */
+}
+
+.dashboard-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #0a4ff0;
+  font-size: 1.4rem;
+  margin-top: 0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #eef; /* Đường gạch dưới tiêu đề */
+  padding-bottom: 10px;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px dashed #ccc; /* Đường phân cách nét đứt */
+  margin: 40px 0;
+}
+
+/* --- Profile Section --- */
+.profile-details p {
+  margin: 8px 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.profile-details strong {
+  color: #111;
+  min-width: 120px; /* Đảm bảo các label thẳng hàng */
+  display: inline-block;
+}
+
+/* --- Vehicle Section --- */
+.vehicle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px; /* Thêm margin-bottom để tách khỏi danh sách xe */
+}
+
+.vehicle-header h2 {
+  margin-bottom: 0; /* Xóa margin-bottom mặc định của h2 */
+  border-bottom: none; /* Xóa border dưới của h2 trong header này */
+  padding-bottom: 0;
+}
+
+.add-vehicle-btn {
+  background-color: #0a4ff0;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.add-vehicle-btn:hover {
+  background-color: #003cd6;
+}
+
+.vehicle-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+  gap: 20px;
+}
+
+.vehicle-card {
+  background-color: #f8f9fa; /* Nền card xe hơi khác biệt chút */
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+.vehicle-card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #003cd6; /* Màu đậm hơn cho tên xe */
+}
+
+.vehicle-card p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+}
+
+.vehicle-card button {
+  margin-top: 15px;
+  background-color: #fff;
+  color: #0a4ff0;
+  border: 1.5px solid #0a4ff0;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.vehicle-card button:hover {
+  background-color: #0a4ff0;
+  color: #fff;
+}
+
+/* --- Booking Stats Section --- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  text-align: center;
+}
+
+.stat-item {
+  background-color: #f0f4ff; /* Nền nhẹ cho từng ô */
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-item.wide {
+  grid-column: span 2; /* Ô lịch hẹn gần nhất rộng hơn */
+   text-align: left;
+   flex-direction: row;
+   justify-content: space-between;
+   align-items: center;
+}
+
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #0a4ff0;
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.stat-value.small {
+  font-size: 1rem; /* Cỡ chữ nhỏ hơn cho ngày tháng */
+  font-weight: 500;
+  color: #333;
+}
+
+/* Loading and Error states */
+.loading-container, .error-container, .empty-container {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 150px); /* Chiều cao trừ navbar và footer */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.loading-container p, .error-container p, .empty-container p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.error-message {
+  color: #dc3545; /* Màu đỏ cho lỗi */
+  font-weight: bold;
+}
+
+/* --- Modal Overlay --- */
+.modal-overlay {
+  position: fixed; /* Che phủ toàn màn hình */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Nền mờ */
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  z-index: 1000; /* Đảm bảo modal nằm trên cùng */
+  animation: fadeIn 0.3s ease; /* Hiệu ứng xuất hiện */
+}
+
+/* --- Modal Content --- */
+.modal-content {
+  background-color: #ffffff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px; /* Giới hạn chiều rộng */
+  animation: slideIn 0.3s ease; /* Hiệu ứng trượt vào */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #0a4ff0;
+  font-size: 1.5rem;
+  border: none; /* Bỏ border mặc định của h2 */
+  padding: 0;
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  padding: 5px; /* Tăng vùng click */
+  line-height: 1; /* Căn giữa icon */
+  transition: color 0.2s ease;
+}
+
+.close-modal-btn:hover {
+  color: #333;
+}
+
+/* --- Add Vehicle Form Styles --- */
+.add-vehicle-form .form-group {
+  margin-bottom: 20px;
+}
+
+.add-vehicle-form label {
+  display: block;
+  margin-bottom: 6px; 
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+.add-vehicle-form label::after {
+    content: " *";
+    color: red;
+}
+
+.add-vehicle-form label[for="currentKm"]::after {
+    content: ""; 
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end; /* Đẩy nút về bên phải */
+  gap: 12px; /* Khoảng cách giữa các nút */
+  margin-top: 30px;
+}
+.form-actions button {
+  padding: 10px 25px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white; /* Chuyển màu chữ mặc định thành trắng */
+}
+.form-actions .btn-cancel {
+  background-color: #dc3545; /* Màu đỏ */
+  border: 1px solid #dc3545; /* Viền cùng màu */
+}
+.form-actions .btn-cancel:hover {
+  background-color: #c82333; /* Màu đỏ đậm hơn khi hover */
+  border-color: #bd2130;
+}
+
+/* Style nút Lưu xe (Màu xanh) */
+.form-actions .btn-save {
+  background-color: #0a4ff0; /* Màu xanh dương */
+  border: 1px solid #0a4ff0; /* Viền cùng màu */
+}
+.form-actions .btn-save:hover {
+  background-color: #003cd6; /* Màu xanh đậm hơn khi hover */
+  border-color: #003cd6;
+  box-shadow: 0 2px 8px rgba(10, 79, 240, 0.3);
+}
+
+/* Style khi nút bị vô hiệu hóa (Vẫn giữ màu xám) */
+.form-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #adb5bd !important;
+  color: #f8f9fa !important;
+  border-color: #adb5bd !important;
+  box-shadow: none;
+}

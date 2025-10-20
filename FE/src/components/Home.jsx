@@ -1,34 +1,32 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { FaLeaf, FaBolt, FaShieldAlt, FaUsers, FaChartLine, FaTools } from "react-icons/fa";
 import "./Home.css";
+import logo from "../assets/logo.jpg"; // Logo giống Navbar
 
 export default function Home() {
   const navigate = useNavigate();
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
   const handleMainButton = () => {
-    if (token) {
-      navigate("/payment/ready"); // Khi có token thì chuyển sang trang payment
-    } else {
-      navigate("/login"); // Khi chưa đăng nhập thì sang trang login
-    }
+    if (token) navigate("/payment/ready");
+    else navigate("/login");
   };
 
   return (
     <div className="homepage">
-      {/* Hero Section */}
-      <section className="hero-section">
-        <h1 className="main-title">
-          EV Service Center Maintenance Management System
-        </h1>
-        <p className="main-subtitle">
-          Phần mềm quản lý bảo dưỡng xe điện cho trung tâm dịch vụ
-        </p>
 
+      {/* ===== Hero Section ===== */}
+      <section className="hero-section full-screen">
+        <div className="hero-bg-shape"></div>
+        <img src={logo} alt="EV Car Center" className="hero-logo" />
+        <h1 className="main-title">EV Car Center</h1>
+        <p className="main-subtitle">Hệ thống bảo dưỡng xe điện tiên tiến, hiện đại, đáng tin cậy</p>
+        <p className="main-subtitle">Tiên phong cho giao thông xanh và bền vững</p>
+        <p className="main-subtitle">Trải nghiệm dịch vụ EV thông minh, nhanh chóng, an toàn</p>
         <div className="hero-actions">
           <button className="btn-black" onClick={handleMainButton}>
-            {token ? "GET" : "Đăng nhập"}
+            {token ? "Bắt đầu trải nghiệm" : "Đăng nhập"}
           </button>
           <button className="btn-white" onClick={() => navigate("/contact")}>
             Liên hệ
@@ -36,94 +34,59 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="features-section">
-        <div className="features-grid">
-          {/* 6 ô ở giữa */}
-          <div className="feature-box">
-            <h3 className="feature-title">Quản lý xe điện</h3>
-            <p className="feature-desc">
-              Theo dõi thông tin xe, lịch sử bảo dưỡng và nhắc nhở định kỳ
-            </p>
+      {/* ===== Mission Section ===== */}
+      <section className="mission-section full-screen">
+        <h2 className="section-heading">Sứ mệnh & Giá trị EV Car Center</h2>
+        <div className="mission-grid">
+          <div className="mission-box">
+            <FaLeaf className="mission-icon" />
+            <h3 className="mission-title">Bền vững</h3>
+            <p className="mission-desc">Góp phần vào tương lai giao thông xanh, giảm khí thải, bảo vệ môi trường.</p>
           </div>
-
-          <div className="feature-box">
-            <h3 className="feature-title">Đặt lịch dịch vụ</h3>
-            <p className="feature-desc">
-              Đặt lịch bảo dưỡng, sửa chữa một cách thuận tiện và nhanh chóng
-            </p>
+          <div className="mission-box">
+            <FaBolt className="mission-icon" />
+            <h3 className="mission-title">Hiệu năng</h3>
+            <p className="mission-desc">Công nghệ tiên tiến, bảo dưỡng nhanh chóng, tiết kiệm thời gian cho khách hàng.</p>
           </div>
-
-          <div className="feature-box">
-            <h3 className="feature-title">Quản lý phụ tùng</h3>
-            <p className="feature-desc">
-              Theo dõi tồn kho, quản lý nhập xuất phụ tùng chuyên dụng
-            </p>
+          <div className="mission-box">
+            <FaShieldAlt className="mission-icon" />
+            <h3 className="mission-title">An toàn</h3>
+            <p className="mission-desc">Chất lượng dịch vụ cao, bảo vệ xe và khách hàng tối đa.</p>
           </div>
-
-          <div className="feature-box">
-            <h3 className="feature-title">Báo cáo thống kê</h3>
-            <p className="feature-desc">
-              Phân tích doanh thu, hiệu suất và xu hướng hỏng hóc
-            </p>
+          <div className="mission-box">
+            <FaUsers className="mission-icon" />
+            <h3 className="mission-title">Chuyên nghiệp</h3>
+            <p className="mission-desc">Đội ngũ kỹ thuật viên có chứng chỉ chuyên môn EV, tận tâm phục vụ.</p>
           </div>
-
-          <div className="feature-box">
-            <h3 className="feature-title">Quản lý nhân sự</h3>
-            <p className="feature-desc">
-              Quản lý ca làm, chứng chỉ và hiệu suất làm việc
-            </p>
+          <div className="mission-box">
+            <FaChartLine className="mission-icon" />
+            <h3 className="mission-title">Đổi mới</h3>
+            <p className="mission-desc">Liên tục cập nhật xu hướng công nghệ mới, nâng cấp dịch vụ.</p>
           </div>
-
-          <div className="feature-box">
-            <h3 className="feature-title">Dịch vụ chuyên nghiệp</h3>
-            <p className="feature-desc">
-              Đội ngũ kỹ thuật viên có chứng chỉ EV chuyên nghiệp
-            </p>
+          <div className="mission-box">
+            <FaTools className="mission-icon" />
+            <h3 className="mission-title">Đáng tin cậy</h3>
+            <p className="mission-desc">Dịch vụ minh bạch, thông tin rõ ràng, khách hàng luôn yên tâm.</p>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="services-section">
-        <h2 className="section-heading">Dịch vụ của chúng tôi</h2>
-
-        <div className="services-grid">
-          <div className="service-item">
-            <h4 className="service-name">Bảo dưỡng định kỳ</h4>
-            <p className="service-detail">
-              Kiểm tra và bảo dưỡng theo lịch trình
-            </p>
-          </div>
-
-          <div className="service-item">
-            <h4 className="service-name">Sửa chữa phanh</h4>
-            <p className="service-detail">Bảo trì hệ thống phanh tái sinh</p>
-          </div>
-
-          <div className="service-item">
-            <h4 className="service-name">Thay thế ắc quy</h4>
-            <p className="service-detail">Kiểm tra và thay pin EV</p>
-          </div>
-
-          <div className="service-item">
-            <h4 className="service-name">Chẩn đoán điện tử</h4>
-            <p className="service-detail">Kiểm tra hệ thống điện tử</p>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="cta-section">
-        <h2 className="cta-heading">Bắt đầu sử dụng ngay hôm nay</h2>
-        <p className="cta-text">
-          Đăng ký tài khoản để trải nghiệm dịch vụ quản lý bảo dưỡng xe điện
-          hiện đại
-        </p>
-        <button className="btn-cta" onClick={() => navigate("/register")}>
+      {/* ===== CTA Section ===== */}
+      <section className="cta-section full-screen">
+        <div className="cta-bg-shape"></div>
+        <h2 className="cta-heading">Trải nghiệm EV Car Center ngay hôm nay</h2>
+        <p className="cta-text">Tận hưởng dịch vụ xe điện thông minh, hiện đại và tiện lợi</p>
+        <p className="cta-text">Bảo vệ môi trường, tiết kiệm năng lượng và trải nghiệm công nghệ cao</p>
+        <p className="cta-text">Đăng ký ngay để trở thành một phần của cuộc cách mạng EV</p>
+        <button
+          className="btn-cta"
+          onClick={() => navigate("/login", { state: { defaultTab: "register" } })}
+        >
           Đăng ký ngay
         </button>
+
       </section>
+
     </div>
   );
 }

@@ -1,62 +1,66 @@
-/* ===== SIDEBAR EV CAR CENTER ===== */
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
   width: 250px;
   height: 100vh;
-  background-color: #ffffff;
-  color: #1e293b;
+  /* Màu nền Deep Navy */
+  background-color: #1c3144;
+  /* Màu chữ mặc định là trắng/xám nhạt */
+  color: #ecf0f1;
   display: flex;
   flex-direction: column;
-  box-shadow: 4px 0 12px rgba(10, 79, 240, 0.1);
-  border-right: 2px solid #e5e9ff;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.5);
+  border-right: 2px solid #29475c;
   transition: all 0.3s ease;
   z-index: 100;
-  font-family: "Segoe UI", Arial, sans-serif;
+
 }
 
 .sidebar.closed {
   width: 80px;
 }
 
-/* ===== Header thương hiệu ===== */
+/* ===== Header thương hiệu (Nếu có) ===== */
 .sidebar-header {
   text-align: center;
   padding: 22px 10px 16px;
-  border-bottom: 1.5px solid #e8ebff;
+  border-bottom: 1.5px solid #34495e;
 }
 
 .brand-title {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #0a4ff0;
+  /* Màu sáng nổi bật */
+  color: #f39c12;
   margin: 0;
 }
 
 .brand-sub {
   font-size: 0.85rem;
-  color: #64748b;
+  /* Màu chữ nhẹ nhàng */
+  color: #bdc3c7;
   margin-top: 4px;
 }
 
 /* ===== Thông tin kỹ thuật viên ===== */
-.technician-info {
-  text-align: center;
+user-info {
+ width: 100%; 
+  text-align: center; 
   margin: 20px 0 10px;
   padding: 0 10px;
 }
 
-.technician-info h3 {
+user-info h3 {
   font-size: 1rem;
   margin: 0;
   font-weight: 600;
-  color: #0a4ff0;
+  color: #f39c12;
 }
 
-.technician-info p {
+user-info p {
   font-size: 0.85rem;
-  color: #475569;
+  color: #bdc3c7; 
   margin-top: 4px;
 }
 
@@ -74,7 +78,8 @@
   align-items: center;
   gap: 14px;
   padding: 12px 20px;
-  color: #0f172a;
+  /* Màu chữ mặc định */
+  color: #ecf0f1;
   text-decoration: none;
   font-size: 0.97rem;
   font-weight: 500;
@@ -83,24 +88,31 @@
 }
 
 .menu-item:hover {
-  background-color: #f0f4ff;
-  color: #0a4ff0;
-  border-left: 4px solid #0a4ff0;
+  /* Nền hover tối nhẹ hơn */
+  background-color: #34495e;
+  /* Màu chữ nhấn */
+  color: #f39c12;
+  /* Border nhấn */
+  border-left: 4px solid #f39c12;
   transform: translateX(3px);
 }
 
 /* ===== Mục đang active ===== */
 .menu-item.active {
-  background-color: #e6edff;
-  color: #003cd6;
-  border-left: 4px solid #003cd6;
+  /* Nền active */
+  background-color: #34495e;
+  /* Màu chữ nhấn */
+  color: #f39c12;
+  /* Border nhấn */
+  border-left: 4px solid #f39c12;
 }
 
 /* ===== Nút đăng xuất ===== */
 .logout-btn {
   background: none;
   border: none;
-  color: #ef4444;
+  /* Màu đỏ nổi bật */
+  color: #e74c3c;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -109,24 +121,25 @@
   cursor: pointer;
   font-size: 0.95rem;
   transition: all 0.25s ease;
-  border-top: 1px solid #e5e9ff;
+  /* Đường kẻ phân cách */
+  border-top: 1px solid #34495e;
 }
 
 .logout-btn:hover {
-  background-color: #fee2e2;
-  color: #b91c1c;
+  /* Nền hover */
+  background-color: #34495e;
+  /* Màu đỏ đậm hơn */
+  color: #c0392b;
 }
-
-/* ===== Khi sidebar thu nhỏ ===== */
-.sidebar.closed .brand-sub,
-.sidebar.closed .technician-info p,
-.sidebar.closed .menu-item span,
-.sidebar.closed .logout-btn span {
-  display: none;
+.sidebar.closed .brand-sub, /* Ẩn tagline dưới logo */
+.sidebar.closed .user-info p, /* Ẩn tên/thông tin user */
+.sidebar.closed .menu-item span, /* Ẩn chữ của menu item */
+.sidebar.closed .logout-btn span { /* Ẩn chữ của nút logout */
+    display: none;
 }
 
 .sidebar.closed .menu-item,
 .sidebar.closed .logout-btn {
-  justify-content: center;
-  padding: 12px 0;
+    justify-content: center; /* Căn icon/logo vào giữa */
+    padding: 12px 0;
 }

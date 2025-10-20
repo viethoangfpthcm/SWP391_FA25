@@ -1,50 +1,68 @@
-import React from "react";
-import {Link, useNavigate} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/logo.jpg";
 import "./Navbar.css";
 
+
 export default function Navbar() {
-    const navigate = useNavigate();
-    const isLoggedIn = localStorage.getItem("token");
+  const navigate = useNavigate();
+  const isLoggedIn = localStorage.getItem("token");
+  const [isScrolled, setIsScrolled] = useState(false);
 
-    const handleLogout = () => {
-        // Xóa dữ liệu đăng nhập
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        localStorage.removeItem("userId");
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-        // Chuyển về trang đăng nhập (hiện tại là "/")
-        navigate("/");
-    };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userId");
+    navigate("/login");
+  };
 
-    return (
-        <header className="navbar">
-            {/* Logo */}
-            <div className="navbar-left">
-                <h2 className="logo">EV Car Center</h2>
-            </div>
+  return (
+    <header className={`navbar ${isScrolled ? "scrolled" : ""}`}>
+      <div className="navbar-left" onClick={() => navigate("/home")}>
+        <img src={logo} alt="EV Car Center" className="logo-img" />
+      </div>
 
-            {/* Menu */}
-            <nav className="navbar-center">
-                <Link to="/home">Trang Chủ</Link>
-                <Link to="/appoint">Dịch Vụ</Link>
-                <Link to="/about">Về Chúng Tôi</Link>
-                <Link to="/contact">Liên Hệ</Link>
-                <Link to="/report">Theo dõi</Link>
-                <Link to="/payment/ready">Thanh toán</Link>
-            </nav>
+      <nav className="navbar-center">
+        {/* Trang chủ luôn hiển thị */}
+        <Link to="/home">Trang Chủ</Link>
 
-            {/* Nút đăng nhập / đăng xuất */}
-            <div className="navbar-right">
-                {isLoggedIn ? (
-                    <button className="btn logout" onClick={handleLogout}>
-                        Đăng Xuất
-                    </button>
-                ) : (
-                    <Link to="/" className="btn login">
-                        Đăng Nhập
-                    </Link>
-                )}
-            </div>
-        </header>
-    );
+        {/* Các trang public khi chưa đăng nhập */}
+        {!isLoggedIn && (
+          <>
+            <Link to="/about">Về Chúng Tôi</Link>
+            <Link to="/contact">Liên Hệ</Link>
+          </>
+        )}
+
+        {/* Các trang riêng khi đã đăng nhập */}
+        {isLoggedIn && (
+          <>
+            <Link to="/customer/dashboard">Bảng điều khiển</Link>
+            <Link to="/appoint">Dịch Vụ</Link>
+            <Link to="/about">Về Chúng Tôi</Link>
+            <Link to="/contact">Liên Hệ</Link>
+            <Link to="/report1">Biên Bản</Link>
+          </>
+        )}
+      </nav>
+
+      <div className="navbar-right">
+        {isLoggedIn ? (
+          <button className="btn logout" onClick={handleLogout}>
+            Đăng Xuất
+          </button>
+        ) : (
+          <Link to="/login" className="btn login">
+            Đăng Nhập
+          </Link>
+        )}
+      </div>
+    </header>
+  );
 }

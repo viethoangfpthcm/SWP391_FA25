@@ -3,79 +3,87 @@ import {useParams, useNavigate} from "react-router-dom";
 import "./Payment.css";
 
 export default function PaymentProcess() {
-    const {id} = useParams();
-    const navigate = useNavigate();
-    const [payment, setPayment] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [processing, setProcessing] = useState(false);
-    const [error, setError] = useState("");
+  const { id } = useParams(); // bookingId từ URL
+  const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const fetchPaymentDetail = async () => {
-    //         try {
-    //             const token = localStorage.getItem("token");
-    //             const bookingId = parseInt(id, 10);
-    //
-    //             if (!token) {
-    //                 setError("Bạn chưa đăng nhập hoặc token hết hạn!");
-    //                 navigate("/login");
-    //                 return;
-    //             }
-    //
-    //             const res = await fetch(`http://localhost:8080/api/customer/customerBookings/${bookingId}`, {
-    //                 method: "GET",
-    //                 headers: {
-    //                     "Authorization": `Bearer ${token}`,
-    //                     "Accept": "application/json",
-    //                 },
-    //             });
-    //
-    //             if (res.status === 401) {
-    //                 setError("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!");
-    //                 navigate("/login");
-    //                 return;
-    //             }
-    //
-    //             if (res.status === 403) {
-    //                 setError("Bạn không có quyền truy cập thông tin đơn hàng này!");
-    //                 return;
-    //             }
-    //
-    //             if (!res.ok) {
-    //                 setError(`Lỗi máy chủ: ${res.status}`);
-    //                 return;
-    //             }
-    //
-    //             const contentType = res.headers.get("content-type");
-    //             if (contentType && contentType.includes("application/json")) {
-    //                 const data = await res.json();
-    //                 setPayment(data);
-    //             } else {
-    //                 setError("Phản hồi từ server không phải JSON hợp lệ!");
-    //             }
-    //         } catch (err) {
-    //             console.error("Lỗi khi tải chi tiết thanh toán:", err);
-    //             setError("Lỗi kết nối đến server!");
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //
-    //     fetchPaymentDetail();
-    // }, [id, navigate]);
+  const [payment, setPayment] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState("");
 
-    const handlePayment = async () => {
-        setProcessing(true);
-        try {
-            const token = localStorage.getItem("token");
+  // 🧩 Tải thông tin chi tiết booking cần thanh toán
+  useEffect(() => {
+    const fetchPaymentDetail = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
 
-            if (!token) {
-                alert("Bạn chưa đăng nhập!");
-                navigate("/login");
-                return;
-            }
+        if (!token) {
+          alert("Bạn chưa đăng nhập hoặc phiên đăng nhập đã hết hạn!");
+          navigate("/login");
+          return;
+        }
 
-            const res = await fetch(`http://localhost:8080/api/payment/process?bookingId=${id}`, {
+        const res = await fetch(
+          `http://localhost:8080/api/customer/bookings?userId=${userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Accept": "application/json",
+            },
+          }
+        );
+
+        if (res.status === 401) {
+          alert("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại!");
+          localStorage.removeItem("token");
+          navigate("/login");
+          return;
+        }
+
+        if (!res.ok) {
+          setError(`Không thể tải thông tin đơn hàng (mã lỗi: ${res.status})`);
+          return;
+        }
+
+        const data = await res.json();
+        const booking = data.find((b) => b.bookingId === Number(id));
+
+        if (!booking) {
+          setError("Không tìm thấy đơn hàng.");
+          return;
+        }
+
+        // 👇 Giả sử amount chưa có, tạm gán giá trị mẫu
+        setPayment({
+          ...booking,
+          amount: booking.amount || 500000,
+        });
+      } catch (err) {
+        console.error(err);
+        setError("Lỗi kết nối đến server!");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPaymentDetail();
+  }, [id, navigate]);
+
+  // 🧾 Xử lý thanh toán
+  const handlePayment = async () => {
+    setProcessing(true);
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Bạn chưa đăng nhập hoặc token không tồn tại!");
+        navigate("/login");
+        return;
+      }
+
+            const res = await fetch(`https://103.90.226.216:8443/api/payment/process?bookingId=${id}`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -112,30 +120,30 @@ export default function PaymentProcess() {
         }
     };
 
-    if (loading) return <div className="loading">Đang tải dữ liệu...</div>;
+  // 🎨 Giao diện hiển thị
+  if (loading) return <div className="loading">Đang tải dữ liệu...</div>;
+  if (error) return <div className="error">{error}</div>;
 
-    if (error) return <div className="error">{error}</div>;
+  return (
+    <div className="payment-container">
+      <h1 className="payment-title">Quá trình thanh toán</h1>
 
-    if (!payment) return <div className="empty">Không tìm thấy đơn hàng.</div>;
+      <div className="payment-detail">
+        <h3>{payment.vehicleModel || "Không rõ xe"}</h3>
+        <p>Biển số xe: {payment.vehiclePlate || "Không rõ"}</p>
+        <p>Trung tâm: {payment.centerName || "Không rõ trung tâm"}</p>
+        <p>Địa chỉ: {payment.centerAddress || "Không rõ địa chỉ"}</p>
+        <p>Số tiền: {payment.amount?.toLocaleString()} VND</p>
+        <p>Trạng thái: {payment.status || "Chờ thanh toán"}</p>
+      </div>
 
-    return (
-        <div className="payment-container">
-            <h1 className="payment-title">Quá trình thanh toán</h1>
-
-            <div className="payment-detail">
-                <h3>{payment.serviceName || "Dịch vụ không xác định"}</h3>
-                <p>Khách hàng: {payment.customerName || "Không rõ"}</p>
-                <p>Số tiền: {Number(payment.amount || 0).toLocaleString()} VND</p>
-                <p>Trạng thái: {payment.status || "Không rõ"}</p>
-            </div>
-
-            <button
-                className="btn-pay"
-                onClick={handlePayment}
-                disabled={processing}
-            >
-                {processing ? "Đang xử lý..." : "Xác nhận thanh toán"}
-            </button>
-        </div>
-    );
+      <button
+        className="btn-pay"
+        onClick={handlePayment}
+        disabled={processing}
+      >
+        {processing ? "Đang xử lý..." : "Xác nhận thanh toán"}
+      </button>
+    </div>
+  );
 }
