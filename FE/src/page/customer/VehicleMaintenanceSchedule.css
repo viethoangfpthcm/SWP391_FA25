@@ -95,12 +95,12 @@
 
 /* EXPIRED - Đã bỏ qua */
 .schedule-item.status-expired {
-  border-left-color: #6c757d;
-  background-color: #f8f9fa;
-  opacity: 0.85;
+  border-left-color: #fb0303;
+  background-color: #fffbfa;
+ 
 }
 .status-icon.expired {
-  color: #6c757d;
+  color: #ee0202;
 }
 
 /* NEXT_TIME - Có thể đặt lịch */
@@ -115,7 +115,7 @@
 
 /* LOCKED - Chưa thể đặt lịch */
 .schedule-item.status-locked {
-  border-left-color: #adb5bd;
+  border-left-color: #bdafad;
   background-color: #f8f9fa;
   opacity: 0.7;
 }
@@ -132,7 +132,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #6c757d;
+  color: #dd201d;
   font-style: italic;
   margin: 12px 0 8px 0;
   padding: 8px 12px;

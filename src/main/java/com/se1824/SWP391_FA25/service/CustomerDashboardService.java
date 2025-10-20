@@ -76,7 +76,7 @@ public class CustomerDashboardService {
         Integer currentKm = vehicle.getCurrentKm() != null ? vehicle.getCurrentKm() : 0;
 
         // Lấy danh sách các lần đã hoàn thành
-        Set<Integer> completedMaintenanceNos = bookingRepo.findByVehicle_LicensePlateAndStatus(licensePlate, "Paid")
+        Set<Integer> completedMaintenanceNos = bookingRepo.findByVehicle_LicensePlateAndStatus(licensePlate, "Completed")
                 .stream()
                 .filter(booking -> booking.getMaintenancePlan() != null)
                 .map(booking -> booking.getMaintenancePlan().getMaintenanceNo())
