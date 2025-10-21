@@ -1,5 +1,6 @@
 package com.se1824.SWP391_FA25.dto;
 
+import com.se1824.SWP391_FA25.model.response.BookingResponse;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -20,4 +21,6 @@ public class VehicleBookingDTO {
     Integer year;
     Integer currentKm;
     List<ServiceCenterDTO> availableCenters;
+    List<BookingResponse> currentBookings;
+    Boolean hasActiveBooking;
 }

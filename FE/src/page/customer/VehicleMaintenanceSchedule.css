@@ -440,7 +440,203 @@
   border-color: #adb5bd !important;
   box-shadow: none;
 }
+.active-bookings-section {
+  background-color: #fff5f5; /* Nền hồng nhạt / đỏ nhạt */
+  border: 1px solid #ffb8b8; /* Viền đỏ */
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px; /* Khoảng cách với danh sách lịch bên dưới */
+}
 
+
+.active-bookings-section h2 {
+  color: #d9534f; 
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #ffdddd;
+  padding-bottom: 10px;
+}
+
+
+.active-booking-item {
+  background-color: #ffffff; 
+  border: 1px solid #e0e0e0; 
+  border-radius: 6px;
+  padding: 15px 20px;
+  margin-bottom: 15px; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Đổ bóng nhẹ */
+
+}
+
+.active-booking-item:last-child {
+  margin-bottom: 0;
+}
+
+
+.active-booking-item.status-pending {
+  border-left: 5px solid #f0ad4e; /* Màu vàng cam cho "Pending" */
+}
+
+
+.active-booking-item.status-in_progress {
+  border-left: 5px solid #0275d8; 
+}
+
+
+
+.active-booking-item p {
+  margin: 10px 0;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  color: #333;
+  display: flex; 
+  align-items: flex-start;
+}
+
+
+.active-booking-item p strong {
+  color: #111;
+  min-width: 100px; 
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.active-booking-item .btn-cancel {
+  background-color: #d9534f; 
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; 
+  margin-top: 10px; 
+}
+
+.active-booking-item .btn-cancel:hover {
+  background-color: #c9302c; 
+}
+
+.active-booking-item .btn-cancel:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.active-booking-item .btn-cancel:active {
+  
+  transform: scale(0.98);
+}
+.modal-content.success-modal {
+  max-width: 450px; 
+  padding: 30px 40px;
+  
+}
+
+
+.success-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  text-align: center;
+  padding: 20px 0;
+}
+
+
+.success-modal-body .success-icon {
+  font-size: 4.5rem; 
+  color: #28a745;  
+  margin-bottom: 25px;
+}
+
+.success-modal-body p {
+  font-size: 1.1rem;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+
+.success-modal .form-actions {
+  justify-content: center;
+  margin-top: 15px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+.modal-content.confirm-modal {
+  max-width: 480px; 
+  padding: 30px 40px;
+}
+
+
+.confirm-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px 0 20px 0;
+}
+
+
+.confirm-modal-body .confirm-icon {
+  font-size: 4.0rem; 
+  color: #f0ad4e;  
+  margin-bottom: 20px;
+}
+
+.confirm-modal-body h3 {
+  font-size: 1.4rem;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+
+.confirm-modal-body p {
+  font-size: 1.05rem;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.confirm-modal .form-actions {
+  justify-content: flex-end; 
+  margin-top: 15px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+
+.btn-confirm-danger {
+  padding: 10px 25px;
+  border-radius: 8px;
+  border: 1px solid #d9534f;
+  background-color: #d9534f;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-confirm-danger:hover {
+  background-color: #c9302c;
+  border-color: #c12e2a;
+}
+
+.btn-confirm-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #adb5bd !important;
+  color: #f8f9fa !important;
+  border-color: #adb5bd !important;
+  box-shadow: none;
+}
 /* Animations */
 @keyframes fadeIn {
   from {
