@@ -182,12 +182,6 @@
   background-color: #4b5563;
 }
 
-.loading-container, .empty {
-    text-align: center;
-    padding: 50px;
-    font-size: 1.2em;
-    color: #0369a1;
-}
 
 .spinner-icon {
     animation: spin 1s linear infinite;
@@ -375,10 +369,6 @@
   color: #1f2937;
 }
 
-.checklist-card-footer {
-  margin-top: 15px;
-  text-align: right;
-}
 
 button.task-btn.view {
   display: inline-flex; 

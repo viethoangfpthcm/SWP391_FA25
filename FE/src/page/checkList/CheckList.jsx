@@ -6,8 +6,7 @@ import "./CheckList.css";
 
 // Các trạng thái Status đã được định nghĩa trong Backend
 const STATUS_OPTIONS = ["TỐT", "HIỆU_CHỈNH", "SỬA_CHỮA", "THAY_THẾ"];
-// Chi phí lao động cố định cho SỬA_CHỮA (theo logic Backend)
-const FIXED_REPAIR_LABOR_COST = 4000000;
+
 
 export default function CheckList({ user }) {
   const [searchParams] = useSearchParams();
@@ -78,6 +77,7 @@ export default function CheckList({ user }) {
           status: detail.status,
           note: detail.note || "",
           partId: initialPartId,
+          laborCost: detail.laborCost || 0,
         };
       });
       setDetailUpdates(initialUpdates);
@@ -154,8 +154,10 @@ export default function CheckList({ user }) {
       const statusChanged = updates.status !== detail.status;
       const noteChanged = updates.note !== (detail.note || "");
       const partChanged = updates.partId !== (detail.partId || (detail.part ? detail.part.partId : null));
+      const laborCostChanged = Number(updates.laborCost || 0) !== Number(detail.laborCost || 0);
 
-      return statusChanged || noteChanged || partChanged;
+
+      return statusChanged || noteChanged || partChanged || laborCostChanged;
     });
   };
 
@@ -172,7 +174,11 @@ export default function CheckList({ user }) {
       const noteChanged = updates.note !== (detail.note || "");
       const partChanged = updates.partId !== (detail.partId || (detail.part ? detail.part.partId : null));
 
-      return statusChanged || noteChanged || partChanged;
+      const laborCostChanged = Number(updates.laborCost || 0) !== Number(detail.laborCost || 0);
+
+
+      // --- CẬP NHẬT DÒNG RETURN CỦA FILTER ---
+      return statusChanged || noteChanged || partChanged || laborCostChanged;
     });
 
     if (changedDetails.length === 0) {
@@ -200,6 +206,7 @@ export default function CheckList({ user }) {
         try {
           const apiUrl = `https://103.90.226.216:8443/api/technician/update-detail/${detail.id}`;
 
+          // --- CẬP NHẬT BODY TRONG FETCH ---
           const res = await fetch(apiUrl, {
             method: 'PUT',
             headers: {
@@ -210,8 +217,12 @@ export default function CheckList({ user }) {
               status: updates.status,
               note: updates.note,
               partId: updates.status === "THAY_THẾ" ? updates.partId : null,
+
+              // Chỉ gửi chi phí nếu là SỬA_CHỮA, nếu không gửi 0
+              laborCost: updates.status === "SỬA_CHỮA" ? (updates.laborCost || 0) : 0,
             }),
           });
+          // --- KẾT THÚC CẬP NHẬT BODY ---
 
           if (!res.ok) {
             throw new Error(`Cập nhật lỗi cho hạng mục ${detail.itemName}`);
@@ -296,7 +307,7 @@ export default function CheckList({ user }) {
       // Ưu tiên trạng thái vừa mới thay đổi, nếu không có thì dùng trạng thái đã lưu
       const currentStatus = currentUpdates.status || detail.status;
 
-      
+
       // Bất kỳ trạng thái nào không phải 'TỐT' (và không rỗng) đều cần phê duyệt
       const needsApproval = currentStatus && currentStatus !== "TỐT";
 
@@ -380,7 +391,7 @@ export default function CheckList({ user }) {
 
                   <div className="checklist-card-footer">
                     <button
-                      className="btn-view-detail"                     
+                      className="btn-view-detail"
                       onClick={() => handleViewDetail(item.bookingId)}
                     >
                       <FaEye /> Xem chi tiết
@@ -469,110 +480,138 @@ export default function CheckList({ user }) {
           )}
         </div>
 
-        {/* BẢNG CHI TIẾT */}
-        <table className="checklist-table">
+          {/* BẢNG CHI TIẾT */}
+          <table className="checklist-table">
           <thead>
-            <tr>
-              <th>Mục kiểm tra (ActionType)</th>
-              <th>Trạng thái KV</th>
-              <th>Ghi chú</th>
-              <th>Chọn Part</th>
-              <th>Phê duyệt KH</th>
-              <th>Chi phí (Tạm tính)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {checklistDetails.map(detail => {
-              const currentUpdates = detailUpdates[detail.id] || {};
-              const currentStatus = currentUpdates.status || detail.status;
-              const isReplace = currentStatus === "THAY_THẾ";
+              <tr>
+                <th>Mục kiểm tra (ActionType)</th>
+                <th>Trạng thái KV</th>
+                <th>Ghi chú</th>
+                <th>Chọn Part</th>
+                <th>Phê duyệt KH</th>
+                <th>Chi phí nhân công </th>
+                <th>Chi phí vật liệu </th>
+                <th>Chi phí (VND)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {checklistDetails.map(detail => {
+                const currentUpdates = detailUpdates[detail.id] || {};
+                const currentStatus = currentUpdates.status || detail.status;
+                const isReplace = currentStatus === "THAY_THẾ";
 
-              const selectedPart = detail.availableParts.find(p => p.partId === currentUpdates.partId);
-              let currentLaborCost = 0;
-              let currentMaterialCost = 0;
+                const selectedPart = detail.availableParts.find(p => p.partId === currentUpdates.partId);
+                let currentLaborCost = 0;
+                let currentMaterialCost = 0;
 
-              if (currentStatus === "THAY_THẾ" && selectedPart) {
-                currentLaborCost = selectedPart.laborCost;
-                currentMaterialCost = selectedPart.materialCost;
-              } else if (currentStatus === "SỬA_CHỮA") {
-                currentLaborCost = FIXED_REPAIR_LABOR_COST;
-                currentMaterialCost = 0;
-              }
-              const totalCost = currentLaborCost + currentMaterialCost;
+                // --- SỬA ĐỔI LOGIC CHI PHÍ ---
+                if (currentStatus === "THAY_THẾ" && selectedPart) {
+                  currentLaborCost = selectedPart.laborCost;
+                  currentMaterialCost = selectedPart.materialCost;
+                } else if (currentStatus === "SỬA_CHỮA") {
+                  // THAY ĐỔI: Lấy chi phí từ state thay vì hằng số
+                  currentLaborCost = Number(currentUpdates.laborCost || 0);
+                  currentMaterialCost = 0;
+                }
+                const totalCost = currentLaborCost + currentMaterialCost;
 
-              // LƯU Ý: ActionType được giữ nguyên giá trị gốc từ Backend (detail.actionType)
-              const displayActionType = detail.actionType;
+                // LƯU Ý: ActionType được giữ nguyên giá trị gốc từ Backend (detail.actionType)
+                const displayActionType = detail.actionType;
 
-              return (
-                <tr key={detail.id} className={detail.approvalStatus === 'APPROVED' ? 'row-approved' : ''}>
-                  <td>
-                    <div className="item-info">
-                      <strong>{detail.itemName}</strong>
-                      <small>({displayActionType})</small>
-                    </div>
-                  </td>
-                  <td>
-                    <select
-                      value={currentStatus}
-                      onChange={(e) => handleDetailChange(detail.id, 'status', e.target.value)}
-                      disabled={isCompleted}
-                    >
-                      <option value="">Chọn</option>
-                      {STATUS_OPTIONS.map(opt => (
-                        <option key={opt} value={opt}>
-                          {/* Áp dụng logic tùy chỉnh */}
-                          {getCustomStatusLabel(opt, detail.itemName)}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={currentUpdates.note || ""}
-                      onChange={(e) => handleDetailChange(detail.id, 'note', e.target.value)}
-                      disabled={isCompleted}
-                    />
-                  </td>
-                  <td>
-                    <select
-                      value={currentUpdates.partId || ""}
-                      onChange={(e) => handleDetailChange(detail.id, 'partId', parseInt(e.target.value) || null)}
-                      disabled={!isReplace || isCompleted || detail.availableParts.length === 0}
-                    >
-                      <option value="">
-                        {detail.availableParts.length > 0
-                          ? "Chọn Part"
-                          : (detail.planItem?.partType?.name ? `Hết hàng (${detail.planItem.partType.name})` : "Không có Part")
-                        }
-                      </option>
-                      {detail.availableParts.map(part => {
-                        // 1. Kiểm tra nếu là dịch vụ điều hòa
-                        const isService = part.partName.toLowerCase().includes("dịch vụ bảo dưỡng điều hòa");
-
-                        return (
-                          <option key={part.partId} value={part.partId}>
-                            {part.partName}
-
-                            {!isService && ` (${part.quantity})`}
+                return (
+                  <tr key={detail.id} className={detail.approvalStatus === 'APPROVED' ? 'row-approved' : ''}>
+                    <td>
+                      <div className="item-info">
+                        <strong>{detail.itemName}</strong>
+                        <small>({displayActionType})</small>
+                      </div>
+                    </td>
+                    <td>
+                      <select
+                        value={currentStatus}
+                        onChange={(e) => handleDetailChange(detail.id, 'status', e.target.value)}
+                        disabled={isCompleted}
+                      >
+                       
+                        {STATUS_OPTIONS.map(opt => (
+                          <option key={opt} value={opt}>
+                            {/* Áp dụng logic tùy chỉnh */}
+                            {getCustomStatusLabel(opt, detail.itemName)}
                           </option>
-                        );
-                      })}
-                    </select>
-                  </td>
-                  <td>
-                    <span className={`approval-status approval-${detail.approvalStatus?.toLowerCase()}`}>
-                      {detail.approvalStatus || "PENDING"}
-                    </span>
-                  </td>
-                  <td className="cost-cell">
-                    {totalCost.toLocaleString('vi-VN')} VND
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                        ))}
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={currentUpdates.note || ""}
+                        onChange={(e) => handleDetailChange(detail.id, 'note', e.target.value)}
+                        disabled={isCompleted}
+                      />
+                    </td>
+                    <td>
+                      {isReplace ? (
+                        // Logic "THAY_THẾ" (chọn Part) giữ nguyên
+                        <select
+                          value={currentUpdates.partId || ""}
+                          onChange={(e) => handleDetailChange(detail.id, 'partId', parseInt(e.target.value) || null)}
+                          disabled={isCompleted || detail.availableParts.length === 0}
+                        >
+                          <option value="">
+                            {detail.availableParts.length > 0
+                              ? "Chọn Part"
+                              : (detail.planItem?.partType?.name ? `Hết hàng (${detail.planItem.partType.name})` : "Không có Part")
+                            }
+                          </option>
+                          {detail.availableParts.map(part => {
+                            const isService = part.partName.toLowerCase().includes("dịch vụ bảo dưỡng điều hòa");
+                            return (
+                              <option key={part.partId} value={part.partId}>
+                                {part.partName}
+                                {!isService && ` (${part.quantity})`}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      ) : (
+                        // SỬA CHỮA, TỐT, HIỆU CHỈNH đều hiển thị N/A ở cột này
+                        <span className="text-gray-400">N/A</span>
+                      )}
+                    </td>
+                    <td>
+                      <span className={`approval-status approval-${detail.approvalStatus?.toLowerCase()}`}>
+                        {detail.approvalStatus || "PENDING"}
+                      </span>
+                    </td>
+                    <td className="cost-cell">
+                      {(currentStatus === "SỬA_CHỮA") ? (
+                        <input
+                          type="number"
+                          className="cost-input"
+                          value={currentUpdates.laborCost || 0}
+                          onChange={(e) => handleDetailChange(detail.id, 'laborCost', e.target.valueAsNumber || 0)}
+                          disabled={isCompleted}
+                          placeholder="Nhập chi phí"
+                          
+                          style={{ width: '120px', textAlign: 'right', fontSize: '14px' }}
+                        />
+                      ) : (
+                        // Logic cũ: Hiển thị chi phí đã tính
+                        currentLaborCost.toLocaleString('vi-VN')
+                      )}
+                    </td>
+                    {/* CỘT 7: CHI PHÍ VẬT LIỆU */}
+              <td className="cost-cell">          
+                {currentMaterialCost.toLocaleString('vi-VN')} 
+              </td>
+                    <td className="cost-cell">
+                      {totalCost.toLocaleString('vi-VN')} 
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
 
         {/* NÚT LƯU THAY ĐỔI - Hiển thị ở cuối bảng */}
         {!isCompleted && checklist.status === 'In Progress' && (
