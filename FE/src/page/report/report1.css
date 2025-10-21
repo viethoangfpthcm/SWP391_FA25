@@ -507,19 +507,7 @@
   outline: none;
 }
 
-/* Nút Đồng ý / Từ chối bên trong modal */
-.report-document-modal .detail-actions {
-  display: flex;
-  flex-direction: column;
-  /* Xếp dọc */
-  justify-content: center;
-  gap: 0.6rem;
-  padding: 1rem;
-  background-color: #f8f9fa;
-  /* Nền khác */
-  border-left: 1px solid #eee;
-  flex-shrink: 0;
-}
+
 
 .report-document-modal .detail-actions .btn {
   padding: 6px 12px;
@@ -574,19 +562,6 @@
   cursor: not-allowed;
 }
 
-/* Footer bên trong modal (chứa nút Hoàn tất/Đóng) */
-.document-footer-modal {
-  padding: 1rem 2rem;
-  border-top: 1px solid #e0e0e0;
-  background: #ffffff;
-  display: flex;
-  justify-content: flex-end;
-  /* Nút Hoàn tất bên phải */
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-  flex-shrink: 0;
-  /* Không co lại */
-}
 
 /* Dùng lại style nút Hoàn tất từ CustomerDashboard */
 .document-footer-modal .btn-complete-review {
@@ -980,4 +955,186 @@
 .document-footer-modal .btn-payment:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
+}
+
+/* ================================== */
+/* === CSS MỚI CHO CHECKBOX & NÚT LƯU === */
+/* ================================== */
+
+/* --- 1. Khu vực toggle Phê duyệt (Thay thế .detail-actions) --- */
+.report-document-modal .detail-approval-toggle {
+  display: flex;
+  flex-direction: column;
+  /* Xếp dọc label và checkbox */
+  justify-content: center;
+  align-items: center;
+  /* Căn giữa */
+  gap: 0.5rem;
+  /* Khoảng cách giữa checkbox và label */
+  padding: 1rem;
+  background-color: #f8f9fa;
+  /* Nền khác */
+  border-left: 1px solid #eee;
+  flex-shrink: 0;
+  width: 100px;
+  /* Cho một chiều rộng cố định */
+}
+
+/* 1.1. Checkbox tùy chỉnh to hơn */
+.report-document-modal .detail-approval-toggle input[type="checkbox"] {
+  /* Ẩn checkbox gốc */
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 28px;
+  /* Kích thước mới */
+  height: 28px;
+  /* Kích thước mới */
+  background-color: #fff;
+  border: 2px solid #adb5bd;
+  /* Màu viền xám */
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  /* Không co lại */
+}
+
+/* 1.2. Dấu tick bên trong (dùng pseudo-element) */
+.report-document-modal .detail-approval-toggle input[type="checkbox"]::before {
+  content: "✔";
+  /* Dùng ký tự check */
+  font-size: 20px;
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  /* Ẩn ban đầu */
+  transition: transform 0.2s ease-in-out;
+  line-height: 1;
+}
+
+/* 1.3. Khi được tick */
+.report-document-modal .detail-approval-toggle input[type="checkbox"]:checked {
+  background-color: #28a745;
+  /* Màu xanh lá */
+  border-color: #28a745;
+}
+
+.report-document-modal .detail-approval-toggle input[type="checkbox"]:checked::before {
+  transform: translate(-50%, -50%) scale(1);
+  /* Hiện dấu tick */
+}
+
+/* 1.4. Trạng thái focus */
+.report-document-modal .detail-approval-toggle input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(10, 79, 240, 0.2);
+}
+
+/* 1.5. Trạng thái bị vô hiệu hóa (disabled) */
+.report-document-modal .detail-approval-toggle input[type="checkbox"]:disabled {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+  cursor: not-allowed;
+}
+
+/* Khi disabled và được tick */
+.report-document-modal .detail-approval-toggle input[type="checkbox"]:disabled:checked {
+  background-color: #a3d9b1;
+  border-color: #a3d9b1;
+}
+
+/* 1.6. Label cho checkbox */
+.report-document-modal .detail-approval-toggle label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* Khi checkbox bị vô hiệu hóa, làm mờ label */
+.report-document-modal .detail-approval-toggle input[type="checkbox"]:disabled+label {
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+
+/* --- 2. CSS cho Footer Modal (2 nút mới) --- */
+.document-footer-modal {
+  padding: 1rem 2rem;
+  border-top: 1px solid #e0e0e0;
+  background: #ffffff;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  /* Khoảng cách giữa 2 nút */
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  flex-shrink: 0;
+}
+
+/* 2.1. Nút chung (base-style) */
+.document-footer-modal .btn-close-review,
+.document-footer-modal .btn-submit-review {
+  padding: 10px 25px;
+  border-radius: 8px;
+  border: 1.5px solid;
+  /* Thêm border để nhất quán */
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* 2.2. Nút Hủy / Đóng (Giống nút reject) */
+.document-footer-modal .btn-close-review {
+  background-color: #fff;
+  color: #6c757d;
+  border-color: #6c757d;
+}
+
+.document-footer-modal .btn-close-review:hover {
+  background-color: #f8f9fa;
+}
+
+/* 2.3. Nút Lưu & Xác nhận (Nút chính) */
+.document-footer-modal .btn-submit-review {
+  background-color: #0a4ff0;
+  color: white;
+  border-color: #0a4ff0;
+  display: flex;
+  /* Dành cho spinner */
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.document-footer-modal .btn-submit-review:hover {
+  background-color: #003cd6;
+  border-color: #003cd6;
+}
+
+.document-footer-modal .btn-submit-review:disabled,
+.document-footer-modal .btn-close-review:disabled {
+  background-color: #adb5bd;
+  border-color: #adb5bd;
+  color: #fff;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+
+.document-footer-modal .btn-submit-review .spinner-icon {
+  font-size: 1rem;
+  animation: spin 1.5s linear infinite;
+
+}
+
+.report-document-modal .customer-note-input textarea:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  border-color: #ced4da;
 }
