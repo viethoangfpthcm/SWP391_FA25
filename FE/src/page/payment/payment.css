@@ -1,3 +1,4 @@
+
 .payment-container {
   max-width: 900px;
   margin: 60px auto;
@@ -20,7 +21,6 @@
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
 }
-
 .payment-card {
   border: 1px solid #ddd;
   border-radius: 12px;
