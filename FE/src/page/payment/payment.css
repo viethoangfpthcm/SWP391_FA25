@@ -1,5 +1,26 @@
 
+.payment-container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
 
+.payment-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0a3d62;
+  margin-bottom: 30px;
+}
+
+.payment-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
 .payment-card {
   border: 1px solid #ddd;
   border-radius: 12px;
