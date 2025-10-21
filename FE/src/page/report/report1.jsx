@@ -58,7 +58,7 @@ export default function Report1() {
         }
         const data = await response.json();
 
-        // 👈 BƯỚC 1: SỬA LẠI LOGIC FILTER
+       
         // YÊU CẦU API trả về 'bookingStatus' và 'totalCostApproved'
         const processedData = data
           .filter(r => {
@@ -292,9 +292,10 @@ export default function Report1() {
 
               const isCompleted = report.status === "Completed";
               const isPaid = report.bookingStatus === "Paid";
+              const isBookingCompleted = report.bookingStatus === "Completed";
               const totalAmount = report.totalCostApproved || 0;
 
-              const showPayButton = isCompleted && !isPaid && totalAmount > 0;
+              const showPayButton = !isBookingCompleted && isCompleted && !isPaid && totalAmount > 0;
               // --- Hết logic mới ---
 
               return (
