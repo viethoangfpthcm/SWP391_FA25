@@ -2,7 +2,9 @@ package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.model.request.AssignTechnicianRequest;
+import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
+import com.se1824.SWP391_FA25.service.MaintenanceChecklistService;
 import com.se1824.SWP391_FA25.service.StaffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class StaffController {
 
     private final StaffService staffService;
     private final AuthenticationService authenticationService;
+    private final MaintenanceChecklistService maintenanceChecklistService;
 
     /**
      * Lấy danh sách booking pending
@@ -90,4 +93,27 @@ public class StaffController {
         staffService.assignTechnician(request, staffId);
         return ResponseEntity.ok("Technician assigned successfully");
     }
+
+
+    /**
+     * Lấy chi tiết checklist bảo dưỡng theo Booking ID (cho Staff)
+     * GET /api/staff/checklist/{bookingId}
+     */
+    @GetMapping("/checklist/{bookingId}")
+    public ResponseEntity<MaintenanceChecklistResponse> getChecklistDetailsForStaff(
+            @PathVariable Integer bookingId) {
+        // Gọi service để lấy và kiểm tra quyền
+        MaintenanceChecklistResponse checklistResponse = maintenanceChecklistService.getChecklistByBookingIdForStaff(bookingId);
+        return ResponseEntity.ok(checklistResponse);
+    }
+    /**
+     * Staff bàn giao xe (Hoàn tất booking sau khi đã Paid và Checklist Completed)
+     * POST /api/staff/bookings/{bookingId}/handover
+     */
+    @PostMapping("/bookings/{bookingId}/handover")
+    public ResponseEntity<String> handOverVehicle(@PathVariable Integer bookingId) {
+        staffService.handOverVehicle(bookingId);
+        return ResponseEntity.ok("Vehicle handed over and booking completed successfully");
+    }
+
 }

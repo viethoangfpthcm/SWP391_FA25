@@ -78,9 +78,13 @@ export default function Home() {
         <p className="cta-text">Tận hưởng dịch vụ xe điện thông minh, hiện đại và tiện lợi</p>
         <p className="cta-text">Bảo vệ môi trường, tiết kiệm năng lượng và trải nghiệm công nghệ cao</p>
         <p className="cta-text">Đăng ký ngay để trở thành một phần của cuộc cách mạng EV</p>
-        <button className="btn-cta" onClick={() => navigate("/")}>
+        <button
+          className="btn-cta"
+          onClick={() => navigate("/login", { state: { defaultTab: "register" } })}
+        >
           Đăng ký ngay
         </button>
+
       </section>
 
     </div>

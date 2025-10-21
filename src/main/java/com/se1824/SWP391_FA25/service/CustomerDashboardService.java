@@ -2,7 +2,6 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.entity.*;
-import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +22,6 @@ public class CustomerDashboardService {
     private final VehicleRepository vehicleRepo;
     private final BookingRepository bookingRepo;
     private final MaintenancePlanRepository planRepo;
-    private final UserRepository userRepo;
     private final MaintenanceScheduleRepository maintenanceScheduleRepo;
     private final AuthenticationService authenticationService;
     private final VehicleScheduleRepository vehicleScheduleRepo;
@@ -74,35 +73,71 @@ public class CustomerDashboardService {
         List<MaintenancePlan> plans = planRepo.findBySchedule_Id(schedule.getId());
         LocalDate purchaseDate = vehicle.getPurchaseDate();
         LocalDate currentDate = LocalDate.now();
+        Integer currentKm = vehicle.getCurrentKm() != null ? vehicle.getCurrentKm() : 0;
 
-        List<Integer> completedMaintenanceNos = bookingRepo.findByVehicle_LicensePlateAndStatus(licensePlate, "Paid")
+        // Lấy danh sách các lần đã hoàn thành
+        Set<Integer> completedMaintenanceNos = bookingRepo.findByVehicle_LicensePlateAndStatus(licensePlate, "Completed")
                 .stream()
                 .filter(booking -> booking.getMaintenancePlan() != null)
                 .map(booking -> booking.getMaintenancePlan().getMaintenanceNo())
+                .collect(Collectors.toSet());
+
+        // Sắp xếp plans theo maintenanceNo
+        List<MaintenancePlan> sortedPlans = plans.stream()
+                .sorted(Comparator.comparing(MaintenancePlan::getMaintenanceNo))
                 .toList();
+
+        // Tìm maintenance number lớn nhất đã hoàn thành
         Integer maxCompletedNo = completedMaintenanceNos.stream()
                 .max(Integer::compareTo)
                 .orElse(0);
 
-        return plans.stream().map(plan -> {
+        // Tìm lần đầu tiên SAU maxCompletedNo mà chưa hoàn thành
+        // Đây chính là lần NEXT_TIME
+        Integer nextTimeNo = null;
+        for (MaintenancePlan plan : sortedPlans) {
+            Integer planNo = plan.getMaintenanceNo();
+            if (planNo > maxCompletedNo && !completedMaintenanceNos.contains(planNo)) {
+                nextTimeNo = planNo;
+                break;
+            }
+        }
+
+        // Nếu không tìm thấy (tất cả đã hoàn thành), tìm lần tiếp theo trong danh sách
+        if (nextTimeNo == null) {
+            nextTimeNo = maxCompletedNo + 1;
+        }
+
+        final Integer finalNextTimeNo = nextTimeNo;
+
+        return sortedPlans.stream().map(plan -> {
             VehicleScheduleStatusDTO dto = new VehicleScheduleStatusDTO();
             dto.setMaintenancePlanId(plan.getId());
             dto.setPlanName(plan.getName());
             dto.setDescription(plan.getDescription());
             dto.setIntervalKm(plan.getIntervalKm());
 
-
-            // Tính ngày hết hạn dự kiến cho mốc bảo dưỡng này
             LocalDate dueDate = purchaseDate.plusMonths(plan.getIntervalMonth());
+            Integer dueKm = plan.getIntervalKm();
             Integer planNo = plan.getMaintenanceNo();
-            if (planNo <= maxCompletedNo) {
-                dto.setStatus("ON_TIME"); // Đã hoàn thành trong một booking trước đó
-            } else if (currentDate.isAfter(dueDate)) {
-                dto.setStatus("EXPIRED"); // Đã quá hạn theo thời gian
-            } else {
-                dto.setStatus("NEXT_TIME"); // Các mốc trong tương lai, có thể đặt lịch
-            }
 
+            // Xác định trạng thái
+            if (completedMaintenanceNos.contains(planNo)) {
+                // Đã hoàn thành
+                dto.setStatus("ON_TIME");
+
+            } else if (planNo.equals(finalNextTimeNo)) {
+                // Đây là lần kế tiếp có thể đặt lịch
+                dto.setStatus("NEXT_TIME");
+
+            } else if (planNo < finalNextTimeNo) {
+                // Các lần trước nextTimeNo mà chưa hoàn thành = EXPIRED (đã bị bỏ qua/skip)
+                dto.setStatus("EXPIRED");
+
+            } else {
+                // Các lần sau nextTimeNo = LOCKED (chưa thể đặt vì nextTime chưa xong)
+                dto.setStatus("LOCKED");
+            }
 
             return dto;
         }).collect(Collectors.toList());

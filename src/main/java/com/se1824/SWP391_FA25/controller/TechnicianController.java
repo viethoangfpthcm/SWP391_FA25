@@ -3,8 +3,10 @@ package com.se1824.SWP391_FA25.controller;
 import com.se1824.SWP391_FA25.entity.Users;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
+import com.se1824.SWP391_FA25.model.request.ChecklistDetailUpdateRequest;
 import com.se1824.SWP391_FA25.model.response.AssignedBookingTechnicianResponse;
 import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
+import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistSummaryResponse; // <-- THÊM IMPORT NÀY
 import com.se1824.SWP391_FA25.service.MaintenanceChecklistService;
 import com.se1824.SWP391_FA25.service.TechnicianService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -36,17 +38,19 @@ public class TechnicianController {
         return ResponseEntity.ok(responseList);
     }
 
+
     /**
      * Lấy danh sách các Maintenance Checklist (Bảng kiểm tra bảo dưỡng) hiện có
-     * và đang được xử lý bởi Kỹ thuật viên đang đăng nhập.
+     * và đang được xử lý bởi Kỹ thuật viên đang đăng nhập (TRẢ VỀ TÓM TẮT).
      *
-     * @return ResponseEntity chứa danh sách MaintenanceChecklistResponse.
+     * @return ResponseEntity chứa danh sách MaintenanceChecklistSummaryResponse.
      */
     @GetMapping("/my-checklists")
-    public ResponseEntity<List<MaintenanceChecklistResponse>> getMyChecklists() {
-        List<MaintenanceChecklistResponse> responseList = checklistService.getChecklistByCurrentTechnician();
+    public ResponseEntity<List<MaintenanceChecklistSummaryResponse>> getMyChecklistsSummary() {
+        List<MaintenanceChecklistSummaryResponse> responseList = checklistService.getChecklistByCurrentTechnicianSummary();
         return ResponseEntity.ok(responseList);
     }
+
 
     /**
      * Bắt đầu quy trình bảo dưỡng (Maintenance Start) cho một Booking cụ thể.
@@ -59,32 +63,19 @@ public class TechnicianController {
         checklistService.startMaintenance(bookingId, actualKm);
         return ResponseEntity.ok("Maintenance started for booking ID: " + bookingId);
     }
-
     /**
      * Cập nhật chi tiết một hạng mục (detail) trong Maintenance Checklist.
-     * Đây là API Kỹ thuật viên sử dụng để ghi nhận trạng thái kiểm tra, ghi chú và chọn phụ tùng.
-     * <p>
-     * Endpoint: PUT /api/technician/detail/{detailId}
-     *
+     * * Endpoint: PUT /api/technician/detail/{detailId}
      * @param detailId       ID của chi tiết Checklist cần cập nhật.
-     * @param status         Trạng thái mới của hạng mục
-     * @param note           Ghi chú của Kỹ thuật viên
-     * @param partId         ID của phụ tùng được chọn để thay thế
-     * @param authentication Đối tượng xác thực chứa thông tin của User đang đăng nhập.
+     * @param request        Request Body chứa status, note, partId.
      * @return ResponseEntity với thông báo cập nhật thành công.
      */
-    @PutMapping("/detail/{detailId}")
+    @PutMapping("/update-detail/{detailId}")
     public ResponseEntity<String> updateChecklistDetail(
             @PathVariable Integer detailId,
-            @RequestParam String status,
-            @RequestParam(required = false) String note,
-            @RequestParam(required = false) Integer partId,
-            Authentication authentication
+            @RequestBody ChecklistDetailUpdateRequest request //
     ) {
-        Users currentUser = (Users) authentication.getPrincipal();
-        Integer currentUserId = currentUser.getUserId();
-
-        checklistService.updateChecklistDetail(detailId, status, note, partId, currentUserId);
+        checklistService.updateChecklistDetail(detailId, request);
         return ResponseEntity.ok("Checklist detail updated successfully");
     }
 
@@ -107,4 +98,15 @@ public class TechnicianController {
         }
     }
 
+    /**
+     * Lấy chi tiết checklist cụ thể cho khách hàng theo bookingId (API DETAIL).
+     *
+     * @param bookingId ID booking
+     * @return chi tiết checklist
+     */
+    @GetMapping("/my-checklists/{bookingId}")
+    public ResponseEntity<MaintenanceChecklistResponse> getChecklistDetailForTechnician(@PathVariable Integer bookingId) {
+        MaintenanceChecklistResponse response = checklistService.getChecklistByTechnicianAndBookingId(bookingId);
+        return ResponseEntity.ok(response);
+    }
 }

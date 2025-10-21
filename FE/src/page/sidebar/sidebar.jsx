@@ -1,62 +1,107 @@
 import React from "react";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
-    FaHouse,
-    FaCalendarCheck,
-    FaListCheck,
-    FaClipboardCheck,
-    FaFileLines,
-    FaClock,
-    FaRightFromBracket,
-} from "react-icons/fa6";
+  FaHome,
+  FaCalendarCheck,
+  FaTasks,
+  FaClipboardCheck,
+  FaFileAlt,
+  FaClock,
+  FaSignOutAlt,
+  FaUserCog,
+} from "react-icons/fa";
 import "./sidebar.css";
 
-const Sidebar = ({sidebarOpen}) => {
-    const navigate = useNavigate();
+const Sidebar = ({ userName, userRole }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        navigate("/");
-    };
+  const currentUserName = userName || localStorage.getItem("fullName") || "Người dùng";
+  const currentUserRole = userRole || localStorage.getItem("role") || "Khách";
+  const role = currentUserRole.toLowerCase();
+  let defaultHomePath = "/home";
 
-    return (
-        <div className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
+  switch (role) {
+    case "admin":
+      defaultHomePath = "/admin";
+      break;
+    case "staff":
+      defaultHomePath = "/staff";
+      break;
+    case "technician":
+      defaultHomePath = "/technicantask"; // ✅ khớp với route thật
+      break;
+    default:
+      defaultHomePath = "/home";
+      break;
+  }
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("fullName");
+    localStorage.removeItem("role");
+    localStorage.removeItem("sidebarOpen");
+    navigate("/");
+  };
 
-            {/* Technician info */}
-            <div className="technician-info">
-                <h3>Phạm Văn C</h3>
-                <p>Kỹ thuật viên</p>
-            </div>
+  const isActive = (path) =>
+    location.pathname === path || (location.pathname.startsWith(path) && path !== "/home");
 
-            {/* Main menu */}
-            <div className="menu">
-                <Link to="/home" className="menu-item">
-                    <FaHouse/> Trang chủ
-                </Link>
-                <Link to="/staff" className="menu-item">
-                    <FaCalendarCheck/> Quản lý lịch hẹn
-                </Link>
-                <Link to="/technician-task" className="menu-item">
-                    <FaListCheck/> Công việc được giao
-                </Link>
-                <Link to="/checklist" className="menu-item">
-                    <FaClipboardCheck/> Kiểm tra thực hiện
-                </Link>
-                <Link to="/reports" className="menu-item">
-                    <FaFileLines/> Biên bản đã tạo
-                </Link>
-                <Link to="/schedule" className="menu-item">
-                    <FaClock/> Lịch làm việc
-                </Link>
+  return (
+    <div className="sidebar open">
+      <div className="user-info">
+        <h3>{currentUserName}</h3>
+        <p>{currentUserRole}</p>
+      </div>
 
-                {/* Logout button directly below menu */}
-                <button className="logout-btn" onClick={handleLogout}>
-                    <FaRightFromBracket/> Đăng xuất
-                </button>
-            </div>
-        </div>
-    );
+      <div className="menu">
+        <Link to={defaultHomePath} className={`menu-item ${isActive(defaultHomePath) ? "active" : ""}`}>
+          <FaHome /> <span>Trang chủ</span>
+        </Link>
+
+        {(role === "staff" || role === "admin") && (
+          <Link to="/staff" className={`menu-item ${isActive("/staff") ? "active" : ""}`}>
+            <FaCalendarCheck /> <span>Quản lý lịch hẹn</span>
+          </Link>
+        )}
+
+        
+        {role === "technician" && (
+          <>
+            <Link to="/technicantask" className={`menu-item ${isActive("/technicantask") ? "active" : ""}`}>
+              <FaTasks /> <span>Công việc được giao</span>
+            </Link>
+
+            <Link to="/checklist" className={`menu-item ${isActive("/checklist") ? "active" : ""}`}>
+              <FaClipboardCheck /> <span>Kiểm tra thực hiện</span>
+            </Link>
+          </>
+        )}
+
+        {role === "admin" && (
+          <Link to="/admin" className={`menu-item ${isActive("/admin") ? "active" : ""}`}>
+            <FaUserCog /> <span>Quản lý người dùng</span>
+          </Link>
+        )}
+
+        {(role === "technician" || role === "admin") && (
+          <Link to="/reports" className={`menu-item ${isActive("/reports") ? "active" : ""}`}>
+            <FaFileAlt /> <span>Biên bản đã tạo</span>
+          </Link>
+        )}
+
+        {role === "technician" && (
+          <Link to="/schedule" className={`menu-item ${isActive("/schedule") ? "active" : ""}`}>
+            <FaClock /> <span>Lịch làm việc</span>
+          </Link>
+        )}
+
+        <button className="logout-btn" onClick={handleLogout}>
+          <FaSignOutAlt /> <span>Đăng xuất</span>
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default Sidebar;

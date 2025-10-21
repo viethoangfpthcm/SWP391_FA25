@@ -23,6 +23,7 @@ public class StaffService {
     private final BookingRepository bookingRepo;
     private final UserRepository userRepo;
     private final AuthenticationService authService;
+    private final MaintenanceChecklistRepository checklistRepo;
 
     /**
      * Lấy danh sách booking Pending của Service Center mà staff đang quản lý
@@ -127,6 +128,43 @@ public class StaffService {
         bookingRepo.save(booking);
         log.info("Technician {} assigned to booking {} by staff {}", request.getTechnicianId(), request.getBookingId(), staffId);
     }
+    /**
+     * Staff bàn giao xe và hoàn tất booking
+     * Yêu cầu: Booking status = "Paid" VÀ Checklist status = "Completed"
+     */
+    @Transactional
+    public void handOverVehicle(Integer bookingId) {
+        Users currentStaff = authService.getCurrentAccount();
+        validateStaffRole(currentStaff.getUserId());
+        log.info("Staff {} attempting to hand over vehicle for booking {}", currentStaff.getUserId(), bookingId);
+
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingId));
+
+        // 1. Validate staff's center
+        if (!booking.getServiceCenter().getId().equals(currentStaff.getCenter().getId())) {
+            throw new InvalidDataException("This booking does not belong to your service center.");
+        }
+
+        // 2. Kiểm tra Booking status (Phải là "Paid")
+        if (!"Paid".equals(booking.getStatus())) {
+            throw new InvalidDataException("Cannot hand over vehicle. Booking status must be 'Paid'. Current status: " + booking.getStatus());
+        }
+
+        // 3. Kiểm tra Checklist status (Phải là "Completed")
+        MaintenanceChecklist checklist = checklistRepo.findByBooking_BookingId(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Checklist not found for booking ID: " + bookingId));
+
+        if (!"Completed".equalsIgnoreCase(checklist.getStatus())) {
+            throw new InvalidDataException("Cannot hand over vehicle. Maintenance checklist must be 'Completed'. Current status: " + checklist.getStatus());
+        }
+
+        // 4. Cập nhật trạng thái Booking
+        booking.setStatus("Completed");
+        bookingRepo.save(booking);
+
+        log.info("Booking {} successfully set to 'Completed' (vehicle handed over) by staff {}", bookingId, currentStaff.getUserId());
+    }
 
     // ==================== Private Helper Methods ====================
 
@@ -150,6 +188,16 @@ public class StaffService {
         dto.setStatus(booking.getStatus());
         dto.setNote(booking.getNote());
         dto.setCenterName(booking.getServiceCenter().getName());
+        if (booking.getAssignedTechnician() != null) {
+            dto.setTechnicianName(booking.getAssignedTechnician().getFullName());
+        } else {
+            dto.setTechnicianName(null);
+        }
+        checklistRepo.findByBooking_BookingId(booking.getBookingId())
+                .ifPresent(checklist -> {
+                    dto.setChecklistStatus(checklist.getStatus());
+                    log.debug("Found checklist for booking {}: status = {}", booking.getBookingId(), checklist.getStatus());
+                });
         return dto;
     }
 

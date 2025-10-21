@@ -140,8 +140,14 @@ public class BookingService {
     @Transactional
     public BookingResponse createBooking(CreateBookingRequest request, Users current) {
         log.info("Creating booking for vehicle: {} at center: {}", request.getVehiclePlate(), request.getCenterId());
-        //validateBookingRequest(request);
 
+        // Validate if vehicle has any non-Paid bookings
+        List<Booking> existingBookings = bookingRepo.findByVehicle_LicensePlate(request.getVehiclePlate());
+        boolean hasNonPaidBooking = existingBookings.stream()
+                .anyMatch(booking -> !"Paid".equals(booking.getStatus()));
+        if (hasNonPaidBooking) {
+            throw new InvalidDataException("Cannot create a new booking for this vehicle as it has an existing non-Paid booking");
+        }
 
         Vehicle vehicle = vehicleRepo.findById(request.getVehiclePlate())
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with license plate: " + request.getVehiclePlate()));
@@ -153,7 +159,7 @@ public class BookingService {
         ServiceCenter center = serviceCenterRepo.findById(request.getCenterId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service center not found with ID: " + request.getCenterId()));
 
-        // 1. Tìm MaintenancePlan mà khách hàng đã chọn
+        // Tìm MaintenancePlan mà khách hàng đã chọn
         MaintenancePlan selectedPlan = planRepo.findById(request.getMaintenancePlanId())
                 .orElseThrow(() -> new ResourceNotFoundException("Maintenance Plan not found with ID: " + request.getMaintenancePlanId()));
 
@@ -165,15 +171,13 @@ public class BookingService {
         booking.setStatus("Pending");
         booking.setNote(request.getNote());
         booking.setMaintenanceNo(selectedPlan.getMaintenanceNo());
-        booking.setMaintenancePlan(selectedPlan); // 2. Gán plan đã chọn vào booking
+        booking.setMaintenancePlan(selectedPlan);
 
         Booking savedBooking = bookingRepo.save(booking);
         log.info("Booking created successfully with ID: {} for Plan ID: {}", savedBooking.getBookingId(), selectedPlan.getId());
 
         return mapToBookingResponse(savedBooking);
-
     }
-
     /**
      * Lấy danh sách booking của customer
      */

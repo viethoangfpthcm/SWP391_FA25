@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.jpg";
 import "./Navbar.css";
 
+
 export default function Navbar() {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("token");
@@ -18,7 +19,7 @@ export default function Navbar() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userId");
-    navigate("/");
+    navigate("/login");
   };
 
   return (
@@ -28,11 +29,27 @@ export default function Navbar() {
       </div>
 
       <nav className="navbar-center">
+        {/* Trang chủ luôn hiển thị */}
         <Link to="/home">Trang Chủ</Link>
-        <Link to="/appoint">Dịch Vụ</Link>
-        <Link to="/about">Về Chúng Tôi</Link>
-        <Link to="/contact">Liên Hệ</Link>
-        <Link to="/report">Theo Dõi</Link>
+
+        {/* Các trang public khi chưa đăng nhập */}
+        {!isLoggedIn && (
+          <>
+            <Link to="/about">Về Chúng Tôi</Link>
+            <Link to="/contact">Liên Hệ</Link>
+          </>
+        )}
+
+        {/* Các trang riêng khi đã đăng nhập */}
+        {isLoggedIn && (
+          <>
+            <Link to="/customer/dashboard">Bảng điều khiển</Link>
+            <Link to="/appoint">Dịch Vụ</Link>
+            <Link to="/about">Về Chúng Tôi</Link>
+            <Link to="/contact">Liên Hệ</Link>
+            <Link to="/report1">Biên Bản</Link>
+          </>
+        )}
       </nav>
 
       <div className="navbar-right">
@@ -41,7 +58,7 @@ export default function Navbar() {
             Đăng Xuất
           </button>
         ) : (
-          <Link to="/" className="btn login">
+          <Link to="/login" className="btn login">
             Đăng Nhập
           </Link>
         )}
