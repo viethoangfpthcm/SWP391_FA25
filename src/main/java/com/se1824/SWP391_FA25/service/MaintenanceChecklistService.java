@@ -49,20 +49,7 @@ public class MaintenanceChecklistService {
     String STATUS_GOOD = "TỐT";
 
 
-    /**
-     * Trả về chi phí nhân công cố định cho các hạng mục không dùng Part.
-     */
-    private BigDecimal getStandardLaborCost(String status) {
-        if (STATUS_ADJUSTMENT.equalsIgnoreCase(status)) {
 
-            return BigDecimal.ZERO;
-        }
-        if (STATUS_REPAIR.equalsIgnoreCase(status)) {
-            // Chi phí cố định cho sửa chữa (4.000.000 VND)
-            return new BigDecimal("4000000");
-        }
-        return BigDecimal.ZERO;
-    }
 
 
     /**
@@ -446,11 +433,21 @@ public class MaintenanceChecklistService {
             detail.setLaborCost(Optional.ofNullable(part.getLaborCost()).orElse(BigDecimal.ZERO));
             detail.setMaterialCost(Optional.ofNullable(part.getMaterialCost()).orElse(BigDecimal.ZERO));
 
-        } else if (STATUS_ADJUSTMENT.equalsIgnoreCase(status) || STATUS_REPAIR.equalsIgnoreCase(status)) {
-            // Gọi hàm tính toán chi phí nhân công cố định
-            detail.setLaborCost(getStandardLaborCost(status));
-        }
+        } else if (STATUS_REPAIR.equalsIgnoreCase(status)) {
 
+            BigDecimal laborCost = Optional.ofNullable(request.laborCost()).orElse(BigDecimal.ZERO);
+            // Thêm validation nếu cần (ví dụ: không cho phép chi phí âm)
+            if (laborCost.compareTo(BigDecimal.ZERO) < 0) {
+                throw new InvalidDataException("Chi phí sửa chữa không được âm.");
+            }
+
+            detail.setLaborCost(laborCost);
+            detail.setMaterialCost(BigDecimal.ZERO);
+
+        } else if (STATUS_ADJUSTMENT.equalsIgnoreCase(status)) {
+            detail.setLaborCost(BigDecimal.ZERO);
+            detail.setMaterialCost(BigDecimal.ZERO);
+        }
         detailRepo.save(detail);
         log.info("Updated checklist detail successfully by user {}", currentUserId);
     }

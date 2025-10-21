@@ -6,12 +6,12 @@ import VnPayPaymentButton from '../../components/VnPayPaymentButton.jsx';
 import {
   FaCircleCheck, FaXmark, FaTriangleExclamation,
   FaFileInvoice,
-  FaChevronRight
+  FaChevronRight, FaChevronDown, FaChevronUp
 } from "react-icons/fa6";
-import { FaSpinner, FaTools } from "react-icons/fa";
+import { FaSpinner, FaTools, FaCalendarAlt } from "react-icons/fa";
 import "./report1.css";
 
-// Hàm format trạng thái kỹ thuật
+// Hàm format nằm ngoài component
 const formatTechStatus = (status) => {
   switch (status) {
     case 'TỐT': return 'Tốt';
@@ -22,7 +22,9 @@ const formatTechStatus = (status) => {
   }
 };
 
+
 export default function Report1() {
+  // === State ===
   const [reportsList, setReportsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -30,12 +32,14 @@ export default function Report1() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [currentReport, setCurrentReport] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [confirmModal, setConfirmModal] = useState({ show: false, message: "", callback: null });
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
   const token = localStorage.getItem("token");
   const customerId = localStorage.getItem("userId");
   const API_BASE = "https://103.90.226.216:8443";
 
+  // === Hàm xử lý ===
   const showToast = (message, type = "success") => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
@@ -44,74 +48,48 @@ export default function Report1() {
   useEffect(() => {
     const fetchReportsList = async () => {
       setLoading(true);
-      if (!token || !customerId) { 
-        setError("Vui lòng đăng nhập."); 
-        setLoading(false); 
-        navigate("/"); 
-        return; 
-      }
+      if (!token || !customerId) { setError("Vui lòng đăng nhập."); setLoading(false); navigate("/"); return; }
       try {
         const listUrl = `${API_BASE}/api/customer/maintenance/checklists?customerId=${encodeURIComponent(customerId)}`;
         const response = await fetch(listUrl, { headers: { Authorization: `Bearer ${token}` } });
         if (!response.ok) {
-          if (response.status === 401) { 
-            setError("Phiên đăng nhập hết hạn."); 
-            localStorage.clear(); 
-            navigate("/"); 
-          } else { 
-            throw new Error(`Lỗi ${response.status}`); 
-          } 
-          return;
+          if (response.status === 401) { setError("Phiên đăng nhập hết hạn."); localStorage.clear(); navigate("/"); }
+          else { throw new Error(`Lỗi ${response.status}`); } return;
         }
         const data = await response.json();
 
+       
+        // YÊU CẦU API trả về 'bookingStatus' và 'totalCostApproved'
         const processedData = data
           .filter(r => {
+            // Giả sử API đã trả về 'bookingStatus'
             const isCompleted = r.status === "COMPLETED";
             const isPaid = r.bookingStatus === "Paid";
+
+            // Hiển thị nếu:
+            // 1. Report chưa hoàn thành (VD: IN_PROGRESS)
+            // 2. Report ĐÃ hoàn thành NHƯNG CHƯA thanh toán
             return !isCompleted || (isCompleted && !isPaid);
           })
           .sort((a, b) => (b.createdDate ? new Date(b.createdDate) : 0) - (a.createdDate ? new Date(a.createdDate) : 0));
 
-        setReportsList(processedData); 
-        setError('');
-      } catch (err) { 
-        console.error("Lỗi tải danh sách:", err); 
-        setError("Không thể tải danh sách."); 
-      } finally { 
-        setLoading(false); 
-      }
+        setReportsList(processedData); setError('');
+      } catch (err) { console.error("Lỗi tải danh sách:", err); setError("Không thể tải danh sách."); }
+      finally { setLoading(false); }
     };
     fetchReportsList();
   }, [token, customerId, navigate, API_BASE]);
 
   const handleViewDetails = async (bookingId) => {
     if (!bookingId) return;
-    setShowDetailModal(true);
-    setDetailLoading(true);
-    setCurrentReport(null);
-
+    setShowDetailModal(true); setDetailLoading(true); setCurrentReport(null);
     try {
       const detailUrl = `${API_BASE}/api/customer/maintenance/checklists/${bookingId}`;
       const response = await fetch(detailUrl, { headers: { Authorization: `Bearer ${token}` } });
-      if (!response.ok) throw new Error("Không thể tải chi tiết.");
-
-      const detailData = await response.json();
-
-      // Mặc định tất cả hạng mục đã phê duyệt
-      const detailsWithApproved = detailData.details.map(d => ({
-        ...d,
-        approvalStatus: d.approvalStatus || "APPROVED"
-      }));
-
-      setCurrentReport({ ...detailData, details: detailsWithApproved });
-    } catch (err) {
-      console.error("Lỗi tải chi tiết:", err);
-      showToast("Lỗi tải chi tiết.", "error");
-      setShowDetailModal(false);
-    } finally {
-      setDetailLoading(false);
-    }
+      if (!response.ok) { throw new Error("Không thể tải chi tiết."); }
+      const detailData = await response.json(); setCurrentReport(detailData);
+    } catch (err) { console.error("Lỗi tải chi tiết:", err); showToast("Lỗi tải chi tiết.", "error"); handleCloseModal(); }
+    finally { setDetailLoading(false); }
   };
 
   const handleCloseModal = () => { setShowDetailModal(false); setCurrentReport(null); };
@@ -124,7 +102,62 @@ export default function Report1() {
     });
   };
 
+  const handleApproval = (detailId, action) => {
+    const msg = action === "approved" ? "Phê duyệt hạng mục này?" : "Từ chối hạng mục này?";
+    setConfirmModal({ show: true, message: msg, callback: () => proceedWithApproval(detailId, action) });
+  };
+
+  const proceedWithApproval = async (detailId, action) => {
+    const newStatus = action === "approved" ? "APPROVED" : "DECLINED";
+    const currentDetail = currentReport?.details.find(d => d.id === detailId);
+    const customerNote = currentDetail?.customerNote || "";
+    try {
+      const approvalUrl = `${API_BASE}/api/customer/maintenance/checklists/details/${detailId}/approval`;
+      const response = await fetch(approvalUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          approvalStatus: newStatus,
+          customerNote: customerNote
+        })
+      });
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Lỗi API khi cập nhật:", response.status, errorData);
+        showToast(`Lỗi ${response.status}: Không thể cập nhật phê duyệt.`, "error");
+        return;
+      }
+      setCurrentReport(prev => {
+        if (!prev) return null;
+        const old = prev.details.find(d => d.id === detailId);
+        if (!old) return prev;
+        const cost = (old.laborCost || 0) + (old.materialCost || 0);
+        let approvedCost = prev.totalCostApproved || 0;
+        let declinedCost = prev.totalCostDeclined || 0;
+        if (newStatus === "APPROVED" && old.approvalStatus !== "APPROVED") {
+          approvedCost += cost; if (old.approvalStatus === "DECLINED") declinedCost -= cost;
+        } else if (newStatus === "DECLINED" && old.approvalStatus !== "DECLINED") {
+          declinedCost += cost; if (old.approvalStatus === "APPROVED") approvedCost -= cost;
+        }
+        const updated = prev.details.map(d =>
+          d.id === detailId
+            ? { ...d, approvalStatus: newStatus, customerNote: customerNote }
+            : d
+        );
+        showToast(`Đã ${action === "approved" ? "phê duyệt" : "từ chối"}!`, action === "approved" ? "success" : "warning");
+        return { ...prev, details: updated, totalCostApproved: Math.max(0, approvedCost), totalCostDeclined: Math.max(0, declinedCost) };
+      });
+    } catch (error) {
+      console.error("Lỗi mạng hoặc lỗi khác:", error);
+      showToast("Lỗi kết nối: Không thể cập nhật.", "error");
+    } finally { }
+  };
+
   const getStatusIcon = (status) => {
+    
     switch (status) {
       case 'IN_PROGRESS': return <FaTools className="status-icon in-progress" title="Đang xử lý" />;
       case 'PENDING_APPROVAL': return <FaTriangleExclamation className="status-icon pending" title="Chờ phê duyệt" />;
@@ -133,27 +166,9 @@ export default function Report1() {
     }
   };
 
-  if (loading) return (
-    <div className="report-page">
-      <Navbar />
-      <main className="report-container">
-        <div className="loading-state"><FaSpinner className="spinner-icon" /> Đang tải...</div>
-      </main>
-      <Footer />
-    </div>
-  );
-
-  if (error) return (
-    <div className="report-page">
-      <Navbar />
-      <main className="report-container">
-        <div className="no-data-card">
-          <h3><FaXmark /> {error}</h3>
-        </div>
-      </main>
-      <Footer />
-    </div>
-  );
+  // ---------------- RENDER ----------------
+  if (loading) return (<div className="report-page"><Navbar /><main className="report-container"><div className="loading-state"><FaSpinner className="spinner-icon" /> Đang tải...</div></main><Footer /></div>);
+  if (error) return (<div className="report-page"><Navbar /><main className="report-container"><div className="no-data-card"><h3><FaXmark /> {error}</h3></div></main><Footer /></div>);
 
   return (
     <div className="report-page">
@@ -161,24 +176,24 @@ export default function Report1() {
       {showDetailModal && (
         <div className="modal-overlay report-modal-overlay">
           <div className="modal-content report-modal-content">
-            <button onClick={handleCloseModal} className="close-modal-btn"><FaXmark /></button>
-            {detailLoading && (
-              <div className="loading-state modal-loading"><FaSpinner className="spinner-icon" /> Tải chi tiết...</div>
+            {confirmModal.show && (
+              <div className="confirm-modal-overlay nested">
+                <div className="confirm-modal-content">
+                  <h4>Xác nhận</h4> <p>{confirmModal.message}</p>
+                  <div className="confirm-modal-actions">
+                    <button className="btn btn-cancel" onClick={() => setConfirmModal({ show: false, callback: null })}>Hủy</button>
+                    <button className="btn btn-confirm" onClick={() => { if (confirmModal.callback) confirmModal.callback(); setConfirmModal({ show: false, callback: null }); }}>Xác nhận</button>
+                  </div>
+                </div>
+              </div>
             )}
+            <button onClick={handleCloseModal} className="close-modal-btn"><FaXmark /></button>
+            {detailLoading && (<div className="loading-state modal-loading"><FaSpinner className="spinner-icon" /> Tải chi tiết...</div>)}
             {!detailLoading && currentReport && (
               <article className="report-document-modal">
                 <header className="document-header">
-                  <div className="doc-left">
-                    <div className="doc-title">BIÊN BẢN</div>
-                    <div className="doc-meta">
-                      <span>Mã BB: <strong>#{currentReport.id}</strong></span>
-                    </div>
-                  </div>
-                  <div className="doc-status">
-                    <div className={`status-pill ${currentReport.status?.toLowerCase()}`}>
-                      {currentReport.status === "IN_PROGRESS" ? "Đang xử lý" : (currentReport.status === "COMPLETED" ? "Đã hoàn thành" : currentReport.status || '?')}
-                    </div>
-                  </div>
+                  <div className="doc-left"><div className="doc-title">BIÊN BẢN</div><div className="doc-meta"><span>Mã BB: <strong>#{currentReport.id}</strong></span></div></div>
+                  <div className="doc-status"><div className={`status-pill ${currentReport.status?.toLowerCase()}`}>{currentReport.status === "IN_PROGRESS" ? "Đang xử lý" : (currentReport.status === "COMPLETED" ? "Đã hoàn thành" : currentReport.status || '?')}</div></div>
                 </header>
                 <section className="document-body">
                   <div className="left-col">
@@ -205,6 +220,9 @@ export default function Report1() {
                     <h4 className="details-title">Chi tiết hạng mục</h4>
                     {currentReport.details && currentReport.details.length > 0 ? (
                       currentReport.details.map((d) => {
+                        const status = (d.approvalStatus || "PENDING").toLowerCase();
+                        const isApproved = d.approvalStatus === "APPROVED";
+                        const isDeclined = d.approvalStatus === "DECLINED";
                         const techStatusClass = `tech-status-${(d.status || 'unknown').toLowerCase().replace('_', '-')}`;
                         return (
                           <div key={d.id} className="detail-row">
@@ -214,9 +232,7 @@ export default function Report1() {
                                   <div className="detail-name">{d.itemName}</div>
                                   <span className={`tech-status-tag ${techStatusClass}`}>{formatTechStatus(d.status)}</span>
                                 </div>
-                                <div className={`approval-tag ${d.approvalStatus?.toLowerCase()}`}>
-                                  {d.approvalStatus === "APPROVED" ? "✓ Duyệt" : d.approvalStatus === "DECLINED" ? "✗ Từ chối" : "Chờ"}
-                                </div>
+                                <div className={`approval-tag ${status}`}>{isApproved ? "✓ Duyệt" : isDeclined ? "✗ Từ chối" : " Chờ"}</div>
                               </div>
                               <div className="detail-grid">
                                 <div><span className="label">Linh kiện</span><div className="val">{d.partName || "-"}</div></div>
@@ -232,24 +248,8 @@ export default function Report1() {
                               </div>
                             </div>
                             <div className="detail-actions">
-                              <label className="approval-checkbox">
-                                <input
-                                  type="checkbox"
-                                  checked={d.approvalStatus !== "DECLINED"} // mặc định duyệt
-                                  onChange={(e) =>
-                                    setCurrentReport(prev => {
-                                      if (!prev) return prev;
-                                      const updated = prev.details.map(item =>
-                                        item.id === d.id
-                                          ? { ...item, approvalStatus: e.target.checked ? "APPROVED" : "DECLINED" }
-                                          : item
-                                      );
-                                      return { ...prev, details: updated };
-                                    })
-                                  }
-                                />
-                                Phê duyệt
-                              </label>
+                              <button className={`btn small approve ${isApproved ? "active" : ""}`} onClick={() => handleApproval(d.id, "approved")} disabled={isApproved}>Đồng ý</button>
+                              <button className={`btn small reject ${isDeclined ? "active" : ""}`} onClick={() => handleApproval(d.id, "rejected")} disabled={isDeclined}>Từ chối</button>
                             </div>
                           </div>
                         );
@@ -284,15 +284,25 @@ export default function Report1() {
           <div className="no-data-card"><div className="no-data-icon">📋</div><h3>Chưa có biên bản</h3><p>Biên bản chờ duyệt hoặc chờ thanh toán sẽ hiện ở đây.</p></div>
         ) : (
           <div className="report-list-container">
+
+
             {reportsList.map((report) => {
               const statusClass = `status-${(report.status || 'default').toLowerCase().replace('_', '-')}`;
-              const isCompleted = report.status === "COMPLETED";
+
+
+              const isCompleted = report.status === "Completed";
               const isPaid = report.bookingStatus === "Paid";
+              const isBookingCompleted = report.bookingStatus === "Completed";
               const totalAmount = report.totalCostApproved || 0;
-              const showPayButton = isCompleted && !isPaid && totalAmount > 0;
+
+              const showPayButton = !isBookingCompleted && isCompleted && !isPaid && totalAmount > 0;
+              // --- Hết logic mới ---
 
               return (
+                // Thẻ div ngoài không còn onClick
                 <div key={report.id} className={`report-list-card ${statusClass}`}>
+
+                  {/* Nội dung chính (nhấn vào để xem chi tiết) */}
                   <div
                     className="report-card-main-content"
                     onClick={() => handleViewDetails(report.bookingId)}
@@ -303,9 +313,12 @@ export default function Report1() {
                       <p>Mã BB: #{report.id} • Trạng thái: {report.status === "COMPLETED" ? "Chờ thanh toán" : (report.status || '?')}</p>
                     </div>
                     <div className="report-card-action">
+                      {/* Ẩn mũi tên nếu nút thanh toán xuất hiện */}
                       {!showPayButton && <FaChevronRight />}
                     </div>
                   </div>
+
+                  {/* --- KHU VỰC NÚT THANH TOÁN MỚI --- */}
                   {showPayButton && (
                     <div className="report-card-payment-section">
                       <VnPayPaymentButton
@@ -314,6 +327,7 @@ export default function Report1() {
                       />
                     </div>
                   )}
+
                 </div>
               );
             })}

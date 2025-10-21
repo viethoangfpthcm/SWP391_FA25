@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -140,11 +137,11 @@ public class BookingService {
     @Transactional
     public BookingResponse createBooking(CreateBookingRequest request, Users current) {
         log.info("Creating booking for vehicle: {} at center: {}", request.getVehiclePlate(), request.getCenterId());
-
+        Set<String> resolvedStatuses = Set.of("Completed", "Declined");
         // Validate if vehicle has any non-Paid bookings
         List<Booking> existingBookings = bookingRepo.findByVehicle_LicensePlate(request.getVehiclePlate());
         boolean hasNonPaidBooking = existingBookings.stream()
-                .anyMatch(booking -> !"Paid".equals(booking.getStatus()));
+                .anyMatch(booking -> !resolvedStatuses.contains(booking.getStatus()));
         if (hasNonPaidBooking) {
             throw new InvalidDataException("Cannot create a new booking for this vehicle as it has an existing non-Paid booking");
         }
