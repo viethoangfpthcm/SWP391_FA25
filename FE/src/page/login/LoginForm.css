@@ -1,18 +1,58 @@
-/* ---- Layout chính ---- */
+/* ---- Nền chính ---- */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background: linear-gradient(to top, #0ac0e4, #0ac0e4, #0ac0e4);
+  background-image: url("../image/ecm.jpg"); /* nền núi tím có sương */
+  background-size: cover;
+  background-position: center;
+  font-family: "Segoe UI", Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Hiệu ứng trôi (floating animation) */
+@keyframes floatBackground {
+  0% {
+    background-position: center 0px;
+  }
+  50% {
+    background-position: center 20px;
+  }
+  100% {
+    background-position: center 0px;
+  }
+}
+
+body {
+  animation: floatBackground 8s ease-in-out infinite;
+}
+
+/* ---- Khung chính ---- */
 .login-wrapper {
   width: 420px;
-  margin: 100px auto;
-  background: #fff;
   padding: 40px 36px;
-  border-radius: 16px;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
-  font-family: "Segoe UI", Arial, sans-serif;
-  color: #111;
+  border-radius: 18px;
+
+  color: #ffffff;
   transition: all 0.3s ease-in-out;
 }
 
 .login-wrapper:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
+}
+
+/* ---- Header ---- */
+.welcome-header {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+  margin-bottom: 24px;
 }
 
 /* ---- Tabs ---- */
@@ -25,11 +65,10 @@
 
 .tab {
   flex: 1;
-  padding: 12px 0;
+  padding: 10px 0;
   font-size: 15px;
   font-weight: bold;
-  color: #0a4ff0;
-  background: #f2f6ff;
+  color: #141517;
   border: 1.5px solid transparent;
   border-radius: 10px;
   cursor: pointer;
@@ -37,9 +76,10 @@
 }
 
 .tab.active {
-  background: #0a4ff0;
-  color: #fff;
-  transform: scale(1.02);
+  background: rgba(255, 255, 255, 0.3);
+  color: #171414;
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.05);
 }
 
 /* ---- Form ---- */
@@ -51,56 +91,46 @@
 
 .form label {
   font-size: 14px;
-  color: #0a4ff0;
+  color: #1b0202;
   font-weight: 600;
 }
 
 .form input {
   width: 100%;
   padding: 12px 14px;
-  border: 1.8px solid #d6e1ff;
+  border: 1.8px solid rgba(255, 255, 255, 0.3);
   border-radius: 10px;
   outline: none;
   font-size: 14px;
-  background: #f8faff;
+  color: #130606;
   transition: all 0.25s ease;
 }
 
 .form input:focus {
-  border-color: #0a4ff0;
-  background: #fff;
-  box-shadow: 0 0 5px rgba(10, 79, 240, 0.25);
+  border-color: #07afeb;
+  background: rgba(248, 245, 245, 0.2);
+  box-shadow: 0 0 8px rgba(16, 195, 215, 0.5);
 }
 
-/* ---- Checkbox ---- */
 /* ---- Checkbox ---- */
 .checkbox-wrapper {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 4px; /* giảm khoảng cách giữa ô và chữ */
+  gap: 6px;
   font-size: 14px;
-  color: #333;
+  color: #25cfe1;
   margin-top: 6px;
-  white-space: nowrap; /* tránh chữ bị xuống dòng */
 }
 
 .checkbox-wrapper input[type="checkbox"] {
   width: 16px;
   height: 16px;
-  accent-color: #0a4ff0; /* màu xanh đồng bộ với theme */
+  accent-color: #0ac0e4;
 }
-
-.checkbox-wrapper label {
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
 
 /* ---- Button ---- */
 .login-btn {
-  background: #0a4ff0;
+  background: linear-gradient(90deg, #0ac0e4, #0ac0e4);
   color: #fff;
   font-size: 15px;
   font-weight: bold;
@@ -112,22 +142,22 @@
 }
 
 .login-btn:hover {
-  background: #003cd6;
-  transform: scale(1.02);
-  box-shadow: 0 4px 12px rgba(10, 79, 240, 0.3);
+  background: linear-gradient(90deg, #0ac0e4, #0ac0e4);
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(10, 173, 233, 0.4);
 }
 
 /* ---- Thông báo ---- */
 .error-message {
   margin-top: 12px;
-  color: #ff4d4d;
+  color: #da3517;
   font-size: 14px;
   text-align: center;
 }
 
 .success-message {
   margin-top: 12px;
-  color: #008000;
+  color: #0ac0e4;
   font-size: 14px;
   text-align: center;
 }
