@@ -1,12 +1,12 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap');
 
-body {
-  font-family: 'Nunito', sans-serif; /* Áp dụng Nunito làm phông chữ chính */
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #f8f9fa; /* Màu nền chung nhẹ nhàng */
-  color: #333; /* Màu chữ mặc định */
-}
+  body {
+    font-family: 'Nunito', sans-serif; /* Áp dụng Nunito làm phông chữ chính */
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f8f9fa; /* Màu nền chung nhẹ nhàng */
+    color: #333; /* Màu chữ mặc định */
+  }
 
