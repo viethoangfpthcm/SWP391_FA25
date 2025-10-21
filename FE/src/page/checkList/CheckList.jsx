@@ -77,7 +77,7 @@ export default function CheckList({ user }) {
         initialUpdates[detail.id] = {
           status: detail.status,
           note: detail.note || "",
-partId: initialPartId,
+          partId: initialPartId,
         };
       });
       setDetailUpdates(initialUpdates);
@@ -170,7 +170,7 @@ partId: initialPartId,
 
       const statusChanged = updates.status !== detail.status;
       const noteChanged = updates.note !== (detail.note || "");
-const partChanged = updates.partId !== (detail.partId || (detail.part ? detail.part.partId : null));
+      const partChanged = updates.partId !== (detail.partId || (detail.part ? detail.part.partId : null));
 
       return statusChanged || noteChanged || partChanged;
     });
@@ -253,7 +253,7 @@ const partChanged = updates.partId !== (detail.partId || (detail.part ? detail.p
     setIsUpdating(true);
     try {
       // API hoàn thành dùng Checklist ID, không phải Booking ID
-const apiUrl = `https://103.90.226.216:8443/api/technician/${checklist.id}/complete`;
+      const apiUrl = `https://103.90.226.216:8443/api/technician/${checklist.id}/complete`;
 
       const res = await fetch(apiUrl, {
         method: 'POST',
@@ -337,7 +337,7 @@ const apiUrl = `https://103.90.226.216:8443/api/technician/${checklist.id}/compl
                 {toast.type === "error" && <FaXmark />}
                 {toast.type === "warning" && <FaTriangleExclamation />}
                 {toast.type === "info" && <FaTriangleExclamation />}
-</div>
+              </div>
               <span className="toast-message">{toast.message}</span>
               <button className="toast-close" onClick={() => setToast({ show: false, message: "", type: "" })}>
                 <FaXmark />
@@ -404,7 +404,7 @@ const apiUrl = `https://103.90.226.216:8443/api/technician/${checklist.id}/compl
           <div className="empty-state">
             <h3>Không tìm thấy checklist</h3>
             <p>Checklist với booking ID <strong>#{bookingId}</strong> không tồn tại hoặc bạn không có quyền truy cập.</p>
-<button className="btn-back" onClick={() => navigate('/checklist')}>
+            <button className="btn-back" onClick={() => navigate('/checklist')}>
               Quay lại danh sách
             </button>
           </div>
@@ -470,7 +470,7 @@ const apiUrl = `https://103.90.226.216:8443/api/technician/${checklist.id}/compl
         </div>
 
         {/* BẢNG CHI TIẾT */}
-<table className="checklist-table">
+        <table className="checklist-table">
           <thead>
             <tr>
               <th>Mục kiểm tra (ActionType)</th>
@@ -537,7 +537,7 @@ const apiUrl = `https://103.90.226.216:8443/api/technician/${checklist.id}/compl
                   <td>
                     <select
                       value={currentUpdates.partId || ""}
-onChange={(e) => handleDetailChange(detail.id, 'partId', parseInt(e.target.value) || null)}
+                      onChange={(e) => handleDetailChange(detail.id, 'partId', parseInt(e.target.value) || null)}
                       disabled={!isReplace || isCompleted || detail.availableParts.length === 0}
                     >
                       <option value="">

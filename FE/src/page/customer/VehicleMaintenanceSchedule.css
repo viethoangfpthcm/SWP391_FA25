@@ -461,4 +461,14 @@
     opacity: 1;
   }
 }
-  
+  .processing-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #28a745; /* màu xanh */
+  color: white;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-top: 8px;
+}
