@@ -668,3 +668,33 @@
   font-weight: 600;
   margin-top: 8px;
 }
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px; 
+  font-size: 18px;
+  color: #278598;      
+  min-height: 300px;  
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.loading-container .spinner-icon {
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+  vertical-align: middle;
+  
+
+  color: #e9eaea;                   
+  background-color: transparent;   
+  fill: #f7faf9;      
+}            

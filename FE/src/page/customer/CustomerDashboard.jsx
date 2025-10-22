@@ -4,7 +4,7 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import './CustomerDashboard.css';
 
-import { FaUser, FaCar, FaCalendarAlt, FaPlus, FaTimes, FaEdit, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { FaUser, FaCar, FaCalendarAlt, FaPlus, FaTimes, FaEdit, FaCheckCircle, FaExclamationTriangle, FaSpinner } from 'react-icons/fa';
 
 function CustomerDashboard() {
   const [dashboardData, setDashboardData] = useState(null);
@@ -311,7 +311,10 @@ function CustomerDashboard() {
     return (
       <div className="dashboard-page loading-container">
         <Navbar />
-        <p>Đang tải dữ liệu...</p>
+        <div className="loading-container">
+          <FaSpinner className="spinner-icon" /> 
+          Đang tải dữ liệu...
+        </div>
         <Footer />
       </div>
     );

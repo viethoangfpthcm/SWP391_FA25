@@ -636,6 +636,23 @@ button.task-btn.view:hover {
     transform: rotate(360deg);
   }
 }
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container .spinner-icon {
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+  vertical-align: middle;
+  color: #2b9a86;                   
+  background-color: transparent;   
+  fill: #2b9a86;                    
+}
 
 .unsaved-warning {
   color: #d97706;
@@ -660,49 +677,3 @@ button.task-btn.view:hover {
   color: #ef4444;
 }
 
-/* ====== RESPONSIVE ====== */
-@media (max-width: 768px) {
-  .checklist-list {
-    grid-template-columns: 1fr;
-  }
-
-  .page-header {
-    flex-direction: column;
-    gap: 15px;
-    align-items: flex-start;
-  }
-
-  .checklist-card-header {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-  }
-
-  /* Toast responsive */
-  .toast-notification {
-    right: 10px;
-    left: 10px;
-    min-width: auto;
-  }
-  
-  /* Save section responsive */
-  .save-changes-section {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .btn-save-all-changes {
-    justify-content: center;
-    width: 100%;
-  }
-
-  .unsaved-warning {
-    text-align: center;
-    justify-content: center;
-  }
-
-  .content {
-    margin-left: 0 !important;
-    padding: 15px;
-  }
-}

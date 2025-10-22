@@ -1,6 +1,3 @@
-/* =========================================================
-   🌌 report1.css — Dark Glassmorphism Style (Optimized Full)
-   ========================================================= */
 
 /* ---------------------- */
 /* Tổng thể trang chính  */
@@ -79,6 +76,7 @@
   color: #0a4ff0;
   margin-bottom: 15px;
   animation: spin 1.5s linear infinite;
+  background-color: transparent;
 }
 
 /* ---------------------- */
@@ -464,14 +462,8 @@
 }
 
 /* ---------------------- */
-/* Responsive & Animations */
+/* Animations */
 /* ---------------------- */
-@media (max-width: 900px) {
-  .document-body {
-    display: flex;
-    flex-direction: column;
-  }
-}
 
 @keyframes fadeIn {
   from { opacity: 0; }

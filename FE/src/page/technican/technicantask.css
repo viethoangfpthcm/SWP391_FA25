@@ -382,3 +382,21 @@
     opacity: 1;
   }
 }
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading .spinner-icon {
+  animation: spin 1s linear infinite; 
+  margin-right: 10px;             
+  color: #2b9a86;               
+  vertical-align: middle;           
+  color: #2b9a86;                  
+  background-color: transparent;   
+  fill: #2b9a86;                   
+}
