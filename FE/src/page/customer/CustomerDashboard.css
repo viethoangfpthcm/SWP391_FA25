@@ -1,94 +1,139 @@
-/* CustomerDashboard.css */
+
+/* 🌌 Tổng thể */
 .dashboard-page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f8f9fa;
-  /* Màu nền nhẹ nhàng */
+  background: url("/background.png") no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+  overflow-x: hidden;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
+/* Overlay đen mờ + fade sáng */
+.dashboard-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 0;
+}
+
+.dashboard-page::after {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Nội dung chính */
 .dashboard-content {
   flex: 1;
   max-width: 1200px;
   margin: 30px auto;
-  /* Căn giữa và tạo khoảng cách */
   padding: 20px;
   width: 90%;
+  position: relative;
+  z-index: 1;
 }
 
 .dashboard-content h1 {
   text-align: center;
   color: #0a4ff0;
-  /* Màu xanh chủ đạo */
   margin-bottom: 40px;
   font-size: 2rem;
 }
 
-/* --- Sections --- */
-.dashboard-section {
-  background-color: #ffffff;
+/* =========================================================
+   🎨 Nền các box trắng làm dịu + hiệu ứng blur
+   ========================================================= */
+.dashboard-section,
+.vehicle-card,
+.booking-item,
+.modal-content,
+.profile-details,
+.stats-grid .stat-item {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
   border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.dashboard-section:hover,
+.vehicle-card:hover,
+.booking-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4),
+    0 0 12px rgba(0, 162, 255, 0.15);
+}
+
+/* =========================================================
+   🧾 Phần nội dung
+   ========================================================= */
+
+/* Section */
+.dashboard-section {
   padding: 25px;
   margin-bottom: 30px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-  border: 1px solid #eef;
-  /* Viền nhẹ */
 }
 
 .dashboard-section h2 {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #0a4ff0;
+  color: #fefefe;
   font-size: 1.4rem;
-  margin-top: 0;
-  margin-bottom: 20px;
+  margin: 0 0 20px;
   border-bottom: 2px solid #eef;
-  /* Đường gạch dưới tiêu đề */
   padding-bottom: 10px;
 }
 
 .section-divider {
   border: none;
   border-top: 1px dashed #ccc;
-  /* Đường phân cách nét đứt */
   margin: 40px 0;
 }
 
-/* --- Profile Section --- */
+/* Profile Section */
 .profile-details p {
   margin: 8px 0;
   font-size: 1rem;
-  color: #333;
+  color: #cdd3df;
 }
 
 .profile-details strong {
-  color: #111;
+  color: #e9ecf3;
   min-width: 120px;
-  /* Đảm bảo các label thẳng hàng */
   display: inline-block;
 }
 
-/* --- Vehicle Section --- */
+/* Vehicle Section */
 .vehicle-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  /* Thêm margin-bottom để tách khỏi danh sách xe */
 }
 
 .vehicle-header h2 {
-  margin-bottom: 0;
-  /* Xóa margin-bottom mặc định của h2 */
+  margin: 0;
   border-bottom: none;
-  /* Xóa border dưới của h2 trong header này */
   padding-bottom: 0;
 }
 
 .add-vehicle-btn {
   background-color: #0a4ff0;
-  color: white;
+  color: #fefefe;
   border: none;
   padding: 8px 15px;
   border-radius: 8px;
@@ -107,35 +152,29 @@
 .vehicle-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  /* Responsive grid */
   gap: 20px;
 }
 
 .vehicle-card {
-  background-color: #f8f9fa;
-  /* Nền card xe hơi khác biệt chút */
-  border-radius: 10px;
   padding: 20px;
-  border: 1px solid #e0e0e0;
 }
 
 .vehicle-card h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #003cd6;
-  /* Màu đậm hơn cho tên xe */
+  margin: 0 0 10px;
+  color: #fefefe;
 }
 
 .vehicle-card p {
   margin: 5px 0;
   font-size: 0.95rem;
+  color: #d9dee8;
 }
 
 .vehicle-card button {
   margin-top: 15px;
-  background-color: #fff;
-  color: #0a4ff0;
-  border: 1.5px solid #0a4ff0;
+  background: rgba(255, 255, 255, 0.15);
+  color: #00a8ff;
+  border: 1.5px solid #00a8ff;
   padding: 7px 14px;
   border-radius: 6px;
   cursor: pointer;
@@ -144,11 +183,11 @@
 }
 
 .vehicle-card button:hover {
-  background-color: #0a4ff0;
+  background: #00a8ff;
   color: #fff;
 }
 
-/* --- Booking Stats Section --- */
+/* Stats Section */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -157,258 +196,45 @@
 }
 
 .stat-item {
-  background-color: #f0f4ff;
-  /* Nền nhẹ cho từng ô */
   padding: 20px;
-  border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.stat-item.wide {
-  grid-column: span 2;
-  /* Ô lịch hẹn gần nhất rộng hơn */
-  text-align: left;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
-
 .stat-value {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #0a4ff0;
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
   margin-bottom: 5px;
 }
 
 .stat-label {
   font-size: 0.9rem;
-  color: #555;
+  color: #e9ecf3;
   font-weight: 500;
 }
 
-.stat-value.small {
-  font-size: 1rem;
-  /* Cỡ chữ nhỏ hơn cho ngày tháng */
-  font-weight: 500;
-  color: #333;
-}
-
-/* Loading and Error states */
-.loading-container,
-.error-container,
-.empty-container {
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 150px);
-  /* Chiều cao trừ navbar và footer */
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.loading-container p,
-.error-container p,
-.empty-container p {
-  font-size: 1.2rem;
-  color: #555;
-}
-
-.error-message {
-  color: #dc3545;
-  /* Màu đỏ cho lỗi */
-  font-weight: bold;
-}
-
-/* --- Modal Overlay --- */
-.modal-overlay {
-  position: fixed;
-  /* Che phủ toàn màn hình */
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  /* Nền mờ */
-  display: flex;
-  align-items: center;
-  /* Căn giữa theo chiều dọc */
-  justify-content: center;
-  /* Căn giữa theo chiều ngang */
-  z-index: 1000;
-  /* Đảm bảo modal nằm trên cùng */
-  animation: fadeIn 0.3s ease;
-  /* Hiệu ứng xuất hiện */
-}
-
-/* --- Modal Content --- */
-.modal-content {
-  background-color: #ffffff;
-  padding: 30px 40px;
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 500px;
-  /* Giới hạn chiều rộng */
-  animation: slideIn 0.3s ease;
-  /* Hiệu ứng trượt vào */
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 15px;
-  margin-bottom: 25px;
-}
-
-.modal-header h2 {
-  margin: 0;
-  color: #0a4ff0;
-  font-size: 1.5rem;
-  border: none;
-  /* Bỏ border mặc định của h2 */
-  padding: 0;
-}
-
-.close-modal-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #888;
-  cursor: pointer;
-  padding: 5px;
-  /* Tăng vùng click */
-  line-height: 1;
-  /* Căn giữa icon */
-  transition: color 0.2s ease;
-}
-
-.close-modal-btn:hover {
-  color: #333;
-}
-
-/* --- Add Vehicle Form Styles --- */
-.add-vehicle-form .form-group {
-  margin-bottom: 20px;
-}
-
-.add-vehicle-form label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: #333;
-  font-size: 0.9rem;
-}
-
-.add-vehicle-form label::after {
-  content: " *";
-  color: red;
-}
-
-.add-vehicle-form label[for="currentKm"]::after {
-  content: "";
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  /* Đẩy nút về bên phải */
-  gap: 12px;
-  /* Khoảng cách giữa các nút */
-  margin-top: 30px;
-}
-
-.form-actions button {
-  padding: 10px 25px;
-  border-radius: 8px;
-  border: none;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: white;
-  /* Chuyển màu chữ mặc định thành trắng */
-}
-
-.form-actions .btn-cancel {
-  background-color: #dc3545;
-  /* Màu đỏ */
-  border: 1px solid #dc3545;
-  /* Viền cùng màu */
-}
-
-.form-actions .btn-cancel:hover {
-  background-color: #c82333;
-  /* Màu đỏ đậm hơn khi hover */
-  border-color: #bd2130;
-}
-
-/* Style nút Lưu xe (Màu xanh) */
-.form-actions .btn-save {
-  background-color: #0a4ff0;
-  /* Màu xanh dương */
-  border: 1px solid #0a4ff0;
-  /* Viền cùng màu */
-}
-
-.form-actions .btn-save:hover {
-  background-color: #003cd6;
-  /* Màu xanh đậm hơn khi hover */
-  border-color: #003cd6;
-  box-shadow: 0 2px 8px rgba(10, 79, 240, 0.3);
-}
-
-/* Style khi nút bị vô hiệu hóa (Vẫn giữ màu xám) */
-.form-actions button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background-color: #adb5bd !important;
-  color: #f8f9fa !important;
-  border-color: #adb5bd !important;
-  box-shadow: none;
-}
-
-.booking-list-container {
-  margin-top: 30px;
-  /* Khoảng cách giữa các phần (Stats, Active, History) */
-}
-
-.booking-list-container h3 {
-  font-size: 1.3rem;
-  color: #333;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
-
+/* =========================================================
+   📅 Booking Section
+   ========================================================= */
 .booking-list {
   display: grid;
-  /* Hiển thị 1 cột trên mobile, 2 cột trên desktop */
   grid-template-columns: 1fr;
   gap: 15px;
 }
 
-/* Trên màn hình lớn hơn 768px */
 @media (min-width: 768px) {
   .booking-list {
     grid-template-columns: repeat(2, 1fr);
-    /* 2 cột */
   }
 }
 
 .booking-item {
-  background-color: #fff;
-  border-radius: 8px;
   padding: 15px 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e0e0e0;
   border-left-width: 5px;
-  /* Viền trái để thể hiện status */
 }
 
 .booking-item-header {
@@ -422,30 +248,30 @@
 
 .booking-item-header strong {
   font-size: 1.1rem;
-  color: #111;
+  color: #000000;
 }
 
 .booking-item p {
   margin: 8px 0;
   font-size: 0.95rem;
-  color: #555;
+  color: #d9dee8;
   line-height: 1.5;
 }
 
 .booking-item p strong {
-  color: #333;
+  color: #e9ecf3;
   margin-right: 5px;
 }
 
 .booking-item .booking-note {
   font-style: italic;
   color: #777;
-  background-color: #f8f9fa;
+  background-color: rgba(255, 255, 255, 0.15);
   padding: 8px;
   border-radius: 4px;
 }
 
-/* Nhãn Status */
+/* Booking Status */
 .booking-status {
   font-size: 0.85rem;
   font-weight: 600;
@@ -455,231 +281,203 @@
   text-transform: uppercase;
 }
 
-/* Pending (Vàng) */
 .booking-item.status-pending {
   border-left-color: #f0ad4e;
 }
 
-.status-label-pending {
-  background-color: #f0ad4e;
-}
-
-/* Completed (Xanh lá) */
 .booking-item.status-completed {
   border-left-color: #28a745;
 }
 
-.status-label-completed {
-  background-color: #28a745;
-}
-
-/* Declined (Đỏ) */
-.booking-item.status-declined {
-  border-left-color: #d9534f;
-}
-
-.status-label-declined {
-  background-color: #d9534f;
-}
-
-/* Cancelled Đỏ */
+.booking-item.status-declined,
 .booking-item.status-cancelled {
   border-left-color: #d9534f;
 }
 
-.status-label-cancelled {
-  background-color: #d9534f;
-}
-
-/* Các trạng thái khác */
 .booking-item.status-in_progress {
   border-left-color: #0275d8;
 }
 
-.status-label-in_progress {
-  background-color: #0275d8;
-}
-/* Paid (Màu xanh dương/teal) */
 .booking-item.status-paid {
-  border-left-color: #17a2b8; /* Màu teal */
-}
-
-.status-label-paid {
-  background-color: #17a2b8;
+  border-left-color: #17a2b8;
 }
 
 .booking-item.status-ready_for_payment {
   border-left-color: #5cb85c;
 }
 
+.status-label-pending {
+  background-color: #f0ad4e;
+}
+
+.status-label-completed {
+  background-color: #28a745;
+}
+
+.status-label-declined,
+.status-label-cancelled {
+  background-color: #d9534f;
+}
+
+.status-label-in_progress {
+  background-color: #0275d8;
+}
+
+.status-label-paid {
+  background-color: #17a2b8;
+}
+
 .status-label-ready_for_payment {
   background-color: #5cb85c;
 }
 
-.profile-section .profile-header {
+/* =========================================================
+   🧾 Modal
+   ========================================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
-  /* Thêm khoảng cách với nội dung bên dưới */
-}
-
-/* Nút "Tùy chỉnh" */
-.edit-profile-btn {
-  background-color: #f0f0f0;
-  /* Màu xám nhạt */
-  color: #333;
-  border: 1px solid #ccc;
-  padding: 8px 15px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.edit-profile-btn:hover {
-  background-color: #e9e9e9;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.edit-profile-btn svg {
-  font-size: 0.85rem;
-}
-
-.modal-content.success-modal {
-  max-width: 450px;
-  padding: 30px 40px;
-}
-
-.success-modal-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 20px 0;
-}
-
-.success-modal-body .success-icon {
-  font-size: 4.5rem;
-  color: #28a745;
-  margin-bottom: 25px;
-}
-
-.success-modal-body p {
-  font-size: 1.1rem;
-  color: #333;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.success-modal .form-actions {
   justify-content: center;
-  /* Căn giữa nút OK */
-  margin-top: 15px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-.booking-item .btn-cancel-small {
-  background-color: #f8d7da; /* Nền đỏ nhạt */
-  color: #721c24; /* Chữ đỏ đậm */
-  border: 1px solid #f5c6cb; /* Viền đỏ nhạt hơn */
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 0.8rem; /* Chữ nhỏ */
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 10px; /* Khoảng cách với dòng trên */
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
 }
 
-.booking-item .btn-cancel-small:hover {
-  background-color: #f5c6cb;
-  border-color: #f1b0b7;
-}
-
-.booking-item .btn-cancel-small:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background-color: #e9ecef;
-  color: #6c757d;
-  border-color: #dee2e6;
-}
-
-.booking-item .btn-cancel-small svg {
-  font-size: 0.75rem;
-}
-
-
-.modal-content.confirm-modal {
-  max-width: 480px;
+.modal-content {
   padding: 30px 40px;
- 
+  max-width: 500px;
+  animation: slideIn 0.3s ease;
+  color: #f4f6fb;
 }
 
-.confirm-modal-body {
+/* Nút form */
+.form-actions {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 10px 0 20px 0;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 30px;
 }
 
-.confirm-modal-body .confirm-icon { 
-  font-size: 4.0rem;
-  color: #f0ad4e;  
-  margin-bottom: 20px;
-}
-
-.confirm-modal-body h3 { 
-  font-size: 1.4rem;
-  color: #333;
-  margin: 0 0 10px 0;
-}
-
-.confirm-modal-body p { 
-  font-size: 1.05rem;
-  color: #555;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.confirm-modal .form-actions { 
-  justify-content: flex-end; 
-  margin-top: 15px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-/* Nút "Xác nhận" màu đỏ */
-.btn-confirm-danger {
+.form-actions button {
   padding: 10px 25px;
   border-radius: 8px;
-  border: 1px solid #d9534f;
-  background-color: #d9534f; 
-  color: white;
+  border: none;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: #fff;
 }
 
-.btn-confirm-danger:hover {
-  background-color: #c9302c; 
-  border-color: #c12e2a;
+.btn-save {
+  background-color: #0a4ff0;
+  border: 1px solid #0a4ff0;
 }
 
-.btn-confirm-danger:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background-color: #adb5bd !important;
-  color: #f8f9fa !important;
-  border-color: #adb5bd !important;
-  box-shadow: none;
+.btn-save:hover {
+  background-color: #003cd6;
+  border-color: #003cd6;
+  box-shadow: 0 2px 8px rgba(10, 79, 240, 0.3);
+}
+
+.btn-cancel {
+  background-color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.btn-cancel:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.booking-list-container{
+  color: #fefefe;
+}
+
+/* Pending - sáng vàng */
+.booking-item.status-pending .booking-item-header {
+  color: #ffe391; /* sáng hơn #f0ad4e */
+}
+
+/* In Progress - sáng xanh dương */
+.booking-item.status-in_progress .booking-item-header {
+  color: #6dc8ff; /* sáng hơn #0275d8 */
+}
+
+/* Completed - sáng xanh lá */
+.booking-item.status-completed .booking-item-header {
+  color: #7fff9f; /* sáng hơn #28a745 */
+}
+
+/* Cancelled / Declined - sáng đỏ */
+.booking-item.status-cancelled .booking-item-header,
+.booking-item.status-declined .booking-item-header {
+  color: #ff8c8c; /* sáng hơn #d9534f */
+}
+
+/* Paid - sáng xanh ngọc */
+.booking-item.status-paid .booking-item-header {
+  color: #63e5db; /* sáng hơn #17a2b8 */
+}
+
+/* Ready for Payment - sáng xanh nhạt */
+.booking-item.status-ready_for_payment .booking-item-header {
+  color: #a7ffb3; /* sáng hơn #5cb85c */
+}
+
+/* Giữ biển số xe đậm rõ hơn */
+.booking-item-header strong {
+  color: #fff;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+}
+
+/* Nút "Tùy chỉnh" (trong profile) */
+.edit-profile-btn {
+  background: linear-gradient(135deg, #0a4ff0, #2c8bff);
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(10, 79, 240, 0.3);
+  transition: all 0.25s ease;
+}
+
+.edit-profile-btn:hover {
+  background: linear-gradient(135deg, #2c8bff, #0a4ff0);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(44, 139, 255, 0.45);
+}
+
+/* Nút "Hủy" nhỏ trong lịch hẹn */
+.btn-cancel-small {
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #f07878;
+  border: 1px solid rgba(255, 77, 77, 0.5);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(6px);
+}
+
+.btn-cancel-small:hover {
+  background: rgba(223, 189, 189, 0.15);
+  color: #ff7373;
+  border-color: rgba(255, 77, 77, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 0 8px rgba(255, 77, 77, 0.3);
 }

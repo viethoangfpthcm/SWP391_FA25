@@ -1,5 +1,5 @@
 /* ===================================== */
-/* 🔷 NAVBAR PRO – Glassy + Animated + Gradient */
+/* 🔷 NAVBAR PRO – Transparent + Glassy + Animated */
 /* ===================================== */
 
 .navbar {
@@ -9,11 +9,11 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.1); /* trong suốt nhẹ */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   padding: 18px 60px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   font-family: "Segoe UI", Arial, sans-serif;
   transition: all 0.4s ease;
   overflow: hidden;
@@ -24,6 +24,7 @@
   animation: fadeDown 0.8s ease forwards;
 }
 
+/* ✨ Animation khi load */
 @keyframes fadeDown {
   from {
     opacity: 0;
@@ -56,19 +57,19 @@
   }
 }
 
-/* Khi cuộn trang – blur đậm hơn & thu nhỏ padding */
+/* Khi cuộn trang – nền mờ rõ hơn, padding nhỏ hơn */
 .navbar.scrolled {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  background: rgba(10, 20, 40, 0.6); /* đậm hơn khi cuộn */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
   padding: 10px 60px;
   transform: translateY(-2px);
 }
 
 /* Hover toàn navbar – ánh sáng nhẹ */
 .navbar:hover {
-  box-shadow: 0 6px 25px rgba(0, 128, 255, 0.15);
+  box-shadow: 0 6px 25px rgba(0, 128, 255, 0.25);
   transition: box-shadow 0.5s ease;
 }
 
@@ -98,12 +99,13 @@
 .navbar-center a {
   position: relative;
   text-decoration: none;
-  color: #222;
+  color: #fff; /* chữ trắng trên nền ảnh */
   font-weight: 600;
   font-size: 1.25rem;
   letter-spacing: 0.3px;
   padding: 6px 0;
   transition: color 0.3s ease, transform 0.3s ease;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
 }
 
 /* 🌈 Underline gradient */
@@ -122,7 +124,7 @@
 
 /* 🌈 Hover: gradient text + underline */
 .navbar-center a:hover {
-  background: linear-gradient(90deg, #0066ff, #00ccff);
+  background: linear-gradient(90deg, #00ccff, #00a8ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   transform: translateY(-2px);
@@ -134,13 +136,13 @@
 
 /* 🧭 Link đang active */
 .navbar-center a.active {
-  background: linear-gradient(90deg, #0066ff, #00ccff);
+  background: linear-gradient(90deg, #00ccff, #00a8ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .navbar-center a.active::after {
   width: 80%;
-  background: linear-gradient(90deg, #0066ff, #00ccff);
+  background: linear-gradient(90deg, #00ccff, #00a8ff);
 }
 
 /* ---- Buttons ---- */
@@ -159,7 +161,7 @@
   font-size: 1.1rem;
   transition: all 0.3s ease;
   font-family: "Segoe UI", Arial, sans-serif;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
 
@@ -190,11 +192,11 @@
 /* ⚪ Nút Logout dạng outline */
 .btn.logout {
   background: transparent;
-  color: #0a4ff0;
-  border: 2px solid #0a4ff0;
+  color: #00a8ff;
+  border: 2px solid #00a8ff;
 }
 .btn.logout:hover {
-  background: #0a4ff0;
+  background: #00a8ff;
   color: #fff;
   transform: translateY(-3px);
 }
