@@ -1,7 +1,22 @@
 .contact-page {
   width: 100%;
+  min-height: 100vh;
+  background: url("/background.png") no-repeat center center fixed;
+  background-size: cover;
   font-family: "Segoe UI", Arial, sans-serif;
-  background: #f5f7fa;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.contact-page::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 0;
 }
 
 /* Hero full screen */
@@ -13,34 +28,39 @@
   min-height: 100vh;
   padding: 60px;
   gap: 40px;
+  z-index: 1;
+  position: relative;
 }
 
 .contact-card {
   flex: 1 1 400px;
-  background: white;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
   border-radius: 24px;
   padding: 50px 40px;
-  box-shadow: 0 12px 35px rgba(0,0,0,0.1);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+  color: white;
   transition: all 0.3s ease;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.5);
 }
 
 .contact-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
 }
 
 .contact-card h2 {
   font-size: 2rem;
   margin-bottom: 24px;
-  color: #0a4ff0;
+  color: #00ccff;
 }
 
 .contact-card p {
   font-size: 1rem;
   margin-bottom: 14px;
-  color: #555;
 }
 
+/* Form */
 .form-card .contact-form {
   display: flex;
   flex-direction: column;
@@ -51,16 +71,23 @@
 .form-card textarea {
   padding: 14px 16px;
   border-radius: 12px;
-  border: 1px solid #d1d5db;
+  border: none;
   font-size: 1rem;
   outline: none;
   transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.form-card input::placeholder,
+.form-card textarea::placeholder {
+  color: #ddd;
 }
 
 .form-card input:focus,
 .form-card textarea:focus {
-  border-color: #0a4ff0;
-  box-shadow: 0 0 8px rgba(10,79,240,0.25);
+  box-shadow: 0 0 10px rgba(10,79,240,0.4);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .form-card button {
@@ -77,7 +104,7 @@
 
 .form-card button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(10,79,240,0.3);
+  box-shadow: 0 8px 20px rgba(10,79,240,0.4);
 }
 
 @media (max-width: 768px) {
