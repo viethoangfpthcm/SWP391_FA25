@@ -380,7 +380,7 @@
 
 .booking-list-container h3 {
   font-size: 1.3rem;
-  color: #333;
+  color: #ebe5e5;
   border-bottom: 2px solid #eee;
   padding-bottom: 10px;
   margin-bottom: 20px;
@@ -682,4 +682,178 @@
   color: #f8f9fa !important;
   border-color: #adb5bd !important;
   box-shadow: none;
+}
+
+/* -------------------- Customer Dashboard -------------------- */
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  /* 🔵 Hình nền toàn trang */
+  background: url("/background.png") no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+  overflow-x: hidden;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* 🔹 Overlay đen mờ để chữ rõ hơn */
+.dashboard-page::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 0;
+}
+
+/* 🔸 Hiệu ứng fade sáng ở cuối trang */
+.dashboard-page::after {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  z-index: 0;
+  pointer-events: none; /* để không ảnh hưởng click */
+}
+
+/* Đảm bảo phần nội dung hiển thị trên overlay */
+.dashboard-content,
+.dashboard-section,
+.modal-overlay,
+.modal-content {
+  position: relative;
+  z-index: 1;
+}
+/* -------------------- 🎨 Làm dịu nền các box trắng -------------------- */
+
+/* Card container (Profile, Section, Modal, v.v.) */
+.dashboard-section,
+.vehicle-card,
+.booking-item,
+.modal-content,
+.dashboard-section,
+.profile-details,
+.stats-grid .stat-item {
+  background: rgba(255, 255, 255, 0.15); /* trắng mờ nhẹ */
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.25); /* viền sáng nhẹ */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+/* Khi hover — ánh sáng nhẹ nổi lên */
+.dashboard-section:hover,
+.vehicle-card:hover,
+.booking-item:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+}
+
+/* Màu chữ giữ rõ nét */
+.dashboard-section h2,
+.vehicle-card h3,
+.booking-item p,
+.booking-item strong {
+  color: #fefefe;
+}
+
+/* Các label / mô tả giữ tông trung tính */
+.dashboard-section p,
+.vehicle-card p,
+.booking-item p {
+  color: #e0e0e0;
+}
+
+/* Nút "Xem lịch bảo dưỡng" giữ nguyên màu xanh */
+.vehicle-card button {
+  background: rgba(255, 255, 255, 0.15);
+  color: #00a8ff;
+  border: 1.5px solid #00a8ff;
+}
+.vehicle-card button:hover {
+  background: #00a8ff;
+  color: white;
+}
+
+/* Fade ở cuối trang (nếu chưa có) */
+.dashboard-page::after {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  z-index: 0;
+  pointer-events: none;
+}
+/* -------------------- ✨ Tăng độ sáng & tương phản chữ -------------------- */
+
+/* Màu chữ tổng thể trong dashboard */
+.dashboard-content,
+.dashboard-section,
+.vehicle-card,
+.booking-item,
+.stats-grid,
+.modal-content {
+  color: #f8f9fb; /* Trắng hơi lạnh, dễ đọc trên nền tối */
+}
+
+/* Tiêu đề nổi bật hơn */
+.dashboard-content h1,
+.dashboard-section h2,
+.vehicle-card h3,
+.stat-value {
+  color: #ffffff; /* trắng sáng hơn */
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.2); /* ánh sáng nhẹ */
+}
+
+/* Các nhãn phụ và label */
+.profile-details strong,
+.stat-label,
+.booking-item p strong {
+  color: #e9ecf3; /* xám sáng dịu */
+}
+
+/* Đoạn mô tả và text phụ */
+.dashboard-section p,
+.vehicle-card p,
+.booking-item p {
+  color: #d9dee8; /* nhẹ hơn nữa */
+}
+
+/* Email, số điện thoại, text nhỏ */
+.profile-details p,
+.booking-item small {
+  color: #cdd3df;
+}
+
+/* Button label sáng hơn */
+.vehicle-card button,
+.add-vehicle-btn,
+.form-actions button {
+  color: #fefefe;
+}
+
+/* Modal chữ sáng rõ */
+.modal-content h2,
+.modal-content p {
+  color: #f4f6fb;
+}
+
+/* Hiệu ứng sáng hơn khi hover */
+.dashboard-section:hover,
+.vehicle-card:hover,
+.booking-item:hover {
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4),
+              0 0 12px rgba(0, 162, 255, 0.25); /* ánh sáng xanh nhẹ */
 }
