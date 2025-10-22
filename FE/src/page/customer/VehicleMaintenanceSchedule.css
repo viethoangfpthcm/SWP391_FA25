@@ -1,15 +1,15 @@
 /* =========================================================
-   🚗 VehicleMaintenanceSchedule.css — Clean Glassmorphism
+   🚗 VehicleMaintenanceSchedule.css
+   - Lịch trình bảo dưỡng & Modal đặt lịch (Glassmorphism)
    ========================================================= */
 
-/* Tổng thể trang */
+/* ========== TRANG CHÍNH ========== */
 .schedule-page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)),
-    url("/background.png") no-repeat center center fixed;
+  background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+              url("/background.png") no-repeat center center fixed;
   background-size: cover;
   background-blend-mode: lighten;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -20,68 +20,62 @@
   flex: 1;
   max-width: 900px;
   margin: 40px auto;
-  padding: 25px;
+  padding: 20px;
   width: 90%;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 16px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
 }
 
-/* Tiêu đề chính */
 .schedule-content h1 {
   text-align: center;
   color: #0a4ff0;
   margin-bottom: 30px;
-  font-size: 1.9rem;
-  text-shadow: 0 0 10px rgba(10, 79, 240, 0.25);
+  font-size: 1.8rem;
+  text-shadow: 0 0 8px rgba(10,79,240,0.25);
 }
 
-/* Danh sách & item */
+/* ========== DANH SÁCH BẢO DƯỠNG ========== */
 .schedule-list {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .schedule-item {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 12px;
   padding: 20px;
   border-left: 5px solid #ccc;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   transition: all 0.25s ease;
-  backdrop-filter: blur(10px);
 }
 
 .schedule-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
-/* Header item */
 .schedule-item-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .schedule-item-header h3 {
   margin: 0;
   font-size: 1.15rem;
   color: #111;
+  font-weight: 600;
 }
 
-/* Status container */
+/* ========== TRẠNG THÁI ========== */
 .status-container {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-
-.status-label {
+  gap: 8px;
   font-size: 0.9rem;
   font-weight: 600;
   color: #555;
@@ -91,142 +85,99 @@
   font-size: 1.4rem;
 }
 
-/* Tình trạng item */
+/* NEXT_TIME - có thể đặt lịch */
 .schedule-item.status-next_time {
   border-left-color: #0a4ff0;
-  background: rgba(240, 248, 255, 0.95);
-  box-shadow: 0 4px 15px rgba(10, 79, 240, 0.15);
+  background: rgba(240, 248, 255, 0.9);
+  box-shadow: 0 3px 15px rgba(10, 79, 240, 0.15);
 }
+.status-icon.next-time { color: #0a4ff0; }
 
-.status-icon.next-time {
-  color: #0a4ff0;
-}
-
+/* ON_TIME - đã hoàn thành */
 .schedule-item.status-on_time {
   border-left-color: #28a745;
-  background: rgba(248, 255, 249, 0.95);
+  background: rgba(240, 255, 244, 0.9);
 }
+.status-icon.on-time { color: #28a745; }
 
-.status-icon.on-time {
-  color: #28a745;
-}
-
+/* EXPIRED - bỏ qua */
 .schedule-item.status-expired {
-  border-left-color: #fb0303;
-  background: rgba(255, 245, 245, 0.9);
+  border-left-color: #dc3545;
+  background: rgba(255, 240, 240, 0.9);
 }
+.status-icon.expired { color: #dc3545; }
 
-.status-icon.expired {
-  color: #e60000;
-}
-
+/* LOCKED - chưa mở */
 .schedule-item.status-locked {
-  border-left-color: #bdafad;
+  border-left-color: #adb5bd;
   background: rgba(245, 246, 247, 0.9);
-  opacity: 0.7;
+  opacity: 0.8;
 }
+.status-icon.locked { color: #adb5bd; }
 
-.status-icon.locked {
-  color: #adb5bd;
-}
-
-/* Nội dung mô tả */
-.schedule-item p {
-  margin: 5px 0;
-  font-size: 0.95rem;
-  color: #444;
-}
-
-.schedule-item p.description {
-  color: #666;
-  line-height: 1.5;
-  margin-bottom: 10px;
-}
-
-/* =============================== */
-/* 🎯 Nút và thông báo trạng thái */
-/* =============================== */
+/* ========== NÚT ĐẶT LỊCH ========== */
 .book-now-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   margin-top: 12px;
   padding: 10px 20px;
-  background-color: #0a4ff0;
+  background: linear-gradient(90deg, #0a4ff0, #003cd6);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(10, 79, 240, 0.25);
   transition: all 0.25s ease;
-  box-shadow: 0 3px 10px rgba(10, 79, 240, 0.25);
 }
-
 .book-now-button:hover {
-  background-color: #003cd6;
+  background: linear-gradient(90deg, #003cd6, #002ea6);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(10, 79, 240, 0.3);
+  box-shadow: 0 6px 16px rgba(10,79,240,0.35);
 }
 
-.book-now-button:active {
-  transform: translateY(0);
+/* ========== ACTIVE BOOKINGS ========== */
+.active-bookings-section {
+  background: rgba(255,245,245,0.9);
+  border: 1px solid #ffb8b8;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
 }
-
-/* Trạng thái thông báo */
-.expired-info,
-.locked-message,
-.completed-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  margin: 10px 0 5px 0;
-  padding: 8px 12px;
-  border: 1px solid #e9ecef;
-}
-
-.expired-info {
+.active-bookings-section h2 {
   color: #d9534f;
-  background: #fff5f5;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #ffdede;
+  padding-bottom: 8px;
 }
 
-.locked-message {
-  color: #6c757d;
-  background: #f8f9fa;
+.active-booking-item {
+  background: rgba(255,255,255,0.85);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
 }
+.active-booking-item:last-child { margin-bottom: 0; }
+.active-booking-item.status-pending { border-left: 5px solid #f0ad4e; }
+.active-booking-item.status-in_progress { border-left: 5px solid #0275d8; }
 
-.completed-badge {
-  color: #28a745;
-  background: #e8f5e9;
-  font-weight: 600;
-  width: fit-content;
-}
-
-/* =============================== */
-/* ⚙️ Modal Booking & Confirm Form */
-/* =============================== */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
-}
-
-.modal-content {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+/* ========== MODAL ĐẶT LỊCH (GLASS STYLE) ========== */
+.booking-form-modal {
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 35px 45px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.35);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
   width: 90%;
   max-width: 550px;
-  padding: 30px 40px;
-  backdrop-filter: blur(12px);
   animation: slideIn 0.3s ease;
+  color: #222;
 }
 
 /* Header modal */
@@ -234,189 +185,99 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(255,255,255,0.25);
   padding-bottom: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
-
 .modal-header h2 {
   margin: 0;
   color: #0a4ff0;
   font-size: 1.4rem;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(10,79,240,0.25);
 }
-
 .close-modal-btn {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: #777;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.15s ease;
 }
-
 .close-modal-btn:hover {
   color: #111;
+  transform: scale(1.1);
 }
 
-/* Booking form */
+/* Inputs */
 .booking-form-modal label {
   display: block;
   margin-bottom: 6px;
   font-weight: 600;
   color: #333;
+  font-size: 0.9rem;
 }
-
 .booking-form-modal input,
 .booking-form-modal select {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  background: #fff;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: rgba(255,255,255,0.9);
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
 }
-
 .booking-form-modal input:focus,
 .booking-form-modal select:focus {
   border-color: #0a4ff0;
-  box-shadow: 0 0 0 3px rgba(10, 79, 240, 0.2);
+  box-shadow: 0 0 0 3px rgba(10,79,240,0.2);
   outline: none;
 }
 
-/* Footer hành động */
+/* Footer Buttons */
 .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
   margin-top: 25px;
+  border-top: 1px solid rgba(255,255,255,0.25);
+  padding-top: 20px;
 }
-
-.form-actions button {
-  padding: 10px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  font-size: 1rem;
-  border: none;
-}
-
 .btn-cancel {
-  background: #6c757d;
+  background: rgba(108,117,125,0.9);
   color: #fff;
-}
-
-.btn-cancel:hover {
-  background: #5a6268;
-}
-
-.btn-save {
-  background: #0a4ff0;
-  color: #fff;
-}
-
-.btn-save:hover {
-  background: #003cd6;
-  box-shadow: 0 0 8px rgba(10, 79, 240, 0.4);
-}
-
-/* =============================== */
-/* 🔔 Modal success / confirm */
-/* =============================== */
-.modal-content.success-modal,
-.modal-content.confirm-modal {
-  max-width: 460px;
-  text-align: center;
-}
-
-.success-modal-body,
-.confirm-modal-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px 0;
-}
-
-.success-icon {
-  font-size: 4rem;
-  color: #28a745;
-}
-
-.confirm-icon {
-  font-size: 4rem;
-  color: #f0ad4e;
-}
-
-.success-modal-body p,
-.confirm-modal-body p {
-  font-size: 1.05rem;
-  color: #333;
-  margin-top: 10px;
-}
-
-/* =============================== */
-/* ⚙️ Animations */
-/* =============================== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-25px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-  .processing-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background-color: #28a745; /* màu xanh */
-  color: white;
-  border-radius: 6px;
+  border: 1px solid rgba(108,117,125,0.8);
+  border-radius: 8px;
+  padding: 10px 24px;
   font-weight: 600;
-  margin-top: 8px;
+  transition: all 0.25s ease;
 }
-
-.loading-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 100px 20px; 
-  font-size: 18px;
-  color: #278598;      
-  min-height: 300px;  
+.btn-cancel:hover {
+  background: rgba(90,98,104,0.95);
 }
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.btn-save {
+  background: linear-gradient(90deg, #0a4ff0, #003cd6);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 25px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(10,79,240,0.25);
 }
+.btn-save:hover {
+  background: linear-gradient(90deg, #003cd6, #002ea6);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(10,79,240,0.35);
+}
+.btn-save:active { transform: scale(0.98); }
 
-
-.loading-container .spinner-icon {
-  animation: spin 1s linear infinite;
-  margin-right: 10px;
-  vertical-align: middle;
-  
-
-  color: #e9eaea;                   
-  background-color: transparent;   
-  fill: #f7faf9;      
-}            
+/* ========== ANIMATION ========== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideIn {
+  from { transform: translateY(-25px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
