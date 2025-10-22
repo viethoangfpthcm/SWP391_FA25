@@ -23,5 +23,4 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findByVehicle_LicensePlateAndStatus(String licensePlate, String status);
 
-
 }

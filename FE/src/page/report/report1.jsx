@@ -100,8 +100,32 @@ export default function Report1() {
       const response = await fetch(detailUrl, { headers: { Authorization: `Bearer ${token}` } });
       if (!response.ok) { throw new Error("Không thể tải chi tiết."); }
       const detailData = await response.json();
-      setCurrentReport(detailData);
-      setOriginalReport(JSON.parse(JSON.stringify(detailData)));
+
+
+      let updatedApprovedCost = detailData.totalCostApproved || 0;
+      let updatedDeclinedCost = detailData.totalCostDeclined || 0;
+
+      const processedDetails = detailData.details.map(d => {
+        if (d.approvalStatus === 'PENDING' || !d.approvalStatus) {
+          
+          const cost = (d.laborCost || 0) + (d.materialCost || 0);
+          
+          updatedApprovedCost += cost;
+          
+          return { ...d, approvalStatus: 'APPROVED' };
+        }
+        
+        return d;
+      });
+      const processedReport = { 
+        ...detailData, 
+        details: processedDetails,
+        totalCostApproved: updatedApprovedCost,
+        totalCostDeclined: updatedDeclinedCost  
+      };
+      setCurrentReport(processedReport); 
+      setOriginalReport(JSON.parse(JSON.stringify(detailData))); 
+
     } catch (err) { console.error("Lỗi tải chi tiết:", err); showToast("Lỗi tải chi tiết.", "error"); handleCloseModal(); }
     finally { setDetailLoading(false); }
   };

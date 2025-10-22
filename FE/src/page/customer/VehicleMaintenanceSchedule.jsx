@@ -4,7 +4,7 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import './VehicleMaintenanceSchedule.css';
 
-import { FaCalendarAlt, FaTools, FaCheckCircle, FaExclamationTriangle, FaCalendarPlus, FaTimes, FaLock } from 'react-icons/fa';
+import { FaCalendarAlt, FaTools, FaCheckCircle, FaExclamationTriangle, FaCalendarPlus, FaTimes, FaLock, FaSpinner} from 'react-icons/fa';
 
 function VehicleMaintenanceSchedule() {
   const { licensePlate } = useParams();
@@ -299,7 +299,10 @@ function VehicleMaintenanceSchedule() {
     return (
       <div className="schedule-page loading-container">
         <Navbar />
-        <p>Đang tải lịch bảo dưỡng...</p>
+        <div className="loading-container">
+          <FaSpinner className="spinner-icon" /> 
+          Đang tải lịch bảo dưỡng...
+        </div>
         <Footer />
       </div>
     );

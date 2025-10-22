@@ -114,12 +114,17 @@ public class MaintenanceChecklistService {
         // Map sang DTO TÓM TẮT
         MaintenanceChecklistSummaryResponse res = modelMapper.map(checklist, MaintenanceChecklistSummaryResponse.class);
 
-        if (checklist.getBooking() != null && checklist.getBooking().getVehicle() != null) {
+        if (checklist.getBooking() != null) {
             Vehicle vehicle = checklist.getBooking().getVehicle();
-            res.setVehicleNumberPlate(vehicle.getLicensePlate());
-            res.setVehicleModel(vehicle.getModel());
+            if (vehicle != null) {
+                res.setVehicleNumberPlate(vehicle.getLicensePlate());
+                res.setVehicleModel(vehicle.getModel());
+                res.setCurrentKm(checklist.getActualKm() != null ? checklist.getActualKm() : vehicle.getCurrentKm());
+            }
             res.setBookingStatus(checklist.getBooking().getStatus());
-            res.setCurrentKm(checklist.getActualKm() != null ? checklist.getActualKm() : vehicle.getCurrentKm());
+            if (checklist.getBooking().getCustomer() != null) {
+                res.setCustomerName(checklist.getBooking().getCustomer().getFullName());
+            }
         }
 
         if (checklist.getPlan() != null) {

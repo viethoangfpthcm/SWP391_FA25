@@ -166,7 +166,7 @@ export default function TechnicianTask() {
     if (loading)
         return (
             <p className="loading">
-                <FaSpinner className="spinner-icon" /> ⏳ Đang tải dữ liệu...
+                <FaSpinner className="spinner-icon" /> Đang tải dữ liệu...
             </p>
         );
 

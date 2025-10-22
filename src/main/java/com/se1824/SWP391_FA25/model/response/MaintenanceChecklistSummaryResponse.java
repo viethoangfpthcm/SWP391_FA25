@@ -29,4 +29,5 @@ public class MaintenanceChecklistSummaryResponse {
     BigDecimal estimatedCost;
     BigDecimal totalCostApproved;
     BigDecimal totalCostDeclined;
+    String customerName;
 }
