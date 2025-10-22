@@ -371,65 +371,107 @@ export default function Report1() {
               {toast.type === "warning" && <FaTriangleExclamation />}
             </div>
             <span className="toast-message">{toast.message}</span>
-            <button className="toast-close" onClick={() => setToast({ show: false, message: "", type: "" })}><FaXmark /></button>
+            <button
+              className="toast-close"
+              onClick={() => setToast({ show: false, message: "", type: "" })}
+            >
+              <FaXmark />
+            </button>
           </div>
         )}
+
         <h1 className="page-title">Biên bản bảo dưỡng & sửa chữa</h1>
-        <p className="page-subtitle">Chọn biên bản để xem chi tiết hoặc thanh toán.</p>
+        <p className="page-subtitle">
+          Chọn biên bản để xem chi tiết hoặc thanh toán.
+        </p>
+
         {reportsList.length === 0 ? (
-          <div className="no-data-card"><div className="no-data-icon">📋</div><h3>Chưa có biên bản</h3><p>Biên bản chờ duyệt hoặc chờ thanh toán sẽ hiện ở đây.</p></div>
+          <div className="no-data-card">
+            <div className="no-data-icon">📋</div>
+            <h3>Chưa có biên bản</h3>
+            <p>Biên bản chờ duyệt hoặc chờ thanh toán sẽ hiện ở đây.</p>
+          </div>
         ) : (
-          <div className="report-list-container">
+          <div className="car-report-grid">
+            {/* 🔹 Nhóm danh sách theo biển số xe */}
+            {Object.entries(
+              reportsList.reduce((acc, report) => {
+                const car = report.vehicleNumberPlate || "Không rõ";
+                if (!acc[car]) acc[car] = [];
+                acc[car].push(report);
+                return acc;
+              }, {})
+            ).map(([car, reports]) => (
+              <div key={car} className="car-report-section">
+                <h3 className="car-section-title">Xe {car}</h3>
 
+                <div className="report-list-container">
+                  {reports.map((report) => {
+                    const statusClass = `status-${(report.status || "default")
+                      .toLowerCase()
+                      .replace("_", "-")}`;
 
-            {reportsList.map((report) => {
-              const statusClass = `status-${(report.status || 'default').toLowerCase().replace('_', '-')}`;
+                    const isCompleted = report.status === "Completed";
+                    const isPaid = report.bookingStatus === "Paid";
+                    const isBookingCompleted =
+                      report.bookingStatus === "Completed";
+                    const totalAmount = report.totalCostApproved || 0;
 
+                    const showPayButton =
+                      !isBookingCompleted &&
+                      isCompleted &&
+                      !isPaid &&
+                      totalAmount > 0;
 
-              const isCompleted = report.status === "Completed";
-              const isPaid = report.bookingStatus === "Paid";
-              const isBookingCompleted = report.bookingStatus === "Completed";
-              const totalAmount = report.totalCostApproved || 0;
+                    return (
+                      <div
+                        key={report.id}
+                        className={`report-list-card ${statusClass}`}
+                      >
+                        <div
+                          className="report-card-main-content"
+                          onClick={() => handleViewDetails(report.bookingId)}
+                        >
+                          <div className="report-card-icon">
+                            {getStatusIcon(report.status)}
+                          </div>
+                          <div className="report-card-info">
+                            <h3>
+                              {report.planName || "?"}{" "}
+                              <span className="car-inline">
+                                ({report.vehicleNumberPlate || "?"})
+                              </span>
+                            </h3>
+                            <p>
+                              Mã BB: #{report.id} • Trạng thái:{" "}
+                              {report.status === "COMPLETED"
+                                ? "Chờ thanh toán"
+                                : report.status || "?"}
+                            </p>
+                          </div>
+                          <div className="report-card-action">
+                            {!showPayButton && <FaChevronRight />}
+                          </div>
+                        </div>
 
-              const showPayButton = !isBookingCompleted && isCompleted && !isPaid && totalAmount > 0;
-              // --- Hết logic mới ---
-
-              return (
-                // Thẻ div ngoài không còn onClick
-                <div key={report.id} className={`report-list-card ${statusClass}`}>
-
-                  {/* Nội dung chính (nhấn vào để xem chi tiết) */}
-                  <div
-                    className="report-card-main-content"
-                    onClick={() => handleViewDetails(report.bookingId)}
-                  >
-                    <div className="report-card-icon">{getStatusIcon(report.status)}</div>
-                    <div className="report-card-info">
-                      <h3>{report.planName || '?'} (Xe: {report.vehicleNumberPlate || '?'})</h3>
-                      <p>Mã BB: #{report.id} • Trạng thái: {report.status === "COMPLETED" ? "Chờ thanh toán" : (report.status || '?')}</p>
-                    </div>
-                    <div className="report-card-action">
-                      {/* Ẩn mũi tên nếu nút thanh toán xuất hiện */}
-                      {!showPayButton && <FaChevronRight />}
-                    </div>
-                  </div>
-
-                  {/* --- KHU VỰC NÚT THANH TOÁN MỚI --- */}
-                  {showPayButton && (
-                    <div className="report-card-payment-section">
-                      <VnPayPaymentButton
-                        bookingId={report.bookingId}
-                        totalAmount={totalAmount}
-                      />
-                    </div>
-                  )}
-
+                        {showPayButton && (
+                          <div className="report-card-payment-section">
+                            <VnPayPaymentButton
+                              bookingId={report.bookingId}
+                              totalAmount={totalAmount}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
       </main>
+
       <Footer />
     </div>
   );
