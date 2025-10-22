@@ -15,7 +15,7 @@ import TechnicianTask from "./page/technican/technicantask.jsx";
 import CheckList from "./page/checkList/CheckList.jsx";
 
 // Admin
-import AdminDashboard from "./page/admin/Admindashboard.jsx";
+import AdminDashboard from "./page/admin/AdminDashboard.jsx";
 
 // Customer
 import CustomerDashboard from "./page/customer/CustomerDashboard.jsx";

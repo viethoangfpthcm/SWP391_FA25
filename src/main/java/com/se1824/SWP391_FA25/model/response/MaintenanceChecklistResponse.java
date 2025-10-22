@@ -32,5 +32,7 @@ public class MaintenanceChecklistResponse {
     BigDecimal estimatedCost;
     BigDecimal totalCostApproved;
     BigDecimal totalCostDeclined;
+    LocalDateTime startTime;
+    LocalDateTime endTime;
     List<MaintenanceChecklistDetailResponse> details;
 }
