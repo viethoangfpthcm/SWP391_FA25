@@ -1,19 +1,32 @@
-/* -------------------- Appoint Page -------------------- */
 .appoint-page {
   width: 100%;
-  background: #f5f7fa;
-  overflow-x: hidden;
+  min-height: 100vh;
+  background: url("/background.png") no-repeat center center fixed;
+  background-size: cover;
   font-family: "Segoe UI", Arial, sans-serif;
+  overflow-x: hidden;
+  position: relative;
 }
 
-/* -------------------- Intro Section -------------------- */
+.appoint-page::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 0;
+}
+
+/* Intro Section */
 .appoint-intro {
-  padding: 120px 20px 100px;
-  background: linear-gradient(135deg, #0a4ff0, #00a8ff);
+  padding: 140px 20px 100px;
   color: white;
   text-align: center;
   position: relative;
-  overflow: hidden;
+  z-index: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .appoint-intro h1 {
@@ -54,41 +67,34 @@
   transform: translateY(-3px);
 }
 
-/* -------------------- Steps Progress -------------------- */
+/* Steps */
 .appoint-steps {
   display: flex;
   flex-direction: column;
-  position: relative;
   max-width: 1100px;
-  margin: 50px auto 50px;
+  margin: 60px auto;
   gap: 20px;
+  z-index: 1;
+  position: relative;
 }
 
 .appoint-step-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  padding: 20px 25px;
-  background: white;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  backdrop-filter: blur(10px);
   border-radius: 15px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  transition: transform 0.4s, box-shadow 0.4s;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
   opacity: 0;
   transform: translateY(20px);
   animation: fadeInUp 0.8s forwards;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+  padding: 25px;
 }
-
-.appoint-step-card:nth-child(1) { animation-delay: 0.6s; }
-.appoint-step-card:nth-child(2) { animation-delay: 0.8s; }
-.appoint-step-card:nth-child(3) { animation-delay: 1s; }
-.appoint-step-card:nth-child(4) { animation-delay: 1.2s; }
-.appoint-step-card:nth-child(5) { animation-delay: 1.4s; }
-.appoint-step-card:nth-child(6) { animation-delay: 1.6s; }
 
 .appoint-step-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
 .step-icon {
@@ -102,185 +108,42 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 15px;
-  box-shadow: 0 4px 12px rgba(10, 79, 240, 0.3);
-  transition: transform 0.3s;
 }
 
-.appoint-step-card:hover .step-icon {
-  transform: scale(1.1) rotate(10deg);
-}
-
-.appoint-step-card h3 {
-  margin: 0;
-  font-size: 1.3rem;
-  color: #1f2937;
-}
-
-.appoint-step-card p {
-  margin-top: 6px;
-  color: #555;
-  font-size: 0.95rem;
-  text-align: center;
-  line-height: 1.4;
-}
-
-/* Line connecting steps */
-.step-line {
-  position: absolute;
-  bottom: -20px;
-  width: 4px;
-  height: 20px;
-  background: #0a4ff0;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-@media (min-width: 768px) {
-  .appoint-steps {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-  .appoint-step-card {
-    width: 15%;
-    padding: 20px 15px;
-  }
-  .step-line {
-    bottom: 50%;
-    left: 100%;
-    width: 100%;
-    height: 4px;
-    transform: translateX(0);
-  }
-}
-
-/* -------------------- Form Section -------------------- */
+/* Form Section */
 .appoint-form-section {
   display: flex;
   justify-content: center;
   padding: 80px 20px;
-  background: #f5f7fa;
+  z-index: 1;
+  position: relative;
 }
 
 .appoint-container {
-  background: white;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
   border-radius: 20px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
   padding: 50px 60px;
   width: 100%;
   max-width: 1100px;
-  animation: fadeInUp 1s ease forwards;
+  color: white;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
 .appoint-container h2 {
   text-align: center;
-  color: #0a4ff0;
+  color: #00ccff;
   font-weight: 700;
   font-size: 2rem;
   margin-bottom: 40px;
 }
 
-/* Form Fields */
-.appoint-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-}
-
-.appoint-row > div {
-  flex: 1 1 300px;
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 30px 25px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.appoint-row > div:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-}
-
-.appoint-row h4 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: #0a4ff0;
-  background: linear-gradient(90deg, #0a4ff0, #00a8ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-label {
-  font-weight: 600;
-  color: #333;
-  display: block;
-  margin-bottom: 6px;
-}
-
-input, select {
-  width: 100%;
-  border: 1px solid #ccc;
-  padding: 12px 15px;
-  border-radius: 12px;
-  font-size: 1rem;
-  background: #fdfdfd;
-  transition: all 0.3s ease;
-}
-
-input:focus, select:focus {
-  border: 2px solid transparent;
-  background-image: linear-gradient(white, white), linear-gradient(90deg, #0a4ff0, #00a8ff);
-  background-origin: padding-box, border-box;
-  background-clip: padding-box, border-box;
-  box-shadow: 0 0 8px rgba(10,79,240,0.25);
-  outline: none;
-}
-
-.appoint-time-row {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.appoint-time-row input {
-  flex: 1 1 120px;
-}
-
-/* Submit Button */
-.appoint-btn-container {
-  text-align: center;
-  margin-top: 40px;
-}
-
-.appoint-btn-container button {
-  background: linear-gradient(90deg, #0a4ff0, #00a8ff);
-  color: white;
-  border: none;
-  padding: 16px 50px;
-  border-radius: 15px;
-  font-size: 1.15rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba(10,79,240,0.3);
-}
-
-.appoint-btn-container button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(10,79,240,0.4);
-  background: linear-gradient(90deg, #0050c8, #0086ff);
-}
-
-/* -------------------- Animations -------------------- */
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* Responsive */
+@keyframes fadeInUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 768px) {
-  .appoint-row { flex-direction: column; gap: 20px; }
-  .appoint-row > div { padding: 25px 20px; }
-  .appoint-time-row { flex-direction: column; }
+  .appoint-steps { flex-direction: column; }
 }
