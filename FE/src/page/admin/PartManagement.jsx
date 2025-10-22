@@ -8,11 +8,10 @@ import {
   FaSave,
   FaArrowLeft,
 } from "react-icons/fa";
-import "./AdminDashboard.css"; // Sử dụng lại CSS
+import "./AdminDashboard.css";
 import Sidebar from "../../page/sidebar/sidebar.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 
-// Tắt console.log ở production
 if (import.meta.env.MODE !== "development") {
   console.log = () => {};
 }
@@ -20,71 +19,71 @@ if (import.meta.env.MODE !== "development") {
 export default function PartManagement() {
   const [parts, setParts] = useState([]);
   const [centerInfo, setCenterInfo] = useState(null);
+  const [partTypes, setPartTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingPart, setEditingPart] = useState(null);
+
   const [formData, setFormData] = useState({
     name: "",
     quantity: 0,
     unitPrice: 0,
     laborCost: 0,
     materialCost: 0,
+    partTypeId: "",
   });
 
-  const [userInfo, setUserInfo] = useState({
+  const [userInfo] = useState({
     fullName: localStorage.getItem("fullName") || "Admin",
     role: localStorage.getItem("role") || "ADMIN",
   });
 
-  const { centerId } = useParams(); // Lấy centerId từ URL
+  const { centerId } = useParams();
   const navigate = useNavigate();
   const API_BASE = import.meta.env.VITE_API_URL || "https://103.90.226.216:8443";
   const token = localStorage.getItem("token");
 
-  // Fetch thông tin trung tâm và danh sách phụ tùng
   const fetchData = async () => {
     try {
       setError(null);
       setLoading(true);
 
-      // 1. Fetch thông tin trung tâm
       const centerRes = await fetch(
         `${API_BASE}/api/admin/service-centers/${centerId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      if (centerRes.status === 401) {
-        localStorage.clear();
-        navigate("/");
-        return;
-      }
-      if (!centerRes.ok)
-        throw new Error(`Lỗi tải thông tin trung tâm (${centerRes.status})`);
+      if (centerRes.status === 401) throw new Error("Unauthorized");
+      if (!centerRes.ok) throw new Error(`Lỗi tải thông tin trung tâm`);
       const centerData = await centerRes.json();
       setCenterInfo(centerData);
 
-      // 2. Fetch danh sách phụ tùng
       const partsRes = await fetch(
         `${API_BASE}/api/admin/service-centers/${centerId}/parts`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      if (partsRes.status === 401) {
-        localStorage.clear();
-        navigate("/");
-        return;
-      }
-      if (!partsRes.ok)
-        throw new Error(`Lỗi tải danh sách phụ tùng (${partsRes.status})`);
+      if (partsRes.status === 401) throw new Error("Unauthorized");
+      if (!partsRes.ok) throw new Error(`Lỗi tải danh sách phụ tùng`);
       const partsData = await partsRes.json();
       setParts(Array.isArray(partsData) ? partsData : []);
+
+      const partTypeRes = await fetch(`${API_BASE}/api/admin/part-types`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (partTypeRes.status === 401) throw new Error("Unauthorized");
+      if (!partTypeRes.ok)
+        throw new Error(`Lỗi tải danh sách loại phụ tùng`);
+      const partTypeData = await partTypeRes.json();
+      setPartTypes(Array.isArray(partTypeData) ? partTypeData : []);
     } catch (err) {
       console.error(err);
-      setError("Không thể tải dữ liệu.");
+      if (err.message === "Unauthorized") {
+        localStorage.clear();
+        navigate("/");
+      } else {
+        setError("Không thể tải dữ liệu.");
+      }
     } finally {
       setLoading(false);
     }
@@ -99,16 +98,17 @@ export default function PartManagement() {
   }, [token, centerId]);
 
   const handleChange = (e) => {
+    const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: type === "number" ? parseFloat(value) : value,
     }));
   };
 
-  // Mở form
   const openForm = (part = null) => {
     setEditingPart(part);
     setShowForm(true);
+    setError(null);
     if (part) {
       setFormData({
         name: part.name,
@@ -116,6 +116,7 @@ export default function PartManagement() {
         unitPrice: part.unitPrice,
         laborCost: part.laborCost,
         materialCost: part.materialCost,
+        partTypeId: part.partType?.id || "",
       });
     } else {
       setFormData({
@@ -124,26 +125,35 @@ export default function PartManagement() {
         unitPrice: 0,
         laborCost: 0,
         materialCost: 0,
+        partTypeId: "",
       });
     }
   };
 
-  // Xử lý submit (Tạo mới hoặc Cập nhật)
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.partTypeId) {
+      setError("Vui lòng chọn loại phụ tùng.");
+      return;
+    }
+
     setActionLoading(true);
+    setError(null);
+
     try {
       const method = editingPart ? "PUT" : "POST";
       const endpoint = editingPart
-        ? `${API_BASE}/api/admin/parts/${editingPart.partId}` // Endpoint cập nhật
-        : `${API_BASE}/api/admin/service-centers/${centerId}/parts`; // Endpoint tạo mới
+        ? `${API_BASE}/api/admin/parts/${editingPart.id}`
+        : `${API_BASE}/api/admin/service-centers/${centerId}/parts`;
 
       const body = {
-        ...formData,
-        // Khi tạo mới, cần gắn serviceCenter. (API update không cần)
-        ...(!editingPart && {
-          serviceCenter: { id: centerId },
-        }),
+        name: formData.name,
+        quantity: parseInt(formData.quantity) || 0,
+        unitPrice: parseFloat(formData.unitPrice) || 0,
+        laborCost: parseFloat(formData.laborCost) || 0,
+        materialCost: parseFloat(formData.materialCost) || 0,
+        partTypeId: parseInt(formData.partTypeId),
       };
 
       const res = await fetch(endpoint, {
@@ -155,19 +165,23 @@ export default function PartManagement() {
         body: JSON.stringify(body),
       });
 
-      if (res.status === 401) {
-        localStorage.clear();
-        navigate("/");
-        return;
+      if (res.status === 401) throw new Error("Unauthorized");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Không thể lưu thông tin phụ tùng.");
       }
-      if (!res.ok) throw new Error("Không thể lưu thông tin phụ tùng.");
 
-      await fetchData(); // Tải lại dữ liệu
+      await fetchData();
       setShowForm(false);
       setEditingPart(null);
     } catch (err) {
       console.error(err);
-      setError(err.message);
+      if (err.message === "Unauthorized") {
+        localStorage.clear();
+        navigate("/");
+      } else {
+        setError(err.message);
+      }
     } finally {
       setActionLoading(false);
     }
@@ -200,16 +214,10 @@ export default function PartManagement() {
           </p>
         </header>
 
-        {error && (
-          <div className="error-message general-error">
-            <FaExclamationTriangle /> {error}
-          </div>
-        )}
-
         <div className="actions-bar">
           <button
             className="btn-add"
-            style={{ backgroundColor: "#6b7280" }} // Màu xám
+            style={{ backgroundColor: "#6b7280" }}
             onClick={() => navigate("/admin/service-centers")}
           >
             <FaArrowLeft /> Quay lại
@@ -219,7 +227,15 @@ export default function PartManagement() {
           </button>
         </div>
 
-        {/* Bảng danh sách phụ tùng */}
+        {error && !showForm && (
+          <div
+            className="error-message general-error"
+            style={{ marginTop: "0", marginBottom: "20px" }}
+          >
+            <FaExclamationTriangle /> {error}
+          </div>
+        )}
+
         <div className="table-card">
           <div className="table-wrapper">
             <table className="data-table">
@@ -227,19 +243,21 @@ export default function PartManagement() {
                 <tr>
                   <th>ID</th>
                   <th>Tên Phụ tùng</th>
+                  <th>Loại phụ tùng</th>
                   <th>Số lượng</th>
-                  <th>Đơn giá</th>
-                  <th>Phí nhân công</th>
-                  <th>Phí vật tư</th>
+                  <th>Đơn giá (VND)</th>
+                  <th>Phí nhân công (VND)</th>
+                  <th>Phí vật tư (VND)</th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 {parts.length > 0 ? (
                   parts.map((part) => (
-                    <tr key={part.partId}>
-                      <td>#{part.partId}</td>
+                    <tr key={part.id}>
+                      <td>#{part.id}</td>
                       <td>{part.name}</td>
+                      <td>{part.partType?.name || "N/A"}</td>
                       <td>{part.quantity}</td>
                       <td>{part.unitPrice}</td>
                       <td>{part.laborCost}</td>
@@ -257,7 +275,7 @@ export default function PartManagement() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="empty-state">
+                    <td colSpan="8" className="empty-state">
                       Trung tâm này chưa có phụ tùng nào.
                     </td>
                   </tr>
@@ -267,19 +285,19 @@ export default function PartManagement() {
           </div>
         </div>
 
-        {/* Form thêm / sửa */}
         {showForm && (
-          <div
-            className="modal-overlay"
-            onClick={() => setShowForm(false)}
-          >
+          <div className="modal-overlay" onClick={() => setShowForm(false)}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
               <h2>
-                {editingPart
-                  ? "Chỉnh sửa phụ tùng"
-                  : "Thêm phụ tùng mới"}
+                {editingPart ? "Chỉnh sửa phụ tùng" : "Thêm phụ tùng mới"}
               </h2>
               <form onSubmit={handleSubmit} className="user-form">
+                {error && (
+                  <div className="error-message">
+                    <FaExclamationTriangle /> {error}
+                  </div>
+                )}
+
                 <label>
                   Tên Phụ tùng:
                   <input
@@ -290,6 +308,24 @@ export default function PartManagement() {
                     required
                   />
                 </label>
+
+                <label>
+                  Loại Phụ tùng:
+                  <select
+                    name="partTypeId"
+                    value={formData.partTypeId}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">-- Chọn loại phụ tùng --</option>
+                    {partTypes.map((type) => (
+                      <option key={type.id} value={type.id}>
+                        {type.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
                 <label>
                   Số lượng:
                   <input
@@ -298,36 +334,46 @@ export default function PartManagement() {
                     value={formData.quantity}
                     onChange={handleChange}
                     required
+                    min="0"
                   />
                 </label>
+
                 <label>
-                  Đơn giá:
+                  Đơn giá (VND):
                   <input
                     type="number"
                     name="unitPrice"
                     value={formData.unitPrice}
                     onChange={handleChange}
                     required
+                    min="0"
                   />
                 </label>
+
                 <label>
-                  Phí nhân công:
+                  Phí nhân công (VND):
                   <input
                     type="number"
                     name="laborCost"
                     value={formData.laborCost}
                     onChange={handleChange}
                     required
+                    min="0"
                   />
                 </label>
+
                 <label>
-                  Phí vật tư:
+                  Phí vật tư (VND):
+                  <small>
+                    Phí này là chi phí chung, không bao gồm "Đơn giá" ở trên
+                  </small>
                   <input
                     type="number"
                     name="materialCost"
                     value={formData.materialCost}
                     onChange={handleChange}
                     required
+                    min="0"
                   />
                 </label>
 

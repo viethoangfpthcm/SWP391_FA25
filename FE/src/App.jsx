@@ -16,6 +16,9 @@ import CheckList from "./page/checkList/CheckList.jsx";
 
 // Admin
 import AdminDashboard from "./page/admin/AdminDashboard.jsx";
+import ServiceCenterManagement from "./page/admin/ServiceCenterManagement.jsx";
+import PartManagement from "./page/admin/PartManagement.jsx";
+import AdminBookingManagement from "./page/admin/AdminBookingManagement.jsx";
 
 // Customer
 import CustomerDashboard from "./page/customer/CustomerDashboard.jsx";
@@ -55,7 +58,7 @@ function App() {
         }
       />
 
-  {/* Technician*/}
+      {/* Technician*/}
       <Route
         path="/technicantask"
         element={
@@ -82,6 +85,23 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/admin/service-centers"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <ServiceCenterManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/parts/:centerId"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <PartManagement />
+          </ProtectedRoute>
+        }
+      />
+      
 
       {/* Customer */}
       <Route
