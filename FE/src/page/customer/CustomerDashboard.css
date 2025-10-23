@@ -646,6 +646,16 @@
   transform: translateY(-1px);
   box-shadow: 0 6px 14px rgba(10, 79, 240, 0.4);
 }
+.modal-content select option {
+ 
+  background: #1e1e1e; /* Màu nền tối (ví dụ: đen mờ) */
+  color: #fefefe; 
+}
+
+.modal-content select option:hover {
+  background: #0a4ff0; 
+  color: #fff;
+}
 
 /* Animation */
 @keyframes fadeIn {
