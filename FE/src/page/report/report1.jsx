@@ -61,29 +61,27 @@ export default function Report1() {
           else { throw new Error(`Lỗi ${response.status}`); } return;
         }
         const data = await response.json();
-        const processedData = data
-          .sort((a, b) => {
-            const getPriority = (report) => {
-              const status = report.status;
-              const bookingStatus = report.bookingStatus;
-              if (status === 'PENDING_APPROVAL') return 1;
-              if (status === 'In Progress') return 2;
-              if (status === 'Completed' && bookingStatus === 'In Progress') return 3;
-              if (status === 'Completed' && bookingStatus === 'Completed') return 4;
+        const processedData = data.sort((a, b) => {
+          // 🔹 Ưu tiên: biên bản đang chờ hoặc đang xử lý trước
+          const getPriority = (report) => {
+            const s = report.status;
+            const bS = report.bookingStatus;
+            if (s === "PENDING_APPROVAL") return 1;
+            if (s === "IN_PROGRESS") return 2;
+            if (s === "COMPLETED" && bS !== "Completed") return 3;
+            if (s === "COMPLETED" && bS === "Completed") return 4;
+            return 5;
+          };
 
-              return 5; // Các trạng thái khác (nếu có)
-            };
-            const priorityA = getPriority(a);
-            const priorityB = getPriority(b);
-            // 1. Sắp xếp theo độ ưu tiên (Số nhỏ lên trước)
-            if (priorityA !== priorityB) {
-              return priorityA - priorityB;
-            }
-            // 2. Nếu cùng ưu tiên, sắp xếp theo ngày tạo (MỚI NHẤT LÊN TRÊN)
-            const dateA = a.createdDate ? new Date(a.createdDate) : 0;
-            const dateB = b.createdDate ? new Date(b.createdDate) : 0;
-            return dateB - dateA;
-          });
+          const priorityA = getPriority(a);
+          const priorityB = getPriority(b);
+          if (priorityA !== priorityB) return priorityA - priorityB;
+
+          // 🔹 Nếu cùng nhóm, biên bản mới hơn sẽ lên trước
+          const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
+          const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
+          return dateB - dateA; // mới nhất trước
+        });
 
         setReportsList(processedData); setError('');
       } catch (err) { console.error("Lỗi tải danh sách:", err); setError("Không thể tải danh sách."); }
@@ -107,24 +105,24 @@ export default function Report1() {
 
       const processedDetails = detailData.details.map(d => {
         if (d.approvalStatus === 'PENDING' || !d.approvalStatus) {
-          
+
           const cost = (d.laborCost || 0) + (d.materialCost || 0);
-          
+
           updatedApprovedCost += cost;
-          
+
           return { ...d, approvalStatus: 'APPROVED' };
         }
-        
+
         return d;
       });
-      const processedReport = { 
-        ...detailData, 
+      const processedReport = {
+        ...detailData,
         details: processedDetails,
         totalCostApproved: updatedApprovedCost,
-        totalCostDeclined: updatedDeclinedCost  
+        totalCostDeclined: updatedDeclinedCost
       };
-      setCurrentReport(processedReport); 
-      setOriginalReport(JSON.parse(JSON.stringify(detailData))); 
+      setCurrentReport(processedReport);
+      setOriginalReport(JSON.parse(JSON.stringify(detailData)));
 
     } catch (err) { console.error("Lỗi tải chi tiết:", err); showToast("Lỗi tải chi tiết.", "error"); handleCloseModal(); }
     finally { setDetailLoading(false); }
