@@ -1,4 +1,3 @@
-
 /* ---------------------- */
 /* Tổng thể trang chính  */
 /* ---------------------- */
@@ -322,7 +321,7 @@
 }
 
 .panel h4,
-.right-col > h4 {
+.right-col>h4 {
   font-size: 1.05rem;
   font-weight: 600;
   color: #0a8bff;
@@ -338,9 +337,19 @@
   border-radius: 10px;
   padding: 0.8rem 1rem;
   margin: 0 auto 0.75rem;
-  max-width: 85%;
+  max-width: 100%;
   transition: all 0.25s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
+
+.detail-main {
+  flex-grow: 1;
+  padding-right: 15px;
+  /* Tạo khoảng cách với nút toggle */
+}
+
 
 .detail-row:hover {
   background: rgba(255, 255, 255, 0.1);
@@ -349,9 +358,16 @@
 
 .detail-head {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.tech-status-tag,
+.approval-tag {
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .detail-name {
@@ -367,6 +383,7 @@
   border-radius: 6px;
   text-transform: uppercase;
   border: 1px solid transparent;
+  white-space: nowrap;
 }
 
 .approval-tag.approved {
@@ -392,7 +409,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2px 0;
+  padding: 4px 0;
   border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
 }
 
@@ -461,21 +478,302 @@
   box-shadow: 0 0 10px rgba(10, 79, 240, 0.4);
 }
 
+.document-body textarea {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.3);
+  /* Nền tối hơn để nổi bật */
+  color: #fff;
+  font-size: 0.9rem;
+  resize: vertical;
+  /* Chỉ cho phép kéo chiều dọc */
+  transition: all 0.25s ease;
+}
+
+.document-body textarea:focus {
+  border-color: #0a8bff;
+  box-shadow: 0 0 0 3px rgba(10, 139, 255, 0.2);
+  outline: none;
+}
+
+.document-body textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.customer-note-input label {
+  font-size: 0.9rem;
+  color: #eaeaea;
+  font-weight: 500;
+  display: block;
+}
+
+.detail-approval-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  margin-top: 10px;
+}
+
+.detail-approval-toggle label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: all 0.2s;
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(220, 53, 69, 0.15);
+  color: #ff8c8c;
+}
+
+.detail-approval-toggle label::before {
+  content: '✗';
+  font-family: 'Arial', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #dc3545;
+  border-radius: 4px;
+  color: #dc3545;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+/* Ẩn checkbox mặc định và tùy chỉnh */
+.detail-approval-toggle input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.detail-approval-toggle input[type="checkbox"]:checked+label {
+  background: rgba(40, 167, 69, 0.15);
+  border-color: #28a745;
+  color: #7fff9f;
+}
+
+/* Thêm nút tròn bên trong switch */
+.detail-approval-toggle input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.detail-approval-toggle input[type="checkbox"]:checked::before {
+  transform: translateX(23px);
+}
+
+.detail-approval-toggle input[type="checkbox"]:checked+label::before {
+  content: '✓';
+  border-color: #28a745;
+  color: #fff;
+  background: #28a745;
+}
+
+.detail-approval-toggle input[type="checkbox"]:disabled+label {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ccc;
+}
+
+.detail-approval-toggle input[type="checkbox"]:disabled+label::before {
+  border-color: #ccc;
+  color: #ccc;
+  background: transparent;
+}
+
+/* Thêm vào phần chi tiết hạng mục trong modal */
+.tech-status-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  margin-left: 10px;
+  display: inline-block;
+}
+
+.tech-status-tag.tech-status-tốt {
+  background: rgba(40, 167, 69, 0.2);
+  color: #7dff9e;
+  border: 1px solid #28a745;
+}
+
+.tech-status-tag.tech-status-hiệu-chỉnh {
+  background: rgba(0, 123, 255, 0.2);
+  color: #a3d2ff;
+  border: 1px solid #007bff;
+}
+
+.tech-status-tag.tech-status-sửa-chữa {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffeb99;
+  border: 1px solid #ffc107;
+}
+
+.tech-status-tag.tech-status-thay-thế {
+  background: rgba(220, 53, 69, 0.2);
+  color: #ff8c8c;
+  border: 1px solid #dc3545;
+}
+
+/* Điều chỉnh lại chi tiết head để tag hiện đúng */
+.detail-name-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.left-col .panel .kv {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* Giảm khoảng cách giữa các hàng */
+  font-size: 1rem;
+}
+
+.left-col .panel .kv>div {
+  display: flex;
+  justify-content: space-between;
+  /* Đẩy Key và Value ra hai bên */
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.left-col .panel .kv>div:last-child {
+  border-bottom: none;
+  /* Bỏ border cuối cùng */
+}
+
+.left-col .panel .kv .k {
+  font-weight: 500;
+  color: #aab1c2;
+  min-width: 130px;
+  /* Cố định chiều rộng Key để Value được căn thẳng */
+}
+
+.left-col .panel .kv .v {
+  font-weight: 600;
+  color: #fefefe;
+  text-align: right;
+}
+
+/* Bố cục cho Chi phí (Cost Panel) */
+.cost-panel {
+  margin-top: 20px;
+}
+
+.cost-panel .cost-row {
+  display: flex;
+  flex-direction: column;
+  /* Xếp hàng dọc (Column Layout) */
+  gap: 0;
+  /* Không cần gap lớn giữa các dòng */
+  margin-top: 5px;
+  /* Bọc các dòng chi phí trong một container có border-radius */
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  /* Giúp border-radius hoạt động tốt */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.cost-panel .cost-row>div {
+  display: flex;
+  justify-content: space-between;
+  /* Đẩy tên và giá trị ra hai bên */
+  align-items: center;
+  padding: 10px 15px;
+  /* Padding vừa phải */
+  background: rgba(255, 255, 255, 0.08);
+  /* Nền nhẹ cho từng dòng */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  /* Đường phân cách */
+}
+
+.cost-panel .cost-row>div:last-child {
+  border-bottom: none;
+}
+
+.cost-panel .cost-label {
+  font-size: 0.95rem;
+  color: #cfd4e1;
+  font-weight: 500;
+}
+
+.cost-panel .cost-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.cost-panel .cost-value.approved {
+  color: #7fff9f;
+  /* Xanh lá */
+}
+
+.cost-panel .cost-value.declined {
+  color: #ff8c8c;
+  /* Đỏ nhạt */
+}
+
 /* ---------------------- */
 /* Animations */
 /* ---------------------- */
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideIn {
-  from { transform: translateY(-30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }

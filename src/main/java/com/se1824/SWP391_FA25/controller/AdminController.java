@@ -4,6 +4,7 @@ import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.entity.*;
 import com.se1824.SWP391_FA25.model.request.AssignTechnicianRequest;
 import com.se1824.SWP391_FA25.model.request.CreateUserRequest;
+import com.se1824.SWP391_FA25.model.request.PartCreateRequest;
 import com.se1824.SWP391_FA25.model.request.UpdateUserRequest;
 import com.se1824.SWP391_FA25.service.AdminService;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
@@ -28,7 +29,7 @@ public class AdminController {
     private final AdminService adminService;
     private final AuthenticationService authenticationService;
     private final ServiceCenterService serviceCenterService;
-    private final StaffService staffService;
+
 
     /**
      * Tạo user mới (Staff hoặc Technician)
@@ -149,11 +150,13 @@ public class AdminController {
      * Tạo một Part (phụ tùng) MỚI cho một ServiceCenter
      * POST /api/admin/service-centers/{centerId}/parts
      */
-    @PostMapping("/service-centers/{centerId}/parts")
-    public ResponseEntity<Part> createPartForCenter(@PathVariable Integer centerId, @RequestBody Part part) {
-        ServiceCenter center = serviceCenterService.getServiceCenterById(centerId);
-        part.setServiceCenter(center);
-        Part newPart = serviceCenterService.createPart(part);
+    @PostMapping("/api/admin/service-centers/{centerId}/parts")
+    public ResponseEntity<Part> createPartForCenter(
+            @PathVariable Integer centerId,
+            @RequestBody PartCreateRequest request) {
+
+        // Yêu cầu Service tạo Part từ DTO và centerId
+        Part newPart = serviceCenterService.createPart(request, centerId);
         return new ResponseEntity<>(newPart, HttpStatus.CREATED);
     }
     /**
@@ -190,9 +193,12 @@ public class AdminController {
      * PUT /api/admin/parts/{partId}
      */
     @PutMapping("/parts/{partId}")
-    public ResponseEntity<Part> updatePart(@PathVariable Integer partId, @RequestBody Part partDetails) {
-        Part updatedPart = serviceCenterService.updatePart(partId, partDetails);
-        return ResponseEntity.ok(updatedPart);
+    public ResponseEntity<Part> updatePart(
+            @PathVariable Integer partId,
+            @RequestBody PartCreateRequest requestDTO) {
+
+        Part updatedPart = serviceCenterService.updatePart(partId, requestDTO);
+        return new ResponseEntity<>(updatedPart, HttpStatus.OK);
     }
     /**
      * READ (All): Lấy tất cả PartType (cho dropdown)
@@ -250,66 +256,10 @@ public class AdminController {
         Payment payment = serviceCenterService.getPaymentByBookingId(bookingId);
         return ResponseEntity.ok(payment);
     }
-    /**
-     * [Staff/Admin] Lấy danh sách booking đang CHỜ DUYỆT (Pending)
-     * GET /api/admin/bookings/pending
-     */
-    @GetMapping("/bookings/pending")
-    public ResponseEntity<List<StaffBookingDTO>> getPendingBookings() {
-        // StaffService.getPendingBookings() đã tự lấy admin/staff hiện tại
-        List<StaffBookingDTO> bookings = staffService.getPendingBookings();
-        return ResponseEntity.ok(bookings);
-    }
-    /**
-     * [Staff/Admin] DUYỆT một booking (Pending -> Approved)
-     * PUT /api/admin/bookings/{bookingId}/approve
-     */
-    @PutMapping("/bookings/{bookingId}/approve")
-    public ResponseEntity<String> approveBooking(@PathVariable Integer bookingId) {
-        Integer adminId = authenticationService.getCurrentAccount().getUserId();
-        staffService.approveBooking(bookingId, adminId);
-        return ResponseEntity.ok("Booking approved successfully");
-    }
-    /**
-     * [Staff/Admin] TỪ CHỐI một booking (Pending -> Declined)
-     * PUT /api/admin/bookings/{bookingId}/decline
-     */
-    @PutMapping("/bookings/{bookingId}/decline")
-    public ResponseEntity<String> declineBooking(
-            @PathVariable Integer bookingId,
-            @RequestParam String reason) {
 
-        Integer adminId = authenticationService.getCurrentAccount().getUserId();
-        staffService.declineBooking(bookingId, adminId, reason);
-        return ResponseEntity.ok("Booking declined successfully");
-    }
-    /**
-     * Lấy danh sách technician của service center
-     * GET /api/admin/technicians/available
-     */
-    @GetMapping("/technicians/available")
-    public ResponseEntity<List<TechnicianDTO>> getAvailableTechnicians() {
-        List<TechnicianDTO> technicians = staffService.getAvailableTechnicians();
-        return ResponseEntity.ok(technicians);
-    }
-    /**
-     * Assign technician
-     * POST /api/admin/bookings/assign-technician
-     */
-    @PostMapping("/bookings/assign-technician")
-    public ResponseEntity<String> assignTechnician(@Valid @RequestBody AssignTechnicianRequest request) {
-        Integer adminId = authenticationService.getCurrentAccount().getUserId();
-        staffService.assignTechnician(request, adminId);
-        return ResponseEntity.ok("Technician assigned successfully");
-    }
-    /**
-     * [Staff/Admin] Bàn giao xe cho khách hàng và hoàn tất booking
-     * PUT /api/admin/bookings/{bookingId}/handover
-     */
-    @PutMapping("/bookings/{bookingId}/handover")
-    public ResponseEntity<String> handOverVehicle(@PathVariable Integer bookingId) {
-        staffService.handOverVehicle(bookingId);
-        return ResponseEntity.ok("Vehicle handed over. Booking completed.");
-    }
+
+
+
+
 
 }

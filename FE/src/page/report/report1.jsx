@@ -278,11 +278,11 @@ export default function Report1() {
                     <div className="panel">
                       <h4>Thông tin xe</h4>
                       <div className="kv">
-                        <div><span className="k">KTV</span><span className="v">{currentReport.technicianName || "?"}</span></div>
-                        <div><span className="k">Xe</span><span className="v">{currentReport.vehicleModel || "?"}</span></div>
-                        <div><span className="k">Biển số</span><span className="v">{currentReport.vehicleNumberPlate || "?"}</span></div>
-                        <div><span className="k">Số km</span><span className="v">{(currentReport.currentKm || 0).toLocaleString()} km</span></div>
-                        <div><span className="k">Mốc BD</span><span className="v">{(currentReport.maintenanceKm || 0).toLocaleString()} km</span></div>
+                        <div><span className="k">KTV: </span><span className="v">{currentReport.technicianName || "?"}</span></div>
+                        <div><span className="k">Xe: </span><span className="v">{currentReport.vehicleModel || "?"}</span></div>
+                        <div><span className="k">Biển số: </span><span className="v">{currentReport.vehicleNumberPlate || "?"}</span></div>
+                        <div><span className="k">Số km: </span><span className="v">{(currentReport.currentKm || 0).toLocaleString()} km</span></div>
+                        <div><span className="k">Mốc bảo dưỡng: </span><span className="v">{(currentReport.maintenanceKm || 0).toLocaleString()} km</span></div>
                       </div>
                     </div>
                     <div className="panel cost-panel">
@@ -310,10 +310,11 @@ export default function Report1() {
                                 <div className="detail-name-status">
                                   <div className="detail-name">{d.itemName}</div>
                                   <span className={`tech-status-tag ${techStatusClass}`}>{formatTechStatus(d.status)}</span>
-                                </div>
-                                <div className={`approval-tag ${status}`}>
+                                  <div className={`approval-tag ${status}`}>
                                   {isApproved ? "✓ Duyệt" : "✗ Từ chối"}
                                 </div>
+                                </div>
+                                
                               </div>
                               <div className="detail-grid">
                                 <div><span className="label">Linh kiện</span><div className="val">{d.partName || "-"}</div></div>

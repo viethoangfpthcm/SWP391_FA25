@@ -2,6 +2,8 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.entity.*;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
+import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
+import com.se1824.SWP391_FA25.model.request.PartCreateRequest;
 import com.se1824.SWP391_FA25.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,11 +70,24 @@ public class ServiceCenterService {
     /**
      * CREATE: Thêm một Part mới
      */
-    public Part createPart(Part part) {
-         if(!serviceCenterRepository.existsById(part.getServiceCenter().getId())) {
-            throw new InvalidDataException("ServiceCenter không tồn tại");
-         }
-        return partRepository.save(part);
+    public Part createPart(PartCreateRequest request, Integer centerId) {
+        ServiceCenter center = serviceCenterRepository.findById(centerId)
+                .orElseThrow(() -> new ResourceNotFoundException("ServiceCenter không tồn tại ID: " + centerId));
+
+        PartType partType = partTypeRepository.findById(request.getPartTypeId())
+                .orElseThrow(() -> new ResourceNotFoundException("PartType không tồn tại ID: " + request.getPartTypeId()));
+
+        Part newPart = new Part();
+
+        newPart.setName(request.getName());
+        newPart.setQuantity(request.getQuantity());
+        newPart.setUnitPrice(request.getUnitPrice());
+        newPart.setLaborCost(request.getLaborCost());
+        newPart.setMaterialCost(request.getMaterialCost());
+        newPart.setServiceCenter(center);
+        newPart.setPartType(partType);
+
+        return partRepository.save(newPart);
     }
 
     /**
@@ -86,15 +101,29 @@ public class ServiceCenterService {
     /**
      * UPDATE: Cập nhật thông tin Part
      */
-    public Part updatePart(Integer partId, Part partDetails) {
-        Part existingPart = getPartById(partId);
+    public Part updatePart(Integer partId, PartCreateRequest dto) {
 
-        existingPart.setName(partDetails.getName());
-        existingPart.setQuantity(partDetails.getQuantity());
-        existingPart.setUnitPrice(partDetails.getUnitPrice());
-        existingPart.setLaborCost(partDetails.getLaborCost());
-        existingPart.setMaterialCost(partDetails.getMaterialCost());
+        // 1. Tìm Part có sẵn
+        Part existingPart = partRepository.findById(partId)
+                .orElseThrow(() -> new ResourceNotFoundException("Part không tồn tại ID: " + partId));
 
+        // 2. Tìm PartType mới (nếu người dùng thay đổi)
+        PartType partType = partTypeRepository.findById(dto.getPartTypeId())
+                .orElseThrow(() -> new ResourceNotFoundException("PartType không tồn tại ID: " + dto.getPartTypeId()));
+
+        // 3. Map dữ liệu từ DTO sang Entity
+        existingPart.setName(dto.getName());
+        existingPart.setQuantity(dto.getQuantity());
+        existingPart.setUnitPrice(dto.getUnitPrice());
+        existingPart.setLaborCost(dto.getLaborCost());
+        existingPart.setMaterialCost(dto.getMaterialCost());
+
+        // 4. Gán PartType mới
+        existingPart.setPartType(partType);
+
+        // 5. Không cần set lại ServiceCenter (vì Part không thể di chuyển giữa các trung tâm)
+
+        // 6. Lưu thay đổi
         return partRepository.save(existingPart);
     }
 
