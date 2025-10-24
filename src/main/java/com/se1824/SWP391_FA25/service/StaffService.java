@@ -171,8 +171,8 @@ public class StaffService {
     private void validateStaffRole(Integer userId) {
         Users user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
-        if (user.getRole() != UserRole.STAFF) {
-            throw new InvalidDataException("Only STAFF can perform this action");
+        if (user.getRole() != UserRole.STAFF && user.getRole() != UserRole.ADMIN) {
+            throw new InvalidDataException("Only STAFF or ADMIN can perform this action");
         }
     }
 

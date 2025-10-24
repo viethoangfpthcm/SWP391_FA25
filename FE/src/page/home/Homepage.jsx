@@ -5,10 +5,10 @@ import Home from "../../components/Home.jsx";
 
 export default function Homepage() {
   return (
-    <>
+    <div className="home-page">
       <Navbar />
       <Home />
       <Footer />
-    </>
+    </div>
   );
 }

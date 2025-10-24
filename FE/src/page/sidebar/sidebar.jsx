@@ -9,6 +9,7 @@ import {
   FaClock,
   FaSignOutAlt,
   FaUserCog,
+  FaBuilding,
 } from "react-icons/fa";
 import "./sidebar.css";
 
@@ -29,7 +30,7 @@ const Sidebar = ({ userName, userRole }) => {
       defaultHomePath = "/staff";
       break;
     case "technician":
-      defaultHomePath = "/technicantask"; // ✅ khớp với route thật
+      defaultHomePath = "/technicantask";
       break;
     default:
       defaultHomePath = "/home";
@@ -44,8 +45,16 @@ const Sidebar = ({ userName, userRole }) => {
     navigate("/");
   };
 
-  const isActive = (path) =>
-    location.pathname === path || (location.pathname.startsWith(path) && path !== "/home");
+  const isActive = (path, exact = false) => {
+    if (exact) {
+
+      return location.pathname === path;
+    }
+
+    if (path === "/home") return location.pathname === "/home";
+
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <div className="sidebar open">
@@ -55,46 +64,47 @@ const Sidebar = ({ userName, userRole }) => {
       </div>
 
       <div className="menu">
-        <Link to={defaultHomePath} className={`menu-item ${isActive(defaultHomePath) ? "active" : ""}`}>
+        <Link to={defaultHomePath} className={`menu-item ${isActive(defaultHomePath, true) ? "active" : ""}`}>
           <FaHome /> <span>Trang chủ</span>
         </Link>
 
-        {(role === "staff" || role === "admin") && (
-          <Link to="/staff" className={`menu-item ${isActive("/staff") ? "active" : ""}`}>
+        {(role === "staff") && (
+          <Link to="/staff" className={`menu-item ${isActive("/staff", true) ? "active" : ""}`}>
             <FaCalendarCheck /> <span>Quản lý lịch hẹn</span>
           </Link>
         )}
 
-        
+
         {role === "technician" && (
           <>
-            <Link to="/technicantask" className={`menu-item ${isActive("/technicantask") ? "active" : ""}`}>
+            <Link to="/technicantask" className={`menu-item ${isActive("/technicantask", true) ? "active" : ""}`}>
               <FaTasks /> <span>Công việc được giao</span>
             </Link>
 
             <Link to="/checklist" className={`menu-item ${isActive("/checklist") ? "active" : ""}`}>
-              <FaClipboardCheck /> <span>Kiểm tra thực hiện</span>
+              <FaClipboardCheck /> <span>Báo cáo kỹ thuật</span>
             </Link>
           </>
         )}
 
         {role === "admin" && (
-          <Link to="/admin" className={`menu-item ${isActive("/admin") ? "active" : ""}`}>
-            <FaUserCog /> <span>Quản lý người dùng</span>
-          </Link>
+          <>
+            <Link to="/admin" className={`menu-item ${isActive("/admin", true) ? "active" : ""}`}>
+              <FaUserCog /> <span>Quản lý người dùng</span>
+            </Link>
+            <Link
+              to="/admin/service-centers"
+              className={`menu-item ${isActive("/admin/service-centers") ? "active" : ""}`}
+            >
+              <FaBuilding /> <span>Quản lý trung tâm</span>
+            </Link>
+            
+          </>
         )}
 
-        {(role === "technician" || role === "admin") && (
-          <Link to="/reports" className={`menu-item ${isActive("/reports") ? "active" : ""}`}>
-            <FaFileAlt /> <span>Biên bản đã tạo</span>
-          </Link>
-        )}
 
-        {role === "technician" && (
-          <Link to="/schedule" className={`menu-item ${isActive("/schedule") ? "active" : ""}`}>
-            <FaClock /> <span>Lịch làm việc</span>
-          </Link>
-        )}
+
+
 
         <button className="logout-btn" onClick={handleLogout}>
           <FaSignOutAlt /> <span>Đăng xuất</span>

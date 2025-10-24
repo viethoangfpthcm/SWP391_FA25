@@ -15,7 +15,7 @@ export default function StaffDashboard({ user, userRole }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("pending");
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
 
@@ -409,6 +409,15 @@ export default function StaffDashboard({ user, userRole }) {
     // Sử dụng Booking ID để gọi API Checklist của Staff
     navigate(`/staff/checklist/${bookingId}`);
   };
+  // --- Auto refresh danh sách lịch hẹn mỗi 10 giây ---
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log("🔁 Auto refresh appointments (10s)...");
+      fetchAppointments();
+    }, 2000); // 2 giây
+
+    return () => clearInterval(interval); // Dọn dẹp khi rời trang
+  }, []);
 
   // --- Render ---
 

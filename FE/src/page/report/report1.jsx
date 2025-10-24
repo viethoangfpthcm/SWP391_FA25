@@ -35,6 +35,10 @@ export default function Report1() {
   const [confirmModal, setConfirmModal] = useState({ show: false, message: "", callback: null });
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
+  const [originalReport, setOriginalReport] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(0);
+
   const token = localStorage.getItem("token");
   const customerId = localStorage.getItem("userId");
   const API_BASE = "https://103.90.226.216:8443";
@@ -57,28 +61,36 @@ export default function Report1() {
           else { throw new Error(`Lỗi ${response.status}`); } return;
         }
         const data = await response.json();
-
-        // 👈 BƯỚC 1: SỬA LẠI LOGIC FILTER
-        // YÊU CẦU API trả về 'bookingStatus' và 'totalCostApproved'
         const processedData = data
-          .filter(r => {
-            // Giả sử API đã trả về 'bookingStatus'
-            const isCompleted = r.status === "COMPLETED";
-            const isPaid = r.bookingStatus === "Paid";
+          .sort((a, b) => {
+            const getPriority = (report) => {
+              const status = report.status;
+              const bookingStatus = report.bookingStatus;
+              if (status === 'PENDING_APPROVAL') return 1;
+              if (status === 'In Progress') return 2;
+              if (status === 'Completed' && bookingStatus === 'In Progress') return 3;
+              if (status === 'Completed' && bookingStatus === 'Completed') return 4;
 
-            // Hiển thị nếu:
-            // 1. Report chưa hoàn thành (VD: IN_PROGRESS)
-            // 2. Report ĐÃ hoàn thành NHƯNG CHƯA thanh toán
-            return !isCompleted || (isCompleted && !isPaid);
-          })
-          .sort((a, b) => (b.createdDate ? new Date(b.createdDate) : 0) - (a.createdDate ? new Date(a.createdDate) : 0));
+              return 5; // Các trạng thái khác (nếu có)
+            };
+            const priorityA = getPriority(a);
+            const priorityB = getPriority(b);
+            // 1. Sắp xếp theo độ ưu tiên (Số nhỏ lên trước)
+            if (priorityA !== priorityB) {
+              return priorityA - priorityB;
+            }
+            // 2. Nếu cùng ưu tiên, sắp xếp theo ngày tạo (MỚI NHẤT LÊN TRÊN)
+            const dateA = a.createdDate ? new Date(a.createdDate) : 0;
+            const dateB = b.createdDate ? new Date(b.createdDate) : 0;
+            return dateB - dateA;
+          });
 
         setReportsList(processedData); setError('');
       } catch (err) { console.error("Lỗi tải danh sách:", err); setError("Không thể tải danh sách."); }
       finally { setLoading(false); }
     };
     fetchReportsList();
-  }, [token, customerId, navigate, API_BASE]);
+  }, [token, customerId, navigate, API_BASE, lastUpdated]);
 
   const handleViewDetails = async (bookingId) => {
     if (!bookingId) return;
@@ -87,12 +99,43 @@ export default function Report1() {
       const detailUrl = `${API_BASE}/api/customer/maintenance/checklists/${bookingId}`;
       const response = await fetch(detailUrl, { headers: { Authorization: `Bearer ${token}` } });
       if (!response.ok) { throw new Error("Không thể tải chi tiết."); }
-      const detailData = await response.json(); setCurrentReport(detailData);
+      const detailData = await response.json();
+
+
+      let updatedApprovedCost = detailData.totalCostApproved || 0;
+      let updatedDeclinedCost = detailData.totalCostDeclined || 0;
+
+      const processedDetails = detailData.details.map(d => {
+        if (d.approvalStatus === 'PENDING' || !d.approvalStatus) {
+          
+          const cost = (d.laborCost || 0) + (d.materialCost || 0);
+          
+          updatedApprovedCost += cost;
+          
+          return { ...d, approvalStatus: 'APPROVED' };
+        }
+        
+        return d;
+      });
+      const processedReport = { 
+        ...detailData, 
+        details: processedDetails,
+        totalCostApproved: updatedApprovedCost,
+        totalCostDeclined: updatedDeclinedCost  
+      };
+      setCurrentReport(processedReport); 
+      setOriginalReport(JSON.parse(JSON.stringify(detailData))); 
+
     } catch (err) { console.error("Lỗi tải chi tiết:", err); showToast("Lỗi tải chi tiết.", "error"); handleCloseModal(); }
     finally { setDetailLoading(false); }
   };
 
-  const handleCloseModal = () => { setShowDetailModal(false); setCurrentReport(null); };
+  const handleCloseModal = () => {
+    setShowDetailModal(false);
+    setCurrentReport(null);
+    setOriginalReport(null);
+    setLastUpdated(Date.now());
+  };
 
   const handleNoteChange = (detailId, newNote) => {
     setCurrentReport(prev => {
@@ -101,63 +144,100 @@ export default function Report1() {
       return { ...prev, details: updated };
     });
   };
+  const handleCheckboxChange = (detailId, isChecked) => {
+    const newStatus = isChecked ? 'APPROVED' : 'DECLINED';
 
-  const handleApproval = (detailId, action) => {
-    const msg = action === "approved" ? "Phê duyệt hạng mục này?" : "Từ chối hạng mục này?";
-    setConfirmModal({ show: true, message: msg, callback: () => proceedWithApproval(detailId, action) });
+    setCurrentReport(prev => {
+      if (!prev) return null;
+
+      const oldDetail = prev.details.find(d => d.id === detailId);
+      if (!oldDetail) return prev;
+
+      const cost = (oldDetail.laborCost || 0) + (oldDetail.materialCost || 0);
+      let approvedCost = prev.totalCostApproved || 0;
+      let declinedCost = prev.totalCostDeclined || 0;
+
+      if (newStatus === 'APPROVED' && oldDetail.approvalStatus !== 'APPROVED') {
+        approvedCost += cost;
+        if (oldDetail.approvalStatus === 'DECLINED') declinedCost -= cost;
+      } else if (newStatus === 'DECLINED' && oldDetail.approvalStatus !== 'DECLINED') {
+        declinedCost += cost;
+        if (oldDetail.approvalStatus === 'APPROVED') approvedCost -= cost;
+      }
+
+      const updatedDetails = prev.details.map(d =>
+        d.id === detailId ? { ...d, approvalStatus: newStatus } : d
+      );
+
+      return {
+        ...prev,
+        details: updatedDetails,
+        totalCostApproved: Math.max(0, approvedCost),
+        totalCostDeclined: Math.max(0, declinedCost)
+      };
+    });
   };
 
-  const proceedWithApproval = async (detailId, action) => {
-    const newStatus = action === "approved" ? "APPROVED" : "DECLINED";
-    const currentDetail = currentReport?.details.find(d => d.id === detailId);
-    const customerNote = currentDetail?.customerNote || "";
-    try {
-      const approvalUrl = `${API_BASE}/api/customer/maintenance/checklists/details/${detailId}/approval`;
-      const response = await fetch(approvalUrl, {
+  const handleSubmitApprovals = async () => {
+    if (!currentReport || !originalReport) return;
+
+    // Tìm tất cả hạng mục có thay đổi (về status hoặc note)
+    const changes = currentReport.details.filter(d => {
+      const original = originalReport.details.find(o => o.id === d.id);
+      if (!original) return false;
+      return d.approvalStatus !== original.approvalStatus || d.customerNote !== original.customerNote;
+    });
+
+    if (changes.length === 0) {
+      showToast("Không có thay đổi để lưu.", "info");
+      return;
+    }
+
+    setIsSubmitting(true);
+    showToast(`Đang cập nhật ${changes.length} mục...`, "info");
+
+    const updatePromises = changes.map(detail => {
+      const approvalUrl = `${API_BASE}/api/customer/maintenance/checklists/details/${detail.id}/approval`;
+      return fetch(approvalUrl, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          approvalStatus: newStatus,
-          customerNote: customerNote
+          approvalStatus: detail.approvalStatus,
+          customerNote: detail.customerNote || ""
         })
-      });
-      if (!response.ok) {
-        const errorData = await response.text();
-        console.error("Lỗi API khi cập nhật:", response.status, errorData);
-        showToast(`Lỗi ${response.status}: Không thể cập nhật phê duyệt.`, "error");
-        return;
-      }
-      setCurrentReport(prev => {
-        if (!prev) return null;
-        const old = prev.details.find(d => d.id === detailId);
-        if (!old) return prev;
-        const cost = (old.laborCost || 0) + (old.materialCost || 0);
-        let approvedCost = prev.totalCostApproved || 0;
-        let declinedCost = prev.totalCostDeclined || 0;
-        if (newStatus === "APPROVED" && old.approvalStatus !== "APPROVED") {
-          approvedCost += cost; if (old.approvalStatus === "DECLINED") declinedCost -= cost;
-        } else if (newStatus === "DECLINED" && old.approvalStatus !== "DECLINED") {
-          declinedCost += cost; if (old.approvalStatus === "APPROVED") approvedCost -= cost;
+      }).then(response => {
+        if (!response.ok) {
+          return response.text().then(text => { throw new Error(text || `Lỗi ${response.status}`) });
         }
-        const updated = prev.details.map(d =>
-          d.id === detailId
-            ? { ...d, approvalStatus: newStatus, customerNote: customerNote }
-            : d
-        );
-        showToast(`Đã ${action === "approved" ? "phê duyệt" : "từ chối"}!`, action === "approved" ? "success" : "warning");
-        return { ...prev, details: updated, totalCostApproved: Math.max(0, approvedCost), totalCostDeclined: Math.max(0, declinedCost) };
+        return { id: detail.id, status: 'fulfilled' };
+      }).catch(error => {
+        return { id: detail.id, status: 'rejected', error: error.message };
       });
-    } catch (error) {
-      console.error("Lỗi mạng hoặc lỗi khác:", error);
-      showToast("Lỗi kết nối: Không thể cập nhật.", "error");
-    } finally { }
+    });
+
+    const results = await Promise.all(updatePromises);
+
+    const successCount = results.filter(r => r.status === 'fulfilled').length;
+    const errorCount = results.filter(r => r.status === 'rejected').length;
+
+    setIsSubmitting(false);
+
+    if (errorCount > 0) {
+      const failedIds = results.filter(r => r.status === 'rejected').map(r => r.id).join(', ');
+      showToast(`Lỗi: ${errorCount} mục thất bại (ID: ${failedIds}). Vui lòng tải lại.`, "error");
+      // Tải lại chi tiết modal để đồng bộ với server
+      handleViewDetails(currentReport.bookingId);
+    } else {
+      showToast(`Đã cập nhật ${successCount} mục!`, "success");
+      handleCloseModal(); // Thành công, đóng modal (sẽ trigger tải lại list)
+    }
   };
 
   const getStatusIcon = (status) => {
-    
+
     switch (status) {
       case 'IN_PROGRESS': return <FaTools className="status-icon in-progress" title="Đang xử lý" />;
       case 'PENDING_APPROVAL': return <FaTriangleExclamation className="status-icon pending" title="Chờ phê duyệt" />;
@@ -200,11 +280,11 @@ export default function Report1() {
                     <div className="panel">
                       <h4>Thông tin xe</h4>
                       <div className="kv">
-                        <div><span className="k">KTV</span><span className="v">{currentReport.technicianName || "?"}</span></div>
-                        <div><span className="k">Xe</span><span className="v">{currentReport.vehicleModel || "?"}</span></div>
-                        <div><span className="k">Biển số</span><span className="v">{currentReport.vehicleNumberPlate || "?"}</span></div>
-                        <div><span className="k">Số km</span><span className="v">{(currentReport.currentKm || 0).toLocaleString()} km</span></div>
-                        <div><span className="k">Mốc BD</span><span className="v">{(currentReport.maintenanceKm || 0).toLocaleString()} km</span></div>
+                        <div><span className="k">KTV: </span><span className="v">{currentReport.technicianName || "?"}</span></div>
+                        <div><span className="k">Xe: </span><span className="v">{currentReport.vehicleModel || "?"}</span></div>
+                        <div><span className="k">Biển số: </span><span className="v">{currentReport.vehicleNumberPlate || "?"}</span></div>
+                        <div><span className="k">Số km: </span><span className="v">{(currentReport.currentKm || 0).toLocaleString()} km</span></div>
+                        <div><span className="k">Mốc bảo dưỡng: </span><span className="v">{(currentReport.maintenanceKm || 0).toLocaleString()} km</span></div>
                       </div>
                     </div>
                     <div className="panel cost-panel">
@@ -220,9 +300,10 @@ export default function Report1() {
                     <h4 className="details-title">Chi tiết hạng mục</h4>
                     {currentReport.details && currentReport.details.length > 0 ? (
                       currentReport.details.map((d) => {
-                        const status = (d.approvalStatus || "PENDING").toLowerCase();
-                        const isApproved = d.approvalStatus === "APPROVED";
                         const isDeclined = d.approvalStatus === "DECLINED";
+                        const isApproved = !isDeclined;
+                        const status = isDeclined ? 'declined' : 'approved';
+                        const isReportCompleted = currentReport.status === "Completed";
                         const techStatusClass = `tech-status-${(d.status || 'unknown').toLowerCase().replace('_', '-')}`;
                         return (
                           <div key={d.id} className="detail-row">
@@ -231,8 +312,11 @@ export default function Report1() {
                                 <div className="detail-name-status">
                                   <div className="detail-name">{d.itemName}</div>
                                   <span className={`tech-status-tag ${techStatusClass}`}>{formatTechStatus(d.status)}</span>
+                                  <div className={`approval-tag ${status}`}>
+                                  {isApproved ? "✓ Duyệt" : "✗ Từ chối"}
                                 </div>
-                                <div className={`approval-tag ${status}`}>{isApproved ? "✓ Duyệt" : isDeclined ? "✗ Từ chối" : " Chờ"}</div>
+                                </div>
+                                
                               </div>
                               <div className="detail-grid">
                                 <div><span className="label">Linh kiện</span><div className="val">{d.partName || "-"}</div></div>
@@ -243,13 +327,28 @@ export default function Report1() {
                                 <div><strong>Ghi chú KT:</strong> {d.note || "-"}</div>
                                 <div className="customer-note-input">
                                   <label htmlFor={`note-${d.id}`}><strong>Ghi chú của bạn:</strong></label>
-                                  <textarea id={`note-${d.id}`} value={d.customerNote || ""} onChange={(e) => handleNoteChange(d.id, e.target.value)} placeholder="Nhập ghi chú..." rows={2} />
+                                  <textarea
+                                    id={`note-${d.id}`}
+                                    value={d.customerNote || ""}
+                                    onChange={(e) => handleNoteChange(d.id, e.target.value)}
+                                    placeholder="Nhập ghi chú..."
+                                    rows={2}
+                                    disabled={isReportCompleted}
+                                  />
                                 </div>
                               </div>
                             </div>
-                            <div className="detail-actions">
-                              <button className={`btn small approve ${isApproved ? "active" : ""}`} onClick={() => handleApproval(d.id, "approved")} disabled={isApproved}>Đồng ý</button>
-                              <button className={`btn small reject ${isDeclined ? "active" : ""}`} onClick={() => handleApproval(d.id, "rejected")} disabled={isDeclined}>Từ chối</button>
+                            <div className="detail-approval-toggle">
+                              <input
+                                type="checkbox"
+                                id={`approve-${d.id}`}
+                                checked={d.approvalStatus !== 'DECLINED'}
+                                onChange={(e) => handleCheckboxChange(d.id, e.target.checked)}
+                                disabled={isReportCompleted}
+                              />
+                              <label htmlFor={`approve-${d.id}`}>
+                                {d.approvalStatus !== 'DECLINED' ? 'Đồng ý' : 'Không đồng ý'}
+                              </label>
                             </div>
                           </div>
                         );
@@ -258,7 +357,29 @@ export default function Report1() {
                   </div>
                 </section>
                 <footer className="document-footer-modal">
-                  <button className="btn-complete-review" onClick={handleCloseModal}>Đóng</button>
+
+                  <button
+                    className="btn-close-review"
+                    onClick={handleCloseModal}
+                    disabled={isSubmitting}
+                  >
+                    {currentReport.status === "COMPLETED" ? 'Đóng' : 'Hủy'}
+                  </button>
+                  {currentReport.status !== "COMPLETED" && (
+                    <button
+                      className="btn-submit-review"
+                      onClick={handleSubmitApprovals}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <FaSpinner className="spinner-icon" /> Đang lưu...
+                        </>
+                      ) : (
+                        'Lưu & Xác nhận'
+                      )}
+                    </button>
+                  )}
                 </footer>
               </article>
             )}
@@ -275,64 +396,107 @@ export default function Report1() {
               {toast.type === "warning" && <FaTriangleExclamation />}
             </div>
             <span className="toast-message">{toast.message}</span>
-            <button className="toast-close" onClick={() => setToast({ show: false, message: "", type: "" })}><FaXmark /></button>
+            <button
+              className="toast-close"
+              onClick={() => setToast({ show: false, message: "", type: "" })}
+            >
+              <FaXmark />
+            </button>
           </div>
         )}
+
         <h1 className="page-title">Biên bản bảo dưỡng & sửa chữa</h1>
-        <p className="page-subtitle">Chọn biên bản để xem chi tiết hoặc thanh toán.</p>
+        <p className="page-subtitle">
+          Chọn biên bản để xem chi tiết hoặc thanh toán.
+        </p>
+
         {reportsList.length === 0 ? (
-          <div className="no-data-card"><div className="no-data-icon">📋</div><h3>Chưa có biên bản</h3><p>Biên bản chờ duyệt hoặc chờ thanh toán sẽ hiện ở đây.</p></div>
+          <div className="no-data-card">
+            <div className="no-data-icon">📋</div>
+            <h3>Chưa có biên bản</h3>
+            <p>Biên bản chờ duyệt hoặc chờ thanh toán sẽ hiện ở đây.</p>
+          </div>
         ) : (
-          <div className="report-list-container">
+          <div className="car-report-grid">
+            {/* 🔹 Nhóm danh sách theo biển số xe */}
+            {Object.entries(
+              reportsList.reduce((acc, report) => {
+                const car = report.vehicleNumberPlate || "Không rõ";
+                if (!acc[car]) acc[car] = [];
+                acc[car].push(report);
+                return acc;
+              }, {})
+            ).map(([car, reports]) => (
+              <div key={car} className="car-report-section">
+                <h3 className="car-section-title">Xe {car}</h3>
 
+                <div className="report-list-container">
+                  {reports.map((report) => {
+                    const statusClass = `status-${(report.status || "default")
+                      .toLowerCase()
+                      .replace("_", "-")}`;
 
-            {reportsList.map((report) => {
-              const statusClass = `status-${(report.status || 'default').toLowerCase().replace('_', '-')}`;
+                    const isCompleted = report.status === "Completed";
+                    const isPaid = report.bookingStatus === "Paid";
+                    const isBookingCompleted =
+                      report.bookingStatus === "Completed";
+                    const totalAmount = report.totalCostApproved || 0;
 
+                    const showPayButton =
+                      !isBookingCompleted &&
+                      isCompleted &&
+                      !isPaid &&
+                      totalAmount > 0;
 
-              const isCompleted = report.status === "Completed";
-              const isPaid = report.bookingStatus === "Paid";
-              const totalAmount = report.totalCostApproved || 0;
+                    return (
+                      <div
+                        key={report.id}
+                        className={`report-list-card ${statusClass}`}
+                      >
+                        <div
+                          className="report-card-main-content"
+                          onClick={() => handleViewDetails(report.bookingId)}
+                        >
+                          <div className="report-card-icon">
+                            {getStatusIcon(report.status)}
+                          </div>
+                          <div className="report-card-info">
+                            <h3>
+                              {report.planName || "?"}{" "}
+                              <span className="car-inline">
+                                ({report.vehicleNumberPlate || "?"})
+                              </span>
+                            </h3>
+                            <p>
+                              Mã BB: #{report.id} • Trạng thái:{" "}
+                              {report.status === "COMPLETED"
+                                ? "Chờ thanh toán"
+                                : report.status || "?"}
+                            </p>
+                          </div>
+                          <div className="report-card-action">
+                            {!showPayButton && <FaChevronRight />}
+                          </div>
+                        </div>
 
-              const showPayButton = isCompleted && !isPaid && totalAmount > 0;
-              // --- Hết logic mới ---
-
-              return (
-                // Thẻ div ngoài không còn onClick
-                <div key={report.id} className={`report-list-card ${statusClass}`}>
-
-                  {/* Nội dung chính (nhấn vào để xem chi tiết) */}
-                  <div
-                    className="report-card-main-content"
-                    onClick={() => handleViewDetails(report.bookingId)}
-                  >
-                    <div className="report-card-icon">{getStatusIcon(report.status)}</div>
-                    <div className="report-card-info">
-                      <h3>{report.planName || '?'} (Xe: {report.vehicleNumberPlate || '?'})</h3>
-                      <p>Mã BB: #{report.id} • Trạng thái: {report.status === "COMPLETED" ? "Chờ thanh toán" : (report.status || '?')}</p>
-                    </div>
-                    <div className="report-card-action">
-                      {/* Ẩn mũi tên nếu nút thanh toán xuất hiện */}
-                      {!showPayButton && <FaChevronRight />}
-                    </div>
-                  </div>
-
-                  {/* --- KHU VỰC NÚT THANH TOÁN MỚI --- */}
-                  {showPayButton && (
-                    <div className="report-card-payment-section">
-                      <VnPayPaymentButton
-                        bookingId={report.bookingId}
-                        totalAmount={totalAmount}
-                      />
-                    </div>
-                  )}
-
+                        {showPayButton && (
+                          <div className="report-card-payment-section">
+                            <VnPayPaymentButton
+                              bookingId={report.bookingId}
+                              totalAmount={totalAmount}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
       </main>
+
       <Footer />
     </div>
   );

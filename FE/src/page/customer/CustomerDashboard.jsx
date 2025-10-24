@@ -4,28 +4,42 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import './CustomerDashboard.css';
 
-import { FaUser, FaCar, FaCalendarAlt, FaPlus, FaTimes } from 'react-icons/fa';
+import { FaUser, FaCar, FaCalendarAlt, FaPlus, FaTimes, FaEdit, FaCheckCircle, FaExclamationTriangle, FaSpinner } from 'react-icons/fa';
 
 function CustomerDashboard() {
   const [dashboardData, setDashboardData] = useState(null);
+  const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
 
-  const [showAddVehicleForm, setShowAddVehicleForm] = useState(false); 
-  const [newVehicleData, setNewVehicleData] = useState({ 
-    licensePlate: '',
-    model: '',
-    year: '',
-    purchaseDate: '', // Định dạng YYYY-MM-DD
-    currentKm: '',
-   
-  });
-  const [addVehicleLoading, setAddVehicleLoading] = useState(false); 
-  const [addVehicleError, setAddVehicleError] = useState(''); 
+  const [showAddVehicleForm, setShowAddVehicleForm] = useState(false);
+  const [newVehicleData, setNewVehicleData] = useState({ /* ... */ });
+  const [addVehicleLoading, setAddVehicleLoading] = useState(false);
+  const [addVehicleError, setAddVehicleError] = useState('');
 
- const vinfastModels = [
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profileData, setProfileData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    password: ''
+  });
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileError, setProfileError] = useState('');
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successModalMessage, setSuccessModalMessage] = useState('');
+  const [successModalAction, setSuccessModalAction] = useState(null);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmModalMessage, setConfirmModalMessage] = useState('');
+  const [onConfirmAction, setOnConfirmAction] = useState(null);
+
+  const [cancelBookingLoading, setCancelBookingLoading] = useState(false);
+
+  const vinfastModels = [
     "VinFast VF 3",
     "VinFast VF 5",
     "VinFast VF 7",
@@ -34,7 +48,8 @@ function CustomerDashboard() {
 
   const API_BASE = import.meta.env.VITE_API_URL || "https://103.90.226.216:8443";
 
-  
+
+
   const fetchDashboardData = async () => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
@@ -43,108 +58,141 @@ function CustomerDashboard() {
       setError("Vui lòng đăng nhập để xem trang này.");
       setLoading(false);
       navigate("/");
-      return false; // Báo hiệu thất bại
+      return false;
     }
+    setLoading(true);
 
     try {
-      
-      const response = await fetch(`${API_BASE}/api/customer/dashboard/${userId}`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/json",
-        },
+      const dashboardPromise = fetch(`${API_BASE}/api/customer/dashboard/${userId}`, {
+        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
+      });
+      const bookingsPromise = fetch(`${API_BASE}/api/customer/bookings/customerBookings/${userId}`, {
+        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
       });
 
-      if (!response.ok) {
-        if (response.status === 401 || response.status === 403) {
-           setError("Phiên đăng nhập hết hạn hoặc không có quyền. Vui lòng đăng nhập lại.");
-           localStorage.removeItem("token");
-           localStorage.removeItem("userId");
-           localStorage.removeItem("role");
-           navigate("/");
-        } else {
-          throw new Error(`Lỗi ${response.status}: Không thể tải dữ liệu dashboard.`);
-        }
-        return false; // Báo hiệu thất bại
-      }
+      const [dashboardResponse, bookingsResponse] = await Promise.all([dashboardPromise, bookingsPromise]);
 
-      const data = await response.json();
+      if (!dashboardResponse.ok) {
+        if (dashboardResponse.status === 401 || dashboardResponse.status === 403) {
+          setError("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+          localStorage.clear();
+          navigate("/");
+        } else {
+          throw new Error(`Lỗi tải dashboard: ${dashboardResponse.status}`);
+        }
+        return false;
+      }
+      const data = await dashboardResponse.json();
       setDashboardData(data);
       setError('');
-      return true; // Báo hiệu thành công
+
+      if (!bookingsResponse.ok) {
+        console.warn("Không thể tải danh sách lịch hẹn:", bookingsResponse.status);
+        setBookings([]);
+      } else {
+        const bookingsData = await bookingsResponse.json();
+        setBookings(bookingsData);
+      }
+      return true;
+
     } catch (err) {
       console.error("Lỗi khi fetch dashboard data:", err);
       setError(err.message || "Đã xảy ra lỗi khi tải dữ liệu.");
-      return false; // Báo hiệu thất bại
+      return false;
     } finally {
-      setLoading(false); 
+      setLoading(false);
+    }
+  };
+
+  const handleCancelBookingClickDashboard = (bookingId) => {
+    setConfirmModalMessage("Bạn có chắc chắn muốn hủy lịch hẹn này?");
+    setOnConfirmAction(() => () => executeCancelBookingDashboard(bookingId));
+    setShowConfirmModal(true);
+  };
+
+  const executeCancelBookingDashboard = async (bookingId) => {
+    setCancelBookingLoading(true);
+    setError('');
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(`${API_BASE}/api/customer/bookings/${bookingId}/cancel`, {
+        method: "PUT",
+        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
+      });
+
+      if (!response.ok) {
+        // Xử lý lỗi từ backend
+        const errorText = await response.text();
+        try {
+          const errorJson = JSON.parse(errorText);
+          throw new Error(errorJson.message || `Lỗi ${response.status}`);
+        } catch (parseError) {
+          throw new Error(`Lỗi ${response.status}: ${errorText}`);
+        }
+      }
+
+      setShowConfirmModal(false);
+
+      setSuccessModalMessage("Đã hủy lịch hẹn thành công.");
+      setSuccessModalAction(null); // Không làm gì thêm
+      setShowSuccessModal(true);
+      fetchDashboardData();
+    } catch (err) {
+      console.error("Lỗi khi hủy lịch:", err);
+
+
+      setError(err.message || "Đã xảy ra lỗi khi hủy lịch hẹn."); // Hiển thị lỗi chung
+      setShowConfirmModal(false); // Đóng modal confirm khi có lỗi
+    } finally {
+      setCancelBookingLoading(false);
     }
   };
 
 
   useEffect(() => {
     fetchDashboardData();
-  }, [navigate, API_BASE]); // Fetch lần đầu
+  }, [navigate, API_BASE]);
+
 
   const handleViewSchedule = (licensePlate) => {
     navigate(`/customer/vehicle-schedule/${licensePlate}`);
   };
-
- 
-  const handleAddVehicleClick = () => { 
+  const handleAddVehicleClick = () => {
     setShowAddVehicleForm(true);
-    setAddVehicleError(''); 
-    
+    setAddVehicleError('');
     setNewVehicleData({
-        licensePlate: '',
-        model: '',
-        year: '',
-        purchaseDate: '',
-        currentKm: '',
+      licensePlate: '', model: '', year: '', purchaseDate: '', currentKm: '',
     });
   };
-
-
-
   const handleNewVehicleChange = (e) => {
     const { name, value } = e.target;
-    setNewVehicleData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    setNewVehicleData(prevState => ({ ...prevState, [name]: value }));
   };
-
-
-
   const handleSaveNewVehicle = async (e) => {
     e.preventDefault();
     setAddVehicleLoading(true);
     setAddVehicleError('');
     const token = localStorage.getItem("token");
 
-    // --- VALIDATION ---
     if (!newVehicleData.licensePlate || !newVehicleData.model || !newVehicleData.year || !newVehicleData.purchaseDate) {
-        setAddVehicleError('Vui lòng điền đầy đủ các trường bắt buộc (*).');
-        setAddVehicleLoading(false);
-        return;
+      setAddVehicleError('Vui lòng điền đầy đủ các trường bắt buộc (*).');
+      setAddVehicleLoading(false);
+      return;
     }
-
-    
-    const hcmPlateRegex = /^(41|5[0-9])[A-Z0-9][- ]?\d{3}[.]?\d{2}$/i; 
+    const hcmPlateRegex = /^(41|5[0-9])[A-Z0-9][- ]?\d{3}[.]?\d{2}$/i;
     if (!hcmPlateRegex.test(newVehicleData.licensePlate)) {
-        setAddVehicleError('Định dạng biển số xe TP.HCM không hợp lệ. Ví dụ: 51A-123.45 hoặc 41F12345.');
-        setAddVehicleLoading(false);
-        return;
+      setAddVehicleError('Định dạng biển số xe TP.HCM không hợp lệ. Ví dụ: 51A-123.45.');
+      setAddVehicleLoading(false);
+      return;
     }
 
     try {
-      
-       const payload = {
-         ...newVehicleData,
-         year: parseInt(newVehicleData.year, 10) || null,
-         currentKm: parseInt(newVehicleData.currentKm, 10) || 0, 
-       };
-
+      const payload = {
+        ...newVehicleData,
+        year: parseInt(newVehicleData.year, 10) || null,
+        currentKm: parseInt(newVehicleData.currentKm, 10) || 0,
+      };
       const response = await fetch(`${API_BASE}/api/customer/create-vehicle`, {
         method: "POST",
         headers: {
@@ -157,21 +205,21 @@ function CustomerDashboard() {
 
       if (!response.ok) {
         const errorText = await response.text();
-         try {
-             // Thử parse lỗi dạng JSON
-             const errorJson = JSON.parse(errorText);
-             throw new Error(errorJson.message || errorJson.error || `Lỗi ${response.status}: ${errorText}`);
-         } catch (parseError) {
-            // Nếu không phải JSON thì hiển thị text
-             throw new Error(`Lỗi ${response.status}: ${errorText}`);
-         }
+        try {
+          const errorJson = JSON.parse(errorText);
+          throw new Error(errorJson.message || errorJson.error || `Lỗi ${response.status}: ${errorText}`);
+        } catch (parseError) {
+          throw new Error(`Lỗi ${response.status}: ${errorText}`);
+        }
       }
 
-      // Thành công
-      setShowAddVehicleForm(false); 
-      alert("Thêm xe thành công!");
-      setLoading(true); 
-      fetchDashboardData(); // Tải lại dữ liệu dashboard để hiển thị xe mới
+      setShowAddVehicleForm(false);
+
+      setSuccessModalMessage("Thêm xe thành công!");
+      setSuccessModalAction(null); // Không làm gì khi bấm OK
+      setShowSuccessModal(true);
+
+      fetchDashboardData();
 
     } catch (err) {
       console.error("Lỗi khi thêm xe:", err);
@@ -181,42 +229,139 @@ function CustomerDashboard() {
     }
   };
 
+  const handleEditProfileClick = () => {
+    if (!dashboardData || !dashboardData.customerInfo) return;
+
+    setProfileData({
+      fullName: dashboardData.customerInfo.fullName || '',
+      email: dashboardData.customerInfo.email || '',
+      phone: dashboardData.customerInfo.phone || '',
+      password: ''
+    });
+    setProfileError('');
+    setShowProfileModal(true);
+  };
 
 
-  if (loading && !dashboardData) { 
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
+    setProfileData(prev => ({ ...prev, [name]: value }));
+  };
+
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    setProfileLoading(true);
+    setProfileError('');
+    const token = localStorage.getItem("token");
+
+
+    const payload = {
+      fullName: profileData.fullName,
+      email: profileData.email,
+      phone: profileData.phone,
+
+      password: profileData.password ? profileData.password : null
+    };
+
+    try {
+      const response = await fetch(`${API_BASE}/api/users/update-profile`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+
+        const errorText = await response.text();
+        try {
+          const errorJson = JSON.parse(errorText);
+          throw new Error(errorJson.message || `Lỗi ${response.status}`);
+        } catch (parseError) {
+          throw new Error(`Lỗi ${response.status}: ${errorText}`);
+        }
+      }
+
+
+      setShowProfileModal(false);
+
+
+      setSuccessModalMessage("Cập nhật thông tin thành công!");
+      setSuccessModalAction(null);
+      setShowSuccessModal(true);
+
+
+      fetchDashboardData();
+
+    } catch (err) {
+      console.error("Lỗi khi cập nhật profile:", err);
+      setProfileError(err.message || 'Lỗi không xác định.');
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
+
+
+  if (loading && !dashboardData) {
     return (
       <div className="dashboard-page loading-container">
         <Navbar />
-        <p>Đang tải dữ liệu...</p>
+        <div className="loading-container">
+          <FaSpinner className="spinner-icon" /> 
+          Đang tải dữ liệu...
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+  if (error && !dashboardData) {
+    return (
+      <div className="dashboard-page error-container">
+        <Navbar />
+        <p className="error-message">Lỗi: {error}</p>
+        <Footer />
+      </div>
+    );
+  }
+  if (!dashboardData) {
+    return (
+      <div className="dashboard-page empty-container">
+        <Navbar />
+        <p>Không có dữ liệu để hiển thị. Vui lòng thử lại sau.</p>
         <Footer />
       </div>
     );
   }
 
-   
-   if (error && !dashboardData) {
-     return (
-       <div className="dashboard-page error-container">
-         <Navbar />
-         <p className="error-message">Lỗi: {error}</p>
-         <Footer />
-       </div>
-     );
-   }
+  const { customerInfo, vehicles } = dashboardData || {};
+  const calculatedStats = {
+    totalBookings: bookings.length,
+    pendingBookings: bookings.filter(b => b.status === 'Pending').length,
+    inProgressBookings: bookings.filter(b => b.status === 'In Progress').length,
+    completedBookings: bookings.filter(b => b.status === 'Completed').length,
+    paidBookings: bookings.filter(b => b.status === 'Paid').length,
+    lastBookingDate: bookings.length > 0
+      ? bookings.reduce((latest, current) => {
+        const latestDate = new Date(latest.bookingDate);
+        const currentDate = new Date(current.bookingDate);
+        return currentDate > latestDate ? current : latest;
+      }).bookingDate
+      : null
+  };
 
-   // Xử lý trường hợp fetch thành công nhưng không có dữ liệu trả về
-   if (!dashboardData) {
-      return (
-        <div className="dashboard-page empty-container">
-          <Navbar />
-          <p>Không có dữ liệu để hiển thị. Vui lòng thử lại sau.</p>
-          <Footer />
-        </div>
-      );
-   }
+  const activeBookings = bookings.filter(b =>
+    b.status === 'Pending' || b.status === 'In Progress'
+  ).sort((a, b) => new Date(a.bookingDate) - new Date(b.bookingDate));
 
+  const bookingHistory = bookings.filter(b =>
+    b.status === 'Completed' || b.status === 'Declined' || b.status === 'Cancelled' || b.status === 'Paid'
+  ).sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
 
-  const { customerInfo, vehicles, bookingStats } = dashboardData;
 
   return (
     <div className="dashboard-page">
@@ -224,32 +369,26 @@ function CustomerDashboard() {
       <main className="dashboard-content">
         <h1>Bảng điều khiển khách hàng</h1>
 
-    
+
         {showAddVehicleForm && (
-          <div className="modal-overlay"> 
+          <div className="modal-overlay">
             <div className="modal-content add-vehicle-form">
+
               <div className="modal-header">
                 <h2>Thêm xe mới</h2>
                 <button onClick={() => setShowAddVehicleForm(false)} className="close-modal-btn">
                   <FaTimes />
                 </button>
               </div>
-              <form onSubmit={handleSaveNewVehicle}> 
-                {addVehicleError && <p className="error-message">{addVehicleError}</p>} 
-                
+              <form onSubmit={handleSaveNewVehicle}>
+                {addVehicleError && <p className="error-message">{addVehicleError}</p>}
                 <div className="form-group">
                   <label htmlFor="licensePlate">Biển số xe *</label>
                   <input type="text" id="licensePlate" name="licensePlate" value={newVehicleData.licensePlate} onChange={handleNewVehicleChange} required />
                 </div>
-                 <div className="form-group">
+                <div className="form-group">
                   <label htmlFor="model">Dòng xe (Model) *</label>
-                  <select
-                    id="model"
-                    name="model"
-                    value={newVehicleData.model}
-                    onChange={handleNewVehicleChange}
-                    required
-                  >
+                  <select id="model" name="model" value={newVehicleData.model} onChange={handleNewVehicleChange} required >
                     <option value="" disabled>-- Chọn dòng xe --</option>
                     {vinfastModels.map(modelName => (
                       <option key={modelName} value={modelName}>
@@ -258,104 +397,270 @@ function CustomerDashboard() {
                     ))}
                   </select>
                 </div>
-                 <div className="form-group">
+                <div className="form-group">
                   <label htmlFor="year">Năm sản xuất *</label>
                   <input type="number" id="year" name="year" value={newVehicleData.year} onChange={handleNewVehicleChange} required min="1900" max={new Date().getFullYear() + 1} />
-                 </div>
-                 <div className="form-group">
+                </div>
+                <div className="form-group">
                   <label htmlFor="purchaseDate">Ngày mua *</label>
-                  <input type="date" id="purchaseDate" name="purchaseDate" value={newVehicleData.purchaseDate} onChange={handleNewVehicleChange} required max={new Date().toISOString().split('T')[0]}/>
-                 </div>
-                 <div className="form-group">
+                  <input type="date" id="purchaseDate" name="purchaseDate" value={newVehicleData.purchaseDate} onChange={handleNewVehicleChange} required max={new Date().toISOString().split('T')[0]} />
+                </div>
+                <div className="form-group">
                   <label htmlFor="currentKm">Số KM hiện tại</label>
                   <input type="number" id="currentKm" name="currentKm" value={newVehicleData.currentKm} onChange={handleNewVehicleChange} min="0" />
-                 </div>
-              
-                 <div className="form-actions"> 
-                   <button type="button" onClick={() => setShowAddVehicleForm(false)} className="btn-cancel" disabled={addVehicleLoading}>Hủy</button>
-                   <button type="submit" className="btn-save" disabled={addVehicleLoading}>
-                     {addVehicleLoading ? 'Đang lưu...' : 'Lưu xe'} 
-                   </button>
-                 </div>
+                </div>
+
+                <div className="form-actions">
+                  <button type="button" onClick={() => setShowAddVehicleForm(false)} className="btn-cancel" disabled={addVehicleLoading}>Hủy</button>
+                  <button type="submit" className="btn-save" disabled={addVehicleLoading}>
+                    {addVehicleLoading ? 'Đang lưu...' : 'Lưu xe'}
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         )}
-       
 
 
-        {/* Thông tin cá nhân */}
-        <section className="dashboard-section profile-section">
-             <h2><FaUser /> Thông tin cá nhân</h2>
-             {customerInfo ? (
-               <div className="profile-details">
-                 <p><strong>Họ và tên:</strong> {customerInfo.fullName}</p>
-                 <p><strong>Email:</strong> {customerInfo.email}</p>
-                 <p><strong>Số điện thoại:</strong> {customerInfo.phone}</p>
-               </div>
-             ) : (
-               <p>Không có thông tin khách hàng.</p>
-             )}
-        </section>
+        {showProfileModal && (
+          <div className="modal-overlay">
+            <div className="modal-content add-vehicle-form">
+              <div className="modal-header">
+                <h2>Cập nhật thông tin</h2>
+                <button onClick={() => setShowProfileModal(false)} className="close-modal-btn">
+                  <FaTimes />
+                </button>
+              </div>
+              <form onSubmit={handleUpdateProfile}>
+                {profileError && <p className="error-message">{profileError}</p>}
 
-        <hr className="section-divider" />
+                <div className="form-group">
+                  <label htmlFor="fullName">Họ và tên *</label>
+                  <input type="text" id="fullName" name="fullName" value={profileData.fullName} onChange={handleProfileChange} required />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="email">Email *</label>
+                  <input type="email" id="email" name="email" value={profileData.email} onChange={handleProfileChange} required />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="phone">Số điện thoại *</label>
+                  <input type="tel" id="phone" name="phone" value={profileData.phone} onChange={handleProfileChange} required />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="password">Mật khẩu mới</label>
+                  <input type="password" id="password" name="password" value={profileData.password} onChange={handleProfileChange} placeholder="Để trống nếu không muốn đổi" />
+                </div>
 
-        {/* Danh sách xe */}
-        <section className="dashboard-section vehicle-section">
-            <div className="vehicle-header">
-              <h2><FaCar /> Danh sách xe</h2>
-              {/* ++ Thay đổi hàm onClick ++ */}
-              <button className="add-vehicle-btn" onClick={handleAddVehicleClick} title="Thêm xe mới">
-                <FaPlus /> Thêm xe
-              </button>
+                <div className="form-actions">
+                  <button type="button" onClick={() => setShowProfileModal(false)} className="btn-cancel" disabled={profileLoading}>Hủy</button>
+                  <button type="submit" className="btn-save" disabled={profileLoading}>
+                    {profileLoading ? 'Đang lưu...' : 'Lưu thay đổi'}
+                  </button>
+                </div>
+              </form>
             </div>
-             {vehicles && vehicles.length > 0 ? (
-               <div className="vehicle-list">
-                 {vehicles.map((vehicle) => (
-                   <div key={vehicle.licensePlate} className="vehicle-card">
-                     <h3>{vehicle.model} ({vehicle.year})</h3>
-                     <p><strong>Biển số:</strong> {vehicle.licensePlate}</p>
-                     <p><strong>Số KM hiện tại:</strong> {vehicle.currentKm?.toLocaleString() || 'Chưa cập nhật'} km</p>
-                     <button onClick={() => handleViewSchedule(vehicle.licensePlate)}>
-                       Xem lịch bảo dưỡng
-                     </button>
-                   </div>
-                 ))}
-               </div>
-             ) : (
-               <p>Bạn chưa thêm xe nào.</p>
-             )}
+          </div>
+        )}
+
+
+        {showSuccessModal && (
+          <div className="modal-overlay">
+            <div className="modal-content success-modal">
+              <div className="success-modal-body">
+                <FaCheckCircle className="success-icon" />
+                <p>{successModalMessage}</p>
+              </div>
+              <div className="form-actions">
+                <button
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    if (successModalAction) {
+                      successModalAction();
+                    }
+                  }}
+                  className="btn-save"
+                >
+                  OK
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {showConfirmModal && (
+          <div className="modal-overlay">
+            <div className="modal-content confirm-modal">
+              <div className="confirm-modal-body">
+                <FaExclamationTriangle className="confirm-icon" />
+                <h3>Xác nhận hành động</h3>
+                <p>{confirmModalMessage}</p>
+              </div>
+              <div className="form-actions">
+                <button
+                  onClick={() => setShowConfirmModal(false)}
+                  className="btn-cancel"
+                  disabled={cancelBookingLoading}
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  onClick={() => {
+                    if (onConfirmAction) {
+                      onConfirmAction();
+                    }
+                  }}
+                  className="btn-confirm-danger"
+                  disabled={cancelBookingLoading}
+                >
+                  {cancelBookingLoading ? 'Đang xử lý...' : 'Xác nhận'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        <section className="dashboard-section profile-section">
+
+          <div className="profile-header">
+            <h2><FaUser /> Thông tin cá nhân</h2>
+            <button className="edit-profile-btn" onClick={handleEditProfileClick} title="Cập nhật thông tin">
+              <FaEdit /> Tùy chỉnh
+            </button>
+          </div>
+
+
+          {customerInfo ? (
+            <div className="profile-details">
+              <p><strong>Họ và tên:</strong> {customerInfo.fullName}</p>
+              <p><strong>Email:</strong> {customerInfo.email}</p>
+              <p><strong>Số điện thoại:</strong> {customerInfo.phone}</p>
+            </div>
+          ) : (
+            <p>Không có thông tin khách hàng.</p>
+          )}
         </section>
 
         <hr className="section-divider" />
 
-        {/* Thống kê lịch hẹn */}
+        {/* Danh sách xe (Giữ nguyên) */}
+        <section className="dashboard-section vehicle-section">
+          <div className="vehicle-header">
+            <h2><FaCar /> Danh sách xe</h2>
+            <button className="add-vehicle-btn" onClick={handleAddVehicleClick} title="Thêm xe mới">
+              <FaPlus /> Thêm xe
+            </button>
+          </div>
+          {vehicles && vehicles.length > 0 ? (
+            <div className="vehicle-list">
+              {vehicles.map((vehicle) => (
+                <div key={vehicle.licensePlate} className="vehicle-card">
+                  <h3>{vehicle.model} ({vehicle.year})</h3>
+                  <p><strong>Biển số:</strong> {vehicle.licensePlate}</p>
+                  <p><strong>Số KM hiện tại:</strong> {vehicle.currentKm?.toLocaleString() || 'Chưa cập nhật'} km</p>
+                  <button onClick={() => handleViewSchedule(vehicle.licensePlate)}>
+                    Xem lịch bảo dưỡng
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Bạn chưa thêm xe nào.</p>
+          )}
+        </section>
+
+        <hr className="section-divider" />
+
         <section className="dashboard-section booking-stats-section">
-            <h2><FaCalendarAlt /> Thống kê lịch hẹn</h2>
-            {bookingStats ? (
-              <div className="stats-grid">
-                <div className="stat-item">
-                  <span className="stat-value">{bookingStats.totalBookings || 0}</span>
-                  <span className="stat-label">Tổng lịch hẹn</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value">{bookingStats.pendingBookings || 0}</span>
-                  <span className="stat-label">Chờ xử lý</span>
-                </div>
-                <div className="stat-item">
-                   <span className="stat-value">{bookingStats.completedBookings || 0}</span>
-                   <span className="stat-label">Đã hoàn thành</span>
-                </div>
-                 <div className="stat-item wide">
-                   <span className="stat-label">Lịch hẹn gần nhất:</span>
-                   <span className="stat-value small">{bookingStats.lastBookingDate ? new Date(bookingStats.lastBookingDate).toLocaleString('vi-VN') : 'Chưa có'}</span>
-                 </div>
+          <h2><FaCalendarAlt /> Lịch sử & Thống kê Lịch hẹn</h2>
+
+          {/* Sử dụng calculatedStats thay vì bookingStats */}
+          <div className="stats-grid">
+            <div className="stat-item">
+              <span className="stat-value">{calculatedStats.totalBookings || 0}</span>
+              <span className="stat-label">Tổng lịch hẹn</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-value">{calculatedStats.pendingBookings || 0}</span>
+              <span className="stat-label">Chờ xử lý</span>
+            </div>      
+            <div className="stat-item">
+              <span className="stat-value">{calculatedStats.inProgressBookings || 0}</span>
+              <span className="stat-label">Đang xử lý</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-value">{calculatedStats.completedBookings || 0}</span>
+              <span className="stat-label">Đã hoàn thành</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-value">{calculatedStats.paidBookings || 0}</span>
+              <span className="stat-label">Đã thanh toán</span>
+            </div>
+            <div className="stat-item wide">
+              <span className="stat-label">Lịch hẹn gần nhất:</span>
+              <span className="stat-value small">
+                {calculatedStats.lastBookingDate
+                  ? new Date(calculatedStats.lastBookingDate).toLocaleString('vi-VN')
+                  : 'Chưa có'}
+              </span>
+            </div>
+          </div>
+
+          {/* Các phần danh sách bên dưới giữ nguyên */}
+          <div className="booking-list-container">
+            <h3>Lịch hẹn đang xử lý</h3>
+            {loading ? (
+              <p>Đang tải lịch hẹn...</p>
+            ) : activeBookings.length > 0 ? (
+              <div className="booking-list">
+                {activeBookings.map(booking => (
+                  <div key={booking.bookingId} className={`booking-item status-${booking.status.toLowerCase().replace(' ', '_')}`}>
+                    <div className="booking-item-header">
+                      <strong>{booking.vehiclePlate}</strong> ({booking.vehicleModel})
+                      <span className={`booking-status status-label-${booking.status.toLowerCase().replace(' ', '_')}`}>{booking.status}</span>
+                    </div>
+                    <p><strong>Trung tâm:</strong> {booking.centerName}</p>
+                    <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
+                    {booking.note && <p className="booking-note"><strong>Ghi chú:</strong> {booking.note}</p>}
+                    {booking.status === 'Pending' && (
+                      <button
+                        className="btn-cancel-small"
+                        onClick={() => handleCancelBookingClickDashboard(booking.bookingId)}
+                        disabled={cancelBookingLoading}
+                        title="Hủy lịch hẹn này"
+                      >
+                        <FaTimes /> Hủy
+                      </button>
+                    )}
+                  </div>
+                ))}
               </div>
             ) : (
-              <p>Chưa có thông tin thống kê.</p>
+              <p>Không có lịch hẹn nào đang xử lý.</p>
             )}
-        </section>
+          </div>
 
+          <div className="booking-list-container">
+            <h3>Lịch sử hẹn</h3>
+            {loading ? (
+              <p>Đang tải lịch sử...</p>
+            ) : bookingHistory.length > 0 ? (
+              <div className="booking-list">
+                {bookingHistory.map(booking => (
+                  <div key={booking.bookingId} className={`booking-item status-${booking.status.toLowerCase().replace(' ', '_')}`}>
+                    <div className="booking-item-header">
+                      <strong>{booking.vehiclePlate}</strong> ({booking.vehicleModel})
+                      <span className={`booking-status status-label-${booking.status.toLowerCase().replace(' ', '_')}`}>{booking.status}</span>
+                    </div>
+                    <p><strong>Trung tâm:</strong> {booking.centerName}</p>
+                    <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>Chưa có lịch sử hẹn nào.</p>
+            )}
+          </div>
+        </section>
       </main>
       <Footer />
     </div>

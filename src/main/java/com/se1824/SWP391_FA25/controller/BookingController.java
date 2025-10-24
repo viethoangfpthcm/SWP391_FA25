@@ -62,9 +62,9 @@ public class BookingController {
 
     /**
      * Hủy booking
-     * DELETE /api/customer/bookings/{bookingId}?userId={userId}
+     *  /api/customer/bookings/{bookingId}/cancel
      */
-    @DeleteMapping("/{bookingId}")
+    @PutMapping("/{bookingId}/cancel")
     public ResponseEntity<String> cancelBooking(
             @PathVariable Integer bookingId) {
         Integer userId = authenticationService.getCurrentAccount().getUserId();

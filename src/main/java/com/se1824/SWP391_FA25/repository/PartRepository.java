@@ -9,7 +9,6 @@ import java.util.List;
 @Repository
 
 public interface PartRepository extends JpaRepository<Part, Integer> {
-
-
+    List<Part> findByServiceCenter_Id(Integer serviceCenterId);
     List<Part> findByPartType_IdAndServiceCenter_Id(Integer partTypeId, Integer serviceCenterId);
 }

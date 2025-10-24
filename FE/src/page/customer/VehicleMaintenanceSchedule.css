@@ -1,17 +1,29 @@
-/* VehicleMaintenanceSchedule.css */
+/* =========================================================
+   🚗 VehicleMaintenanceSchedule.css
+   - Lịch trình bảo dưỡng & Modal đặt lịch (Glassmorphism)
+   ========================================================= */
+
+/* ========== TRANG CHÍNH ========== */
 .schedule-page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+              url("/background.png") no-repeat center center fixed;
+  background-size: cover;
+  background-blend-mode: lighten;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #111;
 }
 
 .schedule-content {
   flex: 1;
   max-width: 900px;
-  margin: 30px auto;
+  margin: 40px auto;
   padding: 20px;
   width: 90%;
+  position: relative;
+  z-index: 1;
 }
 
 .schedule-content h1 {
@@ -19,8 +31,10 @@
   color: #0a4ff0;
   margin-bottom: 30px;
   font-size: 1.8rem;
+  text-shadow: 0 0 8px rgba(10,79,240,0.25);
 }
 
+/* ========== DANH SÁCH BẢO DƯỠNG ========== */
 .schedule-list {
   display: flex;
   flex-direction: column;
@@ -28,17 +42,19 @@
 }
 
 .schedule-item {
-  background-color: #ffffff;
-  border-radius: 10px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
   border-left: 5px solid #ccc;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  transition: all 0.25s ease;
 }
 
 .schedule-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
 .schedule-item-header {
@@ -50,268 +66,150 @@
 
 .schedule-item-header h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   color: #111;
+  font-weight: 600;
 }
 
-/* Status container */
+/* ========== TRẠNG THÁI ========== */
 .status-container {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.status-label {
   font-size: 0.9rem;
   font-weight: 600;
   color: #555;
 }
 
-.schedule-item p {
-  margin: 5px 0;
-  font-size: 0.95rem;
-  color: #444;
-}
-
-.schedule-item p.description {
-  margin-bottom: 10px;
-  color: #666;
-  line-height: 1.5;
-}
-
-/* Status specific styles */
 .status-icon {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 
-/* ON_TIME - Đã hoàn thành */
-.schedule-item.status-on_time {
-  border-left-color: #28a745;
-  background-color: #f8fff9;
-}
-.status-icon.on-time {
-  color: #28a745;
-}
-
-/* EXPIRED - Đã bỏ qua */
-.schedule-item.status-expired {
-  border-left-color: #fb0303;
-  background-color: #fffbfa;
- 
-}
-.status-icon.expired {
-  color: #ee0202;
-}
-
-/* NEXT_TIME - Có thể đặt lịch */
+/* NEXT_TIME - có thể đặt lịch */
 .schedule-item.status-next_time {
   border-left-color: #0a4ff0;
-  background-color: #f0f8ff;
+  background: rgba(240, 248, 255, 0.9);
   box-shadow: 0 3px 15px rgba(10, 79, 240, 0.15);
 }
-.status-icon.next-time {
-  color: #0a4ff0;
-}
+.status-icon.next-time { color: #0a4ff0; }
 
-/* LOCKED - Chưa thể đặt lịch */
+/* ON_TIME - đã hoàn thành */
+.schedule-item.status-on_time {
+  border-left-color: #28a745;
+  background: rgba(240, 255, 244, 0.9);
+}
+.status-icon.on-time { color: #28a745; }
+
+/* EXPIRED - bỏ qua */
+.schedule-item.status-expired {
+  border-left-color: #dc3545;
+  background: rgba(255, 240, 240, 0.9);
+}
+.status-icon.expired { color: #dc3545; }
+
+/* LOCKED - chưa mở */
 .schedule-item.status-locked {
-  border-left-color: #bdafad;
-  background-color: #f8f9fa;
-  opacity: 0.7;
+  border-left-color: #adb5bd;
+  background: rgba(245, 246, 247, 0.9);
+  opacity: 0.8;
 }
-.status-icon.locked {
-  color: #adb5bd;
-}
+.status-icon.locked { color: #adb5bd; }
 
-.status-icon.unknown {
-  color: #6c757d;
-}
-
-/* Expired info message */
-.expired-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #dd201d;
-  font-style: italic;
-  margin: 12px 0 8px 0;
-  padding: 8px 12px;
-  background-color: #f8f9fa;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  border: 1px solid #e9ecef;
-}
-
-/* Locked message */
-.locked-message {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #6c757d;
-  font-style: italic;
-  margin: 12px 0 8px 0;
-  padding: 8px 12px;
-  background-color: #f8f9fa;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  border: 1px solid #e9ecef;
-}
-
-/* Completed badge */
-.completed-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #28a745;
-  font-weight: 600;
-  margin-top: 12px;
-  padding: 8px 12px;
-  background-color: #e8f5e9;
-  border-radius: 6px;
-  width: fit-content;
-  font-size: 0.95rem;
-}
-
-.error-message.centered {
-  text-align: center;
-  color: #dc3545;
-  font-weight: bold;
-  margin-top: 20px;
-}
-
-.no-data {
-  text-align: center;
-  color: #6c757d;
-  font-size: 1.1rem;
-  margin-top: 30px;
-}
-
-/* Book now button */
+/* ========== NÚT ĐẶT LỊCH ========== */
 .book-now-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 15px;
+  margin-top: 12px;
   padding: 10px 20px;
-  background-color: #0a4ff0;
-  color: white;
+  background: linear-gradient(90deg, #0a4ff0, #003cd6);
+  color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-  box-shadow: 0 2px 8px rgba(10, 79, 240, 0.2);
+  box-shadow: 0 4px 12px rgba(10, 79, 240, 0.25);
+  transition: all 0.25s ease;
 }
-
 .book-now-button:hover {
-  background-color: #003cd6;
+  background: linear-gradient(90deg, #003cd6, #002ea6);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(10, 79, 240, 0.3);
+  box-shadow: 0 6px 16px rgba(10,79,240,0.35);
 }
 
-.book-now-button:active {
-  transform: translateY(0);
+/* ========== ACTIVE BOOKINGS ========== */
+.active-bookings-section {
+  background: rgba(255,245,245,0.9);
+  border: 1px solid #ffb8b8;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+.active-bookings-section h2 {
+  color: #d9534f;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #ffdede;
+  padding-bottom: 8px;
 }
 
-.book-now-button svg {
-  font-size: 1em;
-}
-
-.back-button {
-  display: block;
-  margin: 30px auto 0;
-  padding: 10px 20px;
-  background-color: #6c757d;
-  color: white;
-  border: none;
+.active-booking-item {
+  background: rgba(255,255,255,0.85);
+  border: 1px solid #ddd;
   border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
 }
+.active-booking-item:last-child { margin-bottom: 0; }
+.active-booking-item.status-pending { border-left: 5px solid #f0ad4e; }
+.active-booking-item.status-in_progress { border-left: 5px solid #0275d8; }
 
-.back-button:hover {
-  background-color: #5a6268;
-}
-
-/* Loading state */
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 150px);
-}
-
-.loading-container p {
-  font-size: 1.2rem;
-  color: #555;
-}
-
-/* ================================= */
-/* Modal Booking Form Styles        */
-/* ================================= */
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
-}
-
-.modal-content.booking-form-modal {
-  background-color: #ffffff;
-  padding: 30px 40px;
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+/* ========== MODAL ĐẶT LỊCH (GLASS STYLE) ========== */
+.booking-form-modal {
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 35px 45px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.35);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
   width: 90%;
   max-width: 550px;
   animation: slideIn 0.3s ease;
+  color: #222;
 }
 
+/* Header modal */
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.25);
+  padding-bottom: 12px;
   margin-bottom: 25px;
 }
-
 .modal-header h2 {
   margin: 0;
   color: #0a4ff0;
   font-size: 1.4rem;
-  border: none;
-  padding: 0;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(10,79,240,0.25);
 }
-
 .close-modal-btn {
   background: none;
   border: none;
-  font-size: 1.5rem;
-  color: #888;
+  font-size: 1.6rem;
+  color: #777;
   cursor: pointer;
-  padding: 5px;
-  line-height: 1;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.15s ease;
 }
-
 .close-modal-btn:hover {
-  color: #333;
+  color: #111;
+  transform: scale(1.1);
 }
 
-.booking-form-modal .form-group {
-  margin-bottom: 18px;
-}
-
+/* Inputs */
 .booking-form-modal label {
   display: block;
   margin-bottom: 6px;
@@ -319,146 +217,67 @@
   color: #333;
   font-size: 0.9rem;
 }
-
-.booking-form-modal label::after {
-  content: " *";
-  color: red;
-}
-
-.booking-form-modal label[for="note"]::after {
-  content: "";
-}
-
-.booking-form-modal input[type="text"],
-.booking-form-modal input[type="date"],
-.booking-form-modal input[type="time"],
+.booking-form-modal input,
 .booking-form-modal select {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background-color: #fff;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: rgba(255,255,255,0.9);
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
 }
-
-.booking-form-modal select {
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 10px auto;
-  padding-right: 30px;
-}
-
 .booking-form-modal input:focus,
 .booking-form-modal select:focus {
   border-color: #0a4ff0;
+  box-shadow: 0 0 0 3px rgba(10,79,240,0.2);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(10, 79, 240, 0.2);
 }
 
-.booking-info {
-  font-size: 0.95rem;
-  color: #555;
-  margin-bottom: 10px;
-  background-color: #f8f9fa;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #eee;
-}
-
-.booking-info strong {
-  color: #003cd6;
-}
-
-.form-group.inline-group {
-  display: flex;
-  gap: 15px;
-}
-
-.form-group.inline-group > div {
-  flex: 1;
-}
-
-.booking-form-modal .error-message {
-  color: #dc3545;
-  font-size: 0.9rem;
-  margin-bottom: 15px;
-  margin-top: -10px;
-  text-align: left;
-}
-
+/* Footer Buttons */
 .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
   margin-top: 25px;
+  border-top: 1px solid rgba(255,255,255,0.25);
+  padding-top: 20px;
 }
-
-.form-actions button {
-  padding: 10px 25px;
+.btn-cancel {
+  background: rgba(108,117,125,0.9);
+  color: #fff;
+  border: 1px solid rgba(108,117,125,0.8);
   border-radius: 8px;
-  border: none;
+  padding: 10px 24px;
   font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
-
-.form-actions .btn-cancel {
-  background-color: #6c757d;
-  color: white;
-  border: 1px solid #6c757d;
+.btn-cancel:hover {
+  background: rgba(90,98,104,0.95);
 }
-
-.form-actions .btn-cancel:hover {
-  background-color: #5a6268;
-  border-color: #545b62;
+.btn-save {
+  background: linear-gradient(90deg, #0a4ff0, #003cd6);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 25px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(10,79,240,0.25);
 }
-
-.form-actions .btn-save {
-  background-color: #0a4ff0;
-  color: white;
-  border: 1px solid #0a4ff0;
+.btn-save:hover {
+  background: linear-gradient(90deg, #003cd6, #002ea6);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(10,79,240,0.35);
 }
+.btn-save:active { transform: scale(0.98); }
 
-.form-actions .btn-save:hover {
-  background-color: #003cd6;
-  border-color: #003cd6;
-  box-shadow: 0 2px 8px rgba(10, 79, 240, 0.3);
-}
-
-.form-actions button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background-color: #adb5bd !important;
-  color: #f8f9fa !important;
-  border-color: #adb5bd !important;
-  box-shadow: none;
-}
-
-/* Animations */
+/* ========== ANIMATION ========== */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-
 @keyframes slideIn {
-  from {
-    transform: translateY(-30px) scale(0.98);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
+  from { transform: translateY(-25px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
-  

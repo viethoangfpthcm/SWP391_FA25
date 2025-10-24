@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,8 +61,24 @@ public class BookingService {
         dto.setYear(vehicle.getYear());
         dto.setCurrentKm(vehicle.getCurrentKm());
 
+        // Lấy danh sách trung tâm
         List<ServiceCenter> centers = serviceCenterRepo.findAll();
-        dto.setAvailableCenters(centers.stream().map(this::mapToServiceCenterDTO).collect(Collectors.toList()));
+        dto.setAvailableCenters(centers.stream()
+                .map(this::mapToServiceCenterDTO)
+                .collect(Collectors.toList()));
+
+
+        List<Booking> vehicleBookings = bookingRepo.findByVehicle_LicensePlate(licensePlate);
+        Set<String> resolvedStatuses = Set.of("Completed", "Declined", "Cancelled");
+        List<BookingResponse> activeBookings = vehicleBookings.stream()
+                .filter(booking -> !resolvedStatuses.contains(booking.getStatus()))
+                .map(this::mapToBookingResponse)
+                .collect(Collectors.toList());
+
+        dto.setCurrentBookings(activeBookings);
+        dto.setHasActiveBooking(!activeBookings.isEmpty());
+
+        log.info("Vehicle {} has {} active bookings", licensePlate, activeBookings.size());
 
         return dto;
     }
@@ -140,12 +153,12 @@ public class BookingService {
     @Transactional
     public BookingResponse createBooking(CreateBookingRequest request, Users current) {
         log.info("Creating booking for vehicle: {} at center: {}", request.getVehiclePlate(), request.getCenterId());
-
+        Set<String> resolvedStatuses = Set.of("Completed", "Declined", "Cancelled");
         // Validate if vehicle has any non-Paid bookings
         List<Booking> existingBookings = bookingRepo.findByVehicle_LicensePlate(request.getVehiclePlate());
-        boolean hasNonPaidBooking = existingBookings.stream()
-                .anyMatch(booking -> !"Paid".equals(booking.getStatus()));
-        if (hasNonPaidBooking) {
+        boolean hasActiveBooking = existingBookings.stream()
+                .anyMatch(booking -> !resolvedStatuses.contains(booking.getStatus()));
+        if (hasActiveBooking) {
             throw new InvalidDataException("Cannot create a new booking for this vehicle as it has an existing non-Paid booking");
         }
 
