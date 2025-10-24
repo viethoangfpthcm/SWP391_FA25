@@ -17,11 +17,7 @@ public class ServiceCenterService {
     @Autowired
     private PartRepository partRepository;
     @Autowired
-    private BookingRepository bookingRepository;
-    @Autowired
     private PartTypeRepository partTypeRepository;
-    @Autowired
-    private PaymentRepository paymentRepository;
     /**
      * CREATE: Thêm một ServiceCenter mới
      */
@@ -138,8 +134,6 @@ public class ServiceCenterService {
     }
 
 
-
-
     /**
      * Lấy danh sách Part của một ServiceCenter cụ thể
      */
@@ -154,19 +148,7 @@ public class ServiceCenterService {
         return partRepository.findByPartType_IdAndServiceCenter_Id(partTypeId, centerId);
     }
 
-    /**
-     * Lấy danh sách Booking của một ServiceCenter cụ thể
-     */
-    public List<Booking> getBookingsByServiceCenter(Integer centerId) {
-        return bookingRepository.findByServiceCenter_Id(centerId);
-    }
 
-    /**
-     * Lấy danh sách Booking của ServiceCenter theo một trạng thái cụ thể
-     */
-    public List<Booking> getBookingsByServiceCenterAndStatus(Integer centerId, String status) {
-        return bookingRepository.findByServiceCenter_IdAndStatus(centerId, status);
-    }
 
 
     /**
@@ -193,34 +175,8 @@ public class ServiceCenterService {
         existingType.setDescription(partTypeDetails.getDescription());
         return partTypeRepository.save(existingType);
     }
-    /**
-     * READ : Lấy thông tin Payment theo ID
-     *
-     */
-    public Payment getPaymentById(Integer paymentId) {
-        return paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new InvalidDataException("Không tìm thấy Payment với ID: " + paymentId));
-    }
-    /**
-     * READ (List by ServiceCenter): Lấy danh sách Payment theo ServiceCenter
-     */
-    public List<Payment> getPaymentsByServiceCenter(Integer centerId) {
-        if (!serviceCenterRepository.existsById(centerId)) {
-            throw new InvalidDataException("Không tìm thấy ServiceCenter với ID: " + centerId);
-        }
-        return paymentRepository.findByBooking_ServiceCenter_Id(centerId);
-    }
-    /**
-     * READ (One by Booking): Lấy thông tin Payment theo Booking ID
-     *
-     */
-    public Payment getPaymentByBookingId(Integer bookingId) {
-        if (!bookingRepository.existsById(bookingId)) {
-            throw new InvalidDataException("Không tìm thấy Booking với ID: " + bookingId);
-        }
 
-        return paymentRepository.findByBooking_BookingId(bookingId)
-                .orElseThrow(() -> new InvalidDataException("Không tìm thấy Payment nào cho Booking ID: " + bookingId));
-    }
+
+
 
 }
