@@ -1,7 +1,6 @@
 package com.se1824.SWP391_FA25.model.request;
 
 import com.se1824.SWP391_FA25.enums.UserRole;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

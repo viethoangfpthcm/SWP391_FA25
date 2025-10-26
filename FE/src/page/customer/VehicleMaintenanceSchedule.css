@@ -1,19 +1,16 @@
-/* =========================================================
-   🚗 VehicleMaintenanceSchedule.css
-   - Lịch trình bảo dưỡng & Modal đặt lịch (Glassmorphism)
-   ========================================================= */
-
 /* ========== TRANG CHÍNH ========== */
 .schedule-page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
-              url("/background.png") no-repeat center center fixed;
+  /* THAY ĐỔI: Dùng overlay tối giống Dashboard */
+  background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+    url("/background.png") no-repeat center center fixed;
   background-size: cover;
-  background-blend-mode: lighten;
+  /* background-blend-mode: lighten; <-- XÓA */
   font-family: "Segoe UI", Arial, sans-serif;
-  color: #111;
+  color: #f0f0f0;
+  /* THAY ĐỔI: Chữ sáng */
 }
 
 .schedule-content {
@@ -28,13 +25,15 @@
 
 .schedule-content h1 {
   text-align: center;
-  color: #0a4ff0;
+  color: #ffffff;
+  /* THAY ĐỔI: Chữ trắng */
   margin-bottom: 30px;
   font-size: 1.8rem;
-  text-shadow: 0 0 8px rgba(10,79,240,0.25);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  /* THAY ĐỔI: Shadow sáng */
 }
 
-/* ========== DANH SÁCH BẢO DƯỠNG ========== */
+/* ========== DANH SÁCH BẢO DƯỠNG (STYLE KÍNH) ========== */
 .schedule-list {
   display: flex;
   flex-direction: column;
@@ -42,19 +41,23 @@
 }
 
 .schedule-item {
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  /* NỀN KÍNH MẶC ĐỊNH (Màu xám nhạt) */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
   border-radius: 12px;
   padding: 20px;
-  border-left: 5px solid #ccc;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  border-left: 5px solid rgba(255, 255, 255, 0.5);
+  /* Viền trái mặc định */
   transition: all 0.25s ease;
+  color: #fefefe;
 }
 
 .schedule-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
 }
 
 .schedule-item-header {
@@ -67,7 +70,7 @@
 .schedule-item-header h3 {
   margin: 0;
   font-size: 1.15rem;
-  color: #111;
+  color: #fefefe;
   font-weight: 600;
 }
 
@@ -78,44 +81,80 @@
   gap: 8px;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #555;
+  color: #e9ecf3;
 }
 
 .status-icon {
   font-size: 1.4rem;
 }
 
-/* NEXT_TIME - có thể đặt lịch */
+/* --- TÙY CHỈNH MÀU SẮC TRẠNG THÁI (ĐÃ SỬA) --- */
+
+/* NEXT_TIME - Kính pha màu XANH DƯƠNG */
 .schedule-item.status-next_time {
   border-left-color: #0a4ff0;
-  background: rgba(240, 248, 255, 0.9);
-  box-shadow: 0 3px 15px rgba(10, 79, 240, 0.15);
+  background: rgba(10, 79, 240, 0.15);
+  /* Nền kính pha xanh */
+  border-color: rgba(10, 79, 240, 0.25);
+  box-shadow: 0 8px 25px rgba(10, 79, 240, 0.25);
 }
-.status-icon.next-time { color: #0a4ff0; }
 
-/* ON_TIME - đã hoàn thành */
+.status-icon.next-time {
+  color: #0a4ff0;
+}
+
+/* ON_TIME - Kính pha màu XANH LÁ */
 .schedule-item.status-on_time {
   border-left-color: #28a745;
-  background: rgba(240, 255, 244, 0.9);
+  background: rgba(40, 167, 69, 0.15);
+  /* Nền kính pha xanh lá */
+  border-color: rgba(40, 167, 69, 0.25);
 }
-.status-icon.on-time { color: #28a745; }
 
-/* EXPIRED - bỏ qua */
+.status-icon.on-time {
+  color: #28a745;
+}
+
+/* OVERDUE - Kính pha màu ĐỎ TƯƠI (QUAN TRỌNG) */
+.schedule-item.status-overdue {
+  border-left-color: #ff3b3b;
+  background: rgba(255, 59, 59, 0.15);
+  /* Nền kính pha đỏ tươi */
+  border-color: rgba(255, 59, 59, 0.25);
+  box-shadow: 0 8px 25px rgba(255, 59, 59, 0.2);
+}
+
+.status-icon.overdue {
+  color: #ff3b3b;
+}
+
+/* EXPIRED - Kính pha màu ĐỎ SẬM */
 .schedule-item.status-expired {
   border-left-color: #dc3545;
-  background: rgba(255, 240, 240, 0.9);
+  background: rgba(220, 53, 69, 0.15);
+  /* Nền kính pha đỏ sậm */
+  border-color: rgba(220, 53, 69, 0.25);
 }
-.status-icon.expired { color: #dc3545; }
 
-/* LOCKED - chưa mở */
+.status-icon.expired {
+  color: #dc3545;
+}
+
+/* LOCKED - Kính pha màu XÁM */
 .schedule-item.status-locked {
   border-left-color: #adb5bd;
-  background: rgba(245, 246, 247, 0.9);
+  background: rgba(173, 181, 189, 0.1);
+  /* Nền kính pha xám */
+  border-color: rgba(173, 181, 189, 0.2);
   opacity: 0.8;
 }
-.status-icon.locked { color: #adb5bd; }
+
+.status-icon.locked {
+  color: #adb5bd;
+}
 
 /* ========== NÚT ĐẶT LỊCH ========== */
+/* Giữ nguyên, style nút xanh đã đẹp */
 .book-now-button {
   display: inline-flex;
   align-items: center;
@@ -132,52 +171,77 @@
   box-shadow: 0 4px 12px rgba(10, 79, 240, 0.25);
   transition: all 0.25s ease;
 }
+
 .book-now-button:hover {
   background: linear-gradient(90deg, #003cd6, #002ea6);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(10,79,240,0.35);
+  box-shadow: 0 6px 16px rgba(10, 79, 240, 0.35);
 }
 
 /* ========== ACTIVE BOOKINGS ========== */
 .active-bookings-section {
-  background: rgba(255,245,245,0.9);
-  border: 1px solid #ffb8b8;
-  border-radius: 10px;
+  /* THAY ĐỔI: Nền kính mờ */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
   padding: 20px;
   margin-bottom: 30px;
+  /* border: 1px solid #ffb8b8; <-- XÓA */
 }
+
 .active-bookings-section h2 {
-  color: #d9534f;
+  color: #ff8c8c;
+  /* THAY ĐỔI: Chữ đỏ nhạt */
   margin-bottom: 15px;
-  border-bottom: 2px solid #ffdede;
+  border-bottom: 2px solid rgba(220, 53, 69, 0.3);
+  /* THAY ĐỔI: Viền đỏ mờ */
   padding-bottom: 8px;
 }
 
 .active-booking-item {
-  background: rgba(255,255,255,0.85);
-  border: 1px solid #ddd;
+  /* THAY ĐỔI: Nền kính bên trong */
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   padding: 15px 20px;
   margin-bottom: 15px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  color: #fefefe;
+  /* THÊM: Chữ sáng */
 }
-.active-booking-item:last-child { margin-bottom: 0; }
-.active-booking-item.status-pending { border-left: 5px solid #f0ad4e; }
-.active-booking-item.status-in_progress { border-left: 5px solid #0275d8; }
 
-/* ========== MODAL ĐẶT LỊCH (GLASS STYLE) ========== */
+.active-booking-item:last-child {
+  margin-bottom: 0;
+}
+
+.active-booking-item.status-pending {
+  border-left: 5px solid #f0ad4e;
+}
+
+.active-booking-item.status-in_progress {
+  border-left: 5px solid #0275d8;
+}
+
+/* ========== MODAL ĐẶT LỊCH (GLASS STYLE TỐI) ========== */
 .booking-form-modal {
-  background: rgba(255,255,255,0.9);
+  /* THAY ĐỔI: Nền kính tối giống .modal-content */
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: 35px 45px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.35);
-  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+  border-radius: 14px;
+  /* Giống dashboard */
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
   width: 90%;
-  max-width: 550px;
+  max-width: 500px;
+  /* Giống dashboard */
   animation: slideIn 0.3s ease;
-  color: #222;
+  color: #fefefe;
+  /* THAY ĐỔI: Chữ sáng */
 }
 
 /* Header modal */
@@ -185,53 +249,80 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,0.25);
-  padding-bottom: 12px;
-  margin-bottom: 25px;
+  /* THAY ĐỔI: Viền sáng */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 10px;
+  /* Giống dashboard */
+  margin-bottom: 20px;
+  /* Giống dashboard */
 }
+
 .modal-header h2 {
   margin: 0;
-  color: #0a4ff0;
-  font-size: 1.4rem;
+  color: #0a8bff;
+  /* THAY ĐỔI: Xanh sáng */
+  font-size: 1.3rem;
+  /* Giống dashboard */
   font-weight: 700;
-  text-shadow: 0 0 8px rgba(10,79,240,0.25);
+  text-shadow: 0 0 8px rgba(10, 139, 255, 0.35);
+  /* Giống dashboard */
 }
+
 .close-modal-btn {
   background: none;
   border: none;
   font-size: 1.6rem;
-  color: #777;
+  color: #ccc;
+  /* THAY ĐỔI: Xám nhạt */
   cursor: pointer;
   transition: color 0.2s ease, transform 0.15s ease;
 }
+
 .close-modal-btn:hover {
-  color: #111;
+  color: #fff;
+  /* THAY ĐỔI: Trắng */
   transform: scale(1.1);
 }
 
 /* Inputs */
 .booking-form-modal label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
+  /* Giống dashboard */
   font-weight: 600;
-  color: #333;
+  color: #eaeaea;
+  /* THAY ĐỔI: Xám sáng */
   font-size: 0.9rem;
 }
+
 .booking-form-modal input,
 .booking-form-modal select {
   width: 100%;
   padding: 10px 12px;
+  margin-bottom: 15px;
+  /* THÊM */
   border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.15);
-  background: rgba(255,255,255,0.9);
+  /* THAY ĐỔI: Style input kính */
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
   font-size: 0.95rem;
   transition: all 0.25s ease;
 }
+
 .booking-form-modal input:focus,
 .booking-form-modal select:focus {
-  border-color: #0a4ff0;
-  box-shadow: 0 0 0 3px rgba(10,79,240,0.2);
+  /* THAY ĐỔI: Style focus */
+  border-color: #0a8bff;
+  box-shadow: 0 0 0 3px rgba(10, 139, 255, 0.25);
   outline: none;
+}
+
+/* THÊM: Style cho <option> trong select */
+.booking-form-modal select option {
+  background: #1e1e1e;
+  /* Nền tối */
+  color: #fefefe;
 }
 
 /* Footer Buttons */
@@ -240,44 +331,74 @@
   justify-content: flex-end;
   gap: 12px;
   margin-top: 25px;
-  border-top: 1px solid rgba(255,255,255,0.25);
-  padding-top: 20px;
+  /* THAY ĐỔI: Viền sáng */
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 18px;
+  /* Giống dashboard */
 }
+
 .btn-cancel {
-  background: rgba(108,117,125,0.9);
-  color: #fff;
-  border: 1px solid rgba(108,117,125,0.8);
+  /* THAY ĐỔI: Nút cancel đỏ (giống dashboard) */
+  background: rgba(255, 255, 255, 0.15);
+  color: #ff7c7c;
+  border: 1px solid rgba(255, 90, 90, 0.5);
   border-radius: 8px;
-  padding: 10px 24px;
+  padding: 10px 20px;
   font-weight: 600;
+  cursor: pointer;
   transition: all 0.25s ease;
 }
+
 .btn-cancel:hover {
-  background: rgba(90,98,104,0.95);
+  /* THAY ĐỔI: Hover đỏ */
+  background: rgba(255, 90, 90, 0.2);
+  color: #fff;
+  border-color: rgba(255, 90, 90, 0.8);
+  transform: translateY(-1px);
 }
+
 .btn-save {
+  /* THAY ĐỔI: Nút save xanh (giống dashboard) */
   background: linear-gradient(90deg, #0a4ff0, #003cd6);
   color: #fff;
   border: none;
   border-radius: 8px;
-  padding: 10px 25px;
+  padding: 10px 22px;
   font-weight: 600;
+  box-shadow: 0 4px 10px rgba(10, 79, 240, 0.3);
+  cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 12px rgba(10,79,240,0.25);
 }
+
 .btn-save:hover {
   background: linear-gradient(90deg, #003cd6, #002ea6);
   transform: translateY(-1px);
-  box-shadow: 0 6px 15px rgba(10,79,240,0.35);
+  box-shadow: 0 6px 14px rgba(10, 79, 240, 0.4);
 }
-.btn-save:active { transform: scale(0.98); }
 
-/* ========== ANIMATION ========== */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.btn-save:active {
+  transform: scale(0.98);
 }
+
+/* ========== ANIMATION (Giữ nguyên) ========== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes slideIn {
-  from { transform: translateY(-25px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-25px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
