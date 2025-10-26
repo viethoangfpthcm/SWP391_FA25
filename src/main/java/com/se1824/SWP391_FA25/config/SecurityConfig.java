@@ -59,7 +59,7 @@ public class SecurityConfig {
                 .cors(cors -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://localhost:5173"
-                    ,"http://103.90.226.216:3000")); // Thay đổi theo nguồn gốc của bạn
+                            , "http://103.90.226.216:3000")); // Thay đổi theo nguồn gốc của bạn
                     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     configuration.setAllowedHeaders(List.of("*"));
                     configuration.setAllowCredentials(true);
@@ -75,7 +75,9 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/localhost:5173/**",
-                                "/api/payment/**"
+                                "/api/payment/**",
+                                "/api/users/forgot-password",
+                                "/api/users/reset-password"
                         ).permitAll()
 
                         // Các API yêu cầu quyền STAFF

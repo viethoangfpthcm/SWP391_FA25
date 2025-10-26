@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 // danh sách logo partner
 const partners = [
-  "src/assets/vinfast.png",
+  "/public/vinfast.png",
   "/assets/partner2.png",
   "/assets/partner3.png",
   "/assets/partner4.png",

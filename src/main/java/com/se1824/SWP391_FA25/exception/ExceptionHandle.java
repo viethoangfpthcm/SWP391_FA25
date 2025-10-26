@@ -1,6 +1,7 @@
 package com.se1824.SWP391_FA25.exception;
 
 import com.se1824.SWP391_FA25.exception.exceptions.AuthenticationException;
+import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,6 +12,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class ExceptionHandle {
@@ -47,6 +51,15 @@ public class ExceptionHandle {
         return ResponseEntity.status(401).body(exception.getMessage());
     }
 
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<Object> handleInvalidDataException(InvalidDataException exception) {
+        // Trả về một đối tượng JSON để frontend dễ xử lý
+        Map<String, String> body = new HashMap<>();
+        body.put("message", exception.getMessage());
+
+        // Trả về 400 (Bad Request), KHÔNG phải 401
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<?> handleIllegalStateException(IllegalStateException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());

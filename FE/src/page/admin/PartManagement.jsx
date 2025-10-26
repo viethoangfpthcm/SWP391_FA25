@@ -7,13 +7,14 @@ import {
   FaExclamationTriangle,
   FaSave,
   FaArrowLeft,
+  FaTrash,
 } from "react-icons/fa";
 import "./AdminDashboard.css";
 import Sidebar from "../../page/sidebar/sidebar.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 
 if (import.meta.env.MODE !== "development") {
-  console.log = () => {};
+  console.log = () => { };
 }
 
 export default function PartManagement() {
@@ -86,6 +87,50 @@ export default function PartManagement() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+  const handleDelete = async (partId) => {
+    if (
+      !window.confirm(
+        "Bạn có chắc muốn xóa phụ tùng này? (Hành động này không thể hoàn tác)"
+      )
+    ) {
+      return;
+    }
+
+    setActionLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/parts/${partId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status === 401) throw new Error("Unauthorized");
+      if (!res.ok) {
+        const errorText = await res.text();
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (jsonError) {
+          errorData = { message: errorText || "Không thể xóa phụ tùng." };
+        }
+        throw new Error(errorData.message);
+      }
+      await fetchData();
+    } catch (err) {
+      console.error(err);
+      if (err.message === "Unauthorized") {
+        localStorage.clear();
+        navigate("/");
+      } else {
+        setError(err.message);
+      }
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -269,6 +314,13 @@ export default function PartManagement() {
                           disabled={actionLoading}
                         >
                           <FaEdit /> Sửa
+                        </button>
+                        <button
+                          className="btn-action btn-delete"
+                          onClick={() => handleDelete(part.id)}
+                          disabled={actionLoading}
+                        >
+                          <FaTrash /> Xóa
                         </button>
                       </td>
                     </tr>

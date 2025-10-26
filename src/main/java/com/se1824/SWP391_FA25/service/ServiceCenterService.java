@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ServiceCenterService {
@@ -22,6 +23,12 @@ public class ServiceCenterService {
      * CREATE: Thêm một ServiceCenter mới
      */
     public ServiceCenter createServiceCenter(ServiceCenter serviceCenter) {
+        if (serviceCenterRepository.findByName(serviceCenter.getName()).isPresent()) {
+            throw new InvalidDataException("Tên trung tâm này đã tồn tại.");
+        }
+        if (serviceCenterRepository.findByPhone(serviceCenter.getPhone()).isPresent()) {
+            throw new InvalidDataException("Số điện thoại này đã được đăng ký cho trung tâm khác.");
+        }
         return serviceCenterRepository.save(serviceCenter);
     }
 
@@ -64,7 +71,7 @@ public class ServiceCenterService {
     }
 
     /**
-     * CREATE: Thêm một Part mới
+     * CREATE: Thêm một Part mới (hoặc cập nhật nếu trùng tên)
      */
     public Part createPart(PartCreateRequest request, Integer centerId) {
         ServiceCenter center = serviceCenterRepository.findById(centerId)
@@ -73,17 +80,36 @@ public class ServiceCenterService {
         PartType partType = partTypeRepository.findById(request.getPartTypeId())
                 .orElseThrow(() -> new ResourceNotFoundException("PartType không tồn tại ID: " + request.getPartTypeId()));
 
-        Part newPart = new Part();
+        Optional<Part> existingPartOpt = partRepository.findByNameAndServiceCenter_Id(request.getName(), centerId);
 
-        newPart.setName(request.getName());
-        newPart.setQuantity(request.getQuantity());
-        newPart.setUnitPrice(request.getUnitPrice());
-        newPart.setLaborCost(request.getLaborCost());
-        newPart.setMaterialCost(request.getMaterialCost());
-        newPart.setServiceCenter(center);
-        newPart.setPartType(partType);
+        if (existingPartOpt.isPresent()) {
+            // NẾU TỒN TẠI: Cập nhật part cũ
+            Part existingPart = existingPartOpt.get();
 
-        return partRepository.save(newPart);
+            // 1. Cộng dồn số lượng
+            int newQuantity = existingPart.getQuantity() + request.getQuantity();
+            existingPart.setQuantity(newQuantity);
+
+            // 2. Cập nhật giá và phí mới (theo yêu cầu của bạn)
+            existingPart.setUnitPrice(request.getUnitPrice());
+            existingPart.setLaborCost(request.getLaborCost());
+            existingPart.setMaterialCost(request.getMaterialCost());
+            existingPart.setPartType(partType); // Cập nhật cả loại
+
+            return partRepository.save(existingPart);
+
+        } else {
+            Part newPart = new Part();
+            newPart.setName(request.getName());
+            newPart.setQuantity(request.getQuantity());
+            newPart.setUnitPrice(request.getUnitPrice());
+            newPart.setLaborCost(request.getLaborCost());
+            newPart.setMaterialCost(request.getMaterialCost());
+            newPart.setServiceCenter(center);
+            newPart.setPartType(partType);
+
+            return partRepository.save(newPart);
+        }
     }
 
     /**
