@@ -17,4 +17,14 @@ public interface MaintenanceChecklistDetailRepository extends JpaRepository<Main
 
     List<MaintenanceChecklistDetail> findByChecklist_IdAndApprovalStatus(Integer checklistId, String approvalStatus);
 
+    @Query("SELECT d.part.name, COUNT(d.id) " +
+            "FROM MaintenanceChecklistDetail d " +
+            "JOIN d.checklist c " +
+            "JOIN c.booking b " +
+            "WHERE b.serviceCenter.id = :centerId " +
+            "AND YEAR(b.bookingDate) = :year AND MONTH(b.bookingDate) = :month " +
+            "AND d.part IS NOT NULL " +
+            "AND d.approvalStatus = 'APPROVED' " + // Chỉ đếm part đã được duyệt
+            "GROUP BY d.part.name")
+    List<Object[]> findPartUsageStatsByCenterAndMonthAndYear(@Param("centerId") int centerId, @Param("month") int month, @Param("year") int year);
 }
