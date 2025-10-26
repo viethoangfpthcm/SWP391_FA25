@@ -39,7 +39,6 @@ public class Part {
 
     @ManyToOne
     @JoinColumn(name = "part_type_id", nullable = false)
-    @JsonIgnore
     PartType partType;
 
     @ManyToOne

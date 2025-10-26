@@ -124,9 +124,18 @@ const Sidebar = ({ userName, userRole }) => {
 
           </>
         )}
-        <button className="logout-btn" onClick={handleLogout}>
-          <FaSignOutAlt /> <span>Đăng xuất</span>
-        </button>
+        <div className="menu-footer">
+          <Link
+            to="/profile"
+            className={`menu-item ${isActive("/profile") ? "active" : ""}`}
+          >
+            <FaUserCog /> <span>Tài khoản của tôi</span>
+          </Link>
+
+          <button className="logout-btn" onClick={handleLogout}>
+            <FaSignOutAlt /> <span>Đăng xuất</span>
+          </button>
+        </div>
       </div>
     </div>
   );

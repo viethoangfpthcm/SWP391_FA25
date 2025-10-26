@@ -4,7 +4,8 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import './CustomerDashboard.css';
 
-import { FaUser, FaCar, FaCalendarAlt, FaPlus, FaTimes, FaEdit, FaCheckCircle, FaExclamationTriangle, FaSpinner } from 'react-icons/fa';
+
+import { FaUser, FaCar, FaCalendarAlt, FaPlus, FaTimes, FaEdit, FaCheckCircle, FaExclamationTriangle, FaSpinner, FaStar } from 'react-icons/fa';
 
 function CustomerDashboard() {
   const [dashboardData, setDashboardData] = useState(null);
@@ -38,6 +39,14 @@ function CustomerDashboard() {
   const [onConfirmAction, setOnConfirmAction] = useState(null);
 
   const [cancelBookingLoading, setCancelBookingLoading] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [feedbackError, setFeedbackError] = useState('');
+  const [currentBookingId, setCurrentBookingId] = useState(null);
+  const [feedbackData, setFeedbackData] = useState({
+    rating: 0,
+    comment: '',
+  });
 
   const vinfastModels = [
     "VinFast VF 3",
@@ -146,6 +155,98 @@ function CustomerDashboard() {
       setShowConfirmModal(false); // Đóng modal confirm khi có lỗi
     } finally {
       setCancelBookingLoading(false);
+    }
+  };
+  const handleFeedbackClick = async (bookingId) => {
+    const token = localStorage.getItem("token");
+    setCurrentBookingId(bookingId);
+    setFeedbackError('');
+    setFeedbackLoading(true); // Bắt đầu loading (để lấy feedback cũ)
+    setShowFeedbackModal(true); // Hiển thị modal trước
+
+    try {
+      // Gọi API GET /api/feedback/{bookingId} để kiểm tra feedback cũ
+      const response = await fetch(`${API_BASE}/api/feedback/${bookingId}`, {
+        headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
+      });
+
+      if (response.ok) {
+        const oldFeedback = await response.json();
+        // Nếu tìm thấy, điền thông tin cũ vào form
+        setFeedbackData({
+          rating: oldFeedback.rating || 0,
+          comment: oldFeedback.comment || '',
+        });
+      } else {
+
+        setFeedbackData({ rating: 0, comment: '' });
+      }
+    } catch (err) {
+      console.error("Lỗi khi lấy feedback cũ:", err);
+      // Vẫn hiển thị form rỗng
+      setFeedbackData({ rating: 0, comment: '' });
+    } finally {
+      setFeedbackLoading(false); // Dừng loading (đã lấy xong)
+    }
+  };
+
+  const handleFeedbackChange = (e) => {
+    const { name, value } = e.target;
+    setFeedbackData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleRatingChange = (newRating) => {
+    setFeedbackData(prev => ({ ...prev, rating: newRating }));
+  };
+  const handleSubmitFeedback = async (e) => {
+    e.preventDefault();
+    if (feedbackData.rating === 0) {
+      setFeedbackError('Vui lòng chọn số sao đánh giá.');
+      return;
+    }
+
+    setFeedbackLoading(true);
+    setFeedbackError('');
+    const token = localStorage.getItem("token");
+
+    const payload = {
+      rating: parseInt(feedbackData.rating, 10),
+      comment: feedbackData.comment,
+    };
+
+    try {
+      const response = await fetch(`${API_BASE}/api/feedback/${currentBookingId}`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `Lỗi ${response.status}`);
+      }
+
+      // Đóng modal
+      setShowFeedbackModal(false);
+      setCurrentBookingId(null);
+
+      // Hiển thị thông báo thành công
+      setSuccessModalMessage("Gửi đánh giá thành công!");
+      setSuccessModalAction(null);
+      setShowSuccessModal(true);
+
+      // Tải lại dữ liệu dashboard để cập nhật trạng thái 'hasFeedback'
+      fetchDashboardData();
+
+    } catch (err) {
+      console.error("Lỗi khi gửi feedback:", err);
+      setFeedbackError(err.message || 'Đã xảy ra lỗi không mong muốn.');
+    } finally {
+      setFeedbackLoading(false);
     }
   };
 
@@ -312,7 +413,7 @@ function CustomerDashboard() {
       <div className="dashboard-page loading-container">
         <Navbar />
         <div className="loading-container">
-          <FaSpinner className="spinner-icon" /> 
+          <FaSpinner className="spinner-icon" />
           Đang tải dữ liệu...
         </div>
         <Footer />
@@ -517,6 +618,64 @@ function CustomerDashboard() {
             </div>
           </div>
         )}
+        {showFeedbackModal && (
+        <div className="modal-overlay">
+          <div className="modal-content feedback-modal">
+            <div className="modal-header">
+              <h2>Đánh giá dịch vụ</h2>
+              <button onClick={() => setShowFeedbackModal(false)} className="close-modal-btn">
+                <FaTimes />
+              </button>
+            </div>
+            <form onSubmit={handleSubmitFeedback}>
+              {feedbackError && <p className="error-message">{feedbackError}</p>}
+              
+              <div className="form-group rating-group">
+                <label>Đánh giá của bạn *</label>
+                <div className="stars">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <FaStar
+                      key={star}
+                      className={star <= feedbackData.rating ? 'star-selected' : 'star-empty'}
+                      onClick={() => handleRatingChange(star)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="comment">Bình luận (tùy chọn)</label>
+                <textarea
+                  id="comment"
+                  name="comment"
+                  rows="4"
+                  value={feedbackData.comment}
+                  onChange={handleFeedbackChange}
+                  placeholder="Chia sẻ trải nghiệm của bạn..."
+                ></textarea>
+              </div>
+
+              <div className="form-actions">
+                <button 
+                  type="button" 
+                  onClick={() => setShowFeedbackModal(false)} 
+                  className="btn-cancel" 
+                  disabled={feedbackLoading}
+                >
+                  Hủy
+                </button>
+                <button 
+                  type="submit" 
+                  className="btn-save" 
+                  disabled={feedbackLoading}
+                >
+                  {feedbackLoading ? 'Đang gửi...' : 'Gửi đánh giá'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
 
         <section className="dashboard-section profile-section">
@@ -582,7 +741,7 @@ function CustomerDashboard() {
             <div className="stat-item">
               <span className="stat-value">{calculatedStats.pendingBookings || 0}</span>
               <span className="stat-label">Chờ xử lý</span>
-            </div>      
+            </div>
             <div className="stat-item">
               <span className="stat-value">{calculatedStats.inProgressBookings || 0}</span>
               <span className="stat-label">Đang xử lý</span>
@@ -605,7 +764,6 @@ function CustomerDashboard() {
             </div>
           </div>
 
-          {/* Các phần danh sách bên dưới giữ nguyên */}
           <div className="booking-list-container">
             <h3>Lịch hẹn đang xử lý</h3>
             {loading ? (
@@ -620,6 +778,7 @@ function CustomerDashboard() {
                     </div>
                     <p><strong>Trung tâm:</strong> {booking.centerName}</p>
                     <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
+
                     {booking.note && <p className="booking-note"><strong>Ghi chú:</strong> {booking.note}</p>}
                     {booking.status === 'Pending' && (
                       <button
@@ -653,6 +812,15 @@ function CustomerDashboard() {
                     </div>
                     <p><strong>Trung tâm:</strong> {booking.centerName}</p>
                     <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
+                    {(booking.status === 'Completed' || booking.status === 'Paid') && (
+                      <button
+                        className="btn-feedback"
+                        onClick={() => handleFeedbackClick(booking.bookingId)}
+                        title="Đánh giá dịch vụ"
+                      >
+                        <FaStar /> {booking.hasFeedback ? 'Sửa đánh giá' : 'Đánh giá'}
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>

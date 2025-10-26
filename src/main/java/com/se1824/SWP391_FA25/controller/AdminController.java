@@ -2,10 +2,7 @@ package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.entity.*;
-import com.se1824.SWP391_FA25.model.request.AssignTechnicianRequest;
-import com.se1824.SWP391_FA25.model.request.CreateUserRequest;
-import com.se1824.SWP391_FA25.model.request.PartCreateRequest;
-import com.se1824.SWP391_FA25.model.request.UpdateUserRequest;
+import com.se1824.SWP391_FA25.model.request.*;
 import com.se1824.SWP391_FA25.model.response.BookingAnalyticsResponse;
 import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
 import com.se1824.SWP391_FA25.model.response.PartAnalyticsResponse;
@@ -41,7 +38,8 @@ public class AdminController {
      */
     @PostMapping("/users-create")
     public ResponseEntity<UserManagementDTO> createUser(@Valid
-                                                        @RequestBody CreateUserRequest request) {
+                                                        @RequestBody CreateUserRequest request)
+    {
         Integer adminId = authenticationService.getCurrentAccount().getUserId();
         UserManagementDTO user = adminService.createUser(request, adminId);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
@@ -53,7 +51,8 @@ public class AdminController {
      */
     @GetMapping("/staff")
     public ResponseEntity<List<UserManagementDTO>> getAllStaff(
-            @RequestParam(required = false) Integer centerId) {
+            @RequestParam(required = false) Integer centerId)
+    {
         List<UserManagementDTO> staff = adminService.getAllStaff(centerId);
         return ResponseEntity.ok(staff);
     }
@@ -64,7 +63,8 @@ public class AdminController {
      */
     @GetMapping("/technicians")
     public ResponseEntity<List<UserManagementDTO>> getAllTechnicians(
-            @RequestParam(required = false) Integer centerId) {
+            @RequestParam(required = false) Integer centerId)
+    {
         List<UserManagementDTO> technicians = adminService.getAllTechnicians(centerId);
         return ResponseEntity.ok(technicians);
     }
@@ -85,7 +85,7 @@ public class AdminController {
      */
     @PutMapping("/users-update")
     public ResponseEntity<UserManagementDTO> updateUserByAdmin(
-            @RequestBody UpdateUserRequest request,
+            @Valid  @RequestBody UpdateUserRequest request,
             @RequestParam Integer userIdToUpdate
     ) {
         Integer adminId = authenticationService.getCurrentAccount().getUserId();
@@ -97,11 +97,11 @@ public class AdminController {
      * DELETE /api/admin/users/{userId}?adminId={adminId}
      */
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<String> deleteUser(
+    public ResponseEntity<Void> deleteUser(
             @PathVariable Integer userId) {
         Integer adminId = authenticationService.getCurrentAccount().getUserId();
         adminService.deleteUser(userId, adminId);
-        return ResponseEntity.ok("User deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -109,9 +109,11 @@ public class AdminController {
      * POST /api/admin/service-centers
      */
     @PostMapping("/service-centers")
-    public ResponseEntity<ServiceCenter> createServiceCenter(@RequestBody ServiceCenter serviceCenter) {
-        ServiceCenter newCenter = serviceCenterService.createServiceCenter(serviceCenter);
-        return new ResponseEntity<>(newCenter, HttpStatus.CREATED);
+    public ResponseEntity<ServiceCenter> createServiceCenter(
+            @Valid @RequestBody ServiceCenterRequest request
+    ) {
+        ServiceCenter newCenter = serviceCenterService.createServiceCenter(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newCenter);
     }
     /**
      * READ (All): Lấy tất cả các ServiceCenter
@@ -136,9 +138,21 @@ public class AdminController {
      * PUT /api/admin/service-centers/{id}
      */
     @PutMapping("/service-centers/{id}")
-    public ResponseEntity<ServiceCenter> updateServiceCenter(@PathVariable Integer id, @RequestBody ServiceCenter centerDetails) {
-        ServiceCenter updatedCenter = serviceCenterService.updateServiceCenter(id, centerDetails);
+    public ResponseEntity<ServiceCenter> updateServiceCenter(
+            @PathVariable Integer centerId,
+            @Valid @RequestBody ServiceCenterRequest requestDTO
+    ) {
+        ServiceCenter updatedCenter = serviceCenterService.updateServiceCenter(centerId, requestDTO);
         return ResponseEntity.ok(updatedCenter);
+    }
+    /**
+     * DELETE: Xóa một ServiceCenter
+     * DELETE /api/admin/service-centers/{id}
+     */
+    @DeleteMapping("/service-centers/{id}")
+    public ResponseEntity<Void> deleteServiceCenter(@PathVariable Integer id) {
+        serviceCenterService.deleteServiceCenter(id);
+        return ResponseEntity.noContent().build();
     }
     /**
      * Lấy TẤT CẢ Part (phụ tùng) thuộc về một ServiceCenter
@@ -156,13 +170,21 @@ public class AdminController {
     @PostMapping("/service-centers/{centerId}/parts")
     public ResponseEntity<Part> createPartForCenter(
             @PathVariable Integer centerId,
-            @RequestBody PartCreateRequest request) {
+            @Valid @RequestBody PartCreateRequest request) {
 
         // Yêu cầu Service tạo Part từ DTO và centerId
         Part newPart = serviceCenterService.createPart(request, centerId);
         return new ResponseEntity<>(newPart, HttpStatus.CREATED);
     }
-
+    /**
+     * DELETE: Xóa một Part (phụ tùng)
+     * DELETE /api/admin/parts/{partId}
+     */
+    @DeleteMapping("/parts/{partId}")
+    public ResponseEntity<Void> deletePart(@PathVariable Integer partId) {
+        serviceCenterService.deletePart(partId);
+        return ResponseEntity.noContent().build();
+    }
 
     /**
      * Lấy chi tiết một Part theo ID
@@ -180,7 +202,7 @@ public class AdminController {
     @PutMapping("/parts/{partId}")
     public ResponseEntity<Part> updatePart(
             @PathVariable Integer partId,
-            @RequestBody PartCreateRequest requestDTO) {
+            @Valid @RequestBody PartCreateRequest requestDTO) {
 
         Part updatedPart = serviceCenterService.updatePart(partId, requestDTO);
         return new ResponseEntity<>(updatedPart, HttpStatus.OK);

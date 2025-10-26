@@ -24,6 +24,7 @@ import {
 import "./AdminAnalytics.css";
 import Sidebar from "../../page/sidebar/sidebar.jsx";
 import { useNavigate } from "react-router-dom";
+import { Chart, registerables, Filler } from 'chart.js';
 
 // Đăng ký các thành phần của Chart.js
 ChartJS.register(
@@ -41,6 +42,7 @@ ChartJS.register(
 if (import.meta.env.MODE !== "development") {
     console.log = () => { };
 }
+Chart.register(...registerables, Filler);
 
 export default function AdminAnalytics() {
     const [userInfo, setUserInfo] = useState(null);

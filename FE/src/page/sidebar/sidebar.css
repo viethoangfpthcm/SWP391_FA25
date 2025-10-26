@@ -109,6 +109,7 @@ user-info p {
 
 /* ===== Nút đăng xuất ===== */
 .logout-btn {
+  margin-top: auto;
   background: none;
   border: none;
   /* Màu đỏ nổi bật */
