@@ -22,7 +22,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -33,17 +35,15 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-//    @Autowired
-//    AuthenticationManager authenticationManager;
-
     @Autowired
     ModelMapper modelMapper;
 
     @Autowired
     TokenService tokenService;
 
-//    @Autowired
-//    UserRepository userRepo;
+    @Autowired
+    EmailService emailService;
+
 
     public UserResponse register(RegisterRequest us) {
         if (authenticationRepository.findUserByEmail(us.getEmail()) != null) {
@@ -102,5 +102,78 @@ public class AuthenticationService implements UserDetailsService {
         return ar;
     }
 //
+
+    /**
+     * Xử lý yêu cầu quên mật khẩu
+     *
+     * @param email           Email của người dùng
+     * @param frontendBaseUrl URL của trang frontend
+     */
+    public void forgotPassword(String email, String frontendBaseUrl) {
+        // 1. Tìm user bằng email
+        Users user = authenticationRepository.findUserByEmail(email);
+        if (user == null) {
+            // Không ném lỗi "không tìm thấy" để bảo mật
+            log.warn("Yêu cầu reset mật khẩu cho email không tồn tại: {}", email);
+            return; // Không làm gì cả
+        }
+
+        // 2. Tạo token ngẫu nhiên
+        String token = UUID.randomUUID().toString();
+        // 3. Đặt thời gian hết hạn (15 phút từ bây giờ)
+        LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(15);
+
+        // 4. Lưu token và thời gian hết hạn vào user
+        user.setResetPasswordToken(token);
+        user.setResetPasswordTokenExpiry(expiryDate);
+        authenticationRepository.save(user);
+
+        // 5. Tạo link reset (trỏ về frontend)
+        if (frontendBaseUrl.endsWith("/")) {
+            frontendBaseUrl = frontendBaseUrl.substring(0, frontendBaseUrl.length() - 1);
+        }
+        String resetLink = frontendBaseUrl + "/reset-password?token=" + token;
+
+        // 6. Gửi email
+        emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
+    }
+
+    /**
+     * Xử lý việc đặt lại mật khẩu mới
+     * @param token Token từ email
+     * @param newPassword Mật khẩu mới
+     * @param confirmPassword Xác nhận mật khẩu mới
+     */
+    public void resetPassword(String token, String newPassword, String confirmPassword) {
+        // 1. Kiểm tra mật khẩu có khớp không
+        if (!newPassword.equals(confirmPassword)) {
+            throw new IllegalStateException("Mật khẩu không khớp");
+        }
+
+        // 2. Tìm user bằng token
+        Users user = authenticationRepository.findByResetPasswordToken(token);
+        if (user == null) {
+            throw new IllegalStateException("Token không hợp lệ hoặc đã được sử dụng");
+        }
+
+        // 3. Kiểm tra token đã hết hạn chưa
+        if (user.getResetPasswordTokenExpiry().isBefore(LocalDateTime.now())) {
+            user.setResetPasswordToken(null);
+            user.setResetPasswordTokenExpiry(null);
+            authenticationRepository.save(user);
+
+            throw new IllegalStateException("Token đã hết hạn. Vui lòng yêu cầu lại.");
+        }
+
+        // 4. Mọi thứ hợp lệ, cập nhật mật khẩu mới
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        // 5. Vô hiệu hóa token (xoá đi) để không dùng lại được
+        user.setResetPasswordToken(null);
+        user.setResetPasswordTokenExpiry(null);
+
+        authenticationRepository.save(user);
+    }
+
 
 }

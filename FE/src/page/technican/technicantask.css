@@ -400,3 +400,23 @@
   background-color: transparent;   
   fill: #2b9a86;                   
 }
+
+.task-btn.view.completed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  background-color: #6b7280; 
+  color: white;
+}
+
+.task-btn.view.completed:hover {
+  background-color: #4b5563;
+}

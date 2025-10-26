@@ -254,7 +254,7 @@ export default function TechnicianTask() {
                                             >
                                                 {translateStatus(task.status)}
                                             </span>
-                                          
+
                                             <span className="task-id">Mã Booking: {task.bookingId}</span>
                                         </div>
 
@@ -263,7 +263,7 @@ export default function TechnicianTask() {
                                                 <strong>Tên khách hàng:</strong> {task.customerName}
                                             </p>
 
-                                           
+
                                             <p>
                                                 <strong>Mẫu xe:</strong> {task.vehicleModel}
                                             </p>
@@ -327,7 +327,12 @@ export default function TechnicianTask() {
                             type="number"
                             placeholder="Nhập Actual KM..."
                             value={actualKm}
-                            onChange={(e) => setActualKm(e.target.value)}
+                            onChange={(e) => {
+                                if (e.target.value === "" || parseFloat(e.target.value) >= 0) {
+                                    setActualKm(e.target.value);
+                                }
+                            }}
+                            min="0"
                         />
                         <div className="modal-buttons">
                             <button onClick={confirmStartTask} className="confirm-btn">

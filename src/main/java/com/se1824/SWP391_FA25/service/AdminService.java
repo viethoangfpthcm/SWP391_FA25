@@ -41,7 +41,7 @@
         private final MaintenanceChecklistService checklistService;
         private final MaintenanceChecklistDetailRepository checklistDetailRepo;
         /**
-         * Tạo user mới (Staff hoặc Technician)
+         * Tạo user mới (Staff | Technician | Customer) bởi Admin
          */
         @Transactional
         public UserManagementDTO createUser(CreateUserRequest request, Integer adminId) {
@@ -49,12 +49,14 @@
             validateAdminRole(adminId);
 
             if (request.getRole() != UserRole.STAFF && request.getRole() != UserRole.TECHNICIAN && request.getRole() != UserRole.CUSTOMER) {
-                throw new InvalidDataException("Can only create STAFF or TECHNICIAN roles.");
+                throw new InvalidDataException("Can only create STAFF or TECHNICIAN or CUSTOMER roles.");
             }
-            validateUserRequest(request);
 
             if (userRepo.findUserByEmail(request.getEmail()) != null) {
                 throw new InvalidDataException("Email already exists: " + request.getEmail());
+            }
+            if (userRepo.findByPhone(request.getPhone()) != null) {
+                throw new InvalidDataException("Phone already exists: " + request.getPhone());
             }
             Users user = new Users();
             if (request.getRole() == UserRole.STAFF || request.getRole() == UserRole.TECHNICIAN) {
@@ -356,21 +358,6 @@
             }
         }
 
-        private void validateUserRequest(CreateUserRequest request) {
-            if (request.getFullName() == null || request.getFullName().trim().isEmpty()) {
-                throw new InvalidDataException("Full name is required");
-            }
-            if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
-                throw new InvalidDataException("Email is required");
-            }
-            if (request.getPassword() == null || request.getPassword().length() < 6) {
-                throw new InvalidDataException("Password must be at least 6 characters");
-            }
-            if ((request.getRole() == UserRole.STAFF || request.getRole() == UserRole.TECHNICIAN)
-                    && request.getCenterId() == null) {
-                throw new InvalidDataException("Service center is required for STAFF and TECHNICIAN");
-            }
-        }
         private PaymentDTO mapToPaymentDTO(Payment payment) {
             PaymentDTO dto = new PaymentDTO();
             dto.setPaymentId(payment.getPaymentId());

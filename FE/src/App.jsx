@@ -5,6 +5,7 @@ import LoginForm from "./page/login/LoginForm.jsx";
 import Homepage from "./page/home/Homepage.jsx";
 import About from "./page/home/AboutUs.jsx";
 import Contact from "./page/home/Contact.jsx";
+import ResetPassword from "./page/login/ResetPassword.jsx";
 
 // Staff
 import StaffDashboard from "./page/staff/StaffDashboard.jsx";
@@ -42,7 +43,7 @@ function App() {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/login" element={<LoginForm />} />
-
+    <Route path="/reset-password" element={<ResetPassword />} />
       {/* Staff */}
       <Route
         path="/staff"
@@ -128,7 +129,7 @@ function App() {
           </ProtectedRoute>
         }
       />
-       <Route
+      <Route
         path="/admin/analytics"
         element={
           <ProtectedRoute requiredRole="ADMIN">
