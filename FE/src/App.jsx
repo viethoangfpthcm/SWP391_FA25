@@ -19,6 +19,9 @@ import AdminDashboard from "./page/admin/AdminDashboard.jsx";
 import ServiceCenterManagement from "./page/admin/ServiceCenterManagement.jsx";
 import PartManagement from "./page/admin/PartManagement.jsx";
 import AdminBookingManagement from "./page/admin/AdminBookingManagement.jsx";
+import AdminPaymentManagement from "./page/admin/AdminPaymentManagement.jsx";
+import AdminChecklistDetail from "./page/admin/AdminChecklistDetail.jsx";
+import AdminAnalytics from "./page/admin/AdminAnalytics.jsx";
 
 // Customer
 import CustomerDashboard from "./page/customer/CustomerDashboard.jsx";
@@ -101,7 +104,39 @@ function App() {
           </ProtectedRoute>
         }
       />
-      
+      <Route
+        path="/admin/bookings"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminBookingManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/payments"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminPaymentManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/checklist/booking/:bookingId"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminChecklistDetail />
+          </ProtectedRoute>
+        }
+      />
+       <Route
+        path="/admin/analytics"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminAnalytics />
+          </ProtectedRoute>
+        }
+      />
+
 
       {/* Customer */}
       <Route

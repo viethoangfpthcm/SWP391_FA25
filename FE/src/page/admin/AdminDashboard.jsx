@@ -14,7 +14,7 @@ import Sidebar from "../../page/sidebar/sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 
 if (import.meta.env.MODE !== "development") {
-  console.log = () => {};
+  console.log = () => { };
 }
 
 export default function AdminDashboard() {
@@ -24,6 +24,7 @@ export default function AdminDashboard() {
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const getToken = () => localStorage.getItem("token");
   const [editingUser, setEditingUser] = useState(null);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -31,6 +32,7 @@ export default function AdminDashboard() {
     phone: "",
     role: "",
     centerId: "",
+    password: "",
   });
   const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
@@ -97,14 +99,23 @@ export default function AdminDashboard() {
     filterRole === "all"
       ? users
       : users.filter(
-          (u) => u.role && u.role.toLowerCase() === filterRole.toLowerCase()
-        );
+        (u) => u.role && u.role.toLowerCase() === filterRole.toLowerCase()
+      );
 
   const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+
+    setFormData((prev) => {
+      const newData = {
+        ...prev,
+        [name]: value,
+      };
+      if (name === "role" && value === "CUSTOMER") {
+        newData.centerId = "";
+      }
+
+      return newData;
+    });
   };
 
   const openForm = (user = null) => {
@@ -126,6 +137,7 @@ export default function AdminDashboard() {
         phone: "",
         role: "",
         centerId: "",
+        password: "",
       });
     }
   };
@@ -133,31 +145,61 @@ export default function AdminDashboard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setActionLoading(true);
+
     try {
       const method = editingUser ? "PUT" : "POST";
-      const endpoint = editingUser
-        ? `${API_BASE}/api/admin/users-update`
-        : `${API_BASE}/api/admin/users-create`;
+      let endpoint;
+
+      if (editingUser) {
+        const userIdToUpdate = editingUser.userId;
+        endpoint = `${API_BASE}/api/admin/users-update?userIdToUpdate=${userIdToUpdate}`;
+      } else {
+        endpoint = `${API_BASE}/api/admin/users-create`;
+      }
+      const requestBody = {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        role: formData.role,
+        ...(editingUser ? {} : { password: formData.password }),
+
+        ...((formData.role !== "CUSTOMER" && formData.centerId) && {
+          centerId: parseInt(formData.centerId)
+        })
+      };
+
+      console.log("Request body:", requestBody);
 
       const res = await fetch(endpoint, {
         method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(requestBody),
       });
+
+      const responseBody = await res.json().catch(() => ({
+        message: "Không có thông báo lỗi chi tiết."
+      }));
 
       if (res.status === 401) {
         localStorage.clear();
         navigate("/");
         return;
       }
-      if (!res.ok) throw new Error("Không thể lưu thông tin người dùng.");
+
+      if (!res.ok) {
+        throw new Error(
+          responseBody.message ||
+          "Không thể lưu thông tin người dùng. Vui lòng kiểm tra dữ liệu."
+        );
+      }
 
       await fetchUsers();
       setShowForm(false);
       setEditingUser(null);
+
     } catch (err) {
       console.error(err);
       setError(err.message);
@@ -341,6 +383,21 @@ export default function AdminDashboard() {
                     required
                   />
                 </label>
+
+                {!editingUser && (
+                  <label>
+                    Mật khẩu:
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      minLength={6}
+                      placeholder="Tối thiểu 6 ký tự"
+                    />
+                  </label>
+                )}
                 <label>
                   Vai trò:
                   <select
@@ -350,10 +407,10 @@ export default function AdminDashboard() {
                     required
                   >
                     <option value="">-- Chọn vai trò --</option>
-                    <option value="admin">Admin</option>
-                    <option value="staff">Staff</option>
-                    <option value="technician">Technician</option>
-                    <option value="customer">Customer</option>
+                    <option value="ADMIN">Admin</option>
+                    <option value="STAFF">Staff</option>
+                    <option value="TECHNICIAN">Technician</option>
+                    <option value="CUSTOMER">Customer</option>
                   </select>
                 </label>
                 <label>
@@ -363,7 +420,16 @@ export default function AdminDashboard() {
                     name="centerId"
                     value={formData.centerId}
                     onChange={handleChange}
+                    required={formData.role !== "CUSTOMER"}
+                    min="1"
+                    disabled={formData.role === "CUSTOMER"}
+                    placeholder={formData.role === "CUSTOMER" ? "Không cần thiết" : "Nhập Center ID"}
                   />
+                  {formData.role === "CUSTOMER" && (
+                    <small style={{ color: '#888', display: 'block', marginTop: '4px' }}>
+                      Customer không thuộc trung tâm nào
+                    </small>
+                  )}
                 </label>
 
                 <div className="form-actions">
