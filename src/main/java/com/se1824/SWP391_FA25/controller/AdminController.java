@@ -420,10 +420,11 @@ public class AdminController {
     @Autowired
     private FeedbackService feedbackService;
 
-    @GetMapping("/analytics/center/{centerId}")
+    @GetMapping("/analytics/feedbacks/{centerId}")
     public ResponseEntity<?> getPublishedFeedbacksByCenter(@PathVariable Integer centerId) {
         try {
-            return ResponseEntity.ok(feedbackService.getPublishedFeedbacksByCenter(centerId));
+            FeedbackStatsDTO stats = feedbackService.getFeedbackStatsByCenter(centerId);
+            return ResponseEntity.ok(stats); // Trả về DTO này
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
