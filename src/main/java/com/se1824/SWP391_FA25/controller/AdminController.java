@@ -13,7 +13,6 @@ import com.se1824.SWP391_FA25.service.FeedbackService;
 import com.se1824.SWP391_FA25.service.ServiceCenterService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +31,7 @@ public class AdminController {
     private final AdminService adminService;
     private final AuthenticationService authenticationService;
     private final ServiceCenterService serviceCenterService;
-
+    private final FeedbackService feedbackService;
 
     /**
      * Tạo user mới (Staff hoặc Technician)
@@ -417,8 +416,31 @@ public class AdminController {
         return ResponseEntity.ok(data);
     }
 
-    @Autowired
-    private FeedbackService feedbackService;
+    /**
+     * ADMIN Lấy feedback của 1 booking bất kỳ
+     * GET /api/admin/feedback/{bookingId}
+     */
+    @GetMapping("/feedback/{bookingId}")
+    public ResponseEntity<?> getFeedbackByBookingIdForAdmin(@PathVariable Integer bookingId) {
+        try {
+            Feedback feedback = feedbackService.getFeedbackByBookingId(bookingId);
+            FeedbackDTO dto = new FeedbackDTO();
+            dto.setFeedbackId(feedback.getFeedbackId());
+            dto.setBookingId(feedback.getBooking().getBookingId());
+            dto.setUserName(feedback.getUser().getFullName());
+            dto.setLicensePlate(feedback.getBooking().getVehicle().getLicensePlate());
+            dto.setCenterName(feedback.getBooking().getServiceCenter().getName());
+            dto.setRating(feedback.getRating());
+            dto.setComment(feedback.getComment());
+            dto.setFeedbackDate(feedback.getFeedbackDate());
+            dto.setIsPublished(feedback.getIsPublished());
+
+            return ResponseEntity.ok(dto);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Can not found feedback for booking ID: " + bookingId);
+        }
+    }
 
     @GetMapping("/analytics/feedbacks/{centerId}")
     public ResponseEntity<?> getPublishedFeedbacksByCenter(@PathVariable Integer centerId) {

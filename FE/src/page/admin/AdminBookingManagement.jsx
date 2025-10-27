@@ -4,6 +4,9 @@ import {
     FaSpinner,
     FaFilter,
     FaExclamationTriangle,
+    FaCommentAlt,
+    FaTimes,
+    FaStar,
 } from "react-icons/fa";
 import "./AdminBookingManagement.css";
 import Sidebar from "../../page/sidebar/sidebar.jsx";
@@ -22,6 +25,10 @@ export default function AdminBookingManagement() {
     const navigate = useNavigate();
     const [centers, setCenters] = useState([]);
     const [selectedCenter, setSelectedCenter] = useState("all");
+    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+    const [selectedFeedback, setSelectedFeedback] = useState(null);
+    const [feedbackLoading, setFeedbackLoading] = useState(false);
+    const [feedbackError, setFeedbackError] = useState(null);
 
     const API_BASE = import.meta.env.VITE_API_URL || "https://103.90.226.216:8443";
     const token = localStorage.getItem("token");
@@ -62,6 +69,36 @@ export default function AdminBookingManagement() {
     };
     const handleViewChecklist = (bookingId) => {
         navigate(`/admin/checklist/booking/${bookingId}`);
+    };
+    const handleViewFeedback = async (bookingId) => {
+        setShowFeedbackModal(true); // Mở modal
+        setFeedbackLoading(true);
+        setSelectedFeedback(null);
+        setFeedbackError(null);
+
+        try {
+            // Gọi API ADMIN mới
+            const res = await fetch(`${API_BASE}/api/admin/feedback/${bookingId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (res.status === 404) {
+                // Sửa lỗi 404 từ backend
+                const errorText = await res.text();
+                throw new Error(errorText || "Không tìm thấy feedback cho lịch hẹn này.");
+            }
+            if (!res.ok) {
+                throw new Error("Lỗi khi tải feedback.");
+            }
+
+            const data = await res.json();
+            setSelectedFeedback(data);
+
+        } catch (err) {
+            setFeedbackError(err.message);
+        } finally {
+            setFeedbackLoading(false);
+        }
     };
 
     // Fetch danh sách booking 
@@ -230,7 +267,7 @@ export default function AdminBookingManagement() {
                             <tbody>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan="8" className="empty-state">
+                                        <td colSpan="9" className="empty-state">
                                             <FaSpinner className="spinner" /> Đang tải...
                                         </td>
                                     </tr>
@@ -272,18 +309,26 @@ export default function AdminBookingManagement() {
                                             <td>
                                                 <button
                                                     className="action-button view-checklist"
-                                                    onClick={() => handleViewChecklist(booking.bookingId)}                                            
+                                                    onClick={() => handleViewChecklist(booking.bookingId)}
                                                     disabled={!booking.checklistStatus}
                                                     title={!booking.checklistStatus ? "Checklist chưa được tạo" : "Xem chi tiết checklist"}
                                                 >
                                                     Xem Checklist
+                                                </button>
+                                                <button
+                                                    className="action-button view-feedback"
+                                                    onClick={() => handleViewFeedback(booking.bookingId)}                                              
+                                                    disabled={!booking.hasFeedback}
+                                                    title={booking.hasFeedback ? "Xem feedback của khách hàng" : "Chưa có feedback"}
+                                                >
+                                                    <FaCommentAlt /> Xem Feedback
                                                 </button>
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="8" className="empty-state">
+                                        <td colSpan="9" className="empty-state">
                                             Không có dữ liệu đặt lịch.
                                         </td>
                                     </tr>
@@ -292,6 +337,66 @@ export default function AdminBookingManagement() {
                         </table>
                     </div>
                 </div>
+                {showFeedbackModal && (
+                    <div className="modal-overlay" >
+                        <div className="modal-content feedback-modal">
+                            <div className="modal-header">
+                                <h2>Chi tiết Feedback</h2>
+                                <button
+                                    onClick={() => setShowFeedbackModal(false)}
+                                    className="close-modal-btn"
+                                >
+                                    <FaTimes />
+                                </button>
+                            </div>
+
+                            <div className="modal-body" >
+                                {feedbackLoading && (
+                                    <div className="loading-state" style={{ padding: '40px' }}>
+                                        <FaSpinner className="spinner" /> Đang tải...
+                                    </div>
+                                )}
+
+                                {feedbackError && (
+                                    <div className="error-message general-error" style={{ textAlign: 'center', margin: '20px' }}>
+                                        <FaExclamationTriangle /> {feedbackError}
+                                    </div>
+                                )}
+
+                                {selectedFeedback && (
+                                    <div className="feedback-details">
+                                        <p><strong>Khách hàng:</strong> {selectedFeedback.userName}</p>
+                                        <p><strong>Xe:</strong> {selectedFeedback.licensePlate}</p>
+                                        <p><strong>Trung tâm:</strong> {selectedFeedback.centerName}</p>
+                                        <p><strong>Ngày:</strong> {formatDate(selectedFeedback.feedbackDate)}</p>
+
+                                        <div className="feedback-rating">
+                                            <strong>Đánh giá:</strong>
+                                            <div className="stars">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <FaStar
+                                                        key={i}
+                                                        className={i < selectedFeedback.rating ? "star-filled" : "star-empty"}
+                                                    />
+                                                ))}
+                                                <span className="rating-number">({selectedFeedback.rating}/5)</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="feedback-comment">
+                                            <strong>Bình luận:</strong>
+                                            <p className="comment-box">
+                                                {selectedFeedback.comment || <em>(Không có bình luận)</em>}
+                                            </p>
+                                        </div>
+
+                                        <p><strong>Trạng thái:</strong> {selectedFeedback.isPublished ? "Đã duyệt" : "Chưa duyệt"}</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </main>
         </div>
     );

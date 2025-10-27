@@ -379,8 +379,43 @@
 .btn-save:active {
   transform: scale(0.98);
 }
+.back-button {
+  display: block; 
+  margin: 40px auto 20px auto; 
+  width: fit-content;
 
-/* ========== ANIMATION (Giữ nguyên) ========== */
+
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #f0f0f0; 
+  
+ 
+  border-radius: 10px;
+  padding: 12px 25px; 
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  
+  
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-decoration: none; 
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.back-button:active {
+  transform: scale(0.98); 
+}
+
+/* ========== ANIMATION  ========== */
 @keyframes fadeIn {
   from {
     opacity: 0;
