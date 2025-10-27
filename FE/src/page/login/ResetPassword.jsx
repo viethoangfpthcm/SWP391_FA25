@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
-import './LoginForm.css'; 
+import './ResetPassword.css'; 
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -64,10 +64,11 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="login-wrapper"> 
-      <form onSubmit={handleSubmit} className="form">
-        
-        <h2 className="form-title">Đặt Lại Mật Khẩu Mới</h2> 
+    <div className="reset-page">
+  <div className="reset-container">
+    <form onSubmit={handleSubmit} className="reset-form">
+      <h2 className="reset-title">Đặt Lại Mật Khẩu</h2>
+      <p className="reset-subtitle">Nhập mật khẩu mới của bạn để tiếp tục</p>
         
         {!token && (
           <div className="error-message">Token không hợp lệ. Vui lòng thử lại.</div>
@@ -105,6 +106,7 @@ const ResetPassword = () => {
         <Link to="/login" className="back-link">Quay lại Đăng nhập</Link>
       </form>
     </div>
+     </div>
   );
 };
 

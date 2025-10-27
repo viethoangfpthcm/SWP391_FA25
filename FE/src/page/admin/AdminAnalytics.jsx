@@ -222,7 +222,7 @@ export default function AdminAnalytics() {
     const renderYearOptions = () => {
         const currentYear = new Date().getFullYear();
         const years = [];
-        for (let i = currentYear; i >= currentYear - 5; i--) {
+        for (let i = currentYear; i >= currentYear - 0; i--) {
             years.push(<option key={i} value={i}>Năm {i}</option>);
         }
         return years;
@@ -606,112 +606,128 @@ function BookingStatsChart({ chartData }) {
     return <Pie data={data} options={options} />;
 }
 
-// 3. Chart Linh kiện
+// 3. Chart Linh kiện (đã thêm filter VF và fix scroll header)
 function PartsUsageChart({ chartData }) {
+    const [filter, setFilter] = useState("all");
+
     if (!chartData || !chartData.labels || chartData.labels.length === 0) {
         return <p className="chart-placeholder">Không có dữ liệu linh kiện.</p>;
     }
 
-    const colors = [
-        { start: 'rgba(59, 130, 246, 0.9)', end: 'rgba(37, 99, 235, 0.9)' },
-        { start: 'rgba(16, 185, 129, 0.9)', end: 'rgba(5, 150, 105, 0.9)' },
-        { start: 'rgba(168, 85, 247, 0.9)', end: 'rgba(126, 34, 206, 0.9)' },
-        { start: 'rgba(251, 146, 60, 0.9)', end: 'rgba(234, 88, 12, 0.9)' },
-        { start: 'rgba(236, 72, 153, 0.9)', end: 'rgba(219, 39, 119, 0.9)' },
-        { start: 'rgba(14, 165, 233, 0.9)', end: 'rgba(2, 132, 199, 0.9)' },
-        { start: 'rgba(132, 204, 22, 0.9)', end: 'rgba(101, 163, 13, 0.9)' },
-        { start: 'rgba(244, 63, 94, 0.9)', end: 'rgba(225, 29, 72, 0.9)' }
-    ];
+    // Lọc linh kiện theo 4 ký tự cuối (VD: "VF 3")
+    const filteredIndices = chartData.labels
+        .map((label, index) => ({ label, index }))
+        .filter(({ label }) => {
+            if (filter === "all") return true;
+            const suffix = label.slice(-4).trim().toUpperCase();
+            return suffix === filter;
+        });
 
-    const data = {
-        labels: chartData.labels,
-        datasets: [
-            {
-                label: 'Số lượng sử dụng',
-                data: chartData.counts,
-                backgroundColor: chartData.counts.map((_, index) => colors[index % colors.length].start),
-                borderColor: chartData.counts.map((_, index) => colors[index % colors.length].end),
-                borderWidth: 2,
-                borderRadius: 10,
-                borderSkipped: false,
-                barThickness: 35,
-                maxBarThickness: 40,
-            },
-        ],
-    };
-    
-    const options = { 
-        responsive: true, 
-        maintainAspectRatio: false, 
-        indexAxis: 'y',
-        plugins: {
-            legend: {
-                display: false
-            },
-            tooltip: {
-                backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                padding: 16,
-                cornerRadius: 10,
-                titleFont: {
-                    size: 15,
-                    weight: 'bold'
-                },
-                bodyFont: {
-                    size: 14
-                },
-                borderColor: 'rgba(255, 255, 255, 0.2)',
-                borderWidth: 1,
-                callbacks: {
-                    label: function(context) {
-                        return `Số lượng: ${context.parsed.x} cái`;
-                    }
-                }
-            }
-        },
-        scales: {
-            x: {
-                grid: {
-                    color: 'rgba(148, 163, 184, 0.1)',
-                    drawBorder: false,
-                    lineWidth: 1
-                },
-                ticks: {
-                    beginAtZero: true,
-                    stepSize: 1,
-                    padding: 12,
-                    font: {
-                        size: 12,
-                        weight: '600'
-                    },
-                    color: '#64748b'
-                },
-                border: {
-                    display: false
-                }
-            },
-            y: {
-                grid: {
-                    display: false,
-                    drawBorder: false
-                },
-                ticks: {
-                    padding: 12,
-                    font: {
-                        size: 13,
-                        weight: '600'
-                    },
-                    color: '#1e293b'
-                },
-                border: {
-                    display: false
-                }
-            }
-        },
-        animation: {
-            duration: 1000,
-            easing: 'easeInOutQuart'
-        }
-    };
+    const filteredLabels = filteredIndices.map(item => chartData.labels[item.index]);
+    const filteredCounts = filteredIndices.map(item => chartData.counts[item.index]);
 
-    return <Bar data={data} options={options} />;
+    return (
+        <div className="parts-table-container">
+            {/* Bộ lọc VF */}
+            <div className="parts-filter">
+                <label htmlFor="vfFilter" style={{ marginRight: "8px", fontWeight: "600" }}>
+                    Bộ lọc dòng xe (VF):
+                </label>
+                <select
+                    id="vfFilter"
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    style={{
+                        padding: "6px 10px",
+                        borderRadius: "8px",
+                        border: "1px solid #ccc",
+                        fontWeight: "500"
+                    }}
+                >
+                    <option value="all">Tất cả</option>
+                    <option value="VF 3">VF 3</option>
+                    <option value="VF 5">VF 5</option>
+                    <option value="VF 7">VF 7</option>
+                    <option value="VF 9">VF 9</option>
+                </select>
+            </div>
+
+            {/* Bảng linh kiện */}
+            <div
+                className="parts-table-wrapper"
+                style={{
+                    maxHeight: "400px",
+                    overflowY: "auto",
+                    marginTop: "10px",
+                    borderRadius: "12px",
+                    border: "1px solid #ddd",
+                }}
+            >
+                <table className="parts-table" style={{ width: "100%", borderCollapse: "collapse" }}>
+                    <thead style={{ position: "sticky", top: 0, backgroundColor: "#f8fafc", zIndex: 2 }}>
+                        <tr>
+                            <th
+                                style={{
+                                    textAlign: "left",
+                                    padding: "12px",
+                                    borderBottom: "2px solid #e2e8f0",
+                                    fontWeight: "700",
+                                    color: "#1e293b",
+                                    background: "#f8fafc",
+                                }}
+                            >
+                                Thông số linh kiện
+                            </th>
+                            <th
+                                style={{
+                                    textAlign: "left",
+                                    padding: "12px",
+                                    borderBottom: "2px solid #e2e8f0",
+                                    fontWeight: "700",
+                                    color: "#1e293b",
+                                    background: "#f8fafc",
+                                }}
+                            >
+                                Số lượng đã sử dụng
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredLabels.length === 0 ? (
+                            <tr>
+                                <td
+                                    colSpan="2"
+                                    style={{
+                                        textAlign: "center",
+                                        padding: "14px",
+                                        color: "#999",
+                                        backgroundColor: "#fff",
+                                    }}
+                                >
+                                    Không có linh kiện phù hợp bộ lọc.
+                                </td>
+                            </tr>
+                        ) : (
+                            filteredLabels.map((label, index) => (
+                                <tr
+                                    key={index}
+                                    style={{
+                                        backgroundColor: index % 2 === 0 ? "#ffffff" : "#f9fafb",
+                                    }}
+                                >
+                                    <td style={{ padding: "10px 14px", borderBottom: "1px solid #e5e7eb" }}>
+                                        {label}
+                                    </td>
+                                    <td style={{ padding: "10px 14px", borderBottom: "1px solid #e5e7eb" }}>
+                                        {filteredCounts[index]}
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
 }
+

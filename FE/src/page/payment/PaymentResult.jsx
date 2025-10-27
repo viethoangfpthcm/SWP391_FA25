@@ -38,12 +38,12 @@ export default function PaymentResult() {
       fetchReportsList();
     }
 
-    // Tự động chuyển hướng sau 5 giây
-    const timer = setTimeout(() => {
-      navigate('/report1'); // 
-    }, 5000);
+    // // Tự động chuyển hướng sau 5 giây
+    // const timer = setTimeout(() => {
+    //   navigate('/report1'); // 
+    // }, 5000);
 
-    return () => clearTimeout(timer);
+    // return () => clearTimeout(timer);
   }, [navigate, isSuccess, token, customerId]);
 
   // Kiểm tra token và redirect nếu không đăng nhập

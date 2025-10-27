@@ -169,24 +169,27 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="login-wrapper">
-      <div className="tabs">
+  <div className="login-page">
+    <div className="login-container">
+      {/* === Tabs trên đầu Email === */}
+      <div className="tabs-top">
         <button
-          className={`tab ${activeTab === "login" ? "active" : ""}`}
+          className={`tab-btn ${activeTab === "login" ? "active" : ""}`}
           onClick={() => switchTab("login")}
         >
           Đăng nhập
         </button>
         <button
-          className={`tab ${activeTab === "register" ? "active" : ""}`}
+          className={`tab-btn ${activeTab === "register" ? "active" : ""}`}
           onClick={() => switchTab("register")}
         >
           Đăng ký
         </button>
       </div>
 
+      {/* === Form hiển thị tương ứng === */}
       {activeTab === "login" && (
-        <form onSubmit={handleLogin} className="form">
+        <form onSubmit={handleLogin} className="form-box">
           <label>Email</label>
           <input
             type="email"
@@ -210,18 +213,16 @@ const LoginForm = () => {
             <label htmlFor="remember">Ghi nhớ đăng nhập</label>
           </div>
 
-
-          <div className="forgot-password-link" style={{ textAlign: 'center', margin: '10px 0' }}>
-            <a 
-              href="#" 
-              onClick={(e) => {
-                e.preventDefault();
-                switchTab("forgot"); 
-              }}
-            >
-              Quên mật khẩu?
-            </a>
-          </div>
+          <a
+            href="#"
+            className="forgot-link"
+            onClick={(e) => {
+              e.preventDefault();
+              switchTab("forgot");
+            }}
+          >
+            Quên mật khẩu?
+          </a>
 
           <button type="submit" className="login-btn">
             ĐĂNG NHẬP
@@ -230,8 +231,8 @@ const LoginForm = () => {
       )}
 
       {activeTab === "register" && (
-        <form onSubmit={handleRegister} className="form">
-          <label>Họ và Tên</label>
+        <form onSubmit={handleRegister} className="form-box">
+          <label>Họ và tên</label>
           <input
             type="text"
             name="fullName"
@@ -282,7 +283,10 @@ const LoginForm = () => {
             placeholder="Nhập lại mật khẩu"
             value={registerData.confirmPassword}
             onChange={(e) =>
-              setRegisterData({ ...registerData, confirmPassword: e.target.value })
+              setRegisterData({
+                ...registerData,
+                confirmPassword: e.target.value,
+              })
             }
             required
           />
@@ -294,10 +298,10 @@ const LoginForm = () => {
       )}
 
       {activeTab === "forgot" && (
-        <form onSubmit={handleForgotPassword} className="form">
-          <h3 style={{ textAlign: 'center' }}>Quên Mật Khẩu</h3>
-          <p style={{ textAlign: 'center', fontSize: '14px', color: '#555' }}>
-            Nhập email của bạn. Chúng tôi sẽ gửi một liên kết để đặt lại mật khẩu.
+        <form onSubmit={handleForgotPassword} className="form-box">
+          <h3 className="reset-title">Quên Mật Khẩu</h3>
+          <p style={{ textAlign: "center", fontSize: "14px", color: "#ccc" }}>
+            Nhập email của bạn để nhận liên kết đặt lại mật khẩu.
           </p>
 
           <label>Email</label>
@@ -313,25 +317,25 @@ const LoginForm = () => {
             GỬI LIÊN KẾT
           </button>
 
-          <div className="back-to-login-link" style={{ textAlign: 'center', margin: '10px 0' }}>
-            <a 
-              href="#" 
-              onClick={(e) => {
-                e.preventDefault();
-                switchTab("login"); // Quay lại tab đăng nhập
-              }}
-            >
-              Quay lại Đăng nhập
-            </a>
-          </div>
+          <a
+            href="#"
+            className="back-link"
+            onClick={(e) => {
+              e.preventDefault();
+              switchTab("login");
+            }}
+          >
+            Quay lại đăng nhập
+          </a>
         </form>
       )}
 
-
-      {error && <div className="error-message">{error}</div>}
-      {successMessage && <div className="success-message">{successMessage}</div>}
+      {error && <div className="error-msg">{error}</div>}
+      {successMessage && <div className="success-msg">{successMessage}</div>}
     </div>
-  );
+  </div>
+);
+
 };
 
 export default LoginForm;
