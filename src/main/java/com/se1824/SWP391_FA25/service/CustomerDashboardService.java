@@ -4,6 +4,7 @@ import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.entity.*;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.repository.*;
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -160,10 +161,14 @@ public class CustomerDashboardService {
             return dto;
         }).collect(Collectors.toList());
     }
+
     /*
      * Customer theo xe mới
      */
     public Vehicle createVehicle(Vehicle vehicle) {
+        if (vehicleRepo.findByLicensePlate(vehicle.getLicensePlate()) != null) {
+            throw new EntityExistsException("Vehicle with license plate " + vehicle.getLicensePlate() + " already exists.");
+        }
         Users currentUser = authenticationService.getCurrentAccount();
         vehicle.setOwner(currentUser);
 
@@ -204,6 +209,21 @@ public class CustomerDashboardService {
         return savedVehicle;
     }
 
+
+    /*
+     * customer xóa xe có trong account của mình
+     * */
+    public void deleteVehicle(String licensePlate) {
+        Users currentUser = authenticationService.getCurrentAccount();
+        Vehicle vehicle = vehicleRepo.findById(licensePlate)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with license plate: " + licensePlate));
+
+        if (!vehicle.getOwner().getUserId().equals(currentUser.getUserId())) {
+            throw new SecurityException("You do not have permission to delete this vehicle.");
+        }
+
+        vehicleRepo.delete(vehicle);
+    }
 
     // ==================== CÁC HÀM HELPER ====================
     private VehicleOverviewDTO mapToVehicleOverview(Vehicle vehicle) {
