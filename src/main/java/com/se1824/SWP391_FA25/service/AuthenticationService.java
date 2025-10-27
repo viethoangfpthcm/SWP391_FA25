@@ -59,7 +59,7 @@ public class AuthenticationService implements UserDetailsService {
         Users users = modelMapper.map(us, Users.class);
         users.setPassword(passwordEncoder.encode(us.getPassword()));
         users.setRole(UserRole.CUSTOMER); // Gán vai trò mặc định
-        users.setIsActive(true);
+        users.setIsActive(false);
 
         Users newUser = authenticationRepository.save(users);
 
@@ -140,8 +140,9 @@ public class AuthenticationService implements UserDetailsService {
 
     /**
      * Xử lý việc đặt lại mật khẩu mới
-     * @param token Token từ email
-     * @param newPassword Mật khẩu mới
+     *
+     * @param token           Token từ email
+     * @param newPassword     Mật khẩu mới
      * @param confirmPassword Xác nhận mật khẩu mới
      */
     public void resetPassword(String token, String newPassword, String confirmPassword) {

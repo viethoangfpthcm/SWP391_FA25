@@ -12,6 +12,7 @@ import com.se1824.SWP391_FA25.service.AuthenticationService;
 import com.se1824.SWP391_FA25.service.ServiceCenterService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,7 @@ public class AdminController {
      */
     @PostMapping("/users-create")
     public ResponseEntity<UserManagementDTO> createUser(@Valid
-                                                        @RequestBody CreateUserRequest request)
-    {
+                                                        @RequestBody CreateUserRequest request) {
         Integer adminId = authenticationService.getCurrentAccount().getUserId();
         UserManagementDTO user = adminService.createUser(request, adminId);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
@@ -50,8 +50,7 @@ public class AdminController {
      */
     @GetMapping("/staff")
     public ResponseEntity<List<UserManagementDTO>> getAllStaff(
-            @RequestParam(required = false) Integer centerId)
-    {
+            @RequestParam(required = false) Integer centerId) {
         List<UserManagementDTO> staff = adminService.getAllStaff(centerId);
         return ResponseEntity.ok(staff);
     }
@@ -62,8 +61,7 @@ public class AdminController {
      */
     @GetMapping("/technicians")
     public ResponseEntity<List<UserManagementDTO>> getAllTechnicians(
-            @RequestParam(required = false) Integer centerId)
-    {
+            @RequestParam(required = false) Integer centerId) {
         List<UserManagementDTO> technicians = adminService.getAllTechnicians(centerId);
         return ResponseEntity.ok(technicians);
     }
@@ -84,13 +82,14 @@ public class AdminController {
      */
     @PutMapping("/users-update")
     public ResponseEntity<UserManagementDTO> updateUserByAdmin(
-            @Valid  @RequestBody UpdateUserRequest request,
+            @Valid @RequestBody UpdateUserRequest request,
             @RequestParam Integer userIdToUpdate
     ) {
         Integer adminId = authenticationService.getCurrentAccount().getUserId();
         UserManagementDTO user = adminService.updateUserByAdmin(request, adminId, userIdToUpdate);
         return ResponseEntity.ok(user);
     }
+
     /**
      * Xóa user
      * DELETE /api/admin/users/{userId}?adminId={adminId}
@@ -114,6 +113,7 @@ public class AdminController {
         ServiceCenter newCenter = serviceCenterService.createServiceCenter(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(newCenter);
     }
+
     /**
      * READ (All): Lấy tất cả các ServiceCenter
      * GET /api/admin/service-centers
@@ -123,6 +123,7 @@ public class AdminController {
         List<ServiceCenter> centers = serviceCenterService.getAllServiceCenters();
         return ResponseEntity.ok(centers);
     }
+
     /**
      * READ (One): Lấy thông tin ServiceCenter theo ID
      * GET /api/admin/service-centers/{id}
@@ -132,6 +133,7 @@ public class AdminController {
         ServiceCenter center = serviceCenterService.getServiceCenterById(id);
         return ResponseEntity.ok(center);
     }
+
     /**
      * UPDATE: Cập nhật thông tin ServiceCenter
      * PUT /api/admin/service-centers/{id}
@@ -144,6 +146,7 @@ public class AdminController {
         ServiceCenter updatedCenter = serviceCenterService.updateServiceCenter(centerId, requestDTO);
         return ResponseEntity.ok(updatedCenter);
     }
+
     /**
      * DELETE: Xóa một ServiceCenter
      * DELETE /api/admin/service-centers/{id}
@@ -153,6 +156,7 @@ public class AdminController {
         serviceCenterService.deleteServiceCenter(id);
         return ResponseEntity.noContent().build();
     }
+
     /**
      * Lấy TẤT CẢ Part (phụ tùng) thuộc về một ServiceCenter
      * GET /api/admin/service-centers/{centerId}/parts
@@ -162,6 +166,7 @@ public class AdminController {
         List<Part> parts = serviceCenterService.getPartsByServiceCenter(centerId);
         return ResponseEntity.ok(parts);
     }
+
     /**
      * Tạo một Part (phụ tùng) MỚI cho một ServiceCenter
      * POST /service-centers/{centerId}/parts
@@ -175,6 +180,7 @@ public class AdminController {
         Part newPart = serviceCenterService.createPart(request, centerId);
         return new ResponseEntity<>(newPart, HttpStatus.CREATED);
     }
+
     /**
      * DELETE: Xóa một Part (phụ tùng)
      * DELETE /api/admin/parts/{partId}
@@ -194,6 +200,7 @@ public class AdminController {
         Part part = serviceCenterService.getPartById(partId);
         return ResponseEntity.ok(part);
     }
+
     /**
      * Cập nhật thông tin một Part
      * PUT /api/admin/parts/{partId}
@@ -206,6 +213,7 @@ public class AdminController {
         Part updatedPart = serviceCenterService.updatePart(partId, requestDTO);
         return new ResponseEntity<>(updatedPart, HttpStatus.OK);
     }
+
     /**
      * READ (All): Lấy tất cả PartType (cho dropdown)
      * GET /api/admin/part-types
@@ -248,6 +256,7 @@ public class AdminController {
         StaffBookingDTO bookingDTO = adminService.getBookingById(bookingId, adminId);
         return ResponseEntity.ok(bookingDTO);
     }
+
     /**
      * Admin xem chi tiết payment theo bookingId (trả về DTO)
      * GET /api/admin/payments/booking/{bookingId}
@@ -260,6 +269,7 @@ public class AdminController {
         PaymentDTO paymentDTO = adminService.getPaymentByBookingId(bookingId, adminId);
         return ResponseEntity.ok(paymentDTO);
     }
+
     /**
      * Admin xem tất cả booking trong hệ thống
      * GET /api/admin/bookings
@@ -270,6 +280,7 @@ public class AdminController {
         List<StaffBookingDTO> allBookings = adminService.getAllBookings(adminId);
         return ResponseEntity.ok(allBookings);
     }
+
     /**
      * Admin xem tất cả booking theo Center ID
      * GET /api/admin/bookings/by-center/{centerId}
@@ -282,6 +293,7 @@ public class AdminController {
         List<StaffBookingDTO> bookings = adminService.getBookingsByCenter(centerId, adminId);
         return ResponseEntity.ok(bookings);
     }
+
     /**
      * Admin xem tất cả payment trong hệ thống
      * GET /api/admin/payments
@@ -293,6 +305,7 @@ public class AdminController {
         List<PaymentDTO> allPayments = adminService.getAllPayments(adminId);
         return ResponseEntity.ok(allPayments);
     }
+
     /**
      * Admin xem tất cả payment theo Center ID
      * GET /api/admin/payments/by-center/{centerId}
@@ -305,6 +318,7 @@ public class AdminController {
         List<PaymentDTO> payments = adminService.getPaymentsByCenter(centerId, adminId);
         return ResponseEntity.ok(payments);
     }
+
     /**
      * Admin xem chi tiết checklist theo bookingId (bao gồm all details)
      * GET /api/admin/checklists/booking/{bookingId}
@@ -333,6 +347,7 @@ public class AdminController {
         }
         return ResponseEntity.ok(data);
     }
+
     /**
      * CHART 1: Lấy doanh thu MỘT center
      * GET /api/admin/analytics/revenue/center/{centerId}
@@ -349,6 +364,7 @@ public class AdminController {
         }
         return ResponseEntity.ok(data);
     }
+
     /**
      * CHART 2: Lấy thống kê booking TẤT CẢ center
      * GET /api/admin/analytics/bookings
@@ -364,6 +380,7 @@ public class AdminController {
         }
         return ResponseEntity.ok(data);
     }
+
     /**
      * CHART 2: Lấy thống kê booking MỘT center
      * GET /api/admin/analytics/bookings/center/{centerId}
@@ -380,6 +397,7 @@ public class AdminController {
         }
         return ResponseEntity.ok(data);
     }
+
     /**
      * CHART 3: Lấy thống kê linh kiện (Bắt buộc theo center)
      * GET /api/admin/analytics/parts
@@ -395,5 +413,15 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
         }
         return ResponseEntity.ok(data);
+    }
+
+    @PutMapping("/user/active")
+    public ResponseEntity<?> userActiveStatus(
+            @RequestParam Integer userId,
+            @RequestParam Boolean isActive) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        adminService.activateUserAccount(userId, adminId, isActive);
+        String status = isActive ? "activated" : "deactivated";
+        return ResponseEntity.ok("User with ID " + userId + " has been " + status + " successfully.");
     }
 }

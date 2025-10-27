@@ -1,5 +1,6 @@
 package com.se1824.SWP391_FA25.model.request;
 
+import com.se1824.SWP391_FA25.enums.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -17,6 +18,7 @@ public class UpdateUserRequest {
 //    )
 //    String userId;
     @Size(min = 2, max = 100, message = "Full name must be between 2 and 100 characters")
+    @Pattern(regexp = "")
     String fullName;
 
     @Email(message = "Invalid email format")
@@ -31,5 +33,7 @@ public class UpdateUserRequest {
     )
     String phone;
     Integer centerId; // Chỉ admin mới được đổi
+
+    UserRole role;
 
 }
