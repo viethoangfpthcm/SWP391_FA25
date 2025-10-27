@@ -1,108 +1,148 @@
+/* === Toàn trang === */
 .payment-result-page {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  background: radial-gradient(circle at top right, #1a2a3a, #0b141d 70%);
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  color: #fff;
 }
 
+/* === Container chính === */
 .payment-result-container {
   flex-grow: 1;
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 2rem;
-  background-color: #f4f7f6;
+  align-items: center;
+  padding: 3rem 1.5rem;
 }
 
+/* === Card hiển thị kết quả === */
 .payment-result-card {
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-  padding: 3rem;
-  text-align: center;
-  max-width: 500px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  border-radius: 18px;
+  padding: 3rem 2.5rem;
+  max-width: 480px;
   width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: fadeSlideIn 0.6s ease;
+  transform: translateY(0);
 }
 
-.payment-result-card h1 {
-  font-size: 2rem;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.payment-result-card p {
-  font-size: 1rem;
-  color: #555;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-.payment-result-card p:last-of-type {
-  margin-bottom: 2rem; 
-  font-size: 0.95rem; 
-  color: #777;       
-}
-
+/* === Icon kết quả === */
 .icon-success {
   font-size: 5rem;
-  color: #28a745;
+  color: #00e676;
+  filter: drop-shadow(0 0 12px rgba(0, 230, 118, 0.6));
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 .icon-fail {
   font-size: 5rem;
-  color: #dc3545;
+  color: #ff5252;
+  filter: drop-shadow(0 0 12px rgba(255, 82, 82, 0.6));
+  animation: shake 0.6s ease-in-out;
 }
 
+/* === Tiêu đề & mô tả === */
+.payment-result-card h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.payment-result-card p {
+  font-size: 1rem;
+  color: #cfd8dc;
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+.payment-result-card p:last-of-type {
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+  color: #b0bec5;
+}
+
+/* === Nút quay lại === */
 .btn-back {
-  padding: 0.75rem 1.5rem;
+  padding: 0.9rem 1.8rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   color: #fff;
+  width: 100%;
+  max-width: 260px;
+  margin: 0 auto;
+  display: block;
+  letter-spacing: 0.3px;
 }
 
 .btn-success {
-  background-color: #28a745;
+  background: linear-gradient(135deg, #00e676, #00b248);
+  box-shadow: 0 4px 16px rgba(0, 230, 118, 0.4);
 }
 .btn-success:hover {
-  background-color: #218838;
+  background: linear-gradient(135deg, #00c853, #00a045);
+  transform: translateY(-1px);
 }
 
 .btn-fail {
-  background-color: #dc3545;
+  background: linear-gradient(135deg, #ff5252, #d50000);
+  box-shadow: 0 4px 16px rgba(255, 82, 82, 0.4);
 }
 .btn-fail:hover {
-  background-color: #c82333;
+  background: linear-gradient(135deg, #ff1744, #c51162);
+  transform: translateY(-1px);
 }
-.toast-notification {
-  position: fixed;
-  top: 80px;
-  right: 20px;
-  z-index: 1050;
-  min-width: 250px;
-  max-width: 400px;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+
+/* === Hiệu ứng trang === */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.toast-success {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+
+/* === Animation cho icon === */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
 }
-.toast-error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-3px); }
 }
-.toast-icon {
-  font-size: 1.3rem;
+
+/* === Hiệu ứng chữ nhẹ === */
+.payment-result-card h1,
+.payment-result-card p {
+  animation: fadeInText 0.8s ease forwards;
 }
-.toast-message {
-  flex-grow: 1;
-  font-weight: 500;
+
+@keyframes fadeInText {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
