@@ -16,15 +16,18 @@ const LoginForm = () => {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [registerData, setRegisterData] = useState({
-    userId: "CU",
+    userId: "",
     fullName: "",
     email: "",
     phone: "",
     password: "",
     confirmPassword: "",
   });
+  const [forgotEmail, setForgotEmail] = useState("");
+  
+  const API_BASE_URL = "https://103.90.226.216:8443/api/users";
 
-  // --- Xóa state navigate sau khi dùng để tránh refresh giữ tab ---
+
   useEffect(() => {
     if (location.state?.defaultTab) {
       navigate(location.pathname, { replace: true, state: {} });
@@ -61,7 +64,7 @@ const LoginForm = () => {
     setSuccessMessage("");
 
     try {
-      const response = await fetch("https://103.90.226.216:8443/api/users/login", {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: loginEmail, password: loginPassword }),
@@ -106,7 +109,7 @@ const LoginForm = () => {
     const dataToSubmit = { ...registerData };
 
     try {
-      const response = await fetch("https://103.90.226.216:8443/api/users/register", {
+      const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSubmit),
@@ -130,6 +133,33 @@ const LoginForm = () => {
       setError(err.message);
     }
   };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMessage("");
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+
+      const responseText = await response.text(); 
+
+      if (!response.ok) {
+        throw new Error(responseText || "Gửi yêu cầu không thành công.");
+      }
+
+      setSuccessMessage(responseText);
+      setForgotEmail(""); 
+
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
 
   // --- Chuyển tab ---
   const switchTab = (tab) => {
@@ -155,7 +185,6 @@ const LoginForm = () => {
         </button>
       </div>
 
-      {/* Form đăng nhập */}
       {activeTab === "login" && (
         <form onSubmit={handleLogin} className="form">
           <label>Email</label>
@@ -181,13 +210,25 @@ const LoginForm = () => {
             <label htmlFor="remember">Ghi nhớ đăng nhập</label>
           </div>
 
+
+          <div className="forgot-password-link" style={{ textAlign: 'center', margin: '10px 0' }}>
+            <a 
+              href="#" 
+              onClick={(e) => {
+                e.preventDefault();
+                switchTab("forgot"); 
+              }}
+            >
+              Quên mật khẩu?
+            </a>
+          </div>
+
           <button type="submit" className="login-btn">
             ĐĂNG NHẬP
           </button>
         </form>
       )}
 
-      {/* Form đăng ký */}
       {activeTab === "register" && (
         <form onSubmit={handleRegister} className="form">
           <label>Họ và Tên</label>
@@ -201,7 +242,6 @@ const LoginForm = () => {
             }
             required
           />
-
           <label>Email</label>
           <input
             type="email"
@@ -213,7 +253,6 @@ const LoginForm = () => {
             }
             required
           />
-
           <label>Số điện thoại</label>
           <input
             type="tel"
@@ -225,7 +264,6 @@ const LoginForm = () => {
             }
             required
           />
-
           <label>Mật khẩu</label>
           <input
             type="password"
@@ -237,7 +275,6 @@ const LoginForm = () => {
             }
             required
           />
-
           <label>Xác nhận mật khẩu</label>
           <input
             type="password"
@@ -255,6 +292,41 @@ const LoginForm = () => {
           </button>
         </form>
       )}
+
+      {activeTab === "forgot" && (
+        <form onSubmit={handleForgotPassword} className="form">
+          <h3 style={{ textAlign: 'center' }}>Quên Mật Khẩu</h3>
+          <p style={{ textAlign: 'center', fontSize: '14px', color: '#555' }}>
+            Nhập email của bạn. Chúng tôi sẽ gửi một liên kết để đặt lại mật khẩu.
+          </p>
+
+          <label>Email</label>
+          <input
+            type="email"
+            placeholder="Email đã đăng ký"
+            value={forgotEmail}
+            onChange={(e) => setForgotEmail(e.target.value)}
+            required
+          />
+
+          <button type="submit" className="login-btn">
+            GỬI LIÊN KẾT
+          </button>
+
+          <div className="back-to-login-link" style={{ textAlign: 'center', margin: '10px 0' }}>
+            <a 
+              href="#" 
+              onClick={(e) => {
+                e.preventDefault();
+                switchTab("login"); // Quay lại tab đăng nhập
+              }}
+            >
+              Quay lại Đăng nhập
+            </a>
+          </div>
+        </form>
+      )}
+
 
       {error && <div className="error-message">{error}</div>}
       {successMessage && <div className="success-message">{successMessage}</div>}

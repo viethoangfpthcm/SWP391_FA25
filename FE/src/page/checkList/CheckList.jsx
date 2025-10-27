@@ -322,7 +322,7 @@ export default function CheckList({ user }) {
   // --- Render Logic ---
   if (loading) {
     return (
-      <div className="checklist-page">
+      <div className="checklist-page technician-view">
         <Sidebar user={user} />
         <div className="content">
           <div className="loading-container">
@@ -333,7 +333,7 @@ export default function CheckList({ user }) {
     );
   }
 
-  // RENDER DANH SÁCH CHECKLIST (ĐÃ SỬA ĐỂ TƯƠNG THÍCH VỚI SUMMARY DTO)
+
   if (viewMode === "list") {
     return (
       <div className="checklist-page">
@@ -435,6 +435,7 @@ export default function CheckList({ user }) {
     );
   }
 
+
   // RENDER CHI TIẾT CHECKLIST (Giữ nguyên)
   if (!checklist) {
     return (
@@ -475,6 +476,36 @@ export default function CheckList({ user }) {
             </button>
           </div>
         )}
+        {showCompleteConfirm && (
+          <div className="modal-overlay">
+            <div className="modal-content confirm-modal">
+              <div className="confirm-modal-body">
+                <FaTriangleExclamation className="confirm-icon" />
+                <h3>Xác nhận hoàn thành</h3>
+                <p>Bạn có chắc chắn muốn HOÀN THÀNH Checklist này không?</p>
+                <small style={{ color: '#888', marginTop: '10px', display: 'block' }}>
+                  Hành động này sẽ trừ tồn kho Part (nếu có) và thay đổi trạng thái Booking.
+                </small>
+              </div>
+              <div className="form-actions">
+                <button
+                  onClick={() => setShowCompleteConfirm(false)}
+                  className="btn-cancel"
+                  disabled={completeConfirmLoading}
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  onClick={executeCompleteChecklist}
+                  className="btn-save"
+                  disabled={completeConfirmLoading}
+                >
+                  {completeConfirmLoading ? <FaSpinner className="spin" /> : 'Xác nhận'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="page-header">
           <h2 className="page-title">Checklist nhiệm vụ #{bookingId}</h2>
@@ -496,7 +527,7 @@ export default function CheckList({ user }) {
           <p><strong>Kết thúc:</strong> {new Date(checklist.endTime).toLocaleString('vi-VN')}</p>
           <p><strong>Chi phí ĐÃ DUYỆT:</strong> <span className="cost-approved">{checklist.totalCostApproved?.toLocaleString('vi-VN')} VND</span></p>
           <p><strong>Chi phí ƯỚC TÍNH (tạm thời):</strong> {checklist.estimatedCost?.toLocaleString('vi-VN')} VND</p>
-          
+
 
           {!isCompleted && checklist.status === 'In Progress' && (
             <button
@@ -619,10 +650,15 @@ export default function CheckList({ user }) {
                         type="number"
                         className="cost-input"
                         value={currentUpdates.laborCost || 0}
-                        onChange={(e) => handleDetailChange(detail.id, 'laborCost', e.target.valueAsNumber || 0)}
+                        onChange={(e) => {
+                          const value = e.target.valueAsNumber || 0;
+                          if (value >= 0) {
+                            handleDetailChange(detail.id, 'laborCost', value);
+                          }
+                        }}
+                        min="0"
                         disabled={isCompleted || isApproved}
                         placeholder="Nhập chi phí"
-
                         style={{ width: '120px', textAlign: 'right', fontSize: '14px' }}
                       />
                     ) : (

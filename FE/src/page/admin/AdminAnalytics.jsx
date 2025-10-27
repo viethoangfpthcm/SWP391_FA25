@@ -21,9 +21,10 @@ import {
     Tooltip,
     Legend,
 } from "chart.js";
-import "./AdminAnalytics.css"; // Ông cần tạo file CSS này
+import "./AdminAnalytics.css";
 import Sidebar from "../../page/sidebar/sidebar.jsx";
 import { useNavigate } from "react-router-dom";
+import { Chart, registerables, Filler } from 'chart.js';
 
 // Đăng ký các thành phần của Chart.js
 ChartJS.register(
@@ -41,6 +42,7 @@ ChartJS.register(
 if (import.meta.env.MODE !== "development") {
     console.log = () => { };
 }
+Chart.register(...registerables, Filler);
 
 export default function AdminAnalytics() {
     const [userInfo, setUserInfo] = useState(null);
@@ -62,7 +64,7 @@ export default function AdminAnalytics() {
     const API_BASE = import.meta.env.VITE_API_URL || "https://103.90.226.216:8443";
     const token = localStorage.getItem("token");
 
-    // --- Hàm Fetch Dữ Liệu (ĐÃ ĐIỀN ĐỦ) ---
+    // --- Hàm Fetch Dữ Liệu ---
     const fetchUserInfo = async () => {
         try {
             const res = await fetch(`${API_BASE}/api/users/account/current`, {
@@ -75,7 +77,6 @@ export default function AdminAnalytics() {
             }
             if (!res.ok) throw new Error("Không thể tải thông tin người dùng");
             const data = await res.json();
-            // Lưu vào state để hiển thị, không cần lưu localStorage ở đây
             setUserInfo({ 
                 fullName: data.fullName || "Admin", 
                 role: data.role || "Admin" 
@@ -100,12 +101,8 @@ export default function AdminAnalytics() {
         }
     };
 
-    // --- HÀM FETCH DỮ LIỆU CHO CÁC BIỂU ĐỒ ---
-    // NHẮC LẠI: Đây là các API MỚI mà Backend của ông phải cung cấp
-
-    // 1. API cho Doanh thu (Chart 1)
     const fetchRevenueData = async () => {
-        setRevenueData(null); // Reset
+        setRevenueData(null);
         let url = `${API_BASE}/api/admin/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
         if (selectedCenter !== "all") {
             url = `${API_BASE}/api/admin/analytics/revenue/center/${selectedCenter}?month=${selectedMonth}&year=${selectedYear}`;
@@ -114,7 +111,6 @@ export default function AdminAnalytics() {
         try {
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
             if (!res.ok) {
-                 // Nếu 404 là không có data, không phải lỗi
                 if(res.status === 404) {
                     setRevenueData({ labels: [], revenue: [] });
                     return;
@@ -126,15 +122,14 @@ export default function AdminAnalytics() {
         } catch (err) {
             console.error("fetchRevenueData Error:", err);
             setError("Lỗi tải dữ liệu doanh thu.");
-            setRevenueData({ labels: [], revenue: [] }); // Set rỗng khi lỗi
+            setRevenueData({ labels: [], revenue: [] });
         }
     };
 
-    // 2. API cho Thống kê linh kiện (Chart 2)
     const fetchPartsData = async () => {
-        setPartsData(null); // Reset
+        setPartsData(null);
         if (selectedCenter === "all") {
-            setPartsData({ labels: [], counts: [] }); // Reset và thoát
+            setPartsData({ labels: [], counts: [] });
             return; 
         }
         
@@ -154,13 +149,12 @@ export default function AdminAnalytics() {
         } catch (err) {
             console.error("fetchPartsData Error:", err);
             setError("Lỗi tải dữ liệu linh kiện.");
-            setPartsData({ labels: [], counts: [] }); // Set rỗng khi lỗi
+            setPartsData({ labels: [], counts: [] });
         }
     };
 
-    // 3. API cho Thống kê Booking (Chart 3)
     const fetchBookingStatsData = async () => {
-        setBookingStatsData(null); // Reset
+        setBookingStatsData(null);
         let url = `${API_BASE}/api/admin/analytics/bookings?month=${selectedMonth}&year=${selectedYear}`;
         if (selectedCenter !== "all") {
             url = `${API_BASE}/api/admin/analytics/bookings/center/${selectedCenter}?month=${selectedMonth}&year=${selectedYear}`;
@@ -180,7 +174,7 @@ export default function AdminAnalytics() {
         } catch (err) {
             console.error("fetchBookingStatsData Error:", err);
             setError("Lỗi tải dữ liệu booking.");
-            setBookingStatsData({ labels: [], counts: [] }); // Set rỗng khi lỗi
+            setBookingStatsData({ labels: [], counts: [] });
         }
     };
 
@@ -191,40 +185,34 @@ export default function AdminAnalytics() {
             return;
         }
         setLoading(true);
-        // Tải thông tin user và trung tâm trước
         Promise.all([fetchUserInfo(), fetchCenters()])
             .catch(err => {
                 setError(err.message);
-                // Dù lỗi vẫn set Loading false
                 setLoading(false);
             });
-            // không set loading false ở đây, để useEffect dưới xử lý
     }, [token, navigate]);
 
-    // useEffect này sẽ chạy khi bộ lọc thay đổi HOẶC khi userInfo đã tải xong
     useEffect(() => {
         if (!userInfo) {
-             // Nếu chưa có userInfo (đang tải ở useEffect trên), thì chưa làm gì cả
-             // Hoặc nếu useEffect trên lỗi, userInfo sẽ null, cũng dừng
-            if (!loading) setLoading(false); // Đảm bảo tắt loading nếu useEffect trên xong
+            if (!loading) setLoading(false);
             return;
         }
         
         console.log("Fetching analytics data...");
         setLoading(true);
-        setError(null); // Xóa lỗi cũ
+        setError(null);
 
         Promise.all([
             fetchRevenueData(),
             fetchPartsData(),
             fetchBookingStatsData()
         ]).finally(() => {
-            setLoading(false); // Tắt loading sau khi CẢ 3 API hoàn thành
+            setLoading(false);
         });
 
-    }, [selectedCenter, selectedMonth, selectedYear, userInfo]); // Chạy lại khi bộ lọc thay đổi HOẶC khi userInfo có
+    }, [selectedCenter, selectedMonth, selectedYear, userInfo]);
 
-    // --- Helpers để tạo Options cho Bộ lọc ---
+    // --- Helpers ---
     const renderMonthOptions = () => {
         return Array.from({ length: 12 }, (_, i) => (
             <option key={i + 1} value={i + 1}>Tháng {i + 1}</option>
@@ -241,7 +229,6 @@ export default function AdminAnalytics() {
     };
     
     // --- Render ---
-    // Trạng thái loading ban đầu khi chưa có userInfo
     if (!userInfo && loading) {
         return (
             <div className="dashboard-container">
@@ -263,7 +250,7 @@ export default function AdminAnalytics() {
                     <p>Tổng quan về hiệu suất hoạt động của hệ thống.</p>
                 </header>
 
-                {/* --- BỘ LỌC CHUNG --- */}
+                {/* BỘ LỌC */}
                 <div className="actions-bar analytics-filters">
                     <div className="filter-group">
                         <label htmlFor="monthFilter"><FaFilter /> Tháng:</label>
@@ -271,7 +258,7 @@ export default function AdminAnalytics() {
                             id="monthFilter"
                             value={selectedMonth}
                             onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                            disabled={loading} // Vô hiệu hóa khi đang tải
+                            disabled={loading}
                         >
                             {renderMonthOptions()}
                         </select>
@@ -282,7 +269,7 @@ export default function AdminAnalytics() {
                             id="yearFilter"
                             value={selectedYear}
                             onChange={(e) => setSelectedYear(Number(e.target.value))}
-                            disabled={loading} // Vô hiệu hóa khi đang tải
+                            disabled={loading}
                         >
                             {renderYearOptions()}
                         </select>
@@ -293,7 +280,7 @@ export default function AdminAnalytics() {
                             id="centerFilter"
                             value={selectedCenter}
                             onChange={(e) => setSelectedCenter(e.target.value)}
-                            disabled={loading} // Vô hiệu hóa khi đang tải
+                            disabled={loading}
                         >
                             <option value="all">Tất cả trung tâm</option>
                             {centers.map((center) => (
@@ -305,14 +292,13 @@ export default function AdminAnalytics() {
                     </div>
                 </div>
 
-                {/* Hiển thị lỗi chung nếu có */}
-                 {error && !loading && (
+                {error && !loading && (
                     <div className="error-message general-error">
                         <FaExclamationTriangle /> {error}
                     </div>
                 )}
 
-                {/* --- KHU VỰC BIỂU ĐỒ --- */}
+                {/* BIỂU ĐỒ */}
                 <div className="analytics-grid">
                     {/* Chart 1: Doanh thu */}
                     <div className="chart-card">
@@ -325,7 +311,7 @@ export default function AdminAnalytics() {
                     </div>
                     
                     {/* Chart 2: Thống kê Booking */}
-                     <div className="chart-card">
+                    <div className="chart-card">
                         <h2 className="chart-title"><FaChartPie /> Thống kê Booking (Tháng {selectedMonth}/{selectedYear})</h2>
                         {loading ? (
                             <div className="chart-placeholder"><FaSpinner className="spinner" /></div>
@@ -338,7 +324,7 @@ export default function AdminAnalytics() {
                     <div className="chart-card wide-card">
                         <h2 className="chart-title"><FaChartBar /> Linh kiện đã sử dụng (Tháng {selectedMonth}/{selectedYear})</h2>
                         {loading ? (
-                             <div className="chart-placeholder"><FaSpinner className="spinner" /></div>
+                            <div className="chart-placeholder"><FaSpinner className="spinner" /></div>
                         ) : selectedCenter === "all" ? (
                             <p className="chart-placeholder">Vui lòng chọn một trung tâm cụ thể để xem thống kê linh kiện.</p>
                         ) : (
@@ -351,24 +337,33 @@ export default function AdminAnalytics() {
     );
 }
 
-// --- CÁC COMPONENT BIỂU ĐỒ CON ---
+// --- COMPONENT BIỂU ĐỒ ---
 
-// 1. Chart Doanh Thu (Biểu đồ đường hoặc cột)
+// 1. Chart Doanh Thu
 function RevenueChart({ chartData }) {
-    // Kiểm tra chartData có tồn tại và có dữ liệu không
     if (!chartData || !chartData.labels || chartData.labels.length === 0) {
         return <p className="chart-placeholder">Không có dữ liệu doanh thu.</p>;
     }
 
     const data = {
-        labels: chartData.labels, // Ví dụ: ["Center A", "Center B"] hoặc ["Tuần 1", "Tuần 2"]
+        labels: chartData.labels,
         datasets: [
             {
                 label: 'Doanh thu (VND)',
-                data: chartData.revenue, // Ví dụ: [10000000, 20000000]
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                data: chartData.revenue,
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderColor: '#3b82f6',
+                borderWidth: 3,
                 fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: '#3b82f6',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointHoverBackgroundColor: '#2563eb',
+                pointHoverBorderColor: '#ffffff',
+                pointHoverBorderWidth: 3
             },
         ],
     };
@@ -377,7 +372,37 @@ function RevenueChart({ chartData }) {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                align: 'end',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    padding: 20,
+                    font: {
+                        size: 13,
+                        weight: '600',
+                        family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                    },
+                    color: '#1f2937',
+                    boxWidth: 10,
+                    boxHeight: 10
+                }
+            },
             tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                padding: 16,
+                cornerRadius: 10,
+                titleFont: {
+                    size: 15,
+                    weight: 'bold'
+                },
+                bodyFont: {
+                    size: 14
+                },
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                borderWidth: 1,
                 callbacks: {
                     label: function(context) {
                         let label = context.dataset.label || '';
@@ -385,7 +410,10 @@ function RevenueChart({ chartData }) {
                             label += ': ';
                         }
                         if (context.parsed.y !== null) {
-                            label += new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(context.parsed.y);
+                            label += new Intl.NumberFormat('vi-VN', { 
+                                style: 'currency', 
+                                currency: 'VND' 
+                            }).format(context.parsed.y);
                         }
                         return label;
                     }
@@ -393,70 +421,221 @@ function RevenueChart({ chartData }) {
             }
         },
         scales: {
-             y: {
+            y: {
+                grid: {
+                    color: 'rgba(148, 163, 184, 0.1)',
+                    drawBorder: false,
+                    lineWidth: 1
+                },
                 ticks: {
-                    // Định dạng tiền tệ cho trục Y
+                    padding: 12,
+                    font: {
+                        size: 12,
+                        weight: '600'
+                    },
+                    color: '#64748b',
                     callback: function(value, index, values) {
-                         if (value >= 1000000) return (value / 1000000) + ' Tr';
-                         if (value >= 1000) return (value / 1000) + ' k';
+                        if (value >= 1000000) return (value / 1000000).toFixed(1) + ' Tr';
+                        if (value >= 1000) return (value / 1000).toFixed(0) + 'k';
                         return value;
                     }
+                },
+                border: {
+                    display: false
+                }
+            },
+            x: {
+                grid: {
+                    display: false,
+                    drawBorder: false
+                },
+                ticks: {
+                    padding: 10,
+                    font: {
+                        size: 12,
+                        weight: '600'
+                    },
+                    color: '#1e293b',
+                    maxRotation: 45,
+                    minRotation: 0
+                },
+                border: {
+                    display: false
                 }
             }
+        },
+        interaction: {
+            mode: 'index',
+            intersect: false
+        },
+        animation: {
+            duration: 1000,
+            easing: 'easeInOutQuart'
         }
     };
     
-    // Nếu data chỉ có 1 điểm (VD: xem 1 center), dùng Bar chart
-    // Nếu có nhiều điểm (VD: xem all center), dùng Line chart
     const ChartComponent = chartData.labels.length > 1 ? Line : Bar;
-
     return <ChartComponent data={data} options={options} />;
 }
 
-// 2. Chart Thống Kê Booking (Biểu đồ tròn)
+// 2. Chart Thống Kê Booking
 function BookingStatsChart({ chartData }) {
     if (!chartData || !chartData.labels || chartData.labels.length === 0) {
         return <p className="chart-placeholder">Không có dữ liệu booking.</p>;
     }
 
-    // Map tên trạng thái sang màu sắc
+    // Map màu sắc chuyên nghiệp
     const statusColors = {
-        'Completed': 'rgba(75, 192, 192, 0.6)',
-        'Cancelled': 'rgba(255, 99, 132, 0.6)',
-        'Pending': 'rgba(255, 206, 86, 0.6)',
-        'Approved': 'rgba(54, 162, 235, 0.6)',
-        'In Progress': 'rgba(153, 102, 255, 0.6)',
-        'Declined': 'rgba(201, 203, 207, 0.6)',
-        'Paid': 'rgba(46, 204, 113, 0.6)'
-        // Thêm các trạng thái khác nếu có
+        'Completed': {
+            bg: 'rgba(34, 197, 94, 0.85)',
+            border: '#22c55e'
+        },
+        'Cancelled': {
+            bg: 'rgba(239, 68, 68, 0.85)',
+            border: '#ef4444'
+        },
+        'Pending': {
+            bg: 'rgba(251, 191, 36, 0.85)',
+            border: '#fbbf24'
+        },
+        'Approved': {
+            bg: 'rgba(59, 130, 246, 0.85)',
+            border: '#3b82f6'
+        },
+        'In Progress': {
+            bg: 'rgba(168, 85, 247, 0.85)',
+            border: '#a855f7'
+        },
+        'Declined': {
+            bg: 'rgba(148, 163, 184, 0.85)',
+            border: '#94a3b8'
+        },
+        'Paid': {
+            bg: 'rgba(16, 185, 129, 0.85)',
+            border: '#10b981'
+        }
+    };
+
+    const defaultColor = {
+        bg: 'rgba(107, 114, 128, 0.85)',
+        border: '#6b7280'
     };
 
     const data = {
-        labels: chartData.labels, // Ví dụ: ['Completed', 'Cancelled', 'Pending']
+        labels: chartData.labels,
         datasets: [
             {
-                data: chartData.counts, // Ví dụ: [50, 10, 5]
-                backgroundColor: chartData.labels.map(label => statusColors[label] || 'rgba(100, 100, 100, 0.6)'), // Lấy màu theo label
+                data: chartData.counts,
+                backgroundColor: chartData.labels.map(label => 
+                    (statusColors[label] || defaultColor).bg
+                ),
+                borderColor: chartData.labels.map(label => 
+                    (statusColors[label] || defaultColor).border
+                ),
+                borderWidth: 3,
+                hoverOffset: 20,
+                hoverBorderWidth: 4,
+                hoverBorderColor: '#ffffff'
             },
         ],
     };
 
-    return <Pie data={data} options={{ responsive: true, maintainAspectRatio: false }} />;
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'right',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    padding: 20,
+                    font: {
+                        size: 13,
+                        weight: '600',
+                        family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                    },
+                    color: '#1f2937',
+                    generateLabels: function(chart) {
+                        const data = chart.data;
+                        if (data.labels.length && data.datasets.length) {
+                            return data.labels.map((label, i) => {
+                                const value = data.datasets[0].data[i];
+                                const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return {
+                                    text: `${label}: ${value} (${percentage}%)`,
+                                    fillStyle: data.datasets[0].backgroundColor[i],
+                                    strokeStyle: data.datasets[0].borderColor[i],
+                                    lineWidth: 2,
+                                    hidden: false,
+                                    index: i
+                                };
+                            });
+                        }
+                        return [];
+                    }
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                padding: 16,
+                cornerRadius: 10,
+                titleFont: {
+                    size: 15,
+                    weight: 'bold'
+                },
+                bodyFont: {
+                    size: 14
+                },
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                borderWidth: 1,
+                callbacks: {
+                    label: function(context) {
+                        const label = context.label || '';
+                        const value = context.parsed;
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = ((value / total) * 100).toFixed(1);
+                        return `${label}: ${value} bookings (${percentage}%)`;
+                    }
+                }
+            }
+        }
+    };
+
+    return <Pie data={data} options={options} />;
 }
 
-// 3. Chart Linh kiện (Biểu đồ cột)
+// 3. Chart Linh kiện
 function PartsUsageChart({ chartData }) {
     if (!chartData || !chartData.labels || chartData.labels.length === 0) {
         return <p className="chart-placeholder">Không có dữ liệu linh kiện.</p>;
     }
 
+    const colors = [
+        { start: 'rgba(59, 130, 246, 0.9)', end: 'rgba(37, 99, 235, 0.9)' },
+        { start: 'rgba(16, 185, 129, 0.9)', end: 'rgba(5, 150, 105, 0.9)' },
+        { start: 'rgba(168, 85, 247, 0.9)', end: 'rgba(126, 34, 206, 0.9)' },
+        { start: 'rgba(251, 146, 60, 0.9)', end: 'rgba(234, 88, 12, 0.9)' },
+        { start: 'rgba(236, 72, 153, 0.9)', end: 'rgba(219, 39, 119, 0.9)' },
+        { start: 'rgba(14, 165, 233, 0.9)', end: 'rgba(2, 132, 199, 0.9)' },
+        { start: 'rgba(132, 204, 22, 0.9)', end: 'rgba(101, 163, 13, 0.9)' },
+        { start: 'rgba(244, 63, 94, 0.9)', end: 'rgba(225, 29, 72, 0.9)' }
+    ];
+
     const data = {
-        labels: chartData.labels, // Ví dụ: ['Bugie', 'Lọc gió', 'Dầu nhớt']
+        labels: chartData.labels,
         datasets: [
             {
                 label: 'Số lượng sử dụng',
-                data: chartData.counts, // Ví dụ: [100, 50, 80]
-                backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                data: chartData.counts,
+                backgroundColor: chartData.counts.map((_, index) => colors[index % colors.length].start),
+                borderColor: chartData.counts.map((_, index) => colors[index % colors.length].end),
+                borderWidth: 2,
+                borderRadius: 10,
+                borderSkipped: false,
+                barThickness: 35,
+                maxBarThickness: 40,
             },
         ],
     };
@@ -464,15 +643,73 @@ function PartsUsageChart({ chartData }) {
     const options = { 
         responsive: true, 
         maintainAspectRatio: false, 
-        indexAxis: 'y', // 'y' để làm biểu đồ cột ngang
-        scales: {
-             x: {
-                ticks: {
-                    // Đảm bảo trục X bắt đầu từ 0 và là số nguyên
-                    beginAtZero: true,
-                    stepSize: 1 
+        indexAxis: 'y',
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                padding: 16,
+                cornerRadius: 10,
+                titleFont: {
+                    size: 15,
+                    weight: 'bold'
+                },
+                bodyFont: {
+                    size: 14
+                },
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                borderWidth: 1,
+                callbacks: {
+                    label: function(context) {
+                        return `Số lượng: ${context.parsed.x} cái`;
+                    }
                 }
             }
+        },
+        scales: {
+            x: {
+                grid: {
+                    color: 'rgba(148, 163, 184, 0.1)',
+                    drawBorder: false,
+                    lineWidth: 1
+                },
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 1,
+                    padding: 12,
+                    font: {
+                        size: 12,
+                        weight: '600'
+                    },
+                    color: '#64748b'
+                },
+                border: {
+                    display: false
+                }
+            },
+            y: {
+                grid: {
+                    display: false,
+                    drawBorder: false
+                },
+                ticks: {
+                    padding: 12,
+                    font: {
+                        size: 13,
+                        weight: '600'
+                    },
+                    color: '#1e293b'
+                },
+                border: {
+                    display: false
+                }
+            }
+        },
+        animation: {
+            duration: 1000,
+            easing: 'easeInOutQuart'
         }
     };
 

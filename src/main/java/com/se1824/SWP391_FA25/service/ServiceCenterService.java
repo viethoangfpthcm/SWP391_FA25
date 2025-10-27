@@ -4,11 +4,13 @@ import com.se1824.SWP391_FA25.entity.*;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.model.request.PartCreateRequest;
+import com.se1824.SWP391_FA25.model.request.ServiceCenterRequest;
 import com.se1824.SWP391_FA25.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ServiceCenterService {
@@ -21,7 +23,23 @@ public class ServiceCenterService {
     /**
      * CREATE: Thêm một ServiceCenter mới
      */
-    public ServiceCenter createServiceCenter(ServiceCenter serviceCenter) {
+    public ServiceCenter createServiceCenter(ServiceCenterRequest requestDTO) {
+
+        String trimmedName = requestDTO.getName().trim();
+        String trimmedPhone = requestDTO.getPhone().trim();
+
+        if (serviceCenterRepository.findByName(trimmedName).isPresent()) {
+            throw new InvalidDataException("Name already exist in system.");
+        }
+        if (serviceCenterRepository.findByPhone(trimmedPhone).isPresent()) {
+            throw new InvalidDataException("Phone are signed for other center.");
+        }
+
+        ServiceCenter serviceCenter = new ServiceCenter();
+        serviceCenter.setName(trimmedName);
+        serviceCenter.setPhone(trimmedPhone);
+        serviceCenter.setAddress(requestDTO.getAddress().trim());
+
         return serviceCenterRepository.save(serviceCenter);
     }
 
@@ -30,7 +48,7 @@ public class ServiceCenterService {
      */
     public ServiceCenter getServiceCenterById(Integer centerId) {
         return serviceCenterRepository.findById(centerId)
-                .orElseThrow(() -> new InvalidDataException("Không tìm thấy ServiceCenter với ID: " + centerId));
+                .orElseThrow(() -> new InvalidDataException("Can not found service center with ID: " + centerId));
     }
 
     /**
@@ -43,12 +61,26 @@ public class ServiceCenterService {
     /**
      * UPDATE: Cập nhật thông tin ServiceCenter
      */
-    public ServiceCenter updateServiceCenter(Integer centerId, ServiceCenter centerDetails) {
+    public ServiceCenter updateServiceCenter(Integer centerId, ServiceCenterRequest requestDTO) {
         ServiceCenter existingCenter = getServiceCenterById(centerId);
 
-        existingCenter.setName(centerDetails.getName());
-        existingCenter.setAddress(centerDetails.getAddress());
-        existingCenter.setPhone(centerDetails.getPhone());
+        String trimmedName = requestDTO.getName().trim();
+        String trimmedPhone = requestDTO.getPhone().trim();
+
+        if (!trimmedName.equalsIgnoreCase(existingCenter.getName())) {
+            if (serviceCenterRepository.findByName(trimmedName).isPresent()) {
+                throw new InvalidDataException("Name already exist in system.");
+            }
+            existingCenter.setName(trimmedName);
+        }
+
+        if (!trimmedPhone.equals(existingCenter.getPhone())) {
+            if (serviceCenterRepository.findByPhone(trimmedPhone).isPresent()) {
+                throw new InvalidDataException("Phone are signed for other center.");
+            }
+            existingCenter.setPhone(trimmedPhone);
+        }
+        existingCenter.setAddress(requestDTO.getAddress().trim());
 
         return serviceCenterRepository.save(existingCenter);
     }
@@ -58,32 +90,51 @@ public class ServiceCenterService {
      */
     public void deleteServiceCenter(Integer centerId) {
         if (!serviceCenterRepository.existsById(centerId)) {
-            throw new InvalidDataException("Không tìm thấy ServiceCenter với ID: " + centerId + " để xóa.");
+            throw new InvalidDataException("Can not found service center with ID: " + centerId + " để xóa.");
         }
         serviceCenterRepository.deleteById(centerId);
     }
 
     /**
-     * CREATE: Thêm một Part mới
+     * CREATE: Thêm một Part mới (hoặc cập nhật nếu trùng tên)
      */
     public Part createPart(PartCreateRequest request, Integer centerId) {
         ServiceCenter center = serviceCenterRepository.findById(centerId)
-                .orElseThrow(() -> new ResourceNotFoundException("ServiceCenter không tồn tại ID: " + centerId));
+                .orElseThrow(() -> new ResourceNotFoundException("ServiceCenter not exist ID: " + centerId));
 
         PartType partType = partTypeRepository.findById(request.getPartTypeId())
-                .orElseThrow(() -> new ResourceNotFoundException("PartType không tồn tại ID: " + request.getPartTypeId()));
+                .orElseThrow(() -> new ResourceNotFoundException("PartType not exist ID: " + request.getPartTypeId()));
+        String trimmedName = request.getName().trim();
+        Optional<Part> existingPartOpt = partRepository.findByNameAndServiceCenter_Id(request.getName(), centerId);
 
-        Part newPart = new Part();
+        if (existingPartOpt.isPresent()) {
+            // NẾU TỒN TẠI: Cập nhật part cũ
+            Part existingPart = existingPartOpt.get();
 
-        newPart.setName(request.getName());
-        newPart.setQuantity(request.getQuantity());
-        newPart.setUnitPrice(request.getUnitPrice());
-        newPart.setLaborCost(request.getLaborCost());
-        newPart.setMaterialCost(request.getMaterialCost());
-        newPart.setServiceCenter(center);
-        newPart.setPartType(partType);
+            // 1. Cộng dồn số lượng
+            int newQuantity = existingPart.getQuantity() + request.getQuantity();
+            existingPart.setQuantity(newQuantity);
 
-        return partRepository.save(newPart);
+            // 2. Cập nhật giá và phí mới (theo yêu cầu của bạn)
+            existingPart.setUnitPrice(request.getUnitPrice());
+            existingPart.setLaborCost(request.getLaborCost());
+            existingPart.setMaterialCost(request.getMaterialCost());
+            existingPart.setPartType(partType); // Cập nhật cả loại
+
+            return partRepository.save(existingPart);
+
+        } else {
+            Part newPart = new Part();
+            newPart.setName(trimmedName);
+            newPart.setQuantity(request.getQuantity());
+            newPart.setUnitPrice(request.getUnitPrice());
+            newPart.setLaborCost(request.getLaborCost());
+            newPart.setMaterialCost(request.getMaterialCost());
+            newPart.setServiceCenter(center);
+            newPart.setPartType(partType);
+
+            return partRepository.save(newPart);
+        }
     }
 
     /**
@@ -91,7 +142,7 @@ public class ServiceCenterService {
      */
     public Part getPartById(Integer partId) {
         return partRepository.findById(partId)
-                .orElseThrow(() -> new InvalidDataException("Không tìm thấy Part với ID: " + partId));
+                .orElseThrow(() -> new InvalidDataException("Can not found Part with ID: " + partId));
     }
 
     /**
@@ -101,14 +152,14 @@ public class ServiceCenterService {
 
         // 1. Tìm Part có sẵn
         Part existingPart = partRepository.findById(partId)
-                .orElseThrow(() -> new ResourceNotFoundException("Part không tồn tại ID: " + partId));
+                .orElseThrow(() -> new ResourceNotFoundException("Part are not exist ID: " + partId));
 
         // 2. Tìm PartType mới (nếu người dùng thay đổi)
         PartType partType = partTypeRepository.findById(dto.getPartTypeId())
-                .orElseThrow(() -> new ResourceNotFoundException("PartType không tồn tại ID: " + dto.getPartTypeId()));
-
+                .orElseThrow(() -> new ResourceNotFoundException("PartType are not exist ID: " + dto.getPartTypeId()));
+        String trimmedName = dto.getName().trim();
         // 3. Map dữ liệu từ DTO sang Entity
-        existingPart.setName(dto.getName());
+        existingPart.setName(trimmedName);
         existingPart.setQuantity(dto.getQuantity());
         existingPart.setUnitPrice(dto.getUnitPrice());
         existingPart.setLaborCost(dto.getLaborCost());
@@ -116,10 +167,8 @@ public class ServiceCenterService {
 
         // 4. Gán PartType mới
         existingPart.setPartType(partType);
-
         // 5. Không cần set lại ServiceCenter (vì Part không thể di chuyển giữa các trung tâm)
 
-        // 6. Lưu thay đổi
         return partRepository.save(existingPart);
     }
 
@@ -128,7 +177,7 @@ public class ServiceCenterService {
      */
     public void deletePart(Integer partId) {
         if (!partRepository.existsById(partId)) {
-            throw new InvalidDataException("Không tìm thấy Part với ID: " + partId + " để xóa.");
+            throw new InvalidDataException("Can not found part with ID: " + partId + " to delete.");
         }
         partRepository.deleteById(partId);
     }
@@ -138,7 +187,7 @@ public class ServiceCenterService {
      * Lấy danh sách Part của một ServiceCenter cụ thể
      */
     public List<Part> getPartsByServiceCenter(Integer centerId) {
-        return partRepository.findByServiceCenter_Id(centerId);
+        return partRepository.findByServiceCenterIdWithPartType(centerId);
     }
 
     /**
@@ -163,7 +212,7 @@ public class ServiceCenterService {
      */
     public PartType getPartTypeById(Integer id) {
         return partTypeRepository.findById(id)
-                .orElseThrow(() -> new InvalidDataException("Không tìm thấy PartType với ID: " + id));
+                .orElseThrow(() -> new InvalidDataException("Can not found PartType with ID: " + id));
     }
 
     /**
@@ -175,8 +224,5 @@ public class ServiceCenterService {
         existingType.setDescription(partTypeDetails.getDescription());
         return partTypeRepository.save(existingType);
     }
-
-
-
 
 }

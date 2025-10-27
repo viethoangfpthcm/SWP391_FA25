@@ -16,7 +16,6 @@
     import com.se1824.SWP391_FA25.repository.*;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
-    import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.security.crypto.password.PasswordEncoder;
     import org.springframework.stereotype.Service;
     import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +40,7 @@
         private final MaintenanceChecklistService checklistService;
         private final MaintenanceChecklistDetailRepository checklistDetailRepo;
         /**
-         * Tạo user mới (Staff hoặc Technician)
+         * Tạo user mới (Staff | Technician | Customer) bởi Admin
          */
         @Transactional
         public UserManagementDTO createUser(CreateUserRequest request, Integer adminId) {
@@ -49,12 +48,14 @@
             validateAdminRole(adminId);
 
             if (request.getRole() != UserRole.STAFF && request.getRole() != UserRole.TECHNICIAN && request.getRole() != UserRole.CUSTOMER) {
-                throw new InvalidDataException("Can only create STAFF or TECHNICIAN roles.");
+                throw new InvalidDataException("Can only create STAFF or TECHNICIAN or CUSTOMER roles.");
             }
-            validateUserRequest(request);
 
             if (userRepo.findUserByEmail(request.getEmail()) != null) {
                 throw new InvalidDataException("Email already exists: " + request.getEmail());
+            }
+            if (userRepo.findByPhone(request.getPhone()) != null) {
+                throw new InvalidDataException("Phone already exists: " + request.getPhone());
             }
             Users user = new Users();
             if (request.getRole() == UserRole.STAFF || request.getRole() == UserRole.TECHNICIAN) {
@@ -122,25 +123,57 @@
         @Transactional
         public UserManagementDTO updateUserByAdmin(UpdateUserRequest request, Integer adminId, Integer userIdToUpdate) {
             log.info("Admin {} updating user {}", adminId, userIdToUpdate);
-            validateAdminRole(adminId);
+            validateAdminRole(adminId); // Xác thực quyền Admin
 
             Users user = userRepo.findById(userIdToUpdate)
                     .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userIdToUpdate));
 
-            if (request.getFullName() != null) user.setFullName(request.getFullName());
-            if (request.getEmail() != null) user.setEmail(request.getEmail());
-            if (request.getPhone() != null) user.setPhone(request.getPhone());
+            // Cập nhật FullName
+            if (request.getFullName() != null && !request.getFullName().trim().isEmpty()) {
+                user.setFullName(request.getFullName().trim());
+            }
 
-            if (request.getCenterId() != null) {
+            // Cập nhật Email (kiểm tra trùng lặp NẾU email thay đổi)
+            if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
+                String newEmail = request.getEmail().trim();
+                // Chỉ kiểm tra nếu email mới khác email hiện tại (không phân biệt hoa thường)
+                if (!newEmail.equalsIgnoreCase(user.getEmail())) {
+                    Users existingUserWithEmail = userRepo.findUserByEmail(newEmail);
+                    if (existingUserWithEmail != null && !existingUserWithEmail.getUserId().equals(userIdToUpdate)) {
+                        throw new InvalidDataException("Email " + newEmail + " are used by other one.");
+                    }
+                    user.setEmail(newEmail);
+                }
+            }
+
+            // Cập nhật Phone (kiểm tra trùng lặp NẾU phone thay đổi)
+            if (request.getPhone() != null && !request.getPhone().trim().isEmpty()) {
+                String newPhone = request.getPhone().trim();
+                // Chỉ kiểm tra nếu SĐT mới khác SĐT hiện tại
+                if (!newPhone.equals(user.getPhone())) {
+                    Users existingUserWithPhone = userRepo.findByPhone(newPhone);
+                    // Nếu SĐT mới đã tồn tại VÀ nó không thuộc về chính user đang sửa
+                    if (existingUserWithPhone != null && !existingUserWithPhone.getUserId().equals(userIdToUpdate)) {
+                        throw new InvalidDataException("Phone " + newPhone + " are used by other one.");
+                    }
+                    user.setPhone(newPhone);
+                }
+            }
+
+            // Cập nhật Center (nếu có và user là STAFF/TECHNICIAN)
+            if (request.getCenterId() != null && (user.getRole() == UserRole.STAFF || user.getRole() == UserRole.TECHNICIAN)) {
                 ServiceCenter center = serviceCenterRepo.findById(request.getCenterId())
                         .orElseThrow(() -> new ResourceNotFoundException("Service center not found with ID: " + request.getCenterId()));
                 user.setCenter(center);
+            } else if (user.getRole() == UserRole.CUSTOMER) {
+                // Đảm bảo Customer không bị gán vào center
+                user.setCenter(null);
             }
 
             Users updatedUser = userRepo.save(user);
+            log.info("Admin {} updated user {} successfully", adminId, userIdToUpdate);
             return mapToUserManagementDTO(updatedUser);
         }
-
         /**
          * Xóa user
          */
@@ -158,7 +191,6 @@
             userRepo.delete(user);
             log.info("User {} deleted successfully", userId);
         }
-
         /**
          * Admin xem chi tiết booking bất kỳ bằng ID
          */
@@ -356,21 +388,6 @@
             }
         }
 
-        private void validateUserRequest(CreateUserRequest request) {
-            if (request.getFullName() == null || request.getFullName().trim().isEmpty()) {
-                throw new InvalidDataException("Full name is required");
-            }
-            if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
-                throw new InvalidDataException("Email is required");
-            }
-            if (request.getPassword() == null || request.getPassword().length() < 6) {
-                throw new InvalidDataException("Password must be at least 6 characters");
-            }
-            if ((request.getRole() == UserRole.STAFF || request.getRole() == UserRole.TECHNICIAN)
-                    && request.getCenterId() == null) {
-                throw new InvalidDataException("Service center is required for STAFF and TECHNICIAN");
-            }
-        }
         private PaymentDTO mapToPaymentDTO(Payment payment) {
             PaymentDTO dto = new PaymentDTO();
             dto.setPaymentId(payment.getPaymentId());

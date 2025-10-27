@@ -4,7 +4,7 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import './VehicleMaintenanceSchedule.css';
 
-import { FaCalendarAlt, FaTools, FaCheckCircle, FaExclamationTriangle, FaCalendarPlus, FaTimes, FaLock, FaSpinner} from 'react-icons/fa';
+import { FaCalendarAlt, FaTools, FaCheckCircle, FaExclamationTriangle, FaCalendarPlus, FaTimes, FaLock, FaSpinner } from 'react-icons/fa';
 
 function VehicleMaintenanceSchedule() {
   const { licensePlate } = useParams();
@@ -88,8 +88,10 @@ function VehicleMaintenanceSchedule() {
           const validSchedule = Array.isArray(scheduleData) ? scheduleData : [];
           setSchedule(validSchedule);
           setError('');
-          const nextTime = validSchedule.find(item => item.status === 'NEXT_TIME');
-          setNextTimePlanId(nextTime ? nextTime.maintenancePlanId : null);
+          const bookableItem = validSchedule.find(item => item.status === 'OVERDUE') ||
+            validSchedule.find(item => item.status === 'NEXT_TIME');
+
+          setNextTimePlanId(bookableItem ? bookableItem.maintenancePlanId : null);
         }
 
         // --- 2. Fetch Thông tin Booking hiện tại của xe ---
@@ -140,6 +142,8 @@ function VehicleMaintenanceSchedule() {
         return <FaCalendarAlt className="status-icon next-time" title="Lượt bảo dưỡng tiếp theo" />;
       case 'LOCKED':
         return <FaLock className="status-icon locked" title="Cần hoàn thành lần trước" />;
+      case 'OVERDUE':
+        return <FaExclamationTriangle className="status-icon overdue" title="Quá hạn bảo dưỡng" />;
       default:
         return <FaTools className="status-icon unknown" title="Chưa xác định" />;
     }
@@ -152,6 +156,7 @@ function VehicleMaintenanceSchedule() {
       case 'EXPIRED': return 'Đã bỏ qua';
       case 'NEXT_TIME': return 'Có thể đặt lịch';
       case 'LOCKED': return 'Chưa thể đặt lịch';
+      case 'OVERDUE': return 'Đã quá hạn';
       default: return 'Không xác định';
     }
   };
@@ -300,7 +305,7 @@ function VehicleMaintenanceSchedule() {
       <div className="schedule-page loading-container">
         <Navbar />
         <div className="loading-container">
-          <FaSpinner className="spinner-icon" /> 
+          <FaSpinner className="spinner-icon" />
           Đang tải lịch bảo dưỡng...
         </div>
         <Footer />
@@ -463,6 +468,12 @@ function VehicleMaintenanceSchedule() {
                 </div>
                 <p className="description">{item.description || 'Không có mô tả chi tiết.'}</p>
                 <p><strong>Mốc KM:</strong> {item.intervalKm?.toLocaleString()} km</p>
+                {item.planDate && (
+                  <p><strong>Ngày dự kiến:</strong> {new Date(item.planDate).toLocaleDateString('vi-VN')}</p>
+                )}
+                {item.deadline && (
+                  <p><strong>Hạn chót:</strong> {new Date(item.deadline).toLocaleDateString('vi-VN')}</p>
+                )}
 
                 {item.status === 'EXPIRED' && (
                   <p className="expired-info">
@@ -474,7 +485,12 @@ function VehicleMaintenanceSchedule() {
                     <FaLock /> Cần hoàn thành lần bảo dưỡng kế tiếp trước
                   </p>
                 )}
-                {item.status === 'NEXT_TIME' && item.maintenancePlanId === nextTimePlanId && (
+                {item.status === 'OVERDUE' && (
+                  <p className="overdue-info">
+                    <FaExclamationTriangle /> Lịch bảo dưỡng này đã quá hạn! Vui lòng đặt lịch sớm nhất có thể.
+                  </p>
+                )}
+                {(item.status === 'NEXT_TIME' || item.status === 'OVERDUE') && item.maintenancePlanId === nextTimePlanId && (
                   hasActiveBooking ? (
                     <p className="locked-message" style={{ color: '#ff6b6b', fontWeight: 'bold' }}>
                       <FaCalendarAlt style={{ marginRight: '8px' }} />
