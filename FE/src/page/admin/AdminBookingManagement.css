@@ -37,7 +37,7 @@
   margin-bottom: 15px;
 }
 
-.filter-group {
+.filter-group .admin-group {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -440,37 +440,37 @@
   text-align: center; 
 }
 
-.modal-content.feedback-modal {
-  background: #ffffff !important;
-  color: #1f2937 !important;
+.modal-content.feedback-modal.admin-modal {
+  background: #ffffff ;
+  color: #1f2937 ;
 }
 
-.feedback-modal .modal-header h2 {
-  color: #111827 !important;
+.feedback-modal .modal-header.admin-modal  h2 {
+  color: #111827 ;
 }
 
-.feedback-modal .close-modal-btn {
-  color: #9ca3af !important;
+.admin-modal.feedback-modal .close-modal-btn {
+  color: #9ca3af ;
 }
 
-.feedback-modal .close-modal-btn:hover {
-  color: #1f2937 !important;
+.admin-modal.feedback-modal .close-modal-btn:hover {
+  color: #1f2937 ;
 }
 
-.feedback-modal .feedback-details p strong,
-.feedback-modal .feedback-rating strong,
-.feedback-modal .feedback-comment strong {
-  color: #1f2937 !important;
+.admin-modal.feedback-modal .feedback-details p strong,
+.admin-modal.feedback-modal .feedback-rating strong,
+.admin-modal.feedback-modal .feedback-comment strong {
+  color: #1f2937 ;
 }
 
-.feedback-modal .feedback-details p {
-  color: #1f2937 !important;
+.admin-modal.feedback-modal .feedback-details p {
+  color: #1f2937 ;
 }
 
-.feedback-modal .comment-box {
-  background-color: #f9fafb !important;
-  color: #1f2937 !important;
-  border: 1px solid #e5e7eb !important;
+.admin-modal.feedback-modal .comment-box {
+  background-color: #f9fafb ;
+  color: #1f2937 ;
+  border: 1px solid #e5e7eb ;
 }
 .action-button.view-feedback:disabled {
   background-color: #9ca3af; 

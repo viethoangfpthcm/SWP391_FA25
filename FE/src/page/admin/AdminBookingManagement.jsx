@@ -176,7 +176,7 @@ export default function AdminBookingManagement() {
 
     if (loading && !userInfo) { // Cập nhật text loading
         return (
-            <div className="dashboard-container">
+            <div className="dashboard-container admin-theme">
                 <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
                 <main className="main-content loading-state">
                     <FaSpinner className="spinner" />
@@ -187,7 +187,7 @@ export default function AdminBookingManagement() {
     }
 
     return (
-        <div className="dashboard-container">
+        <div className="dashboard-container admin-theme">
             <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
 
             <main className="main-content">
@@ -206,7 +206,7 @@ export default function AdminBookingManagement() {
 
                 {/* Bộ lọc (Thay đổi) */}
                 <div className="actions-bar">
-                    <div className="filter-group">
+                    <div className="filter-group admin-group">
                         <label htmlFor="statusFilter">
                             <FaFilter /> Lọc trạng thái:
                         </label>
@@ -339,7 +339,7 @@ export default function AdminBookingManagement() {
                 </div>
                 {showFeedbackModal && (
                     <div className="modal-overlay" >
-                        <div className="modal-content feedback-modal">
+                        <div className="modal-content admin-modal feedback-modal">
                             <div className="modal-header">
                                 <h2>Chi tiết Feedback</h2>
                                 <button
