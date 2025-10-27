@@ -143,9 +143,13 @@
 .checklist-table input[type="text"] {
   width: 100%;
   padding: 6px 8px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #b3c0cf;
   border-radius: 6px;
   font-size: 14px;
+  color: #1f2937;
+}
+.cost-input {
+    color: #1f2937;
 }
 
 .total-row {

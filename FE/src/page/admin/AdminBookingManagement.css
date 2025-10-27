@@ -37,7 +37,7 @@
   margin-bottom: 15px;
 }
 
-.filter-group {
+.filter-group .admin-group {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -58,11 +58,13 @@
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
   border: 1px solid #eef;
-  overflow-x: auto; /* Thêm để responsive table */
+  overflow-x: auto;
+  /* Thêm để responsive table */
 }
 
 .table-wrapper {
-    min-width: 800px; /* Đảm bảo bảng không bị vỡ trên màn hình nhỏ */
+  min-width: 800px;
+  /* Đảm bảo bảng không bị vỡ trên màn hình nhỏ */
 }
 
 .data-table {
@@ -77,17 +79,20 @@
   font-weight: 700;
   text-transform: uppercase;
   color: #4b5563;
-  white-space: nowrap; /* Giữ header trên 1 hàng */
+  white-space: nowrap;
+  /* Giữ header trên 1 hàng */
 }
 
 .data-table td {
   padding: 14px;
   border-bottom: 1px solid #eef;
-  vertical-align: middle; /* Căn giữa nội dung cell */
+  vertical-align: middle;
+  /* Căn giữa nội dung cell */
 }
 
 .data-table td small {
-  color: #6b7280; /* Thêm style cho text phụ */
+  color: #6b7280;
+  /* Thêm style cho text phụ */
   display: block;
 }
 
@@ -96,18 +101,18 @@
 }
 
 .empty-state {
-    text-align: center;
-    color: #9ca3af;
-    padding: 30px;
+  text-align: center;
+  color: #9ca3af;
+  padding: 30px;
 }
 
 .loading-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    color: #4b5563;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #4b5563;
 }
 
 /* Role badge */
@@ -149,39 +154,44 @@
 }
 
 .role-pending {
-  background: #fef3c7; /* Vàng nhạt */
+  background: #fef3c7;
+  /* Vàng nhạt */
   color: #92400e;
 }
 
 .role-confirmed,
 .role-assigned {
-  background: #dbeafe; /* Xanh dương nhạt */
+  background: #dbeafe;
+  /* Xanh dương nhạt */
   color: #1d4ed8;
 }
 
 .role-in.progress {
-  background:  #dbeafe; 
+  background: #dbeafe;
   color: #1d4ed8;
 }
 
 .role-completed {
-  background: #dcfce7; /* Xanh lá nhạt */
+  background: #dcfce7;
+  /* Xanh lá nhạt */
   color: #15803d;
 }
 
 .role-paid {
-  background: #d1fae5; /* Xanh mint */
+  background: #d1fae5;
+  /* Xanh mint */
   color: #065f46;
 }
 
 .role-cancelled {
-  background: #e11811; 
+  background: #e11811;
   color: #cb2f17;
 }
 
 .role-declined,
 .role-failed {
-  background: #fee2e2; /* Đỏ nhạt */
+  background: #fee2e2;
+  /* Đỏ nhạt */
   color: #b91c1c;
 }
 
@@ -198,44 +208,46 @@
 }
 
 .action-button {
-    background-color: #0a4ff0; 
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: background-color 0.2s ease, opacity 0.2s ease;
-    white-space: nowrap; 
+  background-color: #0a4ff0;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
 .action-button:hover {
-    background-color: #083dbf; 
+  background-color: #083dbf;
 }
 
 
 .action-button.view-checklist {
-   background-color: #15803d; 
+  background-color: #15803d;
 
 }
 
 .action-button.view-checklist:hover {
-   background-color: #116a32; 
+  background-color: #116a32;
 
 }
 
 .action-button:disabled {
-    background-color: #9ca3af; 
-    color: #e5e7eb;
-    cursor: not-allowed;
-    opacity: 0.7;
+  background-color: #9ca3af;
+  color: #e5e7eb;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
-
+.data-table th:last-child {
+  text-align: center;
+}
 @keyframes spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -243,13 +255,230 @@
 
 /* Error Message */
 .error-message {
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    color: #b91c1c;
-    background-color: #fee2e2;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 500;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  color: #b91c1c;
+  background-color: #fee2e2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+/* --- Nút xem Feedback --- */
+.action-button.view-feedback {
+  background-color: #0ea5e9;
+  /* Màu xanh cyan */
+  color: white;
+  margin-left: 8px;
+  /* Thêm khoảng cách */
+}
+
+.action-button.view-feedback:hover {
+  background-color: #0284c7;
+}
+
+.action-button.view-feedback svg {
+  margin-right: 6px;
+  /* Khoảng cách icon và chữ */
+}
+
+/* --- CSS cho Modal (Chung) --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 15px;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  animation: modal-fade-in 0.2s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eef;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.close-modal-btn:hover {
+  color: #111;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Style cho Modal Feedback (Riêng) --- */
+.feedback-modal {
+  max-width: 500px;
+  /* Nhỏ gọn */
+}
+
+.feedback-details {
+  padding: 10px;
+}
+
+.feedback-details p {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.feedback-details p strong {
+  color: #333;
+  margin-right: 8px;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+/* --- Rating Stars --- */
+.feedback-rating {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.feedback-rating strong {
+  color: #333;
+  margin-right: 8px;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.star-filled {
+  color: #f59e0b;
+  /* Màu vàng */
+  font-size: 1.2rem;
+}
+
+.star-empty {
+  color: #ccc;
+  font-size: 1.2rem;
+}
+
+.rating-number {
+  font-weight: 600;
+  margin-left: 10px;
+  font-size: 15px;
+}
+
+/* --- Comment Box --- */
+.feedback-comment {
+  margin-top: 15px;
+}
+
+.feedback-comment strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.comment-box {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #1f2937;
+  min-height: 80px;
+  width: 100%;
+  margin: 0;
+  /* Ghi đè <p> */
+}
+
+.data-table td:last-child {
+  min-width: 280px; 
+  white-space: nowrap; 
+  text-align: center; 
+}
+
+.modal-content.feedback-modal.admin-modal {
+  background: #ffffff ;
+  color: #1f2937 ;
+}
+
+.feedback-modal .modal-header.admin-modal  h2 {
+  color: #111827 ;
+}
+
+.admin-modal.feedback-modal .close-modal-btn {
+  color: #9ca3af ;
+}
+
+.admin-modal.feedback-modal .close-modal-btn:hover {
+  color: #1f2937 ;
+}
+
+.admin-modal.feedback-modal .feedback-details p strong,
+.admin-modal.feedback-modal .feedback-rating strong,
+.admin-modal.feedback-modal .feedback-comment strong {
+  color: #1f2937 ;
+}
+
+.admin-modal.feedback-modal .feedback-details p {
+  color: #1f2937 ;
+}
+
+.admin-modal.feedback-modal .comment-box {
+  background-color: #f9fafb ;
+  color: #1f2937 ;
+  border: 1px solid #e5e7eb ;
+}
+.action-button.view-feedback:disabled {
+  background-color: #9ca3af; 
+  color: #e5e7eb;          
+  cursor: not-allowed;
+  opacity: 0.7;             
+}
+
+.action-button.view-feedback:disabled svg {
+  color: #d1d5db; 
 }

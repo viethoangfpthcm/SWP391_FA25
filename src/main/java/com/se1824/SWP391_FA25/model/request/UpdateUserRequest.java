@@ -18,7 +18,6 @@ public class UpdateUserRequest {
 //    )
 //    String userId;
     @Size(min = 2, max = 100, message = "Full name must be between 2 and 100 characters")
-    @Pattern(regexp = "")
     String fullName;
 
     @Email(message = "Invalid email format")

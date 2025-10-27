@@ -39,6 +39,7 @@ public class AdminService {
     private final MaintenanceChecklistRepository checklistRepo;
     private final MaintenanceChecklistService checklistService;
     private final MaintenanceChecklistDetailRepository checklistDetailRepo;
+    private final FeedbackRepository feedbackRepository;
 
     /**
      * Tạo user mới (Staff | Technician | Customer) bởi Admin
@@ -459,6 +460,7 @@ public class AdminService {
             dto.setCenterId(user.getCenter().getId());
             dto.setCenterName(user.getCenter().getName());
         }
+        dto.setIsActive(user.getIsActive());
         return dto;
     }
 
@@ -484,6 +486,9 @@ public class AdminService {
                     dto.setChecklistStatus(checklist.getStatus());
                     log.debug("Found checklist for booking {}: status = {}", booking.getBookingId(), checklist.getStatus());
                 });
+        boolean feedbackExists = feedbackRepository.existsByBooking_BookingId(booking.getBookingId());
+        dto.setHasFeedback(feedbackExists);
+        log.debug("Feedback exists for booking {}: {}", booking.getBookingId(), feedbackExists);
         return dto;
     }
 

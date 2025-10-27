@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   FaUserCog,
   FaPlus,
@@ -14,7 +14,7 @@ import {
 import "./AdminDashboard.css";
 import Sidebar from "../../page/sidebar/sidebar.jsx"; // Đảm bảo đường dẫn đúng
 import { useNavigate } from "react-router-dom";
-import ConfirmationModal from '../../components/ConfirmationModal.jsx'; 
+import ConfirmationModal from '../../components/ConfirmationModal.jsx';
 
 // --- Helper Functions for Validation ---
 const isValidEmail = (email) => {
@@ -38,6 +38,8 @@ if (import.meta.env.MODE !== "development") {
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [filterRole, setFilterRole] = useState("all");
+  const [filterCenter, setFilterCenter] = useState("all");
+  const [filterActive, setFilterActive] = useState("all");
   const [loading, setLoading] = useState(true); // Loading for initial user list
   const [error, setError] = useState(null); // General error (fetch, delete, submit API failure)
   const [actionLoading, setActionLoading] = useState(false); // Loading for SAVE action in form
@@ -60,7 +62,7 @@ export default function AdminDashboard() {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [userToDeleteId, setUserToDeleteId] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false); // Loading state specifically for delete action
-
+  const [isToggling, setIsToggling] = useState(false);
   const API_BASE = import.meta.env.VITE_API_URL || "https://103.90.226.216:8443";
   const token = localStorage.getItem("token");
 
@@ -116,13 +118,37 @@ export default function AdminDashboard() {
     fetchUsers();
   }, [token, navigate]);
 
-  // Filter users based on selected role
-  const filteredUsers =
-    filterRole === "all"
-      ? users
-      : users.filter(
-        (u) => u.role && u.role.toLowerCase() === filterRole.toLowerCase()
-      );
+  const centerList = useMemo(() => {
+    // Lấy tất cả 'centerName' có trong danh sách users
+    const centers = users
+      .map(user => user.centerName)
+      .filter(Boolean); // Lọc bỏ các giá trị null/undefined/""
+
+    // Dùng Set để lấy duy nhất và sort theo ABC
+    return [...new Set(centers)].sort();
+  }, [users]); // Chỉ chạy lại khi 'users' thay đổi
+
+  // --- Logic Lọc Chuỗi (Role -> Center -> Active) ---
+  const filteredUsers = users
+    .filter(user => {
+      // 1. Lọc theo Role
+      if (filterRole === "all") return true;
+      return user.role && user.role.toLowerCase() === filterRole.toLowerCase();
+    })
+    .filter(user => {
+      // 2. Lọc theo Center
+      if (filterCenter === "all") return true;
+      if (filterCenter === "none") return !user.centerName;
+      return user.centerName === filterCenter;
+    })
+    .filter(user => {
+      // 3. Lọc theo Trạng thái Active
+      if (filterActive === "all") return true;
+      if (filterActive === "true") return !!user.isActive;
+      if (filterActive === "false") return !user.isActive;
+      return true;
+    });
+
 
   // Handle input changes in the form
   const handleChange = (e) => {
@@ -139,7 +165,7 @@ export default function AdminDashboard() {
       setFormErrors(prev => ({ ...prev, [name]: null }));
     }
     // Clear general submit error when user starts editing again
-    if(error) setError(null);
+    if (error) setError(null);
   };
 
   // Open the modal form for adding or editing
@@ -186,7 +212,7 @@ export default function AdminDashboard() {
     }
     // Center ID required (and must be positive number) for Staff/Technician
     const centerIdValue = formData.centerId ? String(formData.centerId).trim() : "";
-    if ((formData.role === "STAFF" || formData.role === "TECHNICIAN") && (centerIdValue === "" || isNaN(parseInt(centerIdValue)) || parseInt(centerIdValue) <= 0 )) {
+    if ((formData.role === "STAFF" || formData.role === "TECHNICIAN") && (centerIdValue === "" || isNaN(parseInt(centerIdValue)) || parseInt(centerIdValue) <= 0)) {
       errors.centerId = "Center ID là bắt buộc (số dương) cho Staff/Technician.";
     }
 
@@ -242,9 +268,9 @@ export default function AdminDashboard() {
           errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
           // Check if backend returned field-specific errors
           if (errorData.fieldErrors && typeof errorData.fieldErrors === 'object') {
-             fieldErrors = errorData.fieldErrors;
-             setFormErrors(prev => ({ ...prev, ...fieldErrors })); // Set field errors state
-             errorMsg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các trường."; // More generic message
+            fieldErrors = errorData.fieldErrors;
+            setFormErrors(prev => ({ ...prev, ...fieldErrors })); // Set field errors state
+            errorMsg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các trường."; // More generic message
           }
         } catch (parseError) {
           errorMsg = `Lỗi ${res.status}. Không thể đọc chi tiết lỗi.`;
@@ -292,12 +318,12 @@ export default function AdminDashboard() {
       }
 
       if (!res.ok) {
-         let errorMsg = "Không thể xóa người dùng.";
-         try {
-             const errorData = await res.json();
-             errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
-         } catch(e){}
-         throw new Error(errorMsg);
+        let errorMsg = "Không thể xóa người dùng.";
+        try {
+          const errorData = await res.json();
+          errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
+        } catch (e) { }
+        throw new Error(errorMsg);
       }
 
       // --- Success ---
@@ -313,6 +339,52 @@ export default function AdminDashboard() {
       // setShowConfirmModal(false); // Optionally close modal even on error
     } finally {
       setIsDeleting(false); // Stop delete loading indicator
+    }
+  };
+
+  const handleToggleActive = async (userToToggle) => {
+    if (actionLoading || isDeleting || isToggling) return;
+
+    setIsToggling(true);
+    setError(null);
+
+    const newIsActive = !userToToggle.isActive;
+
+    try {
+      const res = await fetch(`${API_BASE}/api/admin/user/active?userId=${userToToggle.userId}&isActive=${newIsActive}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Accept": "application/json",
+        },
+      });
+
+      if (res.status === 401) {
+        localStorage.clear(); navigate("/"); return;
+      }
+
+      if (!res.ok) {
+        let errorMsg = `Không thể cập nhật trạng thái. (Lỗi ${res.status})`;
+        try {
+          const errorData = await res.json();
+          errorMsg = errorData.message || errorData.error || errorMsg;
+        } catch (e) { }
+        throw new Error(errorMsg);
+      }
+
+      setUsers(prevUsers =>
+        prevUsers.map(u =>
+          u.userId === userToToggle.userId
+            ? { ...u, isActive: newIsActive }
+            : u
+        )
+      );
+
+    } catch (err) {
+      console.error("Toggle Active Error:", err);
+      setError(err.message || "Cập nhật trạng thái thất bại.");
+    } finally {
+      setIsToggling(false);
     }
   };
 
@@ -365,21 +437,45 @@ export default function AdminDashboard() {
               <option value="customer">Customer</option>
             </select>
           </div>
-          <button className="btn-add" onClick={() => openForm()} disabled={actionLoading || isDeleting}>
+          <div className="filter-group">
+            <label htmlFor="centerFilter">Trung tâm:</label>
+            <select id="centerFilter" value={filterCenter} onChange={(e) => setFilterCenter(e.target.value)}>
+              <option value="all">Tất cả</option>     
+              <option value="none">— Không có —</option>
+              {centerList.map(centerName => (
+                <option key={centerName} value={centerName}>
+                  {centerName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* 3. THÊM FILTER TRẠNG THÁI (ACTIVE) */}
+          <div className="filter-group">
+            <label htmlFor="activeFilter">Trạng thái:</label>
+            <select id="activeFilter" value={filterActive} onChange={(e) => setFilterActive(e.target.value)}>
+              <option value="all">Tất cả</option>
+              <option value="true">Đã kích hoạt</option>
+              <option value="false">Chưa kích hoạt</option>
+            </select>
+          </div>
+          <button className="btn-add" onClick={() => openForm()} disabled={actionLoading || isDeleting || isToggling}>
             <FaPlus /> Thêm người dùng
           </button>
         </div>
 
         {/* User List Table */}
         <div className="table-card">
-         {/* Show overlay spinner when reloading data after add/edit/delete */}
-         {(loading && users.length > 0) && <div className="table-loading-overlay"><FaSpinner className="spinner"/> Đang tải lại...</div>}
+          {/* Show overlay spinner when reloading data after add/edit/delete */}
+          {(loading && users.length > 0) && <div className="table-loading-overlay"><FaSpinner className="spinner" /> Đang tải lại...</div>}
           <div className="table-wrapper">
             <table className="data-table">
               <thead>
                 <tr>
                   <th>ID</th><th>Họ tên</th><th>Email</th><th>SĐT</th>
-                  <th>Vai trò</th><th>Trung tâm</th><th>Thao tác</th>
+                  <th>Vai trò</th><th>Trung tâm</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -396,11 +492,26 @@ export default function AdminDashboard() {
                         </span>
                       </td>
                       <td>{user.centerName || "—"}</td>
+                      <td>
+                        {(user.role !== 'ADMIN') ? (
+                          <label className="toggle-switch">
+                            <input
+                              type="checkbox"
+                              checked={!!user.isActive}
+                              onChange={() => handleToggleActive(user)}
+                              disabled={actionLoading || isDeleting || isToggling}
+                            />
+                            <span className="slider"></span>
+                          </label>
+                        ) : (
+                          '—'
+                        )}
+                      </td>
                       <td className="action-buttons-cell">
-                        <button className="btn-action btn-edit" onClick={() => openForm(user)} disabled={actionLoading || isDeleting}>
+                        <button className="btn-action btn-edit" onClick={() => openForm(user)} disabled={actionLoading || isDeleting || isToggling}>
                           <FaEdit /> Sửa
                         </button>
-                        <button className="btn-action btn-delete" onClick={() => handleDeleteClick(user.userId)} disabled={actionLoading || isDeleting}>
+                        <button className="btn-action btn-delete" onClick={() => handleDeleteClick(user.userId)} disabled={actionLoading || isDeleting || isToggling}>
                           <FaTrash /> Xóa
                         </button>
                       </td>
@@ -408,8 +519,8 @@ export default function AdminDashboard() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="empty-state-row">
-                     {loading ? "Đang tải..." : "Không có người dùng nào phù hợp."}
+                    <td colSpan="8" className="empty-state-row">
+                      {loading ? "Đang tải..." : "Không có người dùng nào phù hợp."}
                     </td>
                   </tr>
                 )}
@@ -516,7 +627,7 @@ export default function AdminDashboard() {
                   {formData.role === "CUSTOMER" && (
                     <small className="field-hint">Customer không thuộc trung tâm nào.</small>
                   )}
-                   {formErrors.centerId && <span id="centerIdError" className="error-text">{formErrors.centerId}</span>}
+                  {formErrors.centerId && <span id="centerIdError" className="error-text">{formErrors.centerId}</span>}
                 </div>
 
                 {/* Form Actions */}
@@ -534,7 +645,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-         {/* --- Confirmation Modal for Deletion --- */}
+        {/* --- Confirmation Modal for Deletion --- */}
         <ConfirmationModal
           show={showConfirmModal}
           message={`Bạn có chắc chắn muốn xóa người dùng ID: ${userToDeleteId}? Hành động này không thể hoàn tác.`}
