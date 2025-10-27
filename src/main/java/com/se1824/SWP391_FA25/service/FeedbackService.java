@@ -73,13 +73,15 @@ public class FeedbackService {
             newFeedback.setComment(feedbackRequest.getComment());
             newFeedback.setFeedbackDate(LocalDateTime.now());
             newFeedback.setCreatedAt(LocalDateTime.now());
-            newFeedback.setIsPublished(false);
+            newFeedback.setIsPublished(true);
             return feedbackRepository.save(newFeedback);
         }
     }
+
     /**
      * Lấy feedback theo booking ID
      */
+
     public Feedback getFeedbackByBookingId(Integer bookingId) {
         Feedback feedback = feedbackRepository.findByBooking_BookingId(bookingId);
         if (feedback == null) {

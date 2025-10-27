@@ -63,6 +63,7 @@ public class CustomerDashboardController {
     public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle) {
         return ResponseEntity.ok(dashboardService.createVehicle(vehicle));
     }
+
     /**
      * READ (All): Lấy tất cả các ServiceCenter
      * GET /api/customer/service-centers
@@ -71,5 +72,11 @@ public class CustomerDashboardController {
     public ResponseEntity<List<ServiceCenter>> getAllServiceCenters() {
         List<ServiceCenter> centers = serviceCenterService.getAllServiceCenters();
         return ResponseEntity.ok(centers);
+    }
+
+    @DeleteMapping("/delete-vehicle")
+    public ResponseEntity<String> deleteVehicle(@RequestParam String licensePlate) {
+        dashboardService.deleteVehicle(licensePlate);
+        return ResponseEntity.ok("Vehicle deleted successfully");
     }
 }

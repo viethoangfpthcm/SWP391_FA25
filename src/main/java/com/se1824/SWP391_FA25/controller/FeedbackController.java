@@ -85,4 +85,13 @@ public class FeedbackController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/center/{centerId}")
+    public ResponseEntity<?> getPublishedFeedbacksByCenter(@PathVariable Integer centerId) {
+        try {
+            return ResponseEntity.ok(feedbackService.getPublishedFeedbacksByCenter(centerId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
