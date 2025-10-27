@@ -597,3 +597,7 @@
 .btn-cancel:hover {
   background-color: #d1d5db;
 }
+.modal,
+.modal * {
+  color: #000 !important;
+}

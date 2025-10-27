@@ -7,8 +7,9 @@ import {
     FaSpinner,
     FaExclamationTriangle,
     FaFilter,
+    FaStar,
 } from "react-icons/fa";
-import { Bar, Pie, Line } from "react-chartjs-2";
+import { Bar, Pie, Line, Doughnut } from "react-chartjs-2";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -59,6 +60,9 @@ export default function AdminAnalytics() {
     const [revenueData, setRevenueData] = useState(null);
     const [partsData, setPartsData] = useState(null);
     const [bookingStatsData, setBookingStatsData] = useState(null);
+
+    // --- Feedback state (mới thêm) ---
+    const [feedbackData, setFeedbackData] = useState(null);
 
     const navigate = useNavigate();
     const API_BASE = import.meta.env.VITE_API_URL || "https://103.90.226.216:8443";
@@ -178,6 +182,39 @@ export default function AdminAnalytics() {
         }
     };
 
+    // --- MỚI: fetch feedback (rating) cho center đang chọn ---
+    const fetchFeedbackData = async () => {
+        setFeedbackData(null);
+        if (selectedCenter === "all") {
+            // không lấy feedback khi "all"
+            return;
+        }
+        const url = `${API_BASE}/api/admin/analytics/feedback/${selectedCenter}`;
+        try {
+            const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+            if (!res.ok) {
+                if (res.status === 404) {
+                    setFeedbackData(null);
+                    return;
+                }
+                throw new Error(`Lỗi tải feedback (${res.status})`);
+            }
+            const data = await res.json();
+            // Hỗ trợ nhiều tên trường trả về từ API: averageRating | avgRating | rating
+            const avg = data.averageRating ?? data.avgRating ?? data.rating ?? data.score ?? null;
+            const total = data.totalFeedbacks ?? data.count ?? data.total ?? data.feedbackCount ?? null;
+            setFeedbackData({
+                averageRating: typeof avg === "number" ? avg : (avg ? Number(avg) : 0),
+                totalFeedbacks: typeof total === "number" ? total : (total ? Number(total) : 0),
+                raw: data
+            });
+        } catch (err) {
+            console.error("fetchFeedbackData Error:", err);
+            setError("Lỗi tải dữ liệu đánh giá.");
+            setFeedbackData(null);
+        }
+    };
+
     // --- useEffects ---
     useEffect(() => {
         if (!token) {
@@ -188,6 +225,10 @@ export default function AdminAnalytics() {
         Promise.all([fetchUserInfo(), fetchCenters()])
             .catch(err => {
                 setError(err.message);
+                setLoading(false);
+            })
+            .finally(() => {
+                // nếu userInfo chưa được set thì fetchUserInfo sẽ set — second useEffect sẽ xử lý tiếp
                 setLoading(false);
             });
     }, [token, navigate]);
@@ -205,7 +246,8 @@ export default function AdminAnalytics() {
         Promise.all([
             fetchRevenueData(),
             fetchPartsData(),
-            fetchBookingStatsData()
+            fetchBookingStatsData(),
+            fetchFeedbackData() // <- gọi fetch feedback cùng lúc
         ]).finally(() => {
             setLoading(false);
         });
@@ -331,6 +373,20 @@ export default function AdminAnalytics() {
                             <PartsUsageChart chartData={partsData} />
                         )}
                     </div>
+
+                    {/* --- MỚI: Gauge Feedback (đặt ngay sau Linh kiện) --- */}
+                    {selectedCenter !== "all" && (
+                        <div className="chart-card">
+                            <h2 className="chart-title"><FaStar /> Đánh giá trung tâm</h2>
+                            {loading ? (
+                                <div className="chart-placeholder"><FaSpinner className="spinner" /></div>
+                            ) : feedbackData ? (
+                                <FeedbackGaugeChart feedback={feedbackData} />
+                            ) : (
+                                <p className="chart-placeholder">Không có dữ liệu đánh giá.</p>
+                            )}
+                        </div>
+                    )}
                 </div>
             </main>
         </div>
@@ -731,3 +787,54 @@ function PartsUsageChart({ chartData }) {
     );
 }
 
+// --- MỚI: Feedback Gauge Component ---
+// Hiển thị rating trung bình (scale 0-5) dưới dạng gauge (nửa vòng)
+function FeedbackGaugeChart({ feedback }) {
+    const avg = Number(feedback?.averageRating ?? 0); // 0-5
+    // chuyển sang phần trăm (0-100)
+    const pct = Math.max(0, Math.min(100, (avg / 5) * 100));
+    const remaining = 100 - pct;
+
+    const chartData = {
+        datasets: [
+            {
+                data: [pct, remaining],
+                backgroundColor: ['rgba(250,204,21,0.95)', 'rgba(229,231,235,0.8)'],
+                borderWidth: 0,
+                circumference: 180,
+                rotation: 270,
+                cutout: '75%',
+            },
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+        },
+    };
+
+    return (
+        <div style={{ width: '100%', maxWidth: 360, margin: '0 auto', height: 220, position: 'relative' }}>
+            <Doughnut data={chartData} options={options} />
+            <div style={{
+                position: 'absolute',
+                top: '55%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                textAlign: 'center',
+            }}>
+                <div style={{ fontSize: '2.4rem', fontWeight: 800, color: '#f59e0b' }}>
+                    {avg.toFixed(1)}
+                </div>
+                <div style={{ fontSize: '0.95rem', color: '#6b7280' }}>
+                    /5 ({feedback?.totalFeedbacks ?? 0} lượt)
+                </div>
+            </div>
+        </div>
+    );
+}
+    
