@@ -6,39 +6,33 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // --- Tab mặc định (login hoặc register từ Home) ---
+  // --- Tab mặc định ---
   const defaultTab = location.state?.defaultTab || "login";
   const [activeTab, setActiveTab] = useState(defaultTab);
 
-  // --- State chung ---
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [registerData, setRegisterData] = useState({
-    userId: "",
+    userId: "CU",
     fullName: "",
     email: "",
     phone: "",
     password: "",
     confirmPassword: "",
   });
-  const [forgotEmail, setForgotEmail] = useState("");
-  
-  const API_BASE_URL = "https://103.90.226.216:8443/api/users";
 
-
+  // Xóa state navigate sau khi dùng để tránh refresh giữ tab
   useEffect(() => {
     if (location.state?.defaultTab) {
       navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location, navigate]);
 
-  // --- Chuyển hướng sau đăng nhập theo role ---
+  // Chuyển hướng theo role
   const redirectToDashboard = (role) => {
-    const upperCaseRole = role?.toUpperCase() || "";
-
-    switch (upperCaseRole) {
+    switch (role?.toUpperCase()) {
       case "ADMIN":
         navigate("/admin");
         break;
@@ -53,18 +47,17 @@ const LoginForm = () => {
         break;
       default:
         navigate("/");
-        break;
     }
   };
 
-  // --- Đăng nhập ---
+  // Đăng nhập
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
 
     try {
-      const response = await fetch(`${API_BASE_URL}/login`, {
+      const response = await fetch("https://103.90.226.216:8443/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: loginEmail, password: loginPassword }),
@@ -76,22 +69,17 @@ const LoginForm = () => {
       }
 
       const data = await response.json();
-
-      // Lưu token & role
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
       localStorage.setItem("userId", data.userId);
 
-      console.log("Login success:", data);
-
-      // Điều hướng theo role
       redirectToDashboard(data.role);
     } catch (err) {
       setError(err.message);
     }
   };
 
-  // --- Đăng ký ---
+  // Đăng ký
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
@@ -109,7 +97,7 @@ const LoginForm = () => {
     const dataToSubmit = { ...registerData };
 
     try {
-      const response = await fetch(`${API_BASE_URL}/register`, {
+      const response = await fetch("https://103.90.226.216:8443/api/users/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSubmit),
@@ -134,34 +122,6 @@ const LoginForm = () => {
     }
   };
 
-  const handleForgotPassword = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccessMessage("");
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/forgot-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: forgotEmail }),
-      });
-
-      const responseText = await response.text(); 
-
-      if (!response.ok) {
-        throw new Error(responseText || "Gửi yêu cầu không thành công.");
-      }
-
-      setSuccessMessage(responseText);
-      setForgotEmail(""); 
-
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-
-  // --- Chuyển tab ---
   const switchTab = (tab) => {
     setActiveTab(tab);
     setError("");
@@ -169,167 +129,125 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="login-wrapper">
-      <div className="tabs">
-        <button
-          className={`tab ${activeTab === "login" ? "active" : ""}`}
-          onClick={() => switchTab("login")}
-        >
-          Đăng nhập
-        </button>
-        <button
-          className={`tab ${activeTab === "register" ? "active" : ""}`}
-          onClick={() => switchTab("register")}
-        >
-          Đăng ký
-        </button>
+    <div className="login-page">
+      <div className="login-container">
+        <div className="tabs-top">
+          <button
+            className={`tab-btn ${activeTab === "login" ? "active" : ""}`}
+            onClick={() => switchTab("login")}
+          >
+            Đăng nhập
+          </button>
+          <button
+            className={`tab-btn ${activeTab === "register" ? "active" : ""}`}
+            onClick={() => switchTab("register")}
+          >
+            Đăng ký
+          </button>
+        </div>
+
+        {/* --- FORM ĐĂNG NHẬP --- */}
+        {activeTab === "login" && (
+          <form onSubmit={handleLogin} className="form-box">
+            <label>Email</label>
+            <input
+              type="email"
+              placeholder="Email"
+              value={loginEmail}
+              onChange={(e) => setLoginEmail(e.target.value)}
+              required
+            />
+
+            <label>Mật khẩu</label>
+            <input
+              type="password"
+              placeholder="Mật khẩu"
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+              required
+            />
+
+            <div className="checkbox-wrapper">
+              <input type="checkbox" id="remember" />
+              <label htmlFor="remember">Ghi nhớ đăng nhập</label>
+            </div>
+
+            <button type="submit" className="login-btn">
+              ĐĂNG NHẬP
+            </button>
+          </form>
+        )}
+
+        {/* --- FORM ĐĂNG KÝ --- */}
+        {activeTab === "register" && (
+          <form onSubmit={handleRegister} className="form-box">
+            <label>Họ và Tên</label>
+            <input
+              type="text"
+              placeholder="Nguyễn Văn A"
+              value={registerData.fullName}
+              onChange={(e) =>
+                setRegisterData({ ...registerData, fullName: e.target.value })
+              }
+              required
+            />
+
+            <label>Email</label>
+            <input
+              type="email"
+              placeholder="example@email.com"
+              value={registerData.email}
+              onChange={(e) =>
+                setRegisterData({ ...registerData, email: e.target.value })
+              }
+              required
+            />
+
+            <label>Số điện thoại</label>
+            <input
+              type="tel"
+              placeholder="09xxxxxxxx"
+              value={registerData.phone}
+              onChange={(e) =>
+                setRegisterData({ ...registerData, phone: e.target.value })
+              }
+              required
+            />
+
+            <label>Mật khẩu</label>
+            <input
+              type="password"
+              placeholder="Mật khẩu (ít nhất 6 ký tự)"
+              value={registerData.password}
+              onChange={(e) =>
+                setRegisterData({ ...registerData, password: e.target.value })
+              }
+              required
+            />
+
+            <label>Xác nhận mật khẩu</label>
+            <input
+              type="password"
+              placeholder="Nhập lại mật khẩu"
+              value={registerData.confirmPassword}
+              onChange={(e) =>
+                setRegisterData({
+                  ...registerData,
+                  confirmPassword: e.target.value,
+                })
+              }
+              required
+            />
+
+            <button type="submit" className="login-btn">
+              ĐĂNG KÝ
+            </button>
+          </form>
+        )}
+
+        {error && <div className="error-msg">{error}</div>}
+        {successMessage && <div className="success-msg">{successMessage}</div>}
       </div>
-
-      {activeTab === "login" && (
-        <form onSubmit={handleLogin} className="form">
-          <label>Email</label>
-          <input
-            type="email"
-            placeholder="Email"
-            value={loginEmail}
-            onChange={(e) => setLoginEmail(e.target.value)}
-            required
-          />
-
-          <label>Mật khẩu</label>
-          <input
-            type="password"
-            placeholder="Mật khẩu"
-            value={loginPassword}
-            onChange={(e) => setLoginPassword(e.target.value)}
-            required
-          />
-
-          <div className="checkbox-wrapper">
-            <input type="checkbox" id="remember" />
-            <label htmlFor="remember">Ghi nhớ đăng nhập</label>
-          </div>
-
-
-          <div className="forgot-password-link" style={{ textAlign: 'center', margin: '10px 0' }}>
-            <a 
-              href="#" 
-              onClick={(e) => {
-                e.preventDefault();
-                switchTab("forgot"); 
-              }}
-            >
-              Quên mật khẩu?
-            </a>
-          </div>
-
-          <button type="submit" className="login-btn">
-            ĐĂNG NHẬP
-          </button>
-        </form>
-      )}
-
-      {activeTab === "register" && (
-        <form onSubmit={handleRegister} className="form">
-          <label>Họ và Tên</label>
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Nguyễn Văn A"
-            value={registerData.fullName}
-            onChange={(e) =>
-              setRegisterData({ ...registerData, fullName: e.target.value })
-            }
-            required
-          />
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            placeholder="example@email.com"
-            value={registerData.email}
-            onChange={(e) =>
-              setRegisterData({ ...registerData, email: e.target.value })
-            }
-            required
-          />
-          <label>Số điện thoại</label>
-          <input
-            type="tel"
-            name="phone"
-            placeholder="09xxxxxxxx"
-            value={registerData.phone}
-            onChange={(e) =>
-              setRegisterData({ ...registerData, phone: e.target.value })
-            }
-            required
-          />
-          <label>Mật khẩu</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Mật khẩu (ít nhất 6 ký tự)"
-            value={registerData.password}
-            onChange={(e) =>
-              setRegisterData({ ...registerData, password: e.target.value })
-            }
-            required
-          />
-          <label>Xác nhận mật khẩu</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Nhập lại mật khẩu"
-            value={registerData.confirmPassword}
-            onChange={(e) =>
-              setRegisterData({ ...registerData, confirmPassword: e.target.value })
-            }
-            required
-          />
-
-          <button type="submit" className="login-btn">
-            ĐĂNG KÝ
-          </button>
-        </form>
-      )}
-
-      {activeTab === "forgot" && (
-        <form onSubmit={handleForgotPassword} className="form">
-          <h3 style={{ textAlign: 'center' }}>Quên Mật Khẩu</h3>
-          <p style={{ textAlign: 'center', fontSize: '14px', color: '#555' }}>
-            Nhập email của bạn. Chúng tôi sẽ gửi một liên kết để đặt lại mật khẩu.
-          </p>
-
-          <label>Email</label>
-          <input
-            type="email"
-            placeholder="Email đã đăng ký"
-            value={forgotEmail}
-            onChange={(e) => setForgotEmail(e.target.value)}
-            required
-          />
-
-          <button type="submit" className="login-btn">
-            GỬI LIÊN KẾT
-          </button>
-
-          <div className="back-to-login-link" style={{ textAlign: 'center', margin: '10px 0' }}>
-            <a 
-              href="#" 
-              onClick={(e) => {
-                e.preventDefault();
-                switchTab("login"); // Quay lại tab đăng nhập
-              }}
-            >
-              Quay lại Đăng nhập
-            </a>
-          </div>
-        </form>
-      )}
-
-
-      {error && <div className="error-message">{error}</div>}
-      {successMessage && <div className="success-message">{successMessage}</div>}
     </div>
   );
 };

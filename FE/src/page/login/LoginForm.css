@@ -1,191 +1,109 @@
-/* ---- Layout chính ---- */
-.login-wrapper {
-  width: 420px;
-  margin: 100px auto;
-  background: #fff;
-  padding: 40px 36px;
-  border-radius: 16px;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
-  font-family: "Segoe UI", Arial, sans-serif;
-  color: #111;
-  transition: all 0.3s ease-in-out;
+.login-page {
+  height: 100vh;
+  width: 100%;
+  background: url("../image/vf7.jpg") no-repeat center center/cover;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
 }
 
-.login-wrapper:hover {
-  transform: translateY(-4px);
+.login-container {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 40px;
+  width: 400px;
+  margin-right: 8%;
+  color: white;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
-/* ---- Tabs ---- */
-.tabs {
+.tabs-top {
   display: flex;
   justify-content: center;
-  gap: 8px;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
+  gap: 15px;
 }
 
-.tab {
-  flex: 1;
-  padding: 12px 0;
-  font-size: 15px;
-  font-weight: bold;
-  color: #0a4ff0;
-  background: #f2f6ff;
-  border: 1.5px solid transparent;
-  border-radius: 10px;
+.tab-btn {
+  padding: 10px 25px;
+  border-radius: 25px;
+  border: none;
   cursor: pointer;
-  transition: all 0.25s ease-in-out;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s;
 }
 
-.tab.active {
-  background: #0a4ff0;
-  color: #fff;
-  transform: scale(1.02);
+.tab-btn.active {
+  background-color: white;
+  color: #5e17eb;
+  font-weight: 600;
+  transform: scale(1.05);
 }
 
-/* ---- Form ---- */
-.form {
+.form-box {
   display: flex;
   flex-direction: column;
-  gap: 18px;
 }
 
-.form label {
+label {
+  margin-bottom: 6px;
   font-size: 14px;
-  color: #0a4ff0;
-  font-weight: 600;
+  color: #ddd;
 }
 
-.form input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1.8px solid #d6e1ff;
-  border-radius: 10px;
+input {
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  border-radius: 25px;
+  border: none;
   outline: none;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
   font-size: 14px;
-  background: #f8faff;
-  transition: all 0.25s ease;
 }
 
-.form input:focus {
-  border-color: #0a4ff0;
-  background: #fff;
-  box-shadow: 0 0 5px rgba(10, 79, 240, 0.25);
+input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
-/* ---- Checkbox ---- */
-/* ---- Checkbox ---- */
 .checkbox-wrapper {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 4px; /* giảm khoảng cách giữa ô và chữ */
-  font-size: 14px;
-  color: #333;
-  margin-top: 6px;
-  white-space: nowrap; /* tránh chữ bị xuống dòng */
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 13px;
 }
 
-.checkbox-wrapper input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: #0a4ff0; /* màu xanh đồng bộ với theme */
-}
-
-.checkbox-wrapper label {
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
-
-/* ---- Button ---- */
 .login-btn {
-  background: #0a4ff0;
-  color: #fff;
-  font-size: 15px;
-  font-weight: bold;
-  padding: 12px 0;
+  background: linear-gradient(90deg, #5e17eb, #c700ff);
   border: none;
-  border-radius: 10px;
+  border-radius: 30px;
+  padding: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 15px;
   cursor: pointer;
-  transition: all 0.25s ease-in-out;
+  transition: 0.3s;
 }
 
 .login-btn:hover {
-  background: #003cd6;
-  transform: scale(1.02);
-  box-shadow: 0 4px 12px rgba(10, 79, 240, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(199, 0, 255, 0.6);
 }
 
-/* ---- Thông báo ---- */
-.error-message {
-  margin-top: 12px;
-  color: #ff4d4d;
-  font-size: 14px;
-  text-align: center;
-}
-
-.success-message {
-  margin-top: 12px;
-  color: #008000;
-  font-size: 14px;
-  text-align: center;
-}
-
-.form-links {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-  margin-top: -10px; /* Kéo lên gần ô mật khẩu */
-  margin-bottom: 10px; /* Khoảng cách trước nút ĐĂNG NHẬP */
-}
-
-.forgot-link {
-  color: #0a4ff0;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.forgot-link:hover {
-  color: #003cd6;
-  text-decoration: underline;
-}
-
-/* CSS cho Form Quên mật khẩu */
-.form-title {
-  text-align: center;
-  color: #0a4ff0;
-  font-size: 20px;
-  margin-bottom: 10px;
-}
-
-.forgot-intro {
-  font-size: 14px;
-  color: #555;
-  text-align: center;
-  margin-bottom: 20px;
-  line-height: 1.5;
-}
-
-.back-link {
-  display: block;
-  text-align: center;
+.error-msg {
   margin-top: 15px;
-  color: #0a4ff0;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 14px;
+  color: #ff4444;
+  text-align: center;
 }
 
-.back-link:hover {
-  text-decoration: underline;
-}
-/* ---- Responsive ---- */
-@media (max-width: 480px) {
-  .login-wrapper {
-    width: 90%;
-    padding: 30px 24px;
-  }
+.success-msg {
+  margin-top: 15px;
+  color: #00ff88;
+  text-align: center;
 }
