@@ -159,7 +159,7 @@ public class MaintenanceChecklistService {
     /**
      * Hàm helper chung để map Checklist Entity sang Response DTO ĐẦY ĐỦ (có Details) và tính toán tổng chi phí.
      */
-    private MaintenanceChecklistResponse mapChecklistToResponseWithDetails(MaintenanceChecklist checklist) {
+    public MaintenanceChecklistResponse mapChecklistToResponseWithDetails(MaintenanceChecklist checklist) {
         if (checklist == null) return null;
 
         MaintenanceChecklistResponse res = modelMapper.map(checklist, MaintenanceChecklistResponse.class);

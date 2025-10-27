@@ -1,0 +1,239 @@
+/* Nền chung của trang */
+.profile-page {
+    display: flex;
+    background-color: #f9fafb;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+    margin-left: 250px;
+    padding: 25px;
+}
+
+.page-title {
+    color: #0369a1;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+.loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px;
+    font-size: 18px;
+    color: #278598;
+}
+
+.loading-container .spinner-icon {
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+
+
+/* Khung chứa form */
+.profile-form-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 32px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+}
+
+/* Mỗi nhóm (label + input) */
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+
+/* Input bị vô hiệu hóa (cho Email) */
+.form-group input.readonly-input {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    cursor: not-allowed;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* Đường kẻ phân cách */
+.form-divider {
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+    margin: 28px 0;
+}
+
+/* Khu vực nút bấm */
+.form-actions {
+    margin-top: 24px;
+    text-align: right;
+}
+
+.btn-save-profile {
+    background-color: #2563eb;
+    /* Màu xanh dương */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.btn-save-profile:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-save-profile:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Icon xoay */
+.btn-save-profile .spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* CSS cho Toast (Lấy từ file Checklist.css) */
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 320px;
+    max-width: 500px;
+    padding: 16px 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 9999;
+    animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast-notification.toast-success {
+    border-left: 5px solid #10b981;
+}
+
+.toast-notification.toast-error {
+    border-left: 5px solid #ef4444;
+}
+
+.toast-notification.toast-warning {
+    border-left: 5px solid #f59e0b;
+}
+
+.toast-notification.toast-info {
+    border-left: 5px solid #3b82f6;
+}
+
+.toast-icon {
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.toast-success .toast-icon {
+    color: #10b981;
+}
+
+.toast-error .toast-icon {
+    color: #ef4444;
+}
+
+.toast-warning .toast-icon {
+    color: #f59e0b;
+}
+
+.toast-info .toast-icon {
+    color: #3b82f6;
+}
+
+.toast-message {
+    flex: 1;
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    flex-shrink: 0;
+    font-size: 16px;
+}
+
+.toast-close:hover {
+    color: #374151;
+}

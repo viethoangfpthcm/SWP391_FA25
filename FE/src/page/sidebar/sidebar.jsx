@@ -10,6 +10,9 @@ import {
   FaSignOutAlt,
   FaUserCog,
   FaBuilding,
+  FaFileInvoiceDollar,
+  FaBookOpen,
+  FaChartLine,
 } from "react-icons/fa";
 import "./sidebar.css";
 
@@ -98,17 +101,41 @@ const Sidebar = ({ userName, userRole }) => {
             >
               <FaBuilding /> <span>Quản lý trung tâm</span>
             </Link>
-            
+            <Link
+              to="/admin/bookings"
+              className={`menu-item ${isActive("/admin/bookings") ? "active" : ""}`}
+            >
+              <FaBookOpen /> <span>Quản lý Booking</span>
+            </Link>
+
+            <Link
+              to="/admin/payments"
+              className={`menu-item ${isActive("/admin/payments") ? "active" : ""}`}
+            >
+              <FaFileInvoiceDollar /> <span>Quản lý Thanh toán</span>
+            </Link>
+            <Link
+              to="/admin/analytics"
+              className={`menu-item ${isActive("/admin/analytics") ? "active" : ""}`}
+            >
+              <FaChartLine /> <span>Phân tích thống kê</span>
+            </Link>
+
+
           </>
         )}
+        <div className="menu-footer">
+          <Link
+            to="/profile"
+            className={`menu-item ${isActive("/profile") ? "active" : ""}`}
+          >
+            <FaUserCog /> <span>Tài khoản của tôi</span>
+          </Link>
 
-
-
-
-
-        <button className="logout-btn" onClick={handleLogout}>
-          <FaSignOutAlt /> <span>Đăng xuất</span>
-        </button>
+          <button className="logout-btn" onClick={handleLogout}>
+            <FaSignOutAlt /> <span>Đăng xuất</span>
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -5,6 +5,8 @@ import LoginForm from "./page/login/LoginForm.jsx";
 import Homepage from "./page/home/Homepage.jsx";
 import About from "./page/home/AboutUs.jsx";
 import Contact from "./page/home/Contact.jsx";
+import ResetPassword from "./page/login/ResetPassword.jsx";
+import ProfilePage from "./page/ProfilePage/ProfilePage.jsx";
 
 // Staff
 import StaffDashboard from "./page/staff/StaffDashboard.jsx";
@@ -19,6 +21,9 @@ import AdminDashboard from "./page/admin/AdminDashboard.jsx";
 import ServiceCenterManagement from "./page/admin/ServiceCenterManagement.jsx";
 import PartManagement from "./page/admin/PartManagement.jsx";
 import AdminBookingManagement from "./page/admin/AdminBookingManagement.jsx";
+import AdminPaymentManagement from "./page/admin/AdminPaymentManagement.jsx";
+import AdminChecklistDetail from "./page/admin/AdminChecklistDetail.jsx";
+import AdminAnalytics from "./page/admin/AdminAnalytics.jsx";
 
 // Customer
 import CustomerDashboard from "./page/customer/CustomerDashboard.jsx";
@@ -39,7 +44,15 @@ function App() {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/login" element={<LoginForm />} />
-
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute> 
+            <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
       {/* Staff */}
       <Route
         path="/staff"
@@ -101,7 +114,39 @@ function App() {
           </ProtectedRoute>
         }
       />
-      
+      <Route
+        path="/admin/bookings"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminBookingManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/payments"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminPaymentManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/checklist/booking/:bookingId"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminChecklistDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/analytics"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminAnalytics />
+          </ProtectedRoute>
+        }
+      />
+
 
       {/* Customer */}
       <Route

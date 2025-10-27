@@ -222,27 +222,6 @@ public class BookingService {
 
     // ==================== Private Helper Methods ====================
 
-//    private void validateBookingRequest(CreateBookingRequest request) {
-//
-//        if (request.getVehiclePlate() == null || request.getVehiclePlate().trim().isEmpty()) {
-//            throw new InvalidDataException("Vehicle plate is required");
-//        }
-//        if (request.getCenterId() == null) {
-//            throw new InvalidDataException("Service center is required");
-//        }
-//        if (request.getBookingDate() == null) {
-//            throw new InvalidDataException("Booking date is required");
-//        }
-//        if (request.getBookingDate().isBefore(LocalDateTime.now())) {
-//            throw new InvalidDataException("Booking date must be in the future");
-//        }
-//
-//        if (request.getMaintenancePlanId() == null) {
-//            throw new InvalidDataException("Maintenance Plan ID is required");
-//        }
-//
-//    }
-
     private ServiceCenterDTO mapToServiceCenterDTO(ServiceCenter center) {
         ServiceCenterDTO dto = new ServiceCenterDTO();
         dto.setId(center.getId());

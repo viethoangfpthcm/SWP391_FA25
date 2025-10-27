@@ -657,6 +657,87 @@
   color: #fff;
 }
 
+
+.feedback-modal .rating-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.feedback-modal .rating-group label {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.feedback-modal .stars {
+  display: flex;
+  gap: 10px;
+}
+
+.feedback-modal .stars .star-empty,
+.feedback-modal .stars .star-selected {
+  font-size: 2.5rem; /* Kích thước ngôi sao */
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.feedback-modal .stars .star-empty {
+  color: #ccc; /* Màu sao rỗng */
+}
+
+.feedback-modal .stars .star-selected {
+  color: #fadb14; /* Màu sao được chọn (vàng) */
+}
+
+.feedback-modal .stars svg:hover {
+  transform: scale(1.1);
+}
+
+.feedback-modal textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-height: 100px;
+  box-sizing: border-box; 
+}
+.btn-feedback {
+  /* Màu nền vàng giống màu ngôi sao đã chọn */
+  background-color: #fadb14; 
+  
+  /* Màu chữ tối để dễ đọc trên nền vàng */
+  color: #333; 
+  
+  border: 1px solid #eab000; /* Viền vàng sậm hơn một chút */
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600; /* Hơi đậm */
+  font-size: 0.9rem;
+  
+  /* Căn icon và chữ cho đẹp */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* Khoảng cách giữa icon FaStar và chữ */
+  
+  transition: all 0.2s ease;
+  margin-top: 10px; /* Tạo khoảng cách với nội dung bên trên nó */
+}
+
+/* Hiệu ứng khi di chuột qua */
+.btn-feedback:hover {
+  background-color: #f7d200; /* Hơi sậm hơn khi hover */
+  border-color: #eab000;
+  color: #000; /* Chữ đen hơn */
+}
+
+/* Đảm bảo icon thẳng hàng (nếu cần) */
+.btn-feedback svg {
+  vertical-align: middle;
+}
+
 /* Animation */
 @keyframes fadeIn {
   from { opacity: 0; }

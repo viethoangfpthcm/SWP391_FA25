@@ -1,0 +1,113 @@
+/* ConfirmationModal.css */
+
+.confirmation-overlay {
+  /* Reuse modal-overlay styles if defined globally */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050; /* Ensure it's above other modals if necessary */
+}
+
+.confirmation-modal {
+  /* Reuse modal styles if defined globally */
+  background: white;
+  padding: 25px 30px;
+  border-radius: 8px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.confirmation-icon {
+  font-size: 2.5rem;
+  color: #f59e0b; /* Warning color (orange) */
+  margin-bottom: 15px;
+}
+
+.confirmation-content h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.confirmation-content p {
+  margin-bottom: 25px;
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: center; /* Center buttons */
+  gap: 15px; /* Space between buttons */
+  margin-top: 10px;
+}
+
+.confirmation-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirmation-actions .btn-cancel {
+  background-color: #6c757d; /* Gray */
+  color: white;
+}
+.confirmation-actions .btn-cancel:hover {
+  background-color: #5a6268;
+}
+
+.confirmation-actions .btn-confirm {
+  background-color: #28a745; /* Default: Green */
+  color: white;
+}
+.confirmation-actions .btn-confirm:hover {
+  background-color: #218838;
+}
+
+/* Specific style for delete confirmation button */
+.confirmation-actions .btn-confirm.btn-danger {
+  background-color: #dc3545; /* Red */
+}
+.confirmation-actions .btn-confirm.btn-danger:hover {
+  background-color: #c82333;
+}
+
+
+.confirmation-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Spinner inside button */
+.spinner-icon.spin-inline {
+    width: 1em;
+    height: 1em;
+    vertical-align: text-bottom;
+    margin-right: 6px;
+    animation: spin 1s linear infinite;
+}
+
+/* Keyframes for spinner */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

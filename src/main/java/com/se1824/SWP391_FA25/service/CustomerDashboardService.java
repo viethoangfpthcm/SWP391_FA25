@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,29 +69,30 @@ public class CustomerDashboardService {
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle is not linked to a valid Maintenance Schedule."));
 
         List<MaintenancePlan> plans = planRepo.findBySchedule_Id(schedule.getId());
-        LocalDate purchaseDate = vehicle.getPurchaseDate();
         LocalDate currentDate = LocalDate.now();
-        Integer currentKm = vehicle.getCurrentKm() != null ? vehicle.getCurrentKm() : 0;
 
-        // Lấy danh sách các lần đã hoàn thành
+        // Tất cả VehicleSchedule của xe này
+        List<VehicleSchedule> vehicleSchedules = vehicleScheduleRepo.findByVehicle_LicensePlate(licensePlate);
+        Map<Integer, VehicleSchedule> scheduleMap = vehicleSchedules.stream()
+                .collect(Collectors.toMap(VehicleSchedule::getMaintenanceNo, vs -> vs));
+
+        // Các maintenanceNo đã hoàn thành
         Set<Integer> completedMaintenanceNos = bookingRepo.findByVehicle_LicensePlateAndStatus(licensePlate, "Completed")
                 .stream()
                 .filter(booking -> booking.getMaintenancePlan() != null)
                 .map(booking -> booking.getMaintenancePlan().getMaintenanceNo())
                 .collect(Collectors.toSet());
 
-        // Sắp xếp plans theo maintenanceNo
+        // Sắp xếp plans
         List<MaintenancePlan> sortedPlans = plans.stream()
                 .sorted(Comparator.comparing(MaintenancePlan::getMaintenanceNo))
                 .toList();
 
-        // Tìm maintenance number lớn nhất đã hoàn thành
+        // Tìm lần tiếp theo cần thực hiện
         Integer maxCompletedNo = completedMaintenanceNos.stream()
                 .max(Integer::compareTo)
                 .orElse(0);
 
-        // Tìm lần đầu tiên SAU maxCompletedNo mà chưa hoàn thành
-        // Đây chính là lần NEXT_TIME
         Integer nextTimeNo = null;
         for (MaintenancePlan plan : sortedPlans) {
             Integer planNo = plan.getMaintenanceNo();
@@ -102,11 +101,7 @@ public class CustomerDashboardService {
                 break;
             }
         }
-
-        // Nếu không tìm thấy (tất cả đã hoàn thành), tìm lần tiếp theo trong danh sách
-        if (nextTimeNo == null) {
-            nextTimeNo = maxCompletedNo + 1;
-        }
+        if (nextTimeNo == null) nextTimeNo = maxCompletedNo + 1;
 
         final Integer finalNextTimeNo = nextTimeNo;
 
@@ -116,62 +111,94 @@ public class CustomerDashboardService {
             dto.setPlanName(plan.getName());
             dto.setDescription(plan.getDescription());
             dto.setIntervalKm(plan.getIntervalKm());
+            dto.setIntervalMonth(plan.getIntervalMonth());
 
-            LocalDate dueDate = purchaseDate.plusMonths(plan.getIntervalMonth());
-            Integer dueKm = plan.getIntervalKm();
             Integer planNo = plan.getMaintenanceNo();
+            VehicleSchedule vehicleSchedule = scheduleMap.get(planNo);
 
-            // Xác định trạng thái
-            if (completedMaintenanceNos.contains(planNo)) {
-                // Đã hoàn thành
-                dto.setStatus("ON_TIME");
+            LocalDate planDate;
+            LocalDate deadline;
 
-            } else if (planNo.equals(finalNextTimeNo)) {
-                // Đây là lần kế tiếp có thể đặt lịch
-                dto.setStatus("NEXT_TIME");
-
-            } else if (planNo < finalNextTimeNo) {
-                // Các lần trước nextTimeNo mà chưa hoàn thành = EXPIRED (đã bị bỏ qua/skip)
-                dto.setStatus("EXPIRED");
-
+            // Nếu có VehicleSchedule thì dùng giá trị thực tế
+            if (vehicleSchedule != null) {
+                planDate = vehicleSchedule.getPlanDate();
+                deadline = vehicleSchedule.getDeadline();
             } else {
-                // Các lần sau nextTimeNo = LOCKED (chưa thể đặt vì nextTime chưa xong)
-                dto.setStatus("LOCKED");
+                // fallback = purchaseDate + intervalMonth
+                planDate = vehicle.getPurchaseDate().plusMonths(plan.getIntervalMonth());
+                deadline = planDate.plusMonths(1);
+            }
+
+            dto.setPlanDate(planDate);
+            dto.setDeadline(deadline);
+
+            String newStatus;
+
+            // Logic chính kết hợp 2 hướng
+            if (completedMaintenanceNos.contains(planNo)) {
+                newStatus = "ON_TIME";
+            } else if (planNo.equals(finalNextTimeNo)) {
+                if (currentDate.isAfter(deadline)) {
+                    newStatus = "OVERDUE"; // trễ hạn
+                } else {
+                    newStatus = "NEXT_TIME"; // đến lượt, chưa quá hạn
+                }
+            } else if (planNo < finalNextTimeNo) {
+                newStatus = "EXPIRED"; // bỏ lỡ
+            } else {
+                newStatus = "LOCKED"; // chưa đến lượt
+            }
+
+            dto.setStatus(newStatus);
+
+            // Cập nhật DB nếu trạng thái thay đổi
+            if (vehicleSchedule != null && !Objects.equals(vehicleSchedule.getStatus(), newStatus)) {
+                vehicleSchedule.setStatus(newStatus);
+                vehicleScheduleRepo.save(vehicleSchedule);
             }
 
             return dto;
         }).collect(Collectors.toList());
     }
-
     /*
      * Customer theo xe mới
      */
     public Vehicle createVehicle(Vehicle vehicle) {
         Users currentUser = authenticationService.getCurrentAccount();
-
-        // 1. Gán chủ sở hữu
         vehicle.setOwner(currentUser);
-        // Đảm bảo các thuộc tính List (bookings, schedules) là null khi save object mới
-        // và không gán các giá trị fetch từ repository vào đối tượng transient
 
-        // 2. Lưu Vehicle vào DB để lấy primary key (licensePlate)
-        Vehicle savedVehicle = vehicleRepo.save(vehicle); //
+        // Lưu vehicle trước
+        Vehicle savedVehicle = vehicleRepo.save(vehicle);
 
-        // 3. Tìm MaintenanceSchedule mặc định cho dòng xe
-        MaintenanceSchedule schedule = maintenanceScheduleRepo.findByVehicleModel(savedVehicle.getModel()); //
+        // Tìm MaintenanceSchedule cho dòng xe
+        MaintenanceSchedule schedule = maintenanceScheduleRepo.findByVehicleModel(savedVehicle.getModel());
 
         if (schedule != null) {
-            // 4. Tạo đối tượng VehicleSchedule mới để liên kết
-            VehicleSchedule newVehicleSchedule = VehicleSchedule.builder()
-                    .vehicle(savedVehicle) //
-                    .schedule(schedule) //
-                    .maintenanceNo(0) // Khởi tạo mốc bảo dưỡng đầu tiên (có thể điều chỉnh)
-                    .planDate(LocalDate.now())
-                    .deadline(LocalDate.now().plusMonths(1)) // Ví dụ: Deadline sau 1 năm
-                    .status("PENDING") // Trạng thái ban đầu: PENDING
-                    .build(); //
+            // Lấy tất cả các maintenance plans của schedule này
+            List<MaintenancePlan> plans = planRepo.findBySchedule_Id(schedule.getId());
 
-            vehicleScheduleRepo.save(newVehicleSchedule); //
+            // Sắp xếp theo maintenanceNo
+            plans.sort(Comparator.comparing(MaintenancePlan::getMaintenanceNo));
+
+            // Tạo VehicleSchedule cho TỪNG maintenance plan
+            for (MaintenancePlan plan : plans) {
+                LocalDate planDate = savedVehicle.getPurchaseDate()
+                        .plusMonths(plan.getIntervalMonth());
+
+                // Deadline = planDate + buffer time
+                LocalDate deadline = planDate.plusMonths(1);
+
+                VehicleSchedule vehicleSchedule = VehicleSchedule.builder()
+                        .vehicle(savedVehicle)
+                        .schedule(schedule)
+                        .maintenanceNo(plan.getMaintenanceNo())
+                        .planDate(planDate)  // Ngày dự kiến dựa trên purchaseDate + intervalMonth
+                        .deadline(deadline)   // Hạn chót = planDate + buffer
+                        .status("PENDING")
+                        .build();
+
+                vehicleScheduleRepo.save(vehicleSchedule);
+            }
         }
 
         return savedVehicle;
