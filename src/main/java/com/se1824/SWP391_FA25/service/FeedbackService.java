@@ -86,11 +86,7 @@ public class FeedbackService {
      */
 
     public Feedback getFeedbackByBookingId(Integer bookingId) {
-        Feedback feedback = feedbackRepository.findByBooking_BookingId(bookingId);
-        if (feedback == null) {
-            throw new ResourceNotFoundException("This booking are not feedback by customer .");
-        }
-        return feedback;
+        return feedbackRepository.findByBooking_BookingId(bookingId);
     }
 
     /**

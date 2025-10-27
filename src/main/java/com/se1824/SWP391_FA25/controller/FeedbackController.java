@@ -54,6 +54,9 @@ public class FeedbackController {
     public ResponseEntity<?> getFeedbackByBookingId(@PathVariable Integer bookingId) {
         try {
             Feedback feedback = feedbackService.getFeedbackByBookingId(bookingId);
+            if (feedback == null) {
+                return ResponseEntity.noContent().build();
+            }
 
             FeedbackDTO dto = new FeedbackDTO();
             dto.setFeedbackId(feedback.getFeedbackId());
@@ -67,8 +70,10 @@ public class FeedbackController {
             dto.setIsPublished(feedback.getIsPublished());
 
             return ResponseEntity.ok(dto);
+
         } catch (Exception e) {
-            return ResponseEntity.status(404).body(e.getMessage());
+            System.err.println("Error processing feedback GET: " + e.getMessage());
+            return ResponseEntity.status(500).body("Internal Server Error: " + e.getMessage());
         }
     }
 
