@@ -26,8 +26,6 @@ public class FeedbackService {
 
     @Autowired
     BookingService bookingService;
-    @Autowired
-    private BookingRepository bookingRepository;
 
     /**
      * Tạo hoặc cập nhật feedback cho booking đã hoàn thành
