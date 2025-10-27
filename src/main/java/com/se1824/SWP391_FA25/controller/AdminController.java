@@ -9,11 +9,13 @@ import com.se1824.SWP391_FA25.model.response.PartAnalyticsResponse;
 import com.se1824.SWP391_FA25.model.response.RevenueAnalyticsResponse;
 import com.se1824.SWP391_FA25.service.AdminService;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
+import com.se1824.SWP391_FA25.service.FeedbackService;
 import com.se1824.SWP391_FA25.service.ServiceCenterService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -413,6 +415,18 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
         }
         return ResponseEntity.ok(data);
+    }
+
+    @Autowired
+    private FeedbackService feedbackService;
+
+    @GetMapping("/analytics/center/{centerId}")
+    public ResponseEntity<?> getPublishedFeedbacksByCenter(@PathVariable Integer centerId) {
+        try {
+            return ResponseEntity.ok(feedbackService.getPublishedFeedbacksByCenter(centerId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/user/active")
