@@ -155,8 +155,7 @@ public class ServiceCenterService {
                 .orElseThrow(() -> new ResourceNotFoundException("Part are not exist ID: " + partId));
 
         // 2. Tìm PartType mới (nếu người dùng thay đổi)
-        PartType partType = partTypeRepository.findById(dto.getPartTypeId())
-                .orElseThrow(() -> new ResourceNotFoundException("PartType are not exist ID: " + dto.getPartTypeId()));
+
         String trimmedName = dto.getName().trim();
         // 3. Map dữ liệu từ DTO sang Entity
         existingPart.setName(trimmedName);
@@ -165,8 +164,6 @@ public class ServiceCenterService {
         existingPart.setLaborCost(dto.getLaborCost());
         existingPart.setMaterialCost(dto.getMaterialCost());
 
-        // 4. Gán PartType mới
-        existingPart.setPartType(partType);
         // 5. Không cần set lại ServiceCenter (vì Part không thể di chuyển giữa các trung tâm)
 
         return partRepository.save(existingPart);

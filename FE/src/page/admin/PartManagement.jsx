@@ -395,6 +395,7 @@ export default function PartManagement() {
                      value={formData.partTypeId} onChange={handleChange}
                      className={formErrors.partTypeId ? 'input-error' : ''}
                      aria-describedby="partTypeIdError" aria-invalid={!!formErrors.partTypeId}
+                     disabled={!!editingPart}
                    >
                      <option value="">-- Chọn loại --</option>
                      {partTypes.map((type) => (
