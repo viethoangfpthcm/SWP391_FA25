@@ -112,11 +112,13 @@ export default function AdminPaymentManagement() {
     }, [selectedCenter]);
 
     // --- Helper format ---
-    const formatCurrency = (amount) =>
-        new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-        }).format(amount || 0);
+const formatCurrency= (amount) => {
+  if (!amount) return "0 VNĐ";
+  if (amount >= 1_000_000_000) return (amount / 1_000_000_000).toFixed(1) + " Tỷ";
+  if (amount >= 1_000_000) return (amount / 1_000_000).toFixed(1) + " Triệu";
+  if (amount >= 1_000) return (amount / 1_000).toFixed(0) + "K";
+  return amount + " VNĐ";
+};
 
     const formatDate = (dateString) =>
         dateString

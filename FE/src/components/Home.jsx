@@ -44,6 +44,7 @@ const Home = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.4 }}
+          style={{  backgroundColor:"#1E90FF",color: "white" }}
         >
           Đặt lịch bảo dưỡng
         </motion.button>

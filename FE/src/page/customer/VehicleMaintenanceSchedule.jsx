@@ -379,7 +379,8 @@ function VehicleMaintenanceSchedule() {
                 </div>
                 <div className="form-group">
                   <label htmlFor="note">Ghi chú (Tùy chọn)</label>
-                  <input type="text" id="note" name="note" value={bookingFormData.note} onChange={handleBookingFormChange} placeholder="Yêu cầu thêm (nếu có)..." />
+                  <input type="text" id="note" name="note" value={bookingFormData.note} onChange={handleBookingFormChange} placeholder="Yêu cầu thêm (nếu có)..." 
+                      style={{  color: "white" }}/>
                 </div>
                 <div className="form-actions">
                   <button type="button" onClick={() => setShowBookingForm(false)} className="btn-cancel" disabled={bookingLoading}>Hủy</button>
