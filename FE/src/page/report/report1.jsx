@@ -67,7 +67,7 @@ export default function Report1() {
             const s = report.status;
             const bS = report.bookingStatus;
             if (s === "PENDING_APPROVAL") return 1;
-            if (s === "IN_PROGRESS") return 2;
+            if (s === "In Progress") return 2;
             if (s === "COMPLETED" && bS !== "Completed") return 3;
             if (s === "COMPLETED" && bS === "Completed") return 4;
             return 5;
@@ -267,120 +267,138 @@ export default function Report1() {
             )}
             <button onClick={handleCloseModal} className="close-modal-btn"><FaXmark /></button>
             {detailLoading && (<div className="loading-state modal-loading"><FaSpinner className="spinner-icon" /> Tải chi tiết...</div>)}
-            {!detailLoading && currentReport && (
-              <article className="report-document-modal">
-                <header className="document-header">
-                  <div className="doc-left"><div className="doc-title">BIÊN BẢN</div><div className="doc-meta"><span>Mã BB: <strong>#{currentReport.id}</strong></span></div></div>
-                  <div className="doc-status"><div className={`status-pill ${currentReport.status?.toLowerCase()}`}>{currentReport.status === "IN_PROGRESS" ? "Đang xử lý" : (currentReport.status === "COMPLETED" ? "Đã hoàn thành" : currentReport.status || '?')}</div></div>
-                </header>
-                <section className="document-body">
-                  <div className="left-col">
-                    <div className="panel">
-                      <h4>Thông tin xe</h4>
-                      <div className="kv">
-                        <div><span className="k">KTV: </span><span className="v">{currentReport.technicianName || "?"}</span></div>
-                        <div><span className="k">Xe: </span><span className="v">{currentReport.vehicleModel || "?"}</span></div>
-                        <div><span className="k">Biển số: </span><span className="v">{currentReport.vehicleNumberPlate || "?"}</span></div>
-                        <div><span className="k">Số km: </span><span className="v">{(currentReport.currentKm || 0).toLocaleString()} km</span></div>
-                        <div><span className="k">Mốc bảo dưỡng: </span><span className="v">{(currentReport.maintenanceKm || 0).toLocaleString()} km</span></div>
-                      </div>
-                    </div>
-                    <div className="panel cost-panel">
-                      <h4>Chi phí</h4>
-                      <div className="cost-row">
-                        <div><div className="cost-label">Dự kiến</div><div className="cost-value">{(currentReport.estimatedCost || 0).toLocaleString()} đ</div></div>
-                        <div><div className="cost-label">Đã duyệt</div><div className="cost-value approved">{(currentReport.totalCostApproved || 0).toLocaleString()} đ</div></div>
-                        <div><div className="cost-label">Từ chối</div><div className="cost-value declined">{(currentReport.totalCostDeclined || 0).toLocaleString()} đ</div></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="right-col">
-                    <h4 className="details-title">Chi tiết hạng mục</h4>
-                    {currentReport.details && currentReport.details.length > 0 ? (
-                      currentReport.details.map((d) => {
-                        const isDeclined = d.approvalStatus === "DECLINED";
-                        const isApproved = !isDeclined;
-                        const status = isDeclined ? 'declined' : 'approved';
-                        const isReportCompleted = currentReport.status === "Completed";
-                        const techStatusClass = `tech-status-${(d.status || 'unknown').toLowerCase().replace('_', '-')}`;
-                        return (
-                          <div key={d.id} className="detail-row">
-                            <div className="detail-main">
-                              <div className="detail-head">
-                                <div className="detail-name-status">
-                                  <div className="detail-name">{d.itemName}</div>
-                                  <span className={`tech-status-tag ${techStatusClass}`}>{formatTechStatus(d.status)}</span>
-                                  <div className={`approval-tag ${status}`}>
-                                  {isApproved ? "✓ Duyệt" : "✗ Từ chối"}
-                                </div>
-                                </div>
-                                
-                              </div>
-                              <div className="detail-grid">
-                                <div><span className="label">Linh kiện</span><div className="val">{d.partName || "-"}</div></div>
-                                <div><span className="label">Nhân công</span><div className="val">{(d.laborCost || 0).toLocaleString()} đ</div></div>
-                                <div><span className="label">Vật liệu</span><div className="val">{(d.materialCost || 0).toLocaleString()} đ</div></div>
-                              </div>
-                              <div className="detail-note">
-                                <div><strong>Ghi chú KT:</strong> {d.note || "-"}</div>
-                                <div className="customer-note-input">
-                                  <label htmlFor={`note-${d.id}`}><strong>Ghi chú của bạn:</strong></label>
-                                  <textarea
-                                    id={`note-${d.id}`}
-                                    value={d.customerNote || ""}
-                                    onChange={(e) => handleNoteChange(d.id, e.target.value)}
-                                    placeholder="Nhập ghi chú..."
-                                    rows={2}
-                                    disabled={isReportCompleted}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="detail-approval-toggle">
-                              <input
-                                type="checkbox"
-                                id={`approve-${d.id}`}
-                                checked={d.approvalStatus !== 'DECLINED'}
-                                onChange={(e) => handleCheckboxChange(d.id, e.target.checked)}
-                                disabled={isReportCompleted}
-                              />
-                              <label htmlFor={`approve-${d.id}`}>
-                                {d.approvalStatus !== 'DECLINED' ? 'Đồng ý' : 'Không đồng ý'}
-                              </label>
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : (<p>Không có chi tiết hạng mục.</p>)}
-                  </div>
-                </section>
-                <footer className="document-footer-modal">
+            {!detailLoading && currentReport && (() => {
 
-                  <button
-                    className="btn-close-review"
-                    onClick={handleCloseModal}
-                    disabled={isSubmitting}
-                  >
-                    {currentReport.status === "COMPLETED" ? 'Đóng' : 'Hủy'}
-                  </button>
-                  {currentReport.status !== "COMPLETED" && (
+              const isReportCompleted = currentReport.status === "Completed";
+              const hasPendingTechnicianStatus = currentReport.details.some(
+                d => d.status === 'Pending' || !d.status
+              );
+
+
+              return (
+                <article className="report-document-modal">
+                  <header className="document-header">
+                    <div className="doc-left"><div className="doc-title">BIÊN BẢN</div><div className="doc-meta"><span>Mã BB: <strong>#{currentReport.id}</strong></span></div></div>
+
+                    <div className="doc-status"><div className={`status-pill ${currentReport.status?.toLowerCase()}`}>{currentReport.status === "In Progress" ? "Đang xử lý" : (isReportCompleted ? "Đã hoàn thành" : currentReport.status || '?')}</div></div>
+                  </header>
+                  <section className="document-body">
+                    <div className="left-col">
+                      <div className="panel">
+                        <h4>Thông tin xe</h4>
+                        <div className="kv">
+                          <div><span className="k">KTV: </span><span className="v">{currentReport.technicianName || "?"}</span></div>
+                          <div><span className="k">Xe: </span><span className="v">{currentReport.vehicleModel || "?"}</span></div>
+                          <div><span className="k">Biển số: </span><span className="v">{currentReport.vehicleNumberPlate || "?"}</span></div>
+                          <div><span className="k">Số km: </span><span className="v">{(currentReport.currentKm || 0).toLocaleString()} km</span></div>
+                          <div><span className="k">Mốc bảo dưỡng: </span><span className="v">{(currentReport.maintenanceKm || 0).toLocaleString()} km</span></div>
+                        </div>
+                      </div>
+                      <div className="panel cost-panel">
+                        <h4>Chi phí</h4>
+                        <div className="cost-row">
+                          <div><div className="cost-label">Dự kiến</div><div className="cost-value">{(currentReport.estimatedCost || 0).toLocaleString()} đ</div></div>
+                          <div><div className="cost-label">Đã duyệt</div><div className="cost-value approved">{(currentReport.totalCostApproved || 0).toLocaleString()} đ</div></div>
+                          <div><div className="cost-label">Từ chối</div><div className="cost-value declined">{(currentReport.totalCostDeclined || 0).toLocaleString()} đ</div></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="right-col">
+                      <h4 className="details-title">Chi tiết hạng mục</h4>
+                      {currentReport.details && currentReport.details.length > 0 ? (
+                        currentReport.details.map((d) => {
+                          const isDeclined = d.approvalStatus === "DECLINED";
+                          const isApproved = !isDeclined;
+                          const status = isDeclined ? 'declined' : 'approved';
+                          const isTechStatusPending = d.status === 'Pending' || !d.status;
+                          const isDisabled = isReportCompleted || isTechStatusPending;
+
+                          const techStatusClass = `tech-status-${(d.status || 'unknown').toLowerCase().replace('_', '-')}`;
+                          return (
+                            <div key={d.id} className="detail-row">
+                              <div className="detail-main">
+                                <div className="detail-head">
+                                  <div className="detail-name-status">
+                                    <div className="detail-name">{d.itemName}</div>
+                                    <span className={`tech-status-tag ${techStatusClass}`}>{formatTechStatus(d.status)}</span>
+                                    <div className={`approval-tag ${status}`}>
+                                      {isApproved ? "✓ Duyệt" : "✗ Từ chối"}
+                                    </div>
+                                  </div>
+
+                                </div>
+                                <div className="detail-grid">
+                                  <div><span className="label">Linh kiện</span><div className="val">{d.partName || "-"}</div></div>
+                                  <div><span className="label">Nhân công</span><div className="val">{(d.laborCost || 0).toLocaleString()} đ</div></div>
+                                  <div><span className="label">Vật liệu</span><div className="val">{(d.materialCost || 0).toLocaleString()} đ</div></div>
+                                </div>
+                                <div className="detail-note">
+                                  <div><strong>Ghi chú KT:</strong> {d.note || "-"}</div>
+                                  <div className="customer-note-input">
+                                    <label htmlFor={`note-${d.id}`}><strong>Ghi chú của bạn:</strong></label>
+                                    <textarea
+                                      id={`note-${d.id}`}
+                                      value={d.customerNote || ""}
+                                      onChange={(e) => handleNoteChange(d.id, e.target.value)}
+                                      placeholder="Nhập ghi chú..."
+                                      rows={2}
+                                      disabled={isDisabled}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="detail-approval-toggle">
+                                <input
+                                  type="checkbox"
+                                  id={`approve-${d.id}`}
+                                  checked={d.approvalStatus !== 'DECLINED'}
+                                  onChange={(e) => handleCheckboxChange(d.id, e.target.checked)}
+                                  disabled={isDisabled}
+                                />
+                                <label htmlFor={`approve-${d.id}`}>
+                                  {d.approvalStatus !== 'DECLINED' ? 'Đồng ý' : 'Không đồng ý'}
+                                </label>
+                              </div>
+                            </div>
+                          );
+                        })
+                      ) : (<p>Không có chi tiết hạng mục.</p>)}
+                    </div>
+                  </section>
+                  <footer className="document-footer-modal">
+
                     <button
-                      className="btn-submit-review"
-                      onClick={handleSubmitApprovals}
+                      className="btn-close-review"
+                      onClick={handleCloseModal}
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? (
-                        <>
-                          <FaSpinner className="spinner-icon" /> Đang lưu...
-                        </>
-                      ) : (
-                        'Lưu & Xác nhận'
-                      )}
+
+                      {isReportCompleted ? 'Đóng' : 'Hủy'}
                     </button>
-                  )}
-                </footer>
-              </article>
-            )}
+
+                    {!isReportCompleted && (
+                      <button
+                        className="btn-submit-review"
+                        onClick={handleSubmitApprovals}
+
+                        disabled={isSubmitting || hasPendingTechnicianStatus}
+                        title={hasPendingTechnicianStatus
+                          ? "Vui lòng đợi Kỹ thuật viên hoàn tất kiểm tra tất cả hạng mục"
+                          : "Lưu & Xác nhận"}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <FaSpinner className="spinner-icon" /> Đang lưu...
+                          </>
+                        ) : (
+                          'Lưu & Xác nhận'
+                        )}
+                      </button>
+                    )}
+                  </footer>
+                </article>
+              );
+            })()}
           </div>
         </div>
       )}

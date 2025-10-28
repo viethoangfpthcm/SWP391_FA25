@@ -4,6 +4,7 @@ import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.entity.*;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.repository.*;
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +72,10 @@ public class CustomerDashboardService {
         List<MaintenancePlan> plans = planRepo.findBySchedule_Id(schedule.getId());
         LocalDate currentDate = LocalDate.now();
 
+        // *** LẤY KM HIỆN TẠI CỦA XE ***
+        Integer currentKm = vehicle.getCurrentKm();
+
+
         // Tất cả VehicleSchedule của xe này
         List<VehicleSchedule> vehicleSchedules = vehicleScheduleRepo.findByVehicle_LicensePlate(licensePlate);
         Map<Integer, VehicleSchedule> scheduleMap = vehicleSchedules.stream()
@@ -88,22 +93,7 @@ public class CustomerDashboardService {
                 .sorted(Comparator.comparing(MaintenancePlan::getMaintenanceNo))
                 .toList();
 
-        // Tìm lần tiếp theo cần thực hiện
-        Integer maxCompletedNo = completedMaintenanceNos.stream()
-                .max(Integer::compareTo)
-                .orElse(0);
-
-        Integer nextTimeNo = null;
-        for (MaintenancePlan plan : sortedPlans) {
-            Integer planNo = plan.getMaintenanceNo();
-            if (planNo > maxCompletedNo && !completedMaintenanceNos.contains(planNo)) {
-                nextTimeNo = planNo;
-                break;
-            }
-        }
-        if (nextTimeNo == null) nextTimeNo = maxCompletedNo + 1;
-
-        final Integer finalNextTimeNo = nextTimeNo;
+        // Đã xóa logic finalNextTimeNo
 
         return sortedPlans.stream().map(plan -> {
             VehicleScheduleStatusDTO dto = new VehicleScheduleStatusDTO();
@@ -124,29 +114,38 @@ public class CustomerDashboardService {
                 planDate = vehicleSchedule.getPlanDate();
                 deadline = vehicleSchedule.getDeadline();
             } else {
-                // fallback = purchaseDate + intervalMonth
                 planDate = vehicle.getPurchaseDate().plusMonths(plan.getIntervalMonth());
                 deadline = planDate.plusMonths(1);
             }
-
             dto.setPlanDate(planDate);
             dto.setDeadline(deadline);
-
             String newStatus;
 
-            // Logic chính kết hợp 2 hướng
             if (completedMaintenanceNos.contains(planNo)) {
-                newStatus = "ON_TIME";
-            } else if (planNo.equals(finalNextTimeNo)) {
-                if (currentDate.isAfter(deadline)) {
-                    newStatus = "OVERDUE"; // trễ hạn
-                } else {
-                    newStatus = "NEXT_TIME"; // đến lượt, chưa quá hạn
-                }
-            } else if (planNo < finalNextTimeNo) {
-                newStatus = "EXPIRED"; // bỏ lỡ
+                newStatus = "ON_TIME"; // Đã hoàn thành
             } else {
-                newStatus = "LOCKED"; // chưa đến lượt
+
+
+                // Check 1: Overdue by date
+                boolean overdueByDate = currentDate.isAfter(deadline);
+
+                // Check 2: Overdue by KM (null-safe)
+                boolean overdueByKm = false;
+                Integer intervalKm = plan.getIntervalKm();
+
+                if (currentKm != null && intervalKm != null) {
+                    if (currentKm > intervalKm) {
+                        overdueByKm = true;
+                    }
+                }
+
+                // Combine checks: Overdue if EITHER date OR KM is exceeded
+                if (overdueByDate || overdueByKm) {
+                    newStatus = "OVERDUE";
+                } else {
+                    newStatus = "NEXT_TIME";
+                }
+
             }
 
             dto.setStatus(newStatus);
@@ -160,10 +159,14 @@ public class CustomerDashboardService {
             return dto;
         }).collect(Collectors.toList());
     }
+
     /*
      * Customer theo xe mới
      */
     public Vehicle createVehicle(Vehicle vehicle) {
+        if (vehicleRepo.findByLicensePlate(vehicle.getLicensePlate()) != null) {
+            throw new EntityExistsException("Vehicle with license plate " + vehicle.getLicensePlate() + " already exists.");
+        }
         Users currentUser = authenticationService.getCurrentAccount();
         vehicle.setOwner(currentUser);
 
@@ -204,6 +207,21 @@ public class CustomerDashboardService {
         return savedVehicle;
     }
 
+
+    /*
+     * customer xóa xe có trong account của mình
+     * */
+    public void deleteVehicle(String licensePlate) {
+        Users currentUser = authenticationService.getCurrentAccount();
+        Vehicle vehicle = vehicleRepo.findById(licensePlate)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with license plate: " + licensePlate));
+
+        if (!vehicle.getOwner().getUserId().equals(currentUser.getUserId())) {
+            throw new SecurityException("You do not have permission to delete this vehicle.");
+        }
+
+        vehicleRepo.delete(vehicle);
+    }
 
     // ==================== CÁC HÀM HELPER ====================
     private VehicleOverviewDTO mapToVehicleOverview(Vehicle vehicle) {

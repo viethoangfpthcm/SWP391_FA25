@@ -35,7 +35,7 @@ export default function TechnicianTask() {
     const token = localStorage.getItem("token");
     const API_BASE = "https://103.90.226.216:8443";
 
-    // Hàm dịch trạng thái từ API sang tiếng Việt
+    // Dịch trạng thái sang tiếng Việt
     const translateStatus = (status) => {
         switch (status) {
             case "Assigned":
@@ -93,7 +93,7 @@ export default function TechnicianTask() {
 
             const data = await res.json();
 
-            // Đếm theo trạng thái (dựa trên API gốc)
+            // Đếm số lượng theo trạng thái
             const pending = data.filter((t) => t.status === "Assigned").length;
             const inProgress = data.filter((t) => t.status === "In Progress").length;
             const completed = data.filter((t) => t.status === "Completed").length;
@@ -118,7 +118,7 @@ export default function TechnicianTask() {
         fetchTasks();
     }, []);
 
-
+    // Lọc theo trạng thái
     useEffect(() => {
         if (filterStatus === "all") setFilteredTasks(tasks);
         else if (filterStatus === "pending")
@@ -129,14 +129,12 @@ export default function TechnicianTask() {
             setFilteredTasks(tasks.filter((t) => t.status === "Completed"));
     }, [filterStatus, tasks]);
 
-
     const openKmModal = (bookingId) => {
         setCurrentBookingId(bookingId);
         setActualKm("");
         setShowKmModal(true);
     };
 
-    // Xác nhận bắt đầu nhiệm vụ
     const confirmStartTask = async () => {
         const km = parseInt(actualKm);
         if (isNaN(km) || km <= 0) {
@@ -191,7 +189,7 @@ export default function TechnicianTask() {
                 {error && <div className="error-message">{error}</div>}
 
                 <div className="inner">
-                    {/* Thống kê tổng quan */}
+                    {/* --- Thống kê tổng quan --- */}
                     <div className="summary-cards">
                         <div className="card pending">
                             <FaClock />
@@ -215,7 +213,7 @@ export default function TechnicianTask() {
                         </div>
                     </div>
 
-                    {/* Danh sách nhiệm vụ */}
+                    {/* --- Danh sách nhiệm vụ --- */}
                     <div className="task-section">
                         <div className="task-section-header">
                             <h2>Nhiệm vụ được giao</h2>
@@ -241,77 +239,90 @@ export default function TechnicianTask() {
                             <p className="no-task">Không có nhiệm vụ nào phù hợp.</p>
                         ) : (
                             <div className="task-list">
-                                {filteredTasks.map((task) => (
-                                    <div key={task.bookingId} className="task-card">
-                                        <div className="task-header">
-                                            <span
-                                                className={`status-badge ${task.status === "Assigned"
-                                                    ? "pending"
-                                                    : task.status === "In Progress"
-                                                        ? "in-progress"
-                                                        : "completed"
+                                {[...filteredTasks]
+                                    .sort((a, b) => {
+                                        const order = { "Assigned": 1, "In Progress": 2, "Completed": 3 };
+                                        return order[a.status] - order[b.status];
+                                    })
+                                    .map((task) => (
+                                        <div key={task.bookingId} className="task-card">
+                                            <div className="task-header">
+                                                <span
+                                                    className={`status-badge ${
+                                                        task.status === "Assigned"
+                                                            ? "pending"
+                                                            : task.status === "In Progress"
+                                                            ? "in-progress"
+                                                            : "completed"
                                                     }`}
-                                            >
-                                                {translateStatus(task.status)}
-                                            </span>
-
-                                            <span className="task-id">Mã Booking: {task.bookingId}</span>
-                                        </div>
-
-                                        <div className="task-body">
-                                            <p>
-                                                <strong>Tên khách hàng:</strong> {task.customerName}
-                                            </p>
-
-
-                                            <p>
-                                                <strong>Mẫu xe:</strong> {task.vehicleModel}
-                                            </p>
-
-                                            <p>
-                                                <strong>Biển số xe:</strong> {task.vehiclePlate}
-                                            </p>
-                                            <p>
-                                                <strong>Ngày hẹn:</strong>{" "}
-                                                {new Date(task.bookingDate).toLocaleDateString()}
-                                            </p>
-                                            <p>
-                                                <strong>Gói bảo dưỡng:</strong>{" "}
-                                                {task.maintenancePlanName || "Không có"}
-                                            </p>
-                                            <p>
-                                                <strong>Ghi chú:</strong> {task.note || "Không có"}
-                                            </p>
-                                        </div>
-
-                                        <div className="task-footer">
-                                            {task.status === "Assigned" && (
-                                                <button
-                                                    className="btn-start"
-                                                    onClick={() => openKmModal(task.bookingId)}
                                                 >
-                                                    <FaPlay /> Bắt đầu
-                                                </button>
-                                            )}
-                                            {task.status === "In Progress" && (
-                                                <button
-                                                    className="btn-view"
-                                                    onClick={() => handleViewTask(task.bookingId)}
-                                                >
-                                                    <FaEye /> Xem chi tiết
-                                                </button>
-                                            )}
-                                            {task.status === "Completed" && (
-                                                <button
-                                                    className="task-btn view completed"
-                                                    onClick={() => handleViewTask(task.bookingId)}
-                                                >
-                                                    <FaEye /> Xem chi tiết
-                                                </button>
-                                            )}
+                                                    {translateStatus(task.status)}
+                                                </span>
+
+                                                <span className="task-id">
+                                                    Mã Booking: {task.bookingId}
+                                                </span>
+                                            </div>
+
+                                            <div className="task-body">
+                                                <p>
+                                                    <strong>Tên khách hàng:</strong>{" "}
+                                                    {task.customerName}
+                                                </p>
+                                                <p>
+                                                    <strong>Mẫu xe:</strong> {task.vehicleModel}
+                                                </p>
+                                                <p>
+                                                    <strong>Biển số xe:</strong> {task.vehiclePlate}
+                                                </p>
+                                                <p>
+                                                    <strong>Ngày hẹn:</strong>{" "}
+                                                    {new Date(task.bookingDate).toLocaleDateString()}
+                                                </p>
+                                                <p>
+                                                    <strong>Gói bảo dưỡng:</strong>{" "}
+                                                    {task.maintenancePlanName || "Không có"}
+                                                </p>
+                                                <p>
+                                                    <strong>Ghi chú:</strong>{" "}
+                                                    {task.note || "Không có"}
+                                                </p>
+                                            </div>
+
+                                            <div className="task-footer">
+                                                {task.status === "Assigned" && (
+                                                    <button
+                                                        className="btn-start"
+                                                        onClick={() =>
+                                                            openKmModal(task.bookingId)
+                                                        }
+                                                    >
+                                                        <FaPlay /> Bắt đầu
+                                                    </button>
+                                                )}
+                                                {task.status === "In Progress" && (
+                                                    <button
+                                                        className="btn-view"
+                                                        onClick={() =>
+                                                            handleViewTask(task.bookingId)
+                                                        }
+                                                    >
+                                                        <FaEye /> Xem chi tiết
+                                                    </button>
+                                                )}
+                                                {task.status === "Completed" && (
+                                                    <button
+                                                        className="task-btn view completed"
+                                                        onClick={() =>
+                                                            handleViewTask(task.bookingId)
+                                                        }
+                                                    >
+                                                        <FaEye /> Xem chi tiết
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
                             </div>
                         )}
                     </div>
@@ -328,7 +339,10 @@ export default function TechnicianTask() {
                             placeholder="Nhập Actual KM..."
                             value={actualKm}
                             onChange={(e) => {
-                                if (e.target.value === "" || parseFloat(e.target.value) >= 0) {
+                                if (
+                                    e.target.value === "" ||
+                                    parseFloat(e.target.value) >= 0
+                                ) {
                                     setActualKm(e.target.value);
                                 }
                             }}
@@ -338,7 +352,10 @@ export default function TechnicianTask() {
                             <button onClick={confirmStartTask} className="confirm-btn">
                                 Xác nhận
                             </button>
-                            <button onClick={() => setShowKmModal(false)} className="cancel-btn">
+                            <button
+                                onClick={() => setShowKmModal(false)}
+                                className="cancel-btn"
+                            >
                                 Hủy
                             </button>
                         </div>

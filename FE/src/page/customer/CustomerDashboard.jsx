@@ -161,32 +161,36 @@ function CustomerDashboard() {
     const token = localStorage.getItem("token");
     setCurrentBookingId(bookingId);
     setFeedbackError('');
-    setFeedbackLoading(true); // Bắt đầu loading (để lấy feedback cũ)
-    setShowFeedbackModal(true); // Hiển thị modal trước
+    setFeedbackLoading(true);
+    setShowFeedbackModal(true);
 
     try {
-      // Gọi API GET /api/feedback/{bookingId} để kiểm tra feedback cũ
       const response = await fetch(`${API_BASE}/api/feedback/${bookingId}`, {
         headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
       });
 
-      if (response.ok) {
+      if (response.status === 200) {
         const oldFeedback = await response.json();
-        // Nếu tìm thấy, điền thông tin cũ vào form
         setFeedbackData({
           rating: oldFeedback.rating || 0,
           comment: oldFeedback.comment || '',
         });
+      } else if (response.status === 204) {
+        setFeedbackData({ rating: 0, comment: '' });
       } else {
-
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Feedback GET API Error:", errorText);
+          throw new Error(`Lỗi tải dữ liệu đánh giá: ${response.status}`);
+        }
         setFeedbackData({ rating: 0, comment: '' });
       }
+
     } catch (err) {
       console.error("Lỗi khi lấy feedback cũ:", err);
-      // Vẫn hiển thị form rỗng
-      setFeedbackData({ rating: 0, comment: '' });
+      setFeedbackData({ rating: 0, comment: '' }); e
     } finally {
-      setFeedbackLoading(false); // Dừng loading (đã lấy xong)
+      setFeedbackLoading(false);
     }
   };
 
@@ -356,6 +360,29 @@ function CustomerDashboard() {
     setProfileError('');
     const token = localStorage.getItem("token");
 
+    if (!/^[A-Za-zÀ-ỹ\s]+$/.test(profileData.fullName.trim()) || profileData.fullName.trim().length < 2) {
+      setProfileError("Tên chỉ được chứa chữ cái và phải có ít nhất 2 ký tự");
+      setProfileLoading(false);
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profileData.email)) {
+      setProfileError("Email không hợp lệ");
+      setProfileLoading(false);
+      return;
+    }
+
+    if (!/^[0-9]{10}$/.test(profileData.phone)) {
+      setProfileError("Số điện thoại phải có đúng 10 chữ số");
+      setProfileLoading(false);
+      return;
+    }
+
+    if (profileData.password && profileData.password.length < 6) {
+      setProfileError("Mật khẩu phải có ít nhất 6 ký tự");
+      setProfileLoading(false);
+      return;
+    }
 
     const payload = {
       fullName: profileData.fullName,
@@ -619,63 +646,63 @@ function CustomerDashboard() {
           </div>
         )}
         {showFeedbackModal && (
-        <div className="modal-overlay">
-          <div className="modal-content feedback-modal">
-            <div className="modal-header">
-              <h2>Đánh giá dịch vụ</h2>
-              <button onClick={() => setShowFeedbackModal(false)} className="close-modal-btn">
-                <FaTimes />
-              </button>
-            </div>
-            <form onSubmit={handleSubmitFeedback}>
-              {feedbackError && <p className="error-message">{feedbackError}</p>}
-              
-              <div className="form-group rating-group">
-                <label>Đánh giá của bạn *</label>
-                <div className="stars">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <FaStar
-                      key={star}
-                      className={star <= feedbackData.rating ? 'star-selected' : 'star-empty'}
-                      onClick={() => handleRatingChange(star)}
-                    />
-                  ))}
+          <div className="modal-overlay">
+            <div className="modal-content feedback-modal">
+              <div className="modal-header">
+                <h2>Đánh giá dịch vụ</h2>
+                <button onClick={() => setShowFeedbackModal(false)} className="close-modal-btn">
+                  <FaTimes />
+                </button>
+              </div>
+              <form onSubmit={handleSubmitFeedback}>
+                {feedbackError && <p className="error-message">{feedbackError}</p>}
+
+                <div className="form-group rating-group">
+                  <label>Đánh giá của bạn *</label>
+                  <div className="stars">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <FaStar
+                        key={star}
+                        className={star <= feedbackData.rating ? 'star-selected' : 'star-empty'}
+                        onClick={() => handleRatingChange(star)}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-group">
-                <label htmlFor="comment">Bình luận (tùy chọn)</label>
-                <textarea
-                  id="comment"
-                  name="comment"
-                  rows="4"
-                  value={feedbackData.comment}
-                  onChange={handleFeedbackChange}
-                  placeholder="Chia sẻ trải nghiệm của bạn..."
-                ></textarea>
-              </div>
+                <div className="form-group">
+                  <label htmlFor="comment">Bình luận (tùy chọn)</label>
+                  <textarea
+                    id="comment"
+                    name="comment"
+                    rows="4"
+                    value={feedbackData.comment}
+                    onChange={handleFeedbackChange}
+                    placeholder="Chia sẻ trải nghiệm của bạn..."
+                  ></textarea>
+                </div>
 
-              <div className="form-actions">
-                <button 
-                  type="button" 
-                  onClick={() => setShowFeedbackModal(false)} 
-                  className="btn-cancel" 
-                  disabled={feedbackLoading}
-                >
-                  Hủy
-                </button>
-                <button 
-                  type="submit" 
-                  className="btn-save" 
-                  disabled={feedbackLoading}
-                >
-                  {feedbackLoading ? 'Đang gửi...' : 'Gửi đánh giá'}
-                </button>
-              </div>
-            </form>
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    onClick={() => setShowFeedbackModal(false)}
+                    className="btn-cancel"
+                    disabled={feedbackLoading}
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn-save"
+                    disabled={feedbackLoading}
+                  >
+                    {feedbackLoading ? 'Đang gửi...' : 'Gửi đánh giá'}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
 
         <section className="dashboard-section profile-section">

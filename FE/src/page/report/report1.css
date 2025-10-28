@@ -305,21 +305,38 @@
   overflow-y: auto;
 }
 
-.left-col,
+.left-col {
+    position: sticky;
+    top: 0; 
+    height: fit-content; 
+    align-self: flex-start; 
+    
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.left-col:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+
 .right-col {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  padding: 1.2rem;
-  transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 1.2rem;
+    transition: all 0.3s ease;
+    
 }
 
-.left-col:hover,
 .right-col:hover {
-  background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.12);
 }
-
 .panel h4,
 .right-col>h4 {
   font-size: 1.05rem;

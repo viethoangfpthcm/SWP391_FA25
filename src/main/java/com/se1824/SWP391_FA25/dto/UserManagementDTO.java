@@ -22,4 +22,5 @@ public class UserManagementDTO {
     String role; // STAFF, TECHNICIAN
     Integer centerId;
     String centerName;
+    Boolean isActive;
 }
