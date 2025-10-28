@@ -15,7 +15,7 @@ export default function StaffDashboard({ user, userRole }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("pending");
+  const [statusFilter, setStatusFilter] = useState("all");
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
 
@@ -397,6 +397,8 @@ export default function StaffDashboard({ user, userRole }) {
     return <span className={`status-badge ${className}`}>{label}</span>;
   };
 
+
+
   // *** SỬA LẠI HÀM NÀY: Staff có thể xem checklist sớm hơn ***
   const hasChecklist = (status) => {
     const statusText = status ? status.toLowerCase() : '';
@@ -409,6 +411,42 @@ export default function StaffDashboard({ user, userRole }) {
     // Sử dụng Booking ID để gọi API Checklist của Staff
     navigate(`/staff/checklist/${bookingId}`);
   };
+
+  const filteredAppointments = appointments.filter(appt =>
+    statusFilter === 'all' || (appt.status && appt.status.toLowerCase() === statusFilter)
+  );
+
+  const statusOrder = [
+  'pending',
+  'approved',
+  'assigned',
+  'in progress',
+  'paid',
+  'completed',
+  'declined',
+  'cancelled'
+];
+
+  const sortedAppointments = [...filteredAppointments].sort((a, b) => {
+    // Thêm .trim() để loại bỏ khoảng trắng vô hình ở đầu/cuối
+    const statusA = a.status?.toLowerCase().trim() || '';
+    const statusB = b.status?.toLowerCase().trim() || '';
+
+    const rankA = statusOrder.indexOf(statusA);
+    const rankB = statusOrder.indexOf(statusB);
+
+    // DÒNG DEBUG: Dán dòng này vào để xem chính xác nó đang so sánh gì
+    console.log(`Comparing: '${statusA}' (rank ${rankA}) vs '${statusB}' (rank ${rankB})`);
+
+    const finalRankA = rankA === -1 ? Infinity : rankA;
+    const finalRankB = rankB === -1 ? Infinity : rankB;
+
+    if (finalRankA !== finalRankB) {
+      return finalRankA - finalRankB;
+    }
+
+    return new Date(a.bookingDate) - new Date(b.bookingDate);
+  });
   // --- Auto refresh danh sách lịch hẹn mỗi 10 giây ---
   useEffect(() => {
     const interval = setInterval(() => {
@@ -437,9 +475,7 @@ export default function StaffDashboard({ user, userRole }) {
     );
   }
 
-  const filteredAppointments = appointments.filter(appt =>
-    statusFilter === 'all' || (appt.status && appt.status.toLowerCase() === statusFilter)
-  );
+
 
   return (
     <div className="dashboard-container">
@@ -502,8 +538,8 @@ export default function StaffDashboard({ user, userRole }) {
                 </tr>
               </thead>
               <tbody>
-                {!error && filteredAppointments.length > 0 ? (
-                  filteredAppointments.map((appt) => {
+                {!error && sortedAppointments.length > 0 ? (
+                  sortedAppointments.map((appt) => {
                     const statusText = appt.status?.toLowerCase();
                     const checklistStatusText = appt.checklistStatus?.toLowerCase();
 
