@@ -303,13 +303,13 @@
   }
 
   .status-inprogress {
-    background-color: #5affff;
+    background-color: #a262ca;
     color: #b45309;
     border-color: #fcd34d;
   }
 
   .status-completed {
-    background-color: #ff6d25;
+    background-color: #2e90b7;
     color: #047857;
     border-color: #6ee7b7;
   }
@@ -321,7 +321,7 @@
   }
 
   .status-paid {
-    background-color: #63e886;
+    background-color: #3fbd76;
     color: #5b21b6;
     border-color: #d8b4fe;
   }
