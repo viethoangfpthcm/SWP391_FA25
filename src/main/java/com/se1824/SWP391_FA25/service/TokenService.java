@@ -38,10 +38,11 @@ public class TokenService {
                 .claims(extraClaims)
                 .subject(user.getUserId().toString()) // Chuyển Integer thành String
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(getSignInKey())
                 .compact();
     }
+
     //varify token
     public Users extractToken(String token) {
         String userIdStr = extractClaim(token, Claims::getSubject);

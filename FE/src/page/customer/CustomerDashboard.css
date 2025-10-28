@@ -68,6 +68,18 @@
   transition: all 0.3s ease;
 }
 
+.dashboard-page .modal-content.add-vehicle-form input,
+.dashboard-page .modal-content.add-vehicle-form select,
+.dashboard-page .modal-content.add-vehicle-form textarea {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.dashboard-page .modal-content.add-vehicle-form input::placeholder,
+.dashboard-page .modal-content.add-vehicle-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
 .dashboard-section:hover,
 .vehicle-card:hover,
 .booking-item:hover {

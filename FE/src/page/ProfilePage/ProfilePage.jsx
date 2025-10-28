@@ -70,16 +70,32 @@ export default function ProfilePage({ user }) {
     // 3. Xử lý khi nhấn nút "Lưu"
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // ✅ Validation phía client
+        if (!/^[\p{L} ]+$/u.test(formData.fullName)) {
+            showToast("Họ và tên chỉ được chứa chữ cái và khoảng trắng", "error");
+            return;
+        }
+
+        if (!/^[0-9]{10}$/.test(formData.phone)) {
+            showToast("Số điện thoại phải gồm đúng 10 chữ số", "error");
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            showToast("Email không hợp lệ", "error");
+            return;
+        }
+
         setIsUpdating(true);
 
         // Chuẩn bị dữ liệu gửi đi
         const updateData = {
             fullName: formData.fullName,
             phone: formData.phone,
-            email: formData.email, // Gửi email hiện tại để backend so sánh
+            email: formData.email,
         };
 
-        // Chỉ gửi password nếu người dùng nhập vào (không gửi chuỗi rỗng)
+        // Chỉ gửi password nếu có
         if (formData.password && formData.password.trim() !== "") {
             updateData.password = formData.password;
         }
@@ -94,19 +110,19 @@ export default function ProfilePage({ user }) {
                 body: JSON.stringify(updateData),
             });
 
+            const contentType = res.headers.get("content-type");
+            const data = contentType && contentType.includes("application/json")
+                ? await res.json()
+                : await res.text();
+
             if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.message || `Lỗi ${res.status}`);
+                throw new Error(data.message || data || `Lỗi ${res.status}`);
             }
 
-            const updatedUser = await res.json(); // DTO trả về
-
-            // Cập nhật lại tên trên localStorage
-            localStorage.setItem("fullName", updatedUser.fullName);
-
+            // Cập nhật thành công
+            localStorage.setItem("fullName", data.fullName);
             showToast("Cập nhật thông tin thành công!", "success");
 
-            // Xóa ô mật khẩu sau khi thành công
             setFormData(prev => ({ ...prev, password: "" }));
 
         } catch (error) {
@@ -164,9 +180,9 @@ export default function ProfilePage({ user }) {
                                     id="email"
                                     name="email"
                                     value={formData.email}
-                                    onChange={handleChange}  
-                                    className="form-input"          
-                                    required                        
+                                    onChange={handleChange}
+                                    className="form-input"
+                                    required
                                 />
                             </div>
 

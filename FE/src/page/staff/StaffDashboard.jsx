@@ -475,10 +475,10 @@ export default function StaffDashboard({ user, userRole }) {
               <option value="pending">Chờ xử lý</option>
               <option value="approved">Đã duyệt</option>
               <option value="assigned">Đã phân công</option>
-              <option value="in progress">Đang thực hiện</option>                         
+              <option value="in progress">Đang thực hiện</option>
               <option value="paid">Đã thanh toán (Chờ bàn giao)</option>
               <option value="declined">Đã từ chối</option>
-              <option value="cancelled">Đã hủy</option>             
+              <option value="cancelled">Đã hủy</option>
               <option value="completed">Đã hoàn tất </option>
             </select>
           </div>
@@ -565,7 +565,7 @@ export default function StaffDashboard({ user, userRole }) {
                         <td>
                           {/* Hiển thị cả 2 trạng thái nếu cần */}
                           {getStatusBadge(appt.status)}
-                          
+
                         </td>
 
                         <td>
@@ -602,7 +602,7 @@ export default function StaffDashboard({ user, userRole }) {
                             // 3.  ĐÃ THANH TOÁN & CHECKLIST HOÀN THÀNH: BÀN GIAO XE ***
                           ) : (isPaid && isChecklistCompleted) ? (
                             <button
-                              className="btn-action btn-handover" 
+                              className="btn-action btn-handover"
                               onClick={() => handleHandover(appt.bookingId)}
                               disabled={actionLoading === appt.bookingId}
                             >

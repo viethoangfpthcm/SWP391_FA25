@@ -88,8 +88,8 @@ function VehicleMaintenanceSchedule() {
           const validSchedule = Array.isArray(scheduleData) ? scheduleData : [];
           setSchedule(validSchedule);
           setError('');
-          const bookableItem = validSchedule.find(item => item.status === 'OVERDUE') ||
-            validSchedule.find(item => item.status === 'NEXT_TIME');
+          const bookableItem = validSchedule.find(item => item.status === 'NEXT_TIME') ||
+            validSchedule.find(item => item.status === 'OVERDUE');
 
           setNextTimePlanId(bookableItem ? bookableItem.maintenancePlanId : null);
         }
@@ -488,7 +488,7 @@ function VehicleMaintenanceSchedule() {
                 )}
                 {item.status === 'OVERDUE' && (
                   <p className="overdue-info">
-                    <FaExclamationTriangle /> Lịch bảo dưỡng này đã quá hạn! Vui lòng đặt lịch sớm nhất có thể.
+                    <FaExclamationTriangle /> Lịch bảo dưỡng này đã quá hạn! 
                   </p>
                 )}
                 {(item.status === 'NEXT_TIME' || item.status === 'OVERDUE') && item.maintenancePlanId === nextTimePlanId && (

@@ -1,5 +1,7 @@
 package com.se1824.SWP391_FA25.service;
 
+import com.se1824.SWP391_FA25.dto.FeedbackDTO;
+import com.se1824.SWP391_FA25.dto.FeedbackStatsDTO;
 import com.se1824.SWP391_FA25.entity.Booking;
 import com.se1824.SWP391_FA25.entity.Feedback;
 import com.se1824.SWP391_FA25.entity.Users;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FeedbackService {
@@ -23,8 +26,6 @@ public class FeedbackService {
 
     @Autowired
     BookingService bookingService;
-    @Autowired
-    private BookingRepository bookingRepository;
 
     /**
      * Tạo hoặc cập nhật feedback cho booking đã hoàn thành
@@ -73,19 +74,17 @@ public class FeedbackService {
             newFeedback.setComment(feedbackRequest.getComment());
             newFeedback.setFeedbackDate(LocalDateTime.now());
             newFeedback.setCreatedAt(LocalDateTime.now());
-            newFeedback.setIsPublished(false);
+            newFeedback.setIsPublished(true);
             return feedbackRepository.save(newFeedback);
         }
     }
+
     /**
      * Lấy feedback theo booking ID
      */
+
     public Feedback getFeedbackByBookingId(Integer bookingId) {
-        Feedback feedback = feedbackRepository.findByBooking_BookingId(bookingId);
-        if (feedback == null) {
-            throw new ResourceNotFoundException("This booking are not feedback by customer .");
-        }
-        return feedback;
+        return feedbackRepository.findByBooking_BookingId(bookingId);
     }
 
     /**
@@ -115,9 +114,49 @@ public class FeedbackService {
     }
 
     /**
-     * Lấy tất cả feedback đã published của 1 center (cho public view)
+     * Lấy thống kê (trung bình, số lượng) và danh sách feedback
+     * đã published của 1 center.
      */
-    public List<Feedback> getPublishedFeedbacksByCenter(Integer centerId) {
-        return feedbackRepository.findByBooking_ServiceCenter_IdAndIsPublishedTrue(centerId);
+    public FeedbackStatsDTO getFeedbackStatsByCenter(Integer centerId) {
+        // 1. Lấy danh sách Feedback (Entity) từ DB
+        List<Feedback> feedbacks = feedbackRepository.findByBooking_ServiceCenter_IdAndIsPublishedTrue(centerId);
+
+        // 2. Tính toán thống kê
+        long totalRatings = feedbacks.size();
+
+        double averageRating = 0.0;
+        if (totalRatings > 0) {
+            averageRating = feedbacks.stream()
+                    .mapToDouble(Feedback::getRating) // Lấy ra rating
+                    .average()                      // Tính trung bình
+                    .orElse(0.0);             // Nếu rỗng thì là 0
+        }
+
+        List<FeedbackDTO> feedbackDTOs = feedbacks.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+        FeedbackStatsDTO stats = new FeedbackStatsDTO();
+        stats.setAverageRating(averageRating);
+        stats.setTotalRatings(totalRatings);
+        stats.setFeedbacks(feedbackDTOs);
+
+        return stats;
+    }
+
+    /**
+     * Helper method để chuyển Entity (Feedback) sang DTO (FeedbackDTO).
+     */
+    private FeedbackDTO convertToDto(Feedback feedback) {
+        FeedbackDTO dto = new FeedbackDTO();
+        dto.setFeedbackId(feedback.getFeedbackId());
+        dto.setBookingId(feedback.getBooking().getBookingId());
+        dto.setUserName(feedback.getUser().getFullName());
+        dto.setLicensePlate(feedback.getBooking().getVehicle().getLicensePlate());
+        dto.setCenterName(feedback.getBooking().getServiceCenter().getName());
+        dto.setRating(feedback.getRating());
+        dto.setComment(feedback.getComment());
+        dto.setFeedbackDate(feedback.getFeedbackDate());
+        dto.setIsPublished(feedback.getIsPublished());
+        return dto;
     }
 }

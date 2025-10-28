@@ -9,10 +9,11 @@ import {
   FaArrowLeft,
   FaTrash,
 } from "react-icons/fa";
-import "./AdminDashboard.css"; 
+import "./PartManagement.css"; // ✅ ĐÃ CHỈNH: dùng file CSS riêng cho Part Management
 import Sidebar from "../../page/sidebar/sidebar.jsx";
 import { useNavigate, useParams } from "react-router-dom";
-import ConfirmationModal from '../../components/ConfirmationModal.jsx'; 
+import ConfirmationModal from '../../components/ConfirmationModal.jsx';
+
 
 // --- Helper Functions ---
 const isValidPartName = (name) => {
@@ -395,6 +396,7 @@ export default function PartManagement() {
                      value={formData.partTypeId} onChange={handleChange}
                      className={formErrors.partTypeId ? 'input-error' : ''}
                      aria-describedby="partTypeIdError" aria-invalid={!!formErrors.partTypeId}
+                     disabled={!!editingPart}
                    >
                      <option value="">-- Chọn loại --</option>
                      {partTypes.map((type) => (
