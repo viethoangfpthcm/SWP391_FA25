@@ -435,6 +435,7 @@ export default function AdminDashboard() {
               <option value="staff">Staff</option>
               <option value="technician">Technician</option>
               <option value="customer">Customer</option>
+              <option value="manager">Manager</option>
             </select>
           </div>
           <div className="filter-group">
@@ -608,6 +609,7 @@ export default function AdminDashboard() {
                     <option value="STAFF">Staff</option>
                     <option value="TECHNICIAN">Technician</option>
                     <option value="CUSTOMER">Customer</option>
+                    <option value="MANAGER">Manager</option>
                   </select>
                   {formErrors.role && <span id="roleError" className="error-text">{formErrors.role}</span>}
                 </div>

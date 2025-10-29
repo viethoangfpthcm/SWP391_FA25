@@ -8,6 +8,21 @@ if (import.meta.env.MODE !== "development") {
   console.log = () => { };
 }
 
+const BOOKING_STATUS_MAP = {
+  PENDING: { text: 'Chờ xử lý', className: 'status-pending' },
+  APPROVED: { text: 'Đã duyệt', className: 'status-approved' }, // <-- Sẽ kiểm tra CSS
+  ASSIGNED: { text: 'Đã gán thợ', className: 'status-assigned' }, // <-- Sẽ kiểm tra CSS
+  IN_PROGRESS: { text: 'Đang xử lý', className: 'status-inprogress' }, // <-- Sửa className
+  COMPLETED: { text: 'Hoàn thành', className: 'status-completed' },
+  PAID: { text: 'Đã thanh toán', className: 'status-paid' },     // (Chờ bàn giao)
+  CANCELLED: { text: 'Đã hủy', className: 'status-cancelled' }, // <-- Sẽ kiểm tra CSS
+  DECLINED: { text: 'Đã từ chối', className: 'status-declined' },
+  // Trạng thái dự phòng
+  DEFAULT: { text: 'Không rõ', className: 'status-default' }
+};
+const getStatusDisplay = (status) => {
+  return BOOKING_STATUS_MAP[status] || { text: status || 'Không rõ', className: 'status-default' };
+};
 export default function StaffDashboard({ user, userRole }) {
   const [appointments, setAppointments] = useState([]);
   const [technicians, setTechnicians] = useState([]);
@@ -15,7 +30,7 @@ export default function StaffDashboard({ user, userRole }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("pending");
+  const [statusFilter, setStatusFilter] = useState("all");
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
 
@@ -374,34 +389,14 @@ export default function StaffDashboard({ user, userRole }) {
       setActionLoading(null);
     }
   };
-  // *** KẾT THÚC HÀM MỚI ***
 
-  // Hàm tạo badge trạng thái
-  const getStatusBadge = (status) => {
-    const statusText = status ? status.toLowerCase() : 'unknown';
-    let label = status || 'Không xác định';
-    let className = 'status-default';
 
-    switch (statusText) {
-      case 'pending': label = 'Chờ xử lý'; className = 'status-pending'; break;
-      case 'approved': label = 'Đã duyệt'; className = 'status-approved'; break;
-      case 'assigned': label = 'Đã phân công'; className = 'status-assigned'; break;
-      case 'in progress': label = 'Đang thực hiện'; className = 'status-inprogress'; break;
-      // 'Completed' bây giờ là trạng thái cuối cùng (sau khi bàn giao)
-      case 'completed': label = 'Đã hoàn tất'; className = 'status-completed'; break;
-      case 'declined': label = 'Đã từ chối'; className = 'status-declined'; break;
-      case 'paid': label = 'Đã thanh toán'; className = 'status-paid'; break; // (Chờ bàn giao)
-      case 'cancelled': label = 'Đã hủy'; className = 'status-declined'; break;
-    }
-
-    return <span className={`status-badge ${className}`}>{label}</span>;
-  };
 
   // *** SỬA LẠI HÀM NÀY: Staff có thể xem checklist sớm hơn ***
   const hasChecklist = (status) => {
     const statusText = status ? status.toLowerCase() : '';
     // Staff có thể xem checklist ngay khi đã phân công
-    return ['assigned', 'in progress', 'completed', 'paid'].includes(statusText);
+    return ['assigned', 'in_progress', 'completed', 'paid'].includes(statusText);
   };
 
   // Hàm điều hướng đến trang xem Checklist
@@ -409,6 +404,41 @@ export default function StaffDashboard({ user, userRole }) {
     // Sử dụng Booking ID để gọi API Checklist của Staff
     navigate(`/staff/checklist/${bookingId}`);
   };
+
+  const filteredAppointments = appointments.filter(appt =>
+    statusFilter === 'all' || (appt.status && appt.status.toLowerCase() === statusFilter)
+  );
+
+  const statusOrder = [
+    'pending',
+    'approved',
+    'assigned',
+    'in_progress',
+    'paid',
+    'completed',
+    'declined',
+    'cancelled'
+  ];
+
+  const sortedAppointments = [...filteredAppointments].sort((a, b) => {
+    const statusA = a.status?.toLowerCase().trim() || '';
+    const statusB = b.status?.toLowerCase().trim() || '';
+
+    const rankA = statusOrder.indexOf(statusA);
+    const rankB = statusOrder.indexOf(statusB);
+
+    // DÒNG DEBUG: Dán dòng này vào để xem chính xác nó đang so sánh gì
+    console.log(`Comparing: '${statusA}' (rank ${rankA}) vs '${statusB}' (rank ${rankB})`);
+
+    const finalRankA = rankA === -1 ? Infinity : rankA;
+    const finalRankB = rankB === -1 ? Infinity : rankB;
+
+    if (finalRankA !== finalRankB) {
+      return finalRankA - finalRankB;
+    }
+
+    return new Date(a.bookingDate) - new Date(b.bookingDate);
+  });
   // --- Auto refresh danh sách lịch hẹn mỗi 10 giây ---
   useEffect(() => {
     const interval = setInterval(() => {
@@ -437,9 +467,7 @@ export default function StaffDashboard({ user, userRole }) {
     );
   }
 
-  const filteredAppointments = appointments.filter(appt =>
-    statusFilter === 'all' || (appt.status && appt.status.toLowerCase() === statusFilter)
-  );
+
 
   return (
     <div className="dashboard-container">
@@ -475,11 +503,11 @@ export default function StaffDashboard({ user, userRole }) {
               <option value="pending">Chờ xử lý</option>
               <option value="approved">Đã duyệt</option>
               <option value="assigned">Đã phân công</option>
-              <option value="in progress">Đang thực hiện</option>
+              <option value="in_progress">Đang thực hiện</option>
               <option value="paid">Đã thanh toán (Chờ bàn giao)</option>
+              <option value="completed">Đã hoàn tất</option>
               <option value="declined">Đã từ chối</option>
               <option value="cancelled">Đã hủy</option>
-              <option value="completed">Đã hoàn tất </option>
             </select>
           </div>
         </div>
@@ -502,16 +530,33 @@ export default function StaffDashboard({ user, userRole }) {
                 </tr>
               </thead>
               <tbody>
-                {!error && filteredAppointments.length > 0 ? (
-                  filteredAppointments.map((appt) => {
-                    const statusText = appt.status?.toLowerCase();
-                    const checklistStatusText = appt.checklistStatus?.toLowerCase();
+                {loading ? (
+                  <tr>
+                    <td colSpan="10" className="empty-state"> 
+                      <FaSpinner className="spinner" /> Đang tải lịch hẹn...
+                    </td>
+                  </tr>
+                ) : error && sortedAppointments.length === 0 ? (
+                  <tr>
+                    <td colSpan="10" className="empty-state error-in-table"> 
+                      <FaExclamationTriangle />
+                      <p>Đã xảy ra lỗi khi tải dữ liệu.</p>
+                    </td>
+                  </tr>
+                ) : sortedAppointments.length > 0 ? (
+                  sortedAppointments.map((appt) => {
+                    const statusText = appt.status?.toLowerCase() || '';
+                    const checklistStatusText = appt.checklistStatus?.toLowerCase() || '';
 
                     const isPending = statusText === 'pending';
                     const isApproved = statusText === 'approved';
+                    const isAssigned = statusText === 'assigned';
+                    const isInProgress = statusText === 'in_progress';
                     const isPaid = statusText === 'paid';
+                    const isCompleted = statusText === 'completed'; 
                     const isChecklistCompleted = checklistStatusText === 'completed';
-                    const hasAssignedTech = appt.technicianId || appt.technicianName;
+                    const hasAssignedTech = !!appt.technicianName; 
+
 
                     return (
                       <tr key={appt.bookingId}>
@@ -526,10 +571,8 @@ export default function StaffDashboard({ user, userRole }) {
                         <td><span className="cell-sub">{appt.vehicleModel}</span></td>
                         <td><span className="cell-sub">{appt.currentKm ? appt.currentKm.toLocaleString() + ' km' : 'N/A'}</span></td>
 
-
                         <td>
                           {isApproved && !hasAssignedTech ? (
-                            // CHỈ HIỂN THỊ DROPDOWN KHI ĐÃ DUYỆT VÀ CHƯA PHÂN CÔNG
                             <div className="technician-select-wrapper">
                               <select
                                 className="technician-select"
@@ -548,102 +591,66 @@ export default function StaffDashboard({ user, userRole }) {
                                   <option value="" disabled>Không có KTV</option>
                                 )}
                               </select>
-                              {/* HIỂN THỊ CẢNH BÁO BẬN */}
                               {selectedTechnicians[appt.bookingId] && technicians.find(t => t.userId === selectedTechnicians[appt.bookingId])?.activeBookings > 0 && (
                                 <span className="tech-note">Đang bận {technicians.find(t => t.userId === selectedTechnicians[appt.bookingId])?.activeBookings} việc</span>
                               )}
                             </div>
                           ) : isPending ? (
-                            // NẾU LÀ PENDING, HIỂN THỊ CHỜ DUYỆT
                             <span className="cell-sub">Chờ duyệt</span>
                           ) : (
-                            // CÁC TRƯỜNG HỢP KHÁC HIỂN THỊ TÊN KTV (ĐÃ PHÂN CÔNG, ĐANG LÀM, HOÀN THÀNH)
-                            <span className="cell-sub">{appt.technicianName || getTechnicianName(appt.technicianId) || '—'}</span>
+                            <span className="cell-sub">{appt.technicianName || '—'}</span> 
                           )}
                         </td>
-
                         <td>
-                          {/* Hiển thị cả 2 trạng thái nếu cần */}
-                          {getStatusBadge(appt.status)}
-
+                          <span className={`status-badge ${getStatusDisplay(appt.status).className}`}>
+                            {getStatusDisplay(appt.status).text}
+                          </span>
                         </td>
 
                         <td>
-                          {/* *** CẬP NHẬT LOGIC NÚT BẤM *** */}
                           {isPending ? (
-                            // 1. TRẠNG THÁI CHỜ XỬ LÝ: DUYỆT / TỪ CHỐI
                             <div className="action-buttons-cell">
-                              <button
-                                className="btn-action btn-approve"
-                                onClick={() => handleApprove(appt.bookingId)}
-                                disabled={actionLoading === appt.bookingId}
-                              >
+                              <button className="btn-action btn-approve" onClick={() => handleApprove(appt.bookingId)} disabled={actionLoading === appt.bookingId}>
                                 {actionLoading === appt.bookingId ? <FaSpinner className="spinner-icon" /> : <FaCheck />} Duyệt
                               </button>
-                              <button
-                                className="btn-action btn-decline"
-                                onClick={() => handleDecline(appt.bookingId)}
-                                disabled={actionLoading === appt.bookingId}
-                              >
+                              <button className="btn-action btn-decline" onClick={() => handleDecline(appt.bookingId)} disabled={actionLoading === appt.bookingId}>
                                 {actionLoading === appt.bookingId ? <FaSpinner className="spinner-icon" /> : <FaTimes />} Từ chối
                               </button>
                             </div>
                           ) : isApproved && !hasAssignedTech ? (
-                            // 2. TRẠNG THÁI ĐÃ DUYỆT & CHƯA PHÂN CÔNG: PHÂN CÔNG
                             <div className="action-buttons-cell">
-                              <button
-                                className="btn-action btn-assign"
-                                onClick={() => handleAssign(appt.bookingId)}
-                                disabled={!selectedTechnicians[appt.bookingId] || actionLoading === appt.bookingId}
-                              >
+                              <button className="btn-action btn-assign" onClick={() => handleAssign(appt.bookingId)} disabled={!selectedTechnicians[appt.bookingId] || actionLoading === appt.bookingId}>
                                 {actionLoading === appt.bookingId ? <FaSpinner className="spinner-icon" /> : <FaCheck />} Phân công
                               </button>
                             </div>
-                            // 3.  ĐÃ THANH TOÁN & CHECKLIST HOÀN THÀNH: BÀN GIAO XE ***
-                          ) : (isPaid && isChecklistCompleted) ? (
-                            <button
-                              className="btn-action btn-handover"
-                              onClick={() => handleHandover(appt.bookingId)}
-                              disabled={actionLoading === appt.bookingId}
-                            >
+                          ) : isPaid && isChecklistCompleted ? ( 
+                            <button className="btn-action btn-handover" onClick={() => handleHandover(appt.bookingId)} disabled={actionLoading === appt.bookingId}>
                               {actionLoading === appt.bookingId ? <FaSpinner className="spinner-icon" /> : <FaCheck />} Bàn giao
                             </button>
-                            // 4. TRẠNG THÁI ĐÃ CÓ CHECKLIST (assigned, in progress, v.v.): XEM
-                          ) : hasChecklist(statusText) ? (
+                          ) : (isAssigned || isInProgress || isPaid || isCompleted) ? (
                             <button
                               className="btn-action btn-view"
                               onClick={() => handleViewChecklist(appt.bookingId)}
                               disabled={actionLoading === appt.bookingId}
+                              title="Xem chi tiết checklist"
                             >
                               <FaEye /> Xem
                             </button>
                           ) : (
-                            // 5. TRẠNG THÁI CÒN LẠI (Declined, Cancelled, Completed...)
                             <span className="cell-sub">—</span>
                           )}
                         </td>
-
                       </tr>
                     );
                   })
                 ) : (
-                  !error && (
-                    <tr>
-                      <td colSpan="10" className="empty-state">
-                        <p>
-                          s   {statusFilter === 'all'
-                            ? 'Hiện không có lịch hẹn nào.'
-                            : `Không có lịch hẹn nào ở trạng thái "${statusFilter}".`}
-                        </p>
-                      </td>
-                    </tr>
-                  )
-                )}
-                {error && filteredAppointments.length === 0 && (
                   <tr>
-                    <td colSpan="10" className="empty-state error-in-table">
-                      <FaExclamationTriangle />
-                      a     <p>Đã xảy ra lỗi khi tải dữ liệu.</p>
+                    <td colSpan="10" className="empty-state"> 
+                      <p>
+                        {statusFilter === 'all'
+                          ? 'Hiện không có lịch hẹn nào.'
+                          : `Không có lịch hẹn nào ở trạng thái "${getStatusDisplay(statusFilter.toUpperCase()).text}".`}
+                      </p>
                     </td>
                   </tr>
                 )}

@@ -58,7 +58,7 @@ public class TechnicianService {
         }
 
         dto.setBookingDate(booking.getBookingDate());
-        dto.setStatus(booking.getStatus());
+        dto.setStatus(booking.getStatus().name());
         dto.setNote(booking.getNote());
         if (booking.getMaintenancePlan() != null) {
             dto.setMaintenancePlanName(booking.getMaintenancePlan().getName());

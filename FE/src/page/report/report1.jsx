@@ -14,10 +14,11 @@ import "./report1.css";
 // Hàm format nằm ngoài component
 const formatTechStatus = (status) => {
   switch (status) {
-    case 'TỐT': return 'Tốt';
-    case 'HIỆU_CHỈNH': return 'Hiệu chỉnh';
-    case 'SỬA_CHỮA': return 'Sửa chữa';
-    case 'THAY_THẾ': return 'Thay thế';
+    case 'GOOD': return 'Tốt';
+    case 'ADJUSTMENT': return 'Hiệu chỉnh';
+    case 'REPAIR': return 'Sửa chữa';
+    case 'REPLACE': return 'Thay thế';
+    case 'PENDING': return 'Chờ kiểm tra';
     default: return status || 'Chưa rõ';
   }
 };
@@ -52,42 +53,62 @@ export default function Report1() {
   useEffect(() => {
     const fetchReportsList = async () => {
       setLoading(true);
-      if (!token || !customerId) { setError("Vui lòng đăng nhập."); setLoading(false); navigate("/"); return; }
+      setError(''); // Reset lỗi trước khi fetch
+      if (!token || !customerId) {
+        setError("Vui lòng đăng nhập.");
+        setLoading(false);
+        navigate("/");
+        return;
+      }
       try {
         const listUrl = `${API_BASE}/api/customer/maintenance/checklists?customerId=${encodeURIComponent(customerId)}`;
         const response = await fetch(listUrl, { headers: { Authorization: `Bearer ${token}` } });
+
         if (!response.ok) {
-          if (response.status === 401) { setError("Phiên đăng nhập hết hạn."); localStorage.clear(); navigate("/"); }
-          else { throw new Error(`Lỗi ${response.status}`); } return;
+          if (response.status === 401) {
+            setError("Phiên đăng nhập hết hạn.");
+            localStorage.clear();
+            navigate("/");
+          } else {
+            throw new Error(`Lỗi tải danh sách: ${response.status}`);
+          }
+          return; // Dừng lại nếu có lỗi
         }
+
         const data = await response.json();
         const processedData = data.sort((a, b) => {
-          // 🔹 Ưu tiên: biên bản đang chờ hoặc đang xử lý trước
           const getPriority = (report) => {
             const s = report.status;
             const bS = report.bookingStatus;
             if (s === "PENDING_APPROVAL") return 1;
-            if (s === "In Progress") return 2;
-            if (s === "COMPLETED" && bS !== "Completed") return 3;
-            if (s === "COMPLETED" && bS === "Completed") return 4;
+            if (s === "IN_PROGRESS") return 2;
+            if (s === "COMPLETED" && bS !== "COMPLETED") return 3;
+            if (s === "COMPLETED" && bS === "COMPLETED") return 4;
             return 5;
           };
 
           const priorityA = getPriority(a);
           const priorityB = getPriority(b);
           if (priorityA !== priorityB) return priorityA - priorityB;
-
-          // 🔹 Nếu cùng nhóm, biên bản mới hơn sẽ lên trước
           const dateA = a.createdDate ? new Date(a.createdDate).getTime() : 0;
           const dateB = b.createdDate ? new Date(b.createdDate).getTime() : 0;
-          return dateB - dateA; // mới nhất trước
+          return dateB - dateA;
         });
 
-        setReportsList(processedData); setError('');
-      } catch (err) { console.error("Lỗi tải danh sách:", err); setError("Không thể tải danh sách."); }
-      finally { setLoading(false); }
+        setReportsList(processedData);
+        setError('');
+
+      } catch (err) {
+        console.error("Lỗi tải danh sách biên bản:", err);
+        setError(err.message || "Không thể tải danh sách biên bản.");
+      }
+      finally {
+        setLoading(false);
+      }
     };
+
     fetchReportsList();
+
   }, [token, customerId, navigate, API_BASE, lastUpdated]);
 
   const handleViewDetails = async (bookingId) => {
@@ -269,9 +290,9 @@ export default function Report1() {
             {detailLoading && (<div className="loading-state modal-loading"><FaSpinner className="spinner-icon" /> Tải chi tiết...</div>)}
             {!detailLoading && currentReport && (() => {
 
-              const isReportCompleted = currentReport.status === "Completed";
+              const isReportCompleted = currentReport.status === "COMPLETED";
               const hasPendingTechnicianStatus = currentReport.details.some(
-                d => d.status === 'Pending' || !d.status
+                d => d.status === 'PENDING' || !d.status
               );
 
 
@@ -280,7 +301,15 @@ export default function Report1() {
                   <header className="document-header">
                     <div className="doc-left"><div className="doc-title">BIÊN BẢN</div><div className="doc-meta"><span>Mã BB: <strong>#{currentReport.id}</strong></span></div></div>
 
-                    <div className="doc-status"><div className={`status-pill ${currentReport.status?.toLowerCase()}`}>{currentReport.status === "In Progress" ? "Đang xử lý" : (isReportCompleted ? "Đã hoàn thành" : currentReport.status || '?')}</div></div>
+                    <div className="doc-status">
+                      <div className={`status-pill ${currentReport.status?.toLowerCase().replace('_', '-')}`}>
+                        {currentReport.status === "IN_PROGRESS" ? "Đang xử lý"
+                          : currentReport.status === "PENDING_APPROVAL" ? "Chờ duyệt cuối"
+                            : currentReport.status === "COMPLETED" ? "Đã hoàn thành"
+                              : currentReport.status || '?'}
+                      </div>
+
+                    </div>
                   </header>
                   <section className="document-body">
                     <div className="left-col">
@@ -310,9 +339,9 @@ export default function Report1() {
                           const isDeclined = d.approvalStatus === "DECLINED";
                           const isApproved = !isDeclined;
                           const status = isDeclined ? 'declined' : 'approved';
-                          const isTechStatusPending = d.status === 'Pending' || !d.status;
-                          const isDisabled = isReportCompleted || isTechStatusPending;
 
+                          const isTechStatusPending = d.status === 'PENDING' || !d.status;
+                          const isDisabled = isReportCompleted || isTechStatusPending;
                           const techStatusClass = `tech-status-${(d.status || 'unknown').toLowerCase().replace('_', '-')}`;
                           return (
                             <div key={d.id} className="detail-row">
@@ -452,10 +481,9 @@ export default function Report1() {
                       .toLowerCase()
                       .replace("_", "-")}`;
 
-                    const isCompleted = report.status === "Completed";
-                    const isPaid = report.bookingStatus === "Paid";
-                    const isBookingCompleted =
-                      report.bookingStatus === "Completed";
+                    const isCompleted = report.status === "COMPLETED";
+                    const isPaid = report.bookingStatus === "PAID";
+                    const isBookingCompleted = report.bookingStatus === "COMPLETED";
                     const totalAmount = report.totalCostApproved || 0;
 
                     const showPayButton =
@@ -485,9 +513,10 @@ export default function Report1() {
                             </h3>
                             <p>
                               Mã BB: #{report.id} • Trạng thái:{" "}
-                              {report.status === "COMPLETED"
-                                ? "Chờ thanh toán"
-                                : report.status || "?"}
+                              {report.status === "IN_PROGRESS" ? "Đang xử lý"
+                                : report.status === "PENDING_APPROVAL" ? "Chờ duyệt cuối"            
+                                  : report.status === "COMPLETED" ? (isPaid || isBookingCompleted ? "Đã hoàn thành" : "Chờ thanh toán")
+                                    : report.status || "?"} 
                             </p>
                           </div>
                           <div className="report-card-action">

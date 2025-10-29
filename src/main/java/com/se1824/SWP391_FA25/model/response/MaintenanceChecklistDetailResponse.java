@@ -21,8 +21,8 @@ public class MaintenanceChecklistDetailResponse {
     String itemName;
     String actionType;
 
-    String status; // Trạng thái kỹ thuật viên cập nhật (Tốt, Sửa chữa, Thay thế)
-    String approvalStatus; // Trạng thái khách hàng phê duyệt (Approved, Declined)
+    String status;
+    String approvalStatus;
     String note; // Ghi chú của kỹ thuật viên
     String customerNote; // Ghi chú của khách hàng
 

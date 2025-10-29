@@ -414,6 +414,13 @@
 .back-button:active {
   transform: scale(0.98); 
 }
+.active-booking-item.status-approved {
+  border-left: 5px solid #8a4af3; 
+}
+
+.active-booking-item.status-assigned {
+  border-left: 5px solid #007bff; 
+}
 
 /* ========== ANIMATION  ========== */
 @keyframes fadeIn {

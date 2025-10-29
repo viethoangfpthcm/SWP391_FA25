@@ -13,6 +13,15 @@ import Sidebar from "../sidebar/sidebar";
 import { useNavigate } from "react-router-dom";
 import "./technicantask.css";
 import "react-toastify/dist/ReactToastify.css";
+const BOOKING_STATUS_MAP = {
+    ASSIGNED: { text: 'Chờ xử lý', className: 'pending' },
+    IN_PROGRESS: { text: 'Đang xử lý', className: 'in-progress' },
+    COMPLETED: { text: 'Hoàn thành', className: 'completed' },
+    DEFAULT: { text: 'Không rõ', className: 'default' }
+};
+const getStatusDisplay = (status) => {
+    return BOOKING_STATUS_MAP[status] || { text: status || 'Không rõ', className: 'default' };
+};
 
 export default function TechnicianTask() {
     const [userInfo, setUserInfo] = useState({ fullName: "Đang tải...", role: "" });
@@ -35,19 +44,7 @@ export default function TechnicianTask() {
     const token = localStorage.getItem("token");
     const API_BASE = "https://103.90.226.216:8443";
 
-    // Dịch trạng thái sang tiếng Việt
-    const translateStatus = (status) => {
-        switch (status) {
-            case "Assigned":
-                return "Chờ xử lý";
-            case "In Progress":
-                return "Đang thực hiện";
-            case "Completed":
-                return "Hoàn thành";
-            default:
-                return status;
-        }
-    };
+
 
     // Fetch thông tin người dùng
     const fetchUserInfo = async () => {
@@ -94,9 +91,9 @@ export default function TechnicianTask() {
             const data = await res.json();
 
             // Đếm số lượng theo trạng thái
-            const pending = data.filter((t) => t.status === "Assigned").length;
-            const inProgress = data.filter((t) => t.status === "In Progress").length;
-            const completed = data.filter((t) => t.status === "Completed").length;
+            const pending = data.filter((t) => t.status === "ASSIGNED").length;
+            const inProgress = data.filter((t) => t.status === "IN_PROGRESS").length;
+            const completed = data.filter((t) => t.status === "COMPLETED").length;
 
             setTasks(data);
             setFilteredTasks(data);
@@ -120,13 +117,17 @@ export default function TechnicianTask() {
 
     // Lọc theo trạng thái
     useEffect(() => {
-        if (filterStatus === "all") setFilteredTasks(tasks);
-        else if (filterStatus === "pending")
-            setFilteredTasks(tasks.filter((t) => t.status === "Assigned"));
-        else if (filterStatus === "in-progress")
-            setFilteredTasks(tasks.filter((t) => t.status === "In Progress"));
-        else if (filterStatus === "completed")
-            setFilteredTasks(tasks.filter((t) => t.status === "Completed"));
+        if (filterStatus === "all") {
+            setFilteredTasks(tasks);
+        } else if (filterStatus === "pending") {
+            setFilteredTasks(tasks.filter((t) => t.status === "ASSIGNED"));
+        } else if (filterStatus === "in-progress") {
+            setFilteredTasks(tasks.filter((t) => t.status === "IN_PROGRESS"));
+        } else if (filterStatus === "completed") {
+            setFilteredTasks(tasks.filter((t) => t.status === "COMPLETED"));
+        } else {
+            setFilteredTasks([]);
+        }
     }, [filterStatus, tasks]);
 
     const openKmModal = (bookingId) => {
@@ -241,22 +242,18 @@ export default function TechnicianTask() {
                             <div className="task-list">
                                 {[...filteredTasks]
                                     .sort((a, b) => {
-                                        const order = { "Assigned": 1, "In Progress": 2, "Completed": 3 };
-                                        return order[a.status] - order[b.status];
+                                        const order = { "ASSIGNED": 1, "IN_PROGRESS": 2, "COMPLETED": 3 };
+                                        const rankA = order[a.status] || Infinity;
+                                        const rankB = order[b.status] || Infinity;
+                                        return rankA - rankB;
                                     })
                                     .map((task) => (
                                         <div key={task.bookingId} className="task-card">
                                             <div className="task-header">
                                                 <span
-                                                    className={`status-badge ${
-                                                        task.status === "Assigned"
-                                                            ? "pending"
-                                                            : task.status === "In Progress"
-                                                            ? "in-progress"
-                                                            : "completed"
-                                                    }`}
+                                                    className={`status-badge ${getStatusDisplay(task.status).className}`}
                                                 >
-                                                    {translateStatus(task.status)}
+                                                    {getStatusDisplay(task.status).text}
                                                 </span>
 
                                                 <span className="task-id">
@@ -290,32 +287,18 @@ export default function TechnicianTask() {
                                             </div>
 
                                             <div className="task-footer">
-                                                {task.status === "Assigned" && (
+                                                {task.status === "ASSIGNED" && (
                                                     <button
                                                         className="btn-start"
-                                                        onClick={() =>
-                                                            openKmModal(task.bookingId)
-                                                        }
+                                                        onClick={() => openKmModal(task.bookingId)}
                                                     >
                                                         <FaPlay /> Bắt đầu
                                                     </button>
                                                 )}
-                                                {task.status === "In Progress" && (
+                                                {(task.status === "IN_PROGRESS" || task.status === "COMPLETED") && (
                                                     <button
                                                         className="btn-view"
-                                                        onClick={() =>
-                                                            handleViewTask(task.bookingId)
-                                                        }
-                                                    >
-                                                        <FaEye /> Xem chi tiết
-                                                    </button>
-                                                )}
-                                                {task.status === "Completed" && (
-                                                    <button
-                                                        className="task-btn view completed"
-                                                        onClick={() =>
-                                                            handleViewTask(task.bookingId)
-                                                        }
+                                                        onClick={() => handleViewTask(task.bookingId)}
                                                     >
                                                         <FaEye /> Xem chi tiết
                                                     </button>

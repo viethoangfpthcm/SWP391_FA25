@@ -6,6 +6,21 @@ import './VehicleMaintenanceSchedule.css';
 
 import { FaCalendarAlt, FaTools, FaCheckCircle, FaExclamationTriangle, FaCalendarPlus, FaTimes, FaLock, FaSpinner } from 'react-icons/fa';
 
+const BOOKING_STATUS_MAP = {
+  PENDING:     { text: 'Chờ xử lý',    className: 'pending' },
+  APPROVED:    { text: 'Đã duyệt',     className: 'approved' },
+  ASSIGNED:    { text: 'Đã gán thợ',    className: 'assigned' },
+  IN_PROGRESS: { text: 'Đang xử lý',   className: 'in-progress' },
+  COMPLETED:   { text: 'Hoàn thành',   className: 'completed' },
+  PAID:        { text: 'Đã thanh toán', className: 'paid' },
+  CANCELLED:   { text: 'Đã hủy',       className: 'cancelled' },
+  DECLINED:    { text: 'Đã từ chối',  className: 'declined' },
+  DEFAULT:     { text: 'Không rõ',     className: 'default' }
+};
+
+const getStatusDisplay = (status) => {
+  return BOOKING_STATUS_MAP[status] || { text: status || 'Không rõ', className: 'default' };
+};
 function VehicleMaintenanceSchedule() {
   const { licensePlate } = useParams();
   const [schedule, setSchedule] = useState([]);
@@ -324,14 +339,13 @@ function VehicleMaintenanceSchedule() {
           <div className="active-bookings-section">
             <h2>Lịch hẹn đang xử lý</h2>
             {activeBookings.map(booking => (
-              <div key={booking.bookingId} className={`active-booking-item status-${booking.status?.toLowerCase()}`}>
+              <div key={booking.bookingId} className={`active-booking-item status-${getStatusDisplay(booking.status).className}`}>
                 <p><strong>Trung tâm:</strong> {booking.centerName}</p>
                 <p><strong>Địa chỉ:</strong> {booking.centerAddress}</p>
                 <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
-                <p><strong>Trạng thái:</strong> {booking.status}</p>
-                {booking.status === 'Pending' && (
+                <p><strong>Trạng thái:</strong> {getStatusDisplay(booking.status).text}</p>
+                {booking.status === 'PENDING' && (
                   <button
-                    // *** SỬA LẠI: Gọi hàm mở modal ***
                     onClick={() => handleCancelBookingClick(booking.bookingId)}
                     className="btn-cancel"
                     disabled={bookingLoading}
@@ -379,8 +393,8 @@ function VehicleMaintenanceSchedule() {
                 </div>
                 <div className="form-group">
                   <label htmlFor="note">Ghi chú (Tùy chọn)</label>
-                  <input type="text" id="note" name="note" value={bookingFormData.note} onChange={handleBookingFormChange} placeholder="Yêu cầu thêm (nếu có)..." 
-                      style={{  color: "white" }}/>
+                  <input type="text" id="note" name="note" value={bookingFormData.note} onChange={handleBookingFormChange} placeholder="Yêu cầu thêm (nếu có)..."
+                    style={{ color: "white" }} />
                 </div>
                 <div className="form-actions">
                   <button type="button" onClick={() => setShowBookingForm(false)} className="btn-cancel" disabled={bookingLoading}>Hủy</button>
@@ -488,7 +502,7 @@ function VehicleMaintenanceSchedule() {
                 )}
                 {item.status === 'OVERDUE' && (
                   <p className="overdue-info">
-                    <FaExclamationTriangle /> Lịch bảo dưỡng này đã quá hạn! 
+                    <FaExclamationTriangle /> Lịch bảo dưỡng này đã quá hạn!
                   </p>
                 )}
                 {(item.status === 'NEXT_TIME' || item.status === 'OVERDUE') && item.maintenancePlanId === nextTimePlanId && (
