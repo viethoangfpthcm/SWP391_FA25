@@ -44,6 +44,8 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    private LoginAttemptService loginAttemptService;
 
     public UserResponse register(RegisterRequest us) {
         if (authenticationRepository.findUserByEmail(us.getEmail()) != null) {
@@ -91,12 +93,27 @@ public class AuthenticationService implements UserDetailsService {
     // B3: authenticationManager => compare tk password dưới DB <=> người dùng nhập
 //
     public UserResponse login(String email, String rawPassword) {
+        if (loginAttemptService.isBlocked(email)) {
+            throw new IllegalStateException("Tài khoản của bạn đã bị khóa do nhập sai mật khẩu quá nhiều lần. Vui lòng thử lại sau ít phút.");
+        }
         Users user = authenticationRepository.findUserByEmail(email);
-        if (user == null || !passwordEncoder.matches(rawPassword, user.getPassword())) {
-            throw new BadCredentialsException("Email or password invalid");
-        } else if (!user.getIsActive()) {
+        if (user == null) {
+            throw new BadCredentialsException("Email is invalid");
+        }
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            loginAttemptService.loginFailed(email); // Ghi nhận một lần thất bại
+
+            int attemptsLeft = 3 - loginAttemptService.getAttempts(email);
+            if (attemptsLeft <= 0) {
+                throw new BadCredentialsException("Sai mật khẩu. Tài khoản của bạn đã bị khóa.");
+            }
+            throw new BadCredentialsException("Mật khẩu không chính xác. Bạn còn " + attemptsLeft + " lần thử.");
+        }
+        if (!user.getIsActive()) {
             throw new IllegalStateException("Tài khoản chưa được kích hoạt.");
         }
+
+        loginAttemptService.loginSucceeded(email);
         UserResponse ar = modelMapper.map(user, UserResponse.class);
         String token = tokenService.generateToken(user);
         ar.setToken(token);

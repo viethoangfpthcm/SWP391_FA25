@@ -49,7 +49,7 @@ public class AdminService {
         log.info("Admin {} creating user with role {}", adminId, request.getRole());
         validateAdminRole(adminId);
 
-        if (request.getRole() != UserRole.STAFF && request.getRole() != UserRole.TECHNICIAN && request.getRole() != UserRole.CUSTOMER) {
+        if (request.getRole() != UserRole.STAFF && request.getRole() != UserRole.TECHNICIAN && request.getRole() != UserRole.CUSTOMER && request.getRole() != UserRole.MANAGER) {
             throw new InvalidDataException("Can only create STAFF or TECHNICIAN or CUSTOMER roles.");
         }
 
@@ -60,7 +60,7 @@ public class AdminService {
             throw new InvalidDataException("Phone already exists: " + request.getPhone());
         }
         Users user = new Users();
-        if (request.getRole() == UserRole.STAFF || request.getRole() == UserRole.TECHNICIAN) {
+        if (request.getRole() == UserRole.STAFF || request.getRole() == UserRole.TECHNICIAN || request.getRole() == UserRole.MANAGER) {
             if (request.getCenterId() == null) {
                 throw new InvalidDataException("Service center is required for STAFF and TECHNICIAN");
             }
