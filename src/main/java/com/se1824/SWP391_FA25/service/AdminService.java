@@ -4,6 +4,8 @@ import com.se1824.SWP391_FA25.dto.PaymentDTO;
 import com.se1824.SWP391_FA25.dto.StaffBookingDTO;
 import com.se1824.SWP391_FA25.dto.UserManagementDTO;
 import com.se1824.SWP391_FA25.entity.*;
+import com.se1824.SWP391_FA25.enums.ApprovalStatus;
+import com.se1824.SWP391_FA25.enums.BookingStatus;
 import com.se1824.SWP391_FA25.enums.UserRole;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
@@ -353,7 +355,7 @@ public class AdminService {
         List<Long> counts = new ArrayList<>();
 
         for (Object[] result : results) {
-            labels.add((String) result[0]);
+            labels.add(((BookingStatus) result[0]).name());
 
             counts.add((Long) result[1]); // Số lượng
         }
@@ -372,7 +374,9 @@ public class AdminService {
         validateAdminRole(authService.getCurrentAccount().getUserId());
         log.info("Fetching part analytics for center: {}, month: {}, year: {}", centerId, month, year);
 
-        List<Object[]> results = checklistDetailRepo.findPartUsageStatsByCenterAndMonthAndYear(centerId, month, year);
+        List<Object[]> results = checklistDetailRepo.findPartUsageStatsByCenterAndMonthAndYear(
+                centerId, month, year, ApprovalStatus.APPROVED //
+        );
 
         List<String> labels = new ArrayList<>();
         List<Long> counts = new ArrayList<>();
@@ -437,7 +441,7 @@ public class AdminService {
         }
         dto.setPaymentDate(payment.getPaymentDate());
         dto.setPaymentMethod(payment.getPaymentMethod());
-        dto.setStatus(payment.getStatus());
+        dto.setStatus(payment.getStatus().name());
         dto.setNote(payment.getNote());
         BigDecimal laborCost = (payment.getLaborCost() == null) ? BigDecimal.ZERO : payment.getLaborCost();
         BigDecimal materialCost = (payment.getMaterialCost() == null) ? BigDecimal.ZERO : payment.getMaterialCost();
@@ -473,7 +477,7 @@ public class AdminService {
         dto.setVehicleModel(booking.getVehicle().getModel());
         dto.setCurrentKm(booking.getVehicle().getCurrentKm());
         dto.setBookingDate(booking.getBookingDate());
-        dto.setStatus(booking.getStatus());
+        dto.setStatus(booking.getStatus().name());
         dto.setNote(booking.getNote());
         dto.setCenterName(booking.getServiceCenter().getName());
         if (booking.getAssignedTechnician() != null) {
@@ -483,8 +487,13 @@ public class AdminService {
         }
         checklistRepo.findByBooking_BookingId(booking.getBookingId())
                 .ifPresent(checklist -> {
-                    dto.setChecklistStatus(checklist.getStatus());
-                    log.debug("Found checklist for booking {}: status = {}", booking.getBookingId(), checklist.getStatus());
+                    if (checklist.getStatus() != null) {
+                        dto.setChecklistStatus(checklist.getStatus().name());
+                        log.debug("Found checklist for booking {}: status = {}", booking.getBookingId(), checklist.getStatus().name());
+                    } else {
+                        dto.setChecklistStatus(null);
+                        log.debug("Found checklist for booking {} but status is null", booking.getBookingId());
+                    }
                 });
         boolean feedbackExists = feedbackRepository.existsByBooking_BookingId(booking.getBookingId());
         dto.setHasFeedback(feedbackExists);

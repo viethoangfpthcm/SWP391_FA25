@@ -1,5 +1,6 @@
 package com.se1824.SWP391_FA25.entity;
 
+import com.se1824.SWP391_FA25.enums.ChecklistStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -46,8 +47,9 @@ public class MaintenanceChecklist {
     @Column(name = "end_time")
     LocalDateTime endTime;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
-    String status;
+    ChecklistStatus status;
 
     @Column(name = "note", length = 1000)
     String note;

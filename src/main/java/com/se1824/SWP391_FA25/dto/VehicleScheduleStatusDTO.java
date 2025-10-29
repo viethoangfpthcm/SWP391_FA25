@@ -13,12 +13,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VehicleScheduleStatusDTO {
-    private Integer maintenancePlanId;
-    private String planName; // Ví dụ: "Bảo dưỡng 20,000 km / 24 tháng"
-    private Integer intervalKm;
-    private Integer intervalMonth;
-    private LocalDate planDate;    // Ngày dự kiến từ DB
-    private LocalDate deadline;
-    private String status; // ON_TIME, EXPIRED, NEXT_TIME
-    private String description;
+    Integer maintenancePlanId;
+    String planName;
+    Integer intervalKm;
+    Integer intervalMonth;
+    LocalDate planDate;
+    LocalDate deadline;
+    String status;
+    String description;
 }

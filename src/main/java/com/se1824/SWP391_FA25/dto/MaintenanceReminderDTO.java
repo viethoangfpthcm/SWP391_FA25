@@ -8,7 +8,7 @@ public class MaintenanceReminderDTO {
     private String licensePlate;
     private String model;
     private String message;
-    private String severity; // CRITICAL, WARNING
+    private String severity;
     private Integer currentKm;
     private Integer nextMaintenanceKm;
 }

@@ -5,6 +5,7 @@ import com.se1824.SWP391_FA25.dto.FeedbackStatsDTO;
 import com.se1824.SWP391_FA25.entity.Booking;
 import com.se1824.SWP391_FA25.entity.Feedback;
 import com.se1824.SWP391_FA25.entity.Users;
+import com.se1824.SWP391_FA25.enums.BookingStatus;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.repository.BookingRepository;
 import com.se1824.SWP391_FA25.repository.FeedbackRepository;
@@ -44,7 +45,7 @@ public class FeedbackService {
         }
 
         // 2. KIỂM TRA: Chỉ cho phép feedback khi booking đã hoàn thành
-        if (!"Completed".equalsIgnoreCase(booking.getStatus())) {
+        if (booking.getStatus() != BookingStatus.COMPLETED) {
             throw new IllegalStateException("Must be complete the booking.");
         }
 

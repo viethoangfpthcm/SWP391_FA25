@@ -200,7 +200,10 @@
 .status-badge.completed {
   background-color: #10b981;
 }
-
+.status-badge.default {
+  background-color: #6c2898 ;
+  color: white; 
+}
 /* Body nhiệm vụ */
 .task-body p {
   margin: 4px 0;

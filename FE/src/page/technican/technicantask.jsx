@@ -13,6 +13,15 @@ import Sidebar from "../sidebar/sidebar";
 import { useNavigate } from "react-router-dom";
 import "./technicantask.css";
 import "react-toastify/dist/ReactToastify.css";
+const BOOKING_STATUS_MAP = {
+    ASSIGNED: { text: 'Chờ xử lý', className: 'pending' },
+    IN_PROGRESS: { text: 'Đang xử lý', className: 'in-progress' },
+    COMPLETED: { text: 'Hoàn thành', className: 'completed' },
+    DEFAULT: { text: 'Không rõ', className: 'default' }
+};
+const getStatusDisplay = (status) => {
+    return BOOKING_STATUS_MAP[status] || { text: status || 'Không rõ', className: 'default' };
+};
 
 export default function TechnicianTask() {
     const [userInfo, setUserInfo] = useState({ fullName: "Đang tải...", role: "" });
@@ -35,19 +44,7 @@ export default function TechnicianTask() {
     const token = localStorage.getItem("token");
     const API_BASE = "https://103.90.226.216:8443";
 
-    // Hàm dịch trạng thái từ API sang tiếng Việt
-    const translateStatus = (status) => {
-        switch (status) {
-            case "Assigned":
-                return "Chờ xử lý";
-            case "In Progress":
-                return "Đang thực hiện";
-            case "Completed":
-                return "Hoàn thành";
-            default:
-                return status;
-        }
-    };
+
 
     // Fetch thông tin người dùng
     const fetchUserInfo = async () => {
@@ -93,10 +90,10 @@ export default function TechnicianTask() {
 
             const data = await res.json();
 
-            // Đếm theo trạng thái (dựa trên API gốc)
-            const pending = data.filter((t) => t.status === "Assigned").length;
-            const inProgress = data.filter((t) => t.status === "In Progress").length;
-            const completed = data.filter((t) => t.status === "Completed").length;
+            // Đếm số lượng theo trạng thái
+            const pending = data.filter((t) => t.status === "ASSIGNED").length;
+            const inProgress = data.filter((t) => t.status === "IN_PROGRESS").length;
+            const completed = data.filter((t) => t.status === "COMPLETED").length;
 
             setTasks(data);
             setFilteredTasks(data);
@@ -118,17 +115,20 @@ export default function TechnicianTask() {
         fetchTasks();
     }, []);
 
-
+    // Lọc theo trạng thái
     useEffect(() => {
-        if (filterStatus === "all") setFilteredTasks(tasks);
-        else if (filterStatus === "pending")
-            setFilteredTasks(tasks.filter((t) => t.status === "Assigned"));
-        else if (filterStatus === "in-progress")
-            setFilteredTasks(tasks.filter((t) => t.status === "In Progress"));
-        else if (filterStatus === "completed")
-            setFilteredTasks(tasks.filter((t) => t.status === "Completed"));
+        if (filterStatus === "all") {
+            setFilteredTasks(tasks);
+        } else if (filterStatus === "pending") {
+            setFilteredTasks(tasks.filter((t) => t.status === "ASSIGNED"));
+        } else if (filterStatus === "in-progress") {
+            setFilteredTasks(tasks.filter((t) => t.status === "IN_PROGRESS"));
+        } else if (filterStatus === "completed") {
+            setFilteredTasks(tasks.filter((t) => t.status === "COMPLETED"));
+        } else {
+            setFilteredTasks([]);
+        }
     }, [filterStatus, tasks]);
-
 
     const openKmModal = (bookingId) => {
         setCurrentBookingId(bookingId);
@@ -136,7 +136,6 @@ export default function TechnicianTask() {
         setShowKmModal(true);
     };
 
-    // Xác nhận bắt đầu nhiệm vụ
     const confirmStartTask = async () => {
         const km = parseInt(actualKm);
         if (isNaN(km) || km <= 0) {
@@ -191,7 +190,7 @@ export default function TechnicianTask() {
                 {error && <div className="error-message">{error}</div>}
 
                 <div className="inner">
-                    {/* Thống kê tổng quan */}
+                    {/* --- Thống kê tổng quan --- */}
                     <div className="summary-cards">
                         <div className="card pending">
                             <FaClock />
@@ -215,7 +214,7 @@ export default function TechnicianTask() {
                         </div>
                     </div>
 
-                    {/* Danh sách nhiệm vụ */}
+                    {/* --- Danh sách nhiệm vụ --- */}
                     <div className="task-section">
                         <div className="task-section-header">
                             <h2>Nhiệm vụ được giao</h2>
@@ -241,77 +240,72 @@ export default function TechnicianTask() {
                             <p className="no-task">Không có nhiệm vụ nào phù hợp.</p>
                         ) : (
                             <div className="task-list">
-                                {filteredTasks.map((task) => (
-                                    <div key={task.bookingId} className="task-card">
-                                        <div className="task-header">
-                                            <span
-                                                className={`status-badge ${task.status === "Assigned"
-                                                    ? "pending"
-                                                    : task.status === "In Progress"
-                                                        ? "in-progress"
-                                                        : "completed"
-                                                    }`}
-                                            >
-                                                {translateStatus(task.status)}
-                                            </span>
-
-                                            <span className="task-id">Mã Booking: {task.bookingId}</span>
-                                        </div>
-
-                                        <div className="task-body">
-                                            <p>
-                                                <strong>Tên khách hàng:</strong> {task.customerName}
-                                            </p>
-
-
-                                            <p>
-                                                <strong>Mẫu xe:</strong> {task.vehicleModel}
-                                            </p>
-
-                                            <p>
-                                                <strong>Biển số xe:</strong> {task.vehiclePlate}
-                                            </p>
-                                            <p>
-                                                <strong>Ngày hẹn:</strong>{" "}
-                                                {new Date(task.bookingDate).toLocaleDateString()}
-                                            </p>
-                                            <p>
-                                                <strong>Gói bảo dưỡng:</strong>{" "}
-                                                {task.maintenancePlanName || "Không có"}
-                                            </p>
-                                            <p>
-                                                <strong>Ghi chú:</strong> {task.note || "Không có"}
-                                            </p>
-                                        </div>
-
-                                        <div className="task-footer">
-                                            {task.status === "Assigned" && (
-                                                <button
-                                                    className="btn-start"
-                                                    onClick={() => openKmModal(task.bookingId)}
+                                {[...filteredTasks]
+                                    .sort((a, b) => {
+                                        const order = { "ASSIGNED": 1, "IN_PROGRESS": 2, "COMPLETED": 3 };
+                                        const rankA = order[a.status] || Infinity;
+                                        const rankB = order[b.status] || Infinity;
+                                        return rankA - rankB;
+                                    })
+                                    .map((task) => (
+                                        <div key={task.bookingId} className="task-card">
+                                            <div className="task-header">
+                                                <span
+                                                    className={`status-badge ${getStatusDisplay(task.status).className}`}
                                                 >
-                                                    <FaPlay /> Bắt đầu
-                                                </button>
-                                            )}
-                                            {task.status === "In Progress" && (
-                                                <button
-                                                    className="btn-view"
-                                                    onClick={() => handleViewTask(task.bookingId)}
-                                                >
-                                                    <FaEye /> Xem chi tiết
-                                                </button>
-                                            )}
-                                            {task.status === "Completed" && (
-                                                <button
-                                                    className="task-btn view completed"
-                                                    onClick={() => handleViewTask(task.bookingId)}
-                                                >
-                                                    <FaEye /> Xem chi tiết
-                                                </button>
-                                            )}
+                                                    {getStatusDisplay(task.status).text}
+                                                </span>
+
+                                                <span className="task-id">
+                                                    Mã Booking: {task.bookingId}
+                                                </span>
+                                            </div>
+
+                                            <div className="task-body">
+                                                <p>
+                                                    <strong>Tên khách hàng:</strong>{" "}
+                                                    {task.customerName}
+                                                </p>
+                                                <p>
+                                                    <strong>Mẫu xe:</strong> {task.vehicleModel}
+                                                </p>
+                                                <p>
+                                                    <strong>Biển số xe:</strong> {task.vehiclePlate}
+                                                </p>
+                                                <p>
+                                                    <strong>Ngày hẹn:</strong>{" "}
+                                                    {new Date(task.bookingDate).toLocaleDateString()}
+                                                </p>
+                                                <p>
+                                                    <strong>Gói bảo dưỡng:</strong>{" "}
+                                                    {task.maintenancePlanName || "Không có"}
+                                                </p>
+                                                <p>
+                                                    <strong>Ghi chú:</strong>{" "}
+                                                    {task.note || "Không có"}
+                                                </p>
+                                            </div>
+
+                                            <div className="task-footer">
+                                                {task.status === "ASSIGNED" && (
+                                                    <button
+                                                        className="btn-start"
+                                                        onClick={() => openKmModal(task.bookingId)}
+                                                    >
+                                                        <FaPlay /> Bắt đầu
+                                                    </button>
+                                                )}
+                                                {(task.status === "IN_PROGRESS" || task.status === "COMPLETED") && (
+                                                    <button
+                                                        className="btn-view"
+                                                        onClick={() => handleViewTask(task.bookingId)}
+                                                    >
+                                                        <FaEye /> Xem chi tiết
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
                             </div>
                         )}
                     </div>
@@ -328,7 +322,10 @@ export default function TechnicianTask() {
                             placeholder="Nhập Actual KM..."
                             value={actualKm}
                             onChange={(e) => {
-                                if (e.target.value === "" || parseFloat(e.target.value) >= 0) {
+                                if (
+                                    e.target.value === "" ||
+                                    parseFloat(e.target.value) >= 0
+                                ) {
                                     setActualKm(e.target.value);
                                 }
                             }}
@@ -338,7 +335,10 @@ export default function TechnicianTask() {
                             <button onClick={confirmStartTask} className="confirm-btn">
                                 Xác nhận
                             </button>
-                            <button onClick={() => setShowKmModal(false)} className="cancel-btn">
+                            <button
+                                onClick={() => setShowKmModal(false)}
+                                className="cancel-btn"
+                            >
                                 Hủy
                             </button>
                         </div>

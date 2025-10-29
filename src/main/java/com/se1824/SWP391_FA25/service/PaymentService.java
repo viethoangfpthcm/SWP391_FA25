@@ -2,6 +2,10 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.config.VNPayConfig;
 import com.se1824.SWP391_FA25.entity.*;
+import com.se1824.SWP391_FA25.enums.ApprovalStatus;
+import com.se1824.SWP391_FA25.enums.BookingStatus;
+import com.se1824.SWP391_FA25.enums.ChecklistStatus;
+import com.se1824.SWP391_FA25.enums.PaymentStatus;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.repository.*;
@@ -43,7 +47,10 @@ public class PaymentService {
         MaintenanceChecklist checklist = checklistRepository.findByBooking_BookingId(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Checklist not found for this booking."));
 
-        List<MaintenanceChecklistDetail> approvedDetails = detailRepository.findByChecklist_IdAndApprovalStatus(checklist.getId(), "APPROVED");
+        List<MaintenanceChecklistDetail> approvedDetails = detailRepository.findByChecklist_IdAndApprovalStatus(
+                checklist.getId(),
+                ApprovalStatus.APPROVED
+        );
 
         BigDecimal totalLabor = approvedDetails.stream()
                 .map(MaintenanceChecklistDetail::getLaborCost)
@@ -57,8 +64,8 @@ public class PaymentService {
 
         BigDecimal totalAmount = totalLabor.add(totalMaterial);
 
-        if (!"Completed".equalsIgnoreCase(checklist.getStatus())) {
-            throw new InvalidDataException("Cannot create payment for an incomplete checklist.");
+        if (checklist.getStatus() != ChecklistStatus.COMPLETED) {
+            throw new InvalidDataException("Cannot create payment for an incomplete checklist. Current status: " + checklist.getStatus());
         }
         if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new InvalidDataException("Total amount must be greater than zero to create a payment.");
@@ -72,14 +79,15 @@ public class PaymentService {
             log.info("Existing payment found with status {}", paymentToProcess.getStatus());
 
             // Nếu đã thanh toán thành công => không cho phép tạo lại
-            if ("PAID".equals(paymentToProcess.getStatus())) {
+            if (PaymentStatus.PAID.equals(paymentToProcess.getStatus())) {
                 throw new InvalidDataException("Booking này đã được thanh toán thành công. Không thể tạo lại.");
             }
 
             // Nếu FAILED hoặc PENDING thì cho phép thanh toán lại
-            if ("FAILED".equals(paymentToProcess.getStatus()) || "PENDING".equals(paymentToProcess.getStatus())) {
+            if (PaymentStatus.FAILED.equals(paymentToProcess.getStatus())
+                    || PaymentStatus.PENDING.equals(paymentToProcess.getStatus())) {
                 log.info("Retrying payment for booking {} with status {}", bookingId, paymentToProcess.getStatus());
-                paymentToProcess.setStatus("PENDING");
+                paymentToProcess.setStatus(PaymentStatus.PENDING);
                 paymentToProcess.setPaymentDate(LocalDateTime.now());
                 paymentToProcess.setLaborCost(totalLabor);
                 paymentToProcess.setMaterialCost(totalMaterial);
@@ -87,7 +95,7 @@ public class PaymentService {
 
             paymentToProcess.setLaborCost(totalLabor);
             paymentToProcess.setMaterialCost(totalMaterial);
-            paymentToProcess.setStatus("PENDING");
+            paymentToProcess.setStatus(PaymentStatus.PENDING);
             paymentToProcess.setPaymentDate(LocalDateTime.now());
         } else {
             log.info("Creating new payment for booking {}", bookingId);
@@ -95,7 +103,7 @@ public class PaymentService {
             paymentToProcess.setBooking(booking);
             paymentToProcess.setLaborCost(totalLabor);
             paymentToProcess.setMaterialCost(totalMaterial);
-            paymentToProcess.setStatus("PENDING");
+            paymentToProcess.setStatus(PaymentStatus.PENDING);
             paymentToProcess.setPaymentDate(LocalDateTime.now());
         }
 
@@ -111,7 +119,6 @@ public class PaymentService {
         );
     }
 
-    // 👈 THAY THẾ TOÀN BỘ HÀM NÀY
     @Transactional
     public int orderReturn(HttpServletRequest request) {
         Map<String, String> fields = new HashMap<>();
@@ -177,14 +184,14 @@ public class PaymentService {
         // 2. KIỂM TRA TRẠNG THÁI GIAO DỊCH (ResponseCode)
         if ("00".equals(responseCode)) {
             // Chỉ cập nhật nếu đang PENDING (tránh callback gọi lại nhiều lần)
-            if ("PENDING".equals(payment.getStatus())) {
-                payment.setStatus("PAID");
+            if (PaymentStatus.PENDING.equals(payment.getStatus())) {
+                payment.setStatus(PaymentStatus.PAID);
                 payment.setPaymentMethod("VNPay");
                 paymentRepository.save(payment);
 
                 Booking booking = payment.getBooking();
                 if (booking != null) {
-                    booking.setStatus("Paid");
+                    booking.setStatus(BookingStatus.PAID);
                     bookingRepository.save(booking);
                 }
 
@@ -209,7 +216,7 @@ public class PaymentService {
             return 0; // Thành công
         } else {
             // 3. GIAO DỊCH THẤT BẠI (do VNPay báo)
-            payment.setStatus("FAILED");
+            payment.setStatus(PaymentStatus.FAILED);
             paymentRepository.save(payment);
             log.error("Payment for booking ID {} failed with VNPay response code: {}", payment.getBooking().getBookingId(), responseCode);
             return 1; // Thất bại
