@@ -2,6 +2,7 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.entity.*;
+import com.se1824.SWP391_FA25.enums.BookingStatus;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.model.request.CreateBookingRequest;
@@ -69,7 +70,11 @@ public class BookingService {
 
 
         List<Booking> vehicleBookings = bookingRepo.findByVehicle_LicensePlate(licensePlate);
-        Set<String> resolvedStatuses = Set.of("Completed", "Declined", "Cancelled");
+        Set<BookingStatus> resolvedStatuses = Set.of(
+                BookingStatus.COMPLETED,
+                BookingStatus.DECLINED,
+                BookingStatus.CANCELLED
+        );
         List<BookingResponse> activeBookings = vehicleBookings.stream()
                 .filter(booking -> !resolvedStatuses.contains(booking.getStatus()))
                 .map(this::mapToBookingResponse)
@@ -93,7 +98,7 @@ public class BookingService {
 
         for (Booking booking : allBookings) {
             try {
-                if (!"Paid".equals(booking.getStatus())) {
+                if (booking.getStatus() != BookingStatus.PAID) {
                     MaintenanceChecklistResponse checklist =
                             maintenanceChecklistService.getChecklistByCustomerAndId(booking.getBookingId());
 
@@ -121,7 +126,7 @@ public class BookingService {
         response.setPaymentDate(LocalDateTime.now());
 
         response.setTotalAmount(checklist.getTotalCostApproved());
-        response.setStatus(booking.getStatus());
+        response.setStatus(booking.getStatus().name());
         if (checklist.getDetails() != null) {
             List<MaintenanceChecklistDetailResponse> approvedDetails = checklist.getDetails().stream()
                     .filter(d -> "APPROVED".equalsIgnoreCase(d.getApprovalStatus()))
@@ -153,8 +158,11 @@ public class BookingService {
     @Transactional
     public BookingResponse createBooking(CreateBookingRequest request, Users current) {
         log.info("Creating booking for vehicle: {} at center: {}", request.getVehiclePlate(), request.getCenterId());
-        Set<String> resolvedStatuses = Set.of("Completed", "Declined", "Cancelled");
-        // Validate if vehicle has any non-Paid bookings
+        Set<BookingStatus> resolvedStatuses = Set.of(
+                BookingStatus.COMPLETED,
+                BookingStatus.DECLINED,
+                BookingStatus.CANCELLED
+        );
         List<Booking> existingBookings = bookingRepo.findByVehicle_LicensePlate(request.getVehiclePlate());
         boolean hasActiveBooking = existingBookings.stream()
                 .anyMatch(booking -> !resolvedStatuses.contains(booking.getStatus()));
@@ -181,7 +189,7 @@ public class BookingService {
         booking.setVehicle(vehicle);
         booking.setServiceCenter(center);
         booking.setBookingDate(request.getBookingDate());
-        booking.setStatus("Pending");
+        booking.setStatus(BookingStatus.PENDING);
         booking.setNote(request.getNote());
         booking.setMaintenanceNo(selectedPlan.getMaintenanceNo());
         booking.setMaintenancePlan(selectedPlan);
@@ -211,11 +219,11 @@ public class BookingService {
             throw new InvalidDataException("Booking does not belong to this user");
         }
 
-        if (!"Pending".equals(booking.getStatus())) {
+        if (booking.getStatus() != BookingStatus.PENDING) {
             throw new InvalidDataException("Cannot cancel booking with status: " + booking.getStatus());
         }
 
-        booking.setStatus("Cancelled");
+        booking.setStatus(BookingStatus.CANCELLED);
         bookingRepo.save(booking);
         log.info("Booking {} cancelled by user {}", bookingId, userId);
     }
@@ -239,7 +247,7 @@ public class BookingService {
         response.setCenterName(booking.getServiceCenter().getName());
         response.setCenterAddress(booking.getServiceCenter().getAddress());
         response.setBookingDate(booking.getBookingDate());
-        response.setStatus(booking.getStatus());
+        response.setStatus(booking.getStatus().name());
         response.setNote(booking.getNote());
         return response;
     }

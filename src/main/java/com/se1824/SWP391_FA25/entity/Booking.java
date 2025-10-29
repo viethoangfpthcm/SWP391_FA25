@@ -1,5 +1,6 @@
 package com.se1824.SWP391_FA25.entity;
 
+import com.se1824.SWP391_FA25.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -43,8 +44,9 @@ public class Booking {
     @Column(name = "maintenance_no")
     Integer maintenanceNo;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
-    String status;
+    BookingStatus status;
 
     @ManyToOne
     @JoinColumn(name = "assigned_technician")

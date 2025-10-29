@@ -170,6 +170,10 @@ const LoginForm = () => {
 
   return (
   <div className="login-page">
+    <div className="welcome-text">
+      <h1>Chào mừng đến với trang đăng nhập</h1>
+      <p>Vui lòng đăng nhập để tiếp tục</p>
+    </div>
     <div className="login-container">
       {/* === Tabs trên đầu Email === */}
       <div className="tabs-top">

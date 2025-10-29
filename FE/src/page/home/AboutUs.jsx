@@ -15,7 +15,7 @@ export default function About() {
           </p>
         </div>
         <div className="about-hero-image">
-          <img src="/src/assets/bo may lay.png" alt="EV Car Center" />
+          <img src="/bo may lay.png" alt="EV Car Center" />
         </div>
       </section>
 

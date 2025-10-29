@@ -1,4 +1,5 @@
 package com.se1824.SWP391_FA25.entity;
+import com.se1824.SWP391_FA25.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -41,8 +42,9 @@ public class Payment {
     @Column(name = "payment_method", length = 50)
     String paymentMethod;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
-    String status;
+    PaymentStatus status;
 
     @Column(name = "note", length = 500)
     String note;

@@ -1,4 +1,6 @@
 package com.se1824.SWP391_FA25.entity;
+import com.se1824.SWP391_FA25.enums.ApprovalStatus;
+import com.se1824.SWP391_FA25.enums.ChecklistDetailStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -35,14 +37,16 @@ public class MaintenanceChecklistDetail {
     @JsonIgnore
     Part part;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "approval_status", length = 50)
-    String approvalStatus;
+    ApprovalStatus approvalStatus;
 
     @Column(name = "customer_note", length = 500)
     String customerNote;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
-    String status;
+    ChecklistDetailStatus status;
 
     @Column(name = "note", length = 1000)
     String note;

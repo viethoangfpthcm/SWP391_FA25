@@ -1,0 +1,296 @@
+/* === FORM MODAL (Add/Edit Part) === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.part-edit-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 500px;
+  max-width: 95%;
+  padding: 24px 28px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 0.25s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.part-edit-modal h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: #2c3e50;
+}
+
+/* === FORM ELEMENTS === */
+.part-form .form-group {
+  margin-bottom: 14px;
+}
+
+.part-form label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.part-form input,
+.part-form select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.part-form input:focus,
+.part-form select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
+}
+
+.input-error {
+  border-color: #e74c3c !important;
+  background-color: #fff6f6;
+}
+
+.error-text {
+  display: block;
+  font-size: 0.85rem;
+  color: #e74c3c;
+  margin-top: 4px;
+}
+
+/* === BUTTONS INSIDE FORM === */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btn-save {
+  background-color: #2ecc71;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-save:hover {
+  background-color: #27ae60;
+}
+
+.btn-cancel {
+  background-color: #bdc3c7;
+  color: #2c3e50;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+  background-color: #95a5a6;
+}
+
+/* === ACTION BUTTONS IN TABLE === */
+.action-buttons-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 8px;
+}
+
+.btn-action {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.btn-edit {
+  background-color: #3498db;
+  color: #fff;
+}
+
+.btn-edit:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.btn-delete {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.btn-delete:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* === TABLE STYLE IMPROVEMENTS === */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.data-table th {
+  background-color: #f5f6fa;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 12px;
+  color: #2c3e50;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.numeric-cell {
+  text-align: right;
+}
+
+.empty-state-row {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+/* === ERROR BOX === */
+.error-message {
+  background: #fdecea;
+  color: #c0392b;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* === FIX BUTTON POSITION + LAYOUT === */
+.actions-bar {
+  display: flex;
+  justify-content: flex-start; /* đưa nút sang trái */
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.btn-back {
+  background-color: #555;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+}
+/* --- Thanh hành động (Back + Add) --- */
+.actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0;
+}
+
+/* Nút quay lại căn trái */
+.btn-back {
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+.btn-back:hover {
+  background-color: #5a6268;
+}
+
+/* Nút thêm phụ tùng căn phải */
+.btn-add {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s ease-in-out;
+}
+.btn-add:hover {
+  background-color: #0056b3;
+}
+.action-buttons-cell {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+}
+
+/* Căn giữa icon + text */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px; /* đảm bảo không bị “mất nửa nút” */
+  min-width: 70px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+.data-table td,
+.data-table th {
+  padding: 12px 16px;
+  vertical-align: middle;
+}

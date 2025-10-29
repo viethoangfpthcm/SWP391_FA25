@@ -2,6 +2,8 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.entity.*;
+import com.se1824.SWP391_FA25.enums.BookingStatus;
+import com.se1824.SWP391_FA25.enums.ChecklistStatus;
 import com.se1824.SWP391_FA25.enums.UserRole;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
@@ -35,7 +37,7 @@ public class StaffService {
         Integer centerId = currentStaff.getCenter().getId();
         log.info("Getting pending bookings for center ID: {} (Staff: {})", centerId, currentStaff.getUserId());
 
-        List<Booking> bookings = bookingRepo.findByServiceCenter_IdAndStatus(centerId, "Pending");
+        List<Booking> bookings = bookingRepo.findByServiceCenter_IdAndStatus(centerId, BookingStatus.PENDING);
         return bookings.stream().map(this::mapToStaffBookingDTO).collect(Collectors.toList());
     }
     public List<StaffBookingDTO> getAllBookings() {
@@ -59,11 +61,11 @@ public class StaffService {
         Booking booking = bookingRepo.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingId));
 
-        if (!"Pending".equals(booking.getStatus())) {
+        if (booking.getStatus() != BookingStatus.PENDING) {
             throw new InvalidDataException("Cannot approve booking with status: " + booking.getStatus());
         }
 
-        booking.setStatus("Approved");
+        booking.setStatus(BookingStatus.APPROVED);
         bookingRepo.save(booking);
         log.info("Booking {} approved by staff {}", bookingId, staffId);
     }
@@ -79,11 +81,11 @@ public class StaffService {
         Booking booking = bookingRepo.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingId));
 
-        if (!"Pending".equals(booking.getStatus())) {
+        if (booking.getStatus() != BookingStatus.PENDING) {
             throw new InvalidDataException("Cannot decline booking with status: " + booking.getStatus());
         }
 
-        booking.setStatus("Declined");
+        booking.setStatus(BookingStatus.DECLINED);
         booking.setNote((booking.getNote() != null ? booking.getNote() + " | " : "") + "Declined reason: " + reason);
         bookingRepo.save(booking);
         log.info("Booking {} declined by staff {}", bookingId, staffId);
@@ -112,7 +114,7 @@ public class StaffService {
         Booking booking = bookingRepo.findById(request.getBookingId())
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + request.getBookingId()));
 
-        if (!"Approved".equals(booking.getStatus())) {
+        if (booking.getStatus() != BookingStatus.APPROVED) {
             throw new InvalidDataException("Can only assign technician to approved bookings");
         }
 
@@ -124,7 +126,7 @@ public class StaffService {
         }
 
         booking.setAssignedTechnician(technician);
-        booking.setStatus("Assigned");
+        booking.setStatus(BookingStatus.ASSIGNED);
         bookingRepo.save(booking);
         log.info("Technician {} assigned to booking {} by staff {}", request.getTechnicianId(), request.getBookingId(), staffId);
     }
@@ -146,21 +148,21 @@ public class StaffService {
             throw new InvalidDataException("This booking does not belong to your service center.");
         }
 
-        // 2. Kiểm tra Booking status (Phải là "Paid")
-        if (!"Paid".equals(booking.getStatus())) {
+        // 2. Kiểm tra Booking status (Phải là "PAID")
+        if (booking.getStatus() != BookingStatus.PAID) {
             throw new InvalidDataException("Cannot hand over vehicle. Booking status must be 'Paid'. Current status: " + booking.getStatus());
         }
 
-        // 3. Kiểm tra Checklist status (Phải là "Completed")
+        // 3. Kiểm tra Checklist status (Phải là "COMPLETED")
         MaintenanceChecklist checklist = checklistRepo.findByBooking_BookingId(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Checklist not found for booking ID: " + bookingId));
 
-        if (!"Completed".equalsIgnoreCase(checklist.getStatus())) {
+        if (checklist.getStatus() != ChecklistStatus.COMPLETED) {
             throw new InvalidDataException("Cannot hand over vehicle. Maintenance checklist must be 'Completed'. Current status: " + checklist.getStatus());
         }
 
         // 4. Cập nhật trạng thái Booking
-        booking.setStatus("Completed");
+        booking.setStatus(BookingStatus.COMPLETED);
         bookingRepo.save(booking);
 
         log.info("Booking {} successfully set to 'Completed' (vehicle handed over) by staff {}", bookingId, currentStaff.getUserId());
@@ -185,7 +187,7 @@ public class StaffService {
         dto.setVehicleModel(booking.getVehicle().getModel());
         dto.setCurrentKm(booking.getVehicle().getCurrentKm());
         dto.setBookingDate(booking.getBookingDate());
-        dto.setStatus(booking.getStatus());
+        dto.setStatus(booking.getStatus().name());
         dto.setNote(booking.getNote());
         dto.setCenterName(booking.getServiceCenter().getName());
         if (booking.getAssignedTechnician() != null) {
@@ -195,8 +197,13 @@ public class StaffService {
         }
         checklistRepo.findByBooking_BookingId(booking.getBookingId())
                 .ifPresent(checklist -> {
-                    dto.setChecklistStatus(checklist.getStatus());
-                    log.debug("Found checklist for booking {}: status = {}", booking.getBookingId(), checklist.getStatus());
+                    if (checklist.getStatus() != null) {
+                        dto.setChecklistStatus(checklist.getStatus().name());
+                        log.debug("Found checklist for booking {}: status = {}", booking.getBookingId(), checklist.getStatus().name());
+                    } else {
+                        dto.setChecklistStatus(null); // Hoặc "UNKNOWN"
+                        log.debug("Found checklist for booking {} but status is null", booking.getBookingId());
+                    }
                 });
         return dto;
     }
@@ -206,7 +213,10 @@ public class StaffService {
         dto.setUserId(technician.getUserId());
         dto.setFullName(technician.getFullName());
         dto.setPhone(technician.getPhone());
-        int activeBookings = bookingRepo.countByAssignedTechnician_UserIdAndStatusIn(technician.getUserId(), List.of("Approved", "In Progress"));
+        int activeBookings = bookingRepo.countByAssignedTechnician_UserIdAndStatusIn(
+                technician.getUserId(),
+                List.of(BookingStatus.APPROVED, BookingStatus.IN_PROGRESS, BookingStatus.ASSIGNED)
+        );
         dto.setActiveBookings(activeBookings);
         return dto;
     }

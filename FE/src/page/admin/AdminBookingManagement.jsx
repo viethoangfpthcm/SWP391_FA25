@@ -11,6 +11,21 @@ import {
 import "./AdminBookingManagement.css";
 import Sidebar from "../../page/sidebar/sidebar.jsx";
 import { useNavigate } from "react-router-dom";
+const BOOKING_STATUS_MAP = {
+    PENDING: { text: 'Chờ xử lý', className: 'role-pending' },
+    APPROVED: { text: 'Đã duyệt', className: 'role-approved' },
+    ASSIGNED: { text: 'Đã gán thợ', className: 'role-assigned' },
+    IN_PROGRESS: { text: 'Đang xử lý', className: 'role-in progress' },
+    COMPLETED: { text: 'Hoàn thành', className: 'role-completed' },
+    PAID: { text: 'Đã thanh toán', className: 'role-paid' },
+    CANCELLED: { text: 'Đã hủy', className: 'role-cancelled' },
+    DECLINED: { text: 'Đã từ chối', className: 'role-declined' },
+    PENDING_APPROVAL: { text: 'Chờ duyệt cuối', className: 'role-pending' },
+    DEFAULT: { text: 'Không rõ', className: 'role-default' }
+};
+const getStatusDisplay = (status) => {
+    return BOOKING_STATUS_MAP[status] || { text: status || 'Không rõ', className: 'role-default' };
+};
 
 if (import.meta.env.MODE !== "development") {
     console.log = () => { };
@@ -151,9 +166,8 @@ export default function AdminBookingManagement() {
         filterStatus === "all"
             ? bookings
             : bookings.filter(
-                (b) => b.status && b.status.toLowerCase() === filterStatus.toLowerCase()
+                (b) => b.status === filterStatus
             );
-
     // Helper định dạng ngày (Mới)
     const formatDate = (dateString) => {
         if (!dateString) return "N/A";
@@ -166,11 +180,6 @@ export default function AdminBookingManagement() {
         } catch (error) {
             return dateString;
         }
-    };
-
-    const getStatusClass = (status) => {
-        if (!status) return "role-cancelled"; // Mặc định
-        return `role-${status.toLowerCase()}`;
     };
 
 
@@ -215,14 +224,14 @@ export default function AdminBookingManagement() {
                             value={filterStatus}
                             onChange={(e) => setFilterStatus(e.target.value)}
                         >
-                            <option value="all">Tất cả</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Approved">Approved</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Declined">Declined</option>
-                            <option value="Paid">Paid</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="APPROVED">Approved</option>
+                            <option value="ASSIGNED">Assigned</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="PAID">Paid</option>
+                            <option value="CANCELLED">Cancelled</option>
+                            <option value="DECLINED">Declined</option>
                         </select>
                     </div>
                     <div className="filter-group">
@@ -290,20 +299,16 @@ export default function AdminBookingManagement() {
                                             <td>{booking.technicianName || "Chưa gán"}</td>
                                             <td>
                                                 <span
-                                                    className={`role-badge ${getStatusClass(
-                                                        booking.status
-                                                    )}`}
+                                                    className={`role-badge ${getStatusDisplay(booking.status).className}`}
                                                 >
-                                                    {booking.status}
+                                                    {getStatusDisplay(booking.status).text}
                                                 </span>
                                             </td>
                                             <td>
                                                 <span
-                                                    className={`role-badge ${getStatusClass(
-                                                        booking.checklistStatus
-                                                    )}`}
+                                                    className={`role-badge ${getStatusDisplay(booking.checklistStatus).className}`}
                                                 >
-                                                    {booking.checklistStatus || "Chưa có"}
+                                                    {getStatusDisplay(booking.checklistStatus).text || "Chưa có"}
                                                 </span>
                                             </td>
                                             <td>
@@ -317,7 +322,7 @@ export default function AdminBookingManagement() {
                                                 </button>
                                                 <button
                                                     className="action-button view-feedback"
-                                                    onClick={() => handleViewFeedback(booking.bookingId)}                                              
+                                                    onClick={() => handleViewFeedback(booking.bookingId)}
                                                     disabled={!booking.hasFeedback}
                                                     title={booking.hasFeedback ? "Xem feedback của khách hàng" : "Chưa có feedback"}
                                                 >

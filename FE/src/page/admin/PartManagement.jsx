@@ -9,10 +9,11 @@ import {
   FaArrowLeft,
   FaTrash,
 } from "react-icons/fa";
-import "./AdminDashboard.css"; 
+import "./PartManagement.css"; // ✅ ĐÃ CHỈNH: dùng file CSS riêng cho Part Management
 import Sidebar from "../../page/sidebar/sidebar.jsx";
 import { useNavigate, useParams } from "react-router-dom";
-import ConfirmationModal from '../../components/ConfirmationModal.jsx'; 
+import ConfirmationModal from '../../components/ConfirmationModal.jsx';
+
 
 // --- Helper Functions ---
 const isValidPartName = (name) => {
