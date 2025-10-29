@@ -22,6 +22,7 @@ const formatApprovalStatus = (status) => {
     default: return 'Chờ duyệt';
   }
 };
+
 export default function CheckList({ user }) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -33,6 +34,12 @@ export default function CheckList({ user }) {
   const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
   const [completeConfirmLoading, setCompleteConfirmLoading] = useState(false);
 
+  const hasDeclinedItems = () => {
+  if (!checklist || !checklist.details) return false;
+  return checklist.details.some(detail =>
+    detail.approvalStatus?.toUpperCase() === 'DECLINED'
+  );
+};
   // Toast notification state
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
@@ -88,30 +95,30 @@ export default function CheckList({ user }) {
 
 
   useEffect(() => {
-  if (checklist && checklist.details) {
-    const validStatuses = ["PENDING", "GOOD", "ADJUSTMENT", "REPAIR", "REPLACE"];
+    if (checklist && checklist.details) {
+      const validStatuses = ["PENDING", "GOOD", "ADJUSTMENT", "REPAIR", "REPLACE"];
 
-    const initialUpdates = {};
-    checklist.details.forEach(detail => {
-      const initialPartId = detail.partId || (detail.part ? detail.part.partId : null);
+      const initialUpdates = {};
+      checklist.details.forEach(detail => {
+        const initialPartId = detail.partId || (detail.part ? detail.part.partId : null);
 
-      let originalStatus = detail.status;
-      const isStatusValid = validStatuses.includes(originalStatus);
+        let originalStatus = detail.status;
+        const isStatusValid = validStatuses.includes(originalStatus);
 
-      if (originalStatus === "PENDING") {
-        originalStatus = "GOOD";
-      }
+        if (originalStatus === "PENDING") {
+          originalStatus = "GOOD";
+        }
 
-      initialUpdates[detail.id] = {
-        status: isStatusValid ? originalStatus : "GOOD",
-        note: detail.note || "",
-        partId: initialPartId,
-        laborCost: detail.laborCost || 0,
-      };
-    });
-    setDetailUpdates(initialUpdates);
-  }
-}, [checklist]);
+        initialUpdates[detail.id] = {
+          status: isStatusValid ? originalStatus : "GOOD",
+          note: detail.note || "",
+          partId: initialPartId,
+          laborCost: detail.laborCost || 0,
+        };
+      });
+      setDetailUpdates(initialUpdates);
+    }
+  }, [checklist]);
 
   const fetchChecklistList = async () => {
     setLoading(true);
@@ -544,7 +551,7 @@ export default function CheckList({ user }) {
           {/* Hiển thị thông báo theo trạng thái */}
           {checklist.status === 'IN_PROGRESS' && !isCompleted && (
             <small className="text-yellow-500 mt-2 block">
-               Vui lòng lưu tất cả thay đổi và đợi khách hàng phê duyệt...
+              Vui lòng lưu tất cả thay đổi và đợi khách hàng phê duyệt...
             </small>
           )}
 
@@ -603,7 +610,7 @@ export default function CheckList({ user }) {
                     <select
                       value={currentStatus}
                       onChange={(e) => handleDetailChange(detail.id, 'status', e.target.value)}
-                      disabled={isCompleted || isApproved}
+                      disabled={isCompleted || detail.approvalStatus?.toUpperCase() === 'APPROVED'}
                     >
 
                       {STATUS_OPTIONS.map(opt => (
@@ -619,7 +626,7 @@ export default function CheckList({ user }) {
                       type="text"
                       value={currentUpdates.note || ""}
                       onChange={(e) => handleDetailChange(detail.id, 'note', e.target.value)}
-                      disabled={isCompleted || isApproved}
+                      disabled={isCompleted || detail.approvalStatus?.toUpperCase() === 'APPROVED'}
                     />
                   </td>
                   <td>
@@ -669,7 +676,7 @@ export default function CheckList({ user }) {
                           }
                         }}
                         min="0"
-                        disabled={isCompleted || isApproved}
+                        disabled={isCompleted || detail.approvalStatus?.toUpperCase() === 'APPROVED'}
                         placeholder="Nhập chi phí"
                         style={{ width: '120px', textAlign: 'right', fontSize: '14px' }}
                       />
@@ -691,28 +698,32 @@ export default function CheckList({ user }) {
         </table>
 
         {/* NÚT LƯU THAY ĐỔI - Hiển thị ở cuối bảng */}
-        {!isCompleted && checklist.status === 'IN_PROGRESS' && (
-          <div className="save-changes-section">
-            <button
-              className="btn-save-all-changes"
-              onClick={handleSaveAllChanges}
-              disabled={isUpdating || !hasUnsavedChanges()}
-            >
-              {isUpdating ? (
-                <>
-                  <FaSpinner className="spin" /> Đang lưu...
-                </>
-              ) : (
-                <>
-                  <FaFloppyDisk /> Lưu tất cả thay đổi
-                </>
+        {(checklist.status === 'IN_PROGRESS' ||
+          (checklist.status === 'PENDING_APPROVAL' && hasDeclinedItems())) && (
+            <div className="save-changes-section">
+              <button
+                className="btn-save-all-changes"
+                onClick={handleSaveAllChanges}
+                disabled={isUpdating || !hasUnsavedChanges()}
+              >
+                {isUpdating ? (
+                  <>
+                    <FaSpinner className="spin" /> Đang lưu...
+                  </>
+                ) : (
+                  <>
+                    <FaFloppyDisk />
+                    {checklist.status === 'PENDING_APPROVAL'
+                      ? 'Cập nhật hạng mục bị từ chối'
+                      : 'Lưu tất cả thay đổi'}
+                  </>
+                )}
+              </button>
+              {hasUnsavedChanges() && (
+                <small className="unsaved-warning">Bạn có thay đổi chưa được lưu</small>
               )}
-            </button>
-            {hasUnsavedChanges() && (
-              <small className="unsaved-warning">Bạn có thay đổi chưa được lưu</small>
-            )}
-          </div>
-        )}
+            </div>
+          )}
       </div>
     </div>
   );
