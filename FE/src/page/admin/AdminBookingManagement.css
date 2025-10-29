@@ -482,3 +482,12 @@
 .action-button.view-feedback:disabled svg {
   color: #d1d5db; 
 }
+.role-approved {
+  background: #cffafe; /* Màu xanh cyan nhạt */
+  color: #0e7490;
+}
+
+.role-cancelled {
+  background: #fee2e2; /* Đỏ nhạt (giống declined) */
+  color: #b91c1c;
+}

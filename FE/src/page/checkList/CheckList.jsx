@@ -5,9 +5,23 @@ import { FaSpinner, FaFloppyDisk, FaEye, FaCircleCheck, FaTriangleExclamation, F
 import "./CheckList.css";
 
 // Các trạng thái Status đã được định nghĩa trong Backend
-const STATUS_OPTIONS = ["TỐT", "HIỆU_CHỈNH", "SỬA_CHỮA", "THAY_THẾ"];
-
-
+const STATUS_OPTIONS = ["GOOD", "ADJUSTMENT", "REPAIR", "REPLACE"];
+const formatChecklistStatus = (status) => {
+  switch (status) {
+    case 'IN_PROGRESS': return 'Đang xử lý';
+    case 'PENDING_APPROVAL': return 'Chờ duyệt cuối';
+    case 'COMPLETED': return 'Đã hoàn thành';
+    default: return status;
+  }
+};
+const formatApprovalStatus = (status) => {
+  switch (status) {
+    case 'APPROVED': return '✓ Đã duyệt';
+    case 'DECLINED': return '✗ Từ chối';
+    case 'PENDING': return 'Chờ duyệt';
+    default: return 'Chờ duyệt';
+  }
+};
 export default function CheckList({ user }) {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -39,19 +53,22 @@ export default function CheckList({ user }) {
    * HÀM HELPER: Xử lý nhãn trong dropdown Trạng thái KV
    */
   const getCustomStatusLabel = (statusValue, itemName) => {
-    // 1. Logic tùy chỉnh: Áp dụng BẢO DƯỠNG cho THAY_THẾ nếu là hạng mục điều hòa
+    // 1. Logic tùy chỉnh: Áp dụng BẢO DƯỠNG cho REPLACE nếu là hạng mục điều hòa
     if (
-      statusValue === "THAY_THẾ" &&
+      statusValue === "REPLACE" &&
       itemName && itemName.toLowerCase() === "bảo dưỡng hệ thống điều hòa".toLowerCase()
     ) {
       return "BẢO DƯỠNG";
     }
 
-    // 2. Loại bỏ dấu gạch dưới cho các trạng thái còn lại
-    if (statusValue) {
-      return statusValue.replace(/_/g, ' ');
+    switch (statusValue) {
+      case 'GOOD': return 'Tốt';
+      case 'ADJUSTMENT': return 'Hiệu chỉnh';
+      case 'REPAIR': return 'Sửa chữa';
+      case 'REPLACE': return 'Thay thế';
+      case 'PENDING': return 'Chờ kiểm tra';
+      default: return statusValue;
     }
-    return statusValue;
   };
 
   // Backend đang dùng /api/technician/my-checklists/{bookingId}, nên ta dùng bookingId để fetch detail
@@ -71,27 +88,30 @@ export default function CheckList({ user }) {
 
 
   useEffect(() => {
-    if (checklist && checklist.details) {
-      const validStatuses = ["TỐT", "HIỆU_CHỈNH", "SỬA_CHỮA", "THAY_THẾ"];
+  if (checklist && checklist.details) {
+    const validStatuses = ["PENDING", "GOOD", "ADJUSTMENT", "REPAIR", "REPLACE"];
 
-      const initialUpdates = {};
-      checklist.details.forEach(detail => {
-        const initialPartId = detail.partId || (detail.part ? detail.part.partId : null);
+    const initialUpdates = {};
+    checklist.details.forEach(detail => {
+      const initialPartId = detail.partId || (detail.part ? detail.part.partId : null);
 
-        const originalStatus = detail.status;
-        const isStatusValid = validStatuses.includes(originalStatus);
+      let originalStatus = detail.status;
+      const isStatusValid = validStatuses.includes(originalStatus);
 
-        initialUpdates[detail.id] = {
-          status: isStatusValid ? originalStatus : "TỐT",
+      if (originalStatus === "PENDING") {
+        originalStatus = "GOOD";
+      }
 
-          note: detail.note || "",
-          partId: initialPartId,
-          laborCost: detail.laborCost || 0,
-        };
-      });
-      setDetailUpdates(initialUpdates);
-    }
-  }, [checklist]);
+      initialUpdates[detail.id] = {
+        status: isStatusValid ? originalStatus : "GOOD",
+        note: detail.note || "",
+        partId: initialPartId,
+        laborCost: detail.laborCost || 0,
+      };
+    });
+    setDetailUpdates(initialUpdates);
+  }
+}, [checklist]);
 
   const fetchChecklistList = async () => {
     setLoading(true);
@@ -194,11 +214,11 @@ export default function CheckList({ user }) {
       return;
     }
 
-    // Validation: Kiểm tra THAY_THẾ phải có Part
+    // Validation: Kiểm tra REPLACE phải có Part
     for (const detail of changedDetails) {
       const updates = detailUpdates[detail.id];
-      if (updates.status === "THAY_THẾ" && !updates.partId) {
-        showToast("Vui lòng chọn Part cần thay thế cho tất cả hạng mục có trạng thái 'THAY_THẾ'", "error");
+      if (updates.status === "REPLACE" && !updates.partId) {
+        showToast("Vui lòng chọn Part cần thay thế cho tất cả hạng mục có trạng thái 'Thay thế'", "error");
         return;
       }
     }
@@ -224,10 +244,10 @@ export default function CheckList({ user }) {
             body: JSON.stringify({
               status: updates.status,
               note: updates.note,
-              partId: updates.status === "THAY_THẾ" ? updates.partId : null,
+              partId: updates.status === "REPLACE" ? updates.partId : null,
 
-              // Chỉ gửi chi phí nếu là SỬA_CHỮA, nếu không gửi 0
-              laborCost: updates.status === "SỬA_CHỮA" ? (updates.laborCost || 0) : 0,
+              // Chỉ gửi chi phí nếu là REPAIR, nếu không gửi 0
+              laborCost: updates.status === "REPAIR" ? (updates.laborCost || 0) : 0,
             }),
           });
           // --- KẾT THÚC CẬP NHẬT BODY ---
@@ -292,12 +312,6 @@ export default function CheckList({ user }) {
 
   // Hàm gọi API để hoàn thành Checklist
   const handleCompleteChecklist = async () => {
-    if (isApprovalPending()) {
-      showToast("Vui lòng đợi khách hàng phê duyệt hoặc hủy bỏ tất cả các hạng mục...", "error");
-      return;
-    }
-
-    // 2. Thay vì gọi window.confirm, chỉ cần mở modal
     setShowCompleteConfirm(true);
   };
 
@@ -305,18 +319,6 @@ export default function CheckList({ user }) {
   const handleViewDetail = (bookingId) => {
     // Chuyển sang URL với bookingId để trigger fetchChecklist
     navigate(`/checklist?bookingId=${bookingId}`);
-  };
-
-  /**
-   * KIỂM TRA LOGIC: Kiểm tra xem có hạng mục nào cần phê duyệt mà chưa được xử lý không.
-   */
-  const isApprovalPending = () => {
-    if (!checklist || !checklist.details) return false;
-    return checklist.details.some(detail => {
-      const status = detail.approvalStatus?.toUpperCase();
-      const isProcessed = status === 'APPROVED' || status === 'DECLINED';
-      return !isProcessed;
-    });
   };
 
   // --- Render Logic ---
@@ -398,8 +400,8 @@ export default function CheckList({ user }) {
               {checklistList.map((item) => (
                 <div key={item.id} className="checklist-card">
                   <div className="checklist-card-header">
-                    <span className={`status-badge ${item.status === 'In Progress' ? 'in-progress' : 'completed'}`}>
-                      {item.status}
+                    <span className={`status-badge ${item.status === 'IN_PROGRESS' ? 'in-progress' : 'COMPLETED'}`}>
+                      {formatChecklistStatus(item.status)}
                     </span>
                     {/* Backend trả về Checklist ID là 'id'. Ta cần Booking ID để gọi API Detail */}
                     <span className="booking-id">Booking ID #{item.bookingId}</span>
@@ -455,7 +457,7 @@ export default function CheckList({ user }) {
   }
 
   const checklistDetails = checklist.details || [];
-  const isCompleted = checklist.status === 'Completed';
+  const isCompleted = checklist.status === 'COMPLETED';
 
   return (
     <div className="checklist-page">
@@ -516,7 +518,7 @@ export default function CheckList({ user }) {
 
         {/* THÔNG TIN TỔNG QUAN (ĐÃ SỬA ĐỂ THÊM MODEL VÀ PLAN NAME) */}
         <div className="summary-section">
-          <p><strong>Trạng thái:</strong> <span className={`status-badge ${checklist.status === 'In Progress' ? 'in-progress' : 'completed'}`}>{checklist.status}</span></p>
+          <p><strong>Trạng thái:</strong> <span className={`status-badge ${checklist.status === 'IN_PROGRESS' ? 'in-progress' : 'COMPLETED'}`}> {formatChecklistStatus(checklist.status)}</span></p>
           <p><strong>Biển số xe:</strong> {checklist.vehicleNumberPlate}</p>
           {/* THÊM MODEL */}
           <p><strong>Mẫu xe:</strong> {checklist.vehicleModel || 'Đang cập nhật...'}</p>
@@ -529,17 +531,27 @@ export default function CheckList({ user }) {
           <p><strong>Chi phí ƯỚC TÍNH (tạm thời):</strong> {checklist.estimatedCost?.toLocaleString('vi-VN')} VND</p>
 
 
-          {!isCompleted && checklist.status === 'In Progress' && (
+          {!isCompleted && checklist.status === 'PENDING_APPROVAL' && (
             <button
               className="btn-complete"
               onClick={handleCompleteChecklist}
-              disabled={isUpdating || isApprovalPending()}
+              disabled={isUpdating}
             >
               {isUpdating ? <FaSpinner className="spin" /> : "Hoàn thành Checklist"}
             </button>
           )}
-          {isApprovalPending() && !isCompleted && (
-            <small className="text-red-500 mt-2 block">Cần khách hàng phê duyệt các hạng mục thay thế/sửa chữa.</small>
+
+          {/* Hiển thị thông báo theo trạng thái */}
+          {checklist.status === 'IN_PROGRESS' && !isCompleted && (
+            <small className="text-yellow-500 mt-2 block">
+               Vui lòng lưu tất cả thay đổi và đợi khách hàng phê duyệt...
+            </small>
+          )}
+
+          {checklist.status === 'PENDING_APPROVAL' && !isCompleted && (
+            <small className="text-green-500 mt-2 block">
+              Khách hàng đã phê duyệt. Bạn có thể hoàn thành checklist!
+            </small>
           )}
         </div>
 
@@ -561,17 +573,17 @@ export default function CheckList({ user }) {
             {checklistDetails.map(detail => {
               const currentUpdates = detailUpdates[detail.id] || {};
               const currentStatus = currentUpdates.status || detail.status;
-              const isReplace = currentStatus === "THAY_THẾ";
+              const isReplace = currentStatus === "REPLACE";
               const isApproved = detail.approvalStatus?.toUpperCase() === 'APPROVED';
               const selectedPart = detail.availableParts.find(p => p.partId === currentUpdates.partId);
               let currentLaborCost = 0;
               let currentMaterialCost = 0;
 
 
-              if (currentStatus === "THAY_THẾ" && selectedPart) {
+              if (currentStatus === "REPLACE" && selectedPart) {
                 currentLaborCost = selectedPart.laborCost;
                 currentMaterialCost = selectedPart.materialCost;
-              } else if (currentStatus === "SỬA_CHỮA") {
+              } else if (currentStatus === "REPAIR") {
                 currentLaborCost = Number(currentUpdates.laborCost || 0);
                 currentMaterialCost = 0;
               }
@@ -612,7 +624,7 @@ export default function CheckList({ user }) {
                   </td>
                   <td>
                     {isReplace ? (
-                      // Logic "THAY_THẾ" (chọn Part) giữ nguyên
+                      // Logic "REPLACE" (chọn Part) giữ nguyên
                       <select
                         value={currentUpdates.partId || ""}
                         onChange={(e) => handleDetailChange(detail.id, 'partId', parseInt(e.target.value) || null)}
@@ -641,11 +653,11 @@ export default function CheckList({ user }) {
                   </td>
                   <td>
                     <span className={`approval-status approval-${detail.approvalStatus?.toLowerCase()}`}>
-                      {detail.approvalStatus || "PENDING"}
+                      {formatApprovalStatus(detail.approvalStatus)}
                     </span>
                   </td>
                   <td className="cost-cell">
-                    {(currentStatus === "SỬA_CHỮA") ? (
+                    {(currentStatus === "REPAIR") ? (
                       <input
                         type="number"
                         className="cost-input"
@@ -679,7 +691,7 @@ export default function CheckList({ user }) {
         </table>
 
         {/* NÚT LƯU THAY ĐỔI - Hiển thị ở cuối bảng */}
-        {!isCompleted && checklist.status === 'In Progress' && (
+        {!isCompleted && checklist.status === 'IN_PROGRESS' && (
           <div className="save-changes-section">
             <button
               className="btn-save-all-changes"

@@ -7,6 +7,20 @@ import './CustomerDashboard.css';
 
 import { FaUser, FaCar, FaCalendarAlt, FaPlus, FaTimes, FaEdit, FaCheckCircle, FaExclamationTriangle, FaSpinner, FaStar } from 'react-icons/fa';
 
+const BOOKING_STATUS_MAP = {
+  PENDING:     { text: 'Chờ xử lý',    className: 'pending' },
+  APPROVED:    { text: 'Đã duyệt',     className: 'approved' }, 
+  ASSIGNED:    { text: 'Đã gán thợ',    className: 'assigned' }, 
+  IN_PROGRESS: { text: 'Đang xử lý',   className: 'in_progress' }, 
+  COMPLETED:   { text: 'Hoàn thành',   className: 'completed' },
+  PAID:        { text: 'Đã thanh toán', className: 'paid' },
+  CANCELLED:   { text: 'Đã hủy',       className: 'cancelled' },
+  DECLINED:    { text: 'Đã từ chối',  className: 'declined' },
+  DEFAULT:     { text: 'Không rõ',     className: 'default' }
+};
+const getStatusDisplay = (status) => {
+  return BOOKING_STATUS_MAP[status] || { text: status, className: 'default' };
+};
 function CustomerDashboard() {
   const [dashboardData, setDashboardData] = useState(null);
   const [bookings, setBookings] = useState([]);
@@ -469,10 +483,12 @@ function CustomerDashboard() {
   const { customerInfo, vehicles } = dashboardData || {};
   const calculatedStats = {
     totalBookings: bookings.length,
-    pendingBookings: bookings.filter(b => b.status === 'Pending').length,
-    inProgressBookings: bookings.filter(b => b.status === 'In Progress').length,
-    completedBookings: bookings.filter(b => b.status === 'Completed').length,
-    paidBookings: bookings.filter(b => b.status === 'Paid').length,
+    pendingBookings: bookings.filter(b => b.status === 'PENDING').length,
+    approvedBookings: bookings.filter(b => b.status === 'APPROVED').length,
+    assignedBookings: bookings.filter(b => b.status === 'ASSIGNED').length,
+    inProgressBookings: bookings.filter(b => b.status === 'IN_PROGRESS').length,
+    completedBookings: bookings.filter(b => b.status === 'COMPLETED').length,
+    paidBookings: bookings.filter(b => b.status === 'PAID').length,
     lastBookingDate: bookings.length > 0
       ? bookings.reduce((latest, current) => {
         const latestDate = new Date(latest.bookingDate);
@@ -481,14 +497,13 @@ function CustomerDashboard() {
       }).bookingDate
       : null
   };
+  const activeStatuses = ['PENDING', 'APPROVED', 'ASSIGNED', 'IN_PROGRESS'];
+  const activeBookings = bookings.filter(b => activeStatuses.includes(b.status))
+    .sort((a, b) => new Date(a.bookingDate) - new Date(b.bookingDate));
 
-  const activeBookings = bookings.filter(b =>
-    b.status === 'Pending' || b.status === 'In Progress'
-  ).sort((a, b) => new Date(a.bookingDate) - new Date(b.bookingDate));
-
-  const bookingHistory = bookings.filter(b =>
-    b.status === 'Completed' || b.status === 'Declined' || b.status === 'Cancelled' || b.status === 'Paid'
-  ).sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
+  const historyStatuses = ['COMPLETED', 'PAID', 'CANCELLED', 'DECLINED'];
+  const bookingHistory = bookings.filter(b => historyStatuses.includes(b.status))
+    .sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
 
 
   return (
@@ -770,6 +785,14 @@ function CustomerDashboard() {
               <span className="stat-label">Chờ xử lý</span>
             </div>
             <div className="stat-item">
+              <span className="stat-value">{calculatedStats.approvedBookings || 0}</span>
+              <span className="stat-label">Đã duyệt</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-value">{calculatedStats.assignedBookings || 0}</span>
+              <span className="stat-label">Đã gán thợ</span>
+            </div>
+            <div className="stat-item">
               <span className="stat-value">{calculatedStats.inProgressBookings || 0}</span>
               <span className="stat-label">Đang xử lý</span>
             </div>
@@ -798,16 +821,17 @@ function CustomerDashboard() {
             ) : activeBookings.length > 0 ? (
               <div className="booking-list">
                 {activeBookings.map(booking => (
-                  <div key={booking.bookingId} className={`booking-item status-${booking.status.toLowerCase().replace(' ', '_')}`}>
+                  <div key={booking.bookingId} className={`booking-item status-${getStatusDisplay(booking.status).className}`}>
                     <div className="booking-item-header">
                       <strong>{booking.vehiclePlate}</strong> ({booking.vehicleModel})
-                      <span className={`booking-status status-label-${booking.status.toLowerCase().replace(' ', '_')}`}>{booking.status}</span>
+                      <span className={`booking-status status-label-${getStatusDisplay(booking.status).className}`}>
+                        {getStatusDisplay(booking.status).text}
+                      </span>
                     </div>
                     <p><strong>Trung tâm:</strong> {booking.centerName}</p>
                     <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
-
                     {booking.note && <p className="booking-note"><strong>Ghi chú:</strong> {booking.note}</p>}
-                    {booking.status === 'Pending' && (
+                    {booking.status === 'PENDING' && (
                       <button
                         className="btn-cancel-small"
                         onClick={() => handleCancelBookingClickDashboard(booking.bookingId)}
@@ -832,24 +856,26 @@ function CustomerDashboard() {
             ) : bookingHistory.length > 0 ? (
               <div className="booking-list">
                 {bookingHistory.map(booking => (
-                  <div key={booking.bookingId} className={`booking-item status-${booking.status.toLowerCase().replace(' ', '_')}`}>
-                    <div className="booking-item-header">
-                      <strong>{booking.vehiclePlate}</strong> ({booking.vehicleModel})
-                      <span className={`booking-status status-label-${booking.status.toLowerCase().replace(' ', '_')}`}>{booking.status}</span>
-                    </div>
-                    <p><strong>Trung tâm:</strong> {booking.centerName}</p>
-                    <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
-                    {(booking.status === 'Completed' || booking.status === 'Paid') && (
-                      <button
-                        className="btn-feedback"
-                        onClick={() => handleFeedbackClick(booking.bookingId)}
-                        title="Đánh giá dịch vụ"
-                      >
-                        <FaStar /> {booking.hasFeedback ? 'Sửa đánh giá' : 'Đánh giá'}
-                      </button>
-                    )}
+                <div key={booking.bookingId} className={`booking-item status-${getStatusDisplay(booking.status).className}`}>
+                  <div className="booking-item-header">
+                    <strong>{booking.vehiclePlate}</strong> ({booking.vehicleModel})
+                    <span className={`booking-status status-label-${getStatusDisplay(booking.status).className}`}>
+                      {getStatusDisplay(booking.status).text}
+                    </span>
                   </div>
-                ))}
+                  <p><strong>Trung tâm:</strong> {booking.centerName}</p>
+                  <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
+                  {(booking.status === 'COMPLETED' || booking.status === 'PAID') && (
+                    <button
+                      className="btn-feedback"
+                      onClick={() => handleFeedbackClick(booking.bookingId)}
+                      title="Đánh giá dịch vụ"
+                    >
+                      <FaStar /> {booking.hasFeedback ? 'Sửa đánh giá' : 'Đánh giá'}
+                    </button>
+                  )}
+                </div>
+              ))}
               </div>
             ) : (
               <p>Chưa có lịch sử hẹn nào.</p>

@@ -2,7 +2,7 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.dto.PartOption;
 import com.se1824.SWP391_FA25.entity.*;
-import com.se1824.SWP391_FA25.enums.UserRole;
+import com.se1824.SWP391_FA25.enums.*;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.model.request.ChecklistDetailUpdateRequest;
@@ -26,6 +26,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,15 +44,7 @@ public class MaintenanceChecklistService {
     ModelMapper modelMapper;
     VehicleRepository vehicleRepo;
     AuthenticationService authService;
-    String STATUS_ADJUSTMENT = "HIỆU_CHỈNH";
-    String STATUS_REPAIR = "SỬA_CHỮA";
-    String STATUS_REPLACE = "THAY_THẾ";
-    String STATUS_GOOD = "TỐT";
-
-
-
-
-
+    static ConcurrentHashMap<Integer, Object> checklistLocks = new ConcurrentHashMap<>();
     /**
      * Lấy danh sách Checklist TÓM TẮT cho Technician đang đăng nhập
      */
@@ -121,7 +114,8 @@ public class MaintenanceChecklistService {
                 res.setVehicleModel(vehicle.getModel());
                 res.setCurrentKm(checklist.getActualKm() != null ? checklist.getActualKm() : vehicle.getCurrentKm());
             }
-            res.setBookingStatus(checklist.getBooking().getStatus());
+            res.setBookingStatus(checklist.getBooking().getStatus().name());
+            res.setStatus(checklist.getStatus().name());
             if (checklist.getBooking().getCustomer() != null) {
                 res.setCustomerName(checklist.getBooking().getCustomer().getFullName());
             }
@@ -141,9 +135,9 @@ public class MaintenanceChecklistService {
         for (MaintenanceChecklistDetailResponse detail : details) {
             BigDecimal cost = Optional.ofNullable(detail.getLaborCost()).orElse(BigDecimal.ZERO)
                     .add(Optional.ofNullable(detail.getMaterialCost()).orElse(BigDecimal.ZERO));
-            if ("APPROVED".equalsIgnoreCase(detail.getApprovalStatus())) {
+            if (ApprovalStatus.APPROVED.name().equalsIgnoreCase(detail.getApprovalStatus())) {
                 totalApproved = totalApproved.add(cost);
-            } else if ("DECLINED".equalsIgnoreCase(detail.getApprovalStatus())) {
+            } else if (ApprovalStatus.DECLINED.name().equalsIgnoreCase(detail.getApprovalStatus())) {
                 totalDeclined = totalDeclined.add(cost);
             }
             estimatedTotal = estimatedTotal.add(cost);
@@ -170,7 +164,7 @@ public class MaintenanceChecklistService {
             res.setVehicleModel(vehicle.getModel());
             res.setCurrentKm(checklist.getActualKm() != null ? checklist.getActualKm() : vehicle.getCurrentKm());
         }
-
+        res.setStatus(checklist.getStatus().name());
         if (checklist.getPlan() != null) {
             res.setPlanName(checklist.getPlan().getName());
             res.setMaintenanceKm(checklist.getPlan().getIntervalKm());
@@ -186,9 +180,9 @@ public class MaintenanceChecklistService {
         for (MaintenanceChecklistDetailResponse detail : details) {
             BigDecimal cost = Optional.ofNullable(detail.getLaborCost()).orElse(BigDecimal.ZERO)
                     .add(Optional.ofNullable(detail.getMaterialCost()).orElse(BigDecimal.ZERO));
-            if ("APPROVED".equalsIgnoreCase(detail.getApprovalStatus())) {
+            if (ApprovalStatus.APPROVED.name().equalsIgnoreCase(detail.getApprovalStatus())) {
                 totalApproved = totalApproved.add(cost);
-            } else if ("DECLINED".equalsIgnoreCase(detail.getApprovalStatus())) {
+            } else if (ApprovalStatus.DECLINED.name().equalsIgnoreCase(detail.getApprovalStatus())) {
                 totalDeclined = totalDeclined.add(cost);
             }
             estimatedTotal = estimatedTotal.add(cost);
@@ -207,12 +201,12 @@ public class MaintenanceChecklistService {
     public void startMaintenance(Integer bookingId, Integer actualKm) {
         if (checklistRepo.findByBooking_BookingId(bookingId).isPresent()) {
             MaintenanceChecklist existingChecklist = checklistRepo.findByBooking_BookingId(bookingId).get();
-            existingChecklist.setStatus("In Progress");
+            existingChecklist.setStatus(ChecklistStatus.IN_PROGRESS);
             checklistRepo.save(existingChecklist);
 
             Booking booking = bookingRepo.findById(bookingId) // Lấy lại Booking và đổi trạng thái booking thành "In Progress"
                     .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
-            booking.setStatus("In Progress");
+            booking.setStatus(BookingStatus.IN_PROGRESS);
             bookingRepo.save(booking);
             return;
         }
@@ -255,11 +249,11 @@ public class MaintenanceChecklistService {
         newChecklist.setTechnician(booking.getAssignedTechnician());
         newChecklist.setPlan(applicablePlan);
         newChecklist.setActualKm(actualKm);
-        newChecklist.setStatus("In Progress");
+        newChecklist.setStatus(ChecklistStatus.IN_PROGRESS);
         newChecklist.setStartTime(LocalDateTime.now()); // Ghi lại thời gian bắt đầu
         newChecklist.setMaintenanceNo(applicablePlan.getMaintenanceNo()); // Gán maintenanceNo từ plan
 
-        booking.setStatus("In Progress");// Đổi trạng thái booking thành "In Progress" nếu chưa có checklist
+        booking.setStatus(BookingStatus.IN_PROGRESS);
         bookingRepo.save(booking);
 
         final MaintenanceChecklist savedChecklist = checklistRepo.save(newChecklist);
@@ -270,7 +264,8 @@ public class MaintenanceChecklistService {
                     MaintenanceChecklistDetail detail = new MaintenanceChecklistDetail();
                     detail.setChecklist(savedChecklist);
                     detail.setPlanItem(item);
-                    detail.setStatus("Pending");
+                    detail.setStatus(ChecklistDetailStatus.PENDING);
+                    detail.setApprovalStatus(ApprovalStatus.PENDING);
                     detail.setLaborCost(BigDecimal.ZERO);
                     detail.setMaterialCost(BigDecimal.ZERO);
                     return detail;
@@ -292,6 +287,14 @@ public class MaintenanceChecklistService {
                 .map(detail -> {
                     MaintenanceChecklistDetailResponse detailRes = new MaintenanceChecklistDetailResponse();
                     modelMapper.map(detail, detailRes);
+                    if (detail.getStatus() != null) {
+                        detailRes.setStatus(detail.getStatus().name());
+                    }
+                    if (detail.getApprovalStatus() != null) {
+                        detailRes.setApprovalStatus(detail.getApprovalStatus().name());
+                    } else {
+                        detailRes.setApprovalStatus(ApprovalStatus.PENDING.name());
+                    }
 
                     if (detail.getPlanItem() != null) {
                         detailRes.setItemName(detail.getPlanItem().getItemName());
@@ -384,6 +387,7 @@ public class MaintenanceChecklistService {
 
     /**
      * Tính số tháng đã trôi qua kể từ ngày mua/đăng ký xe đến ngày hiện tại.
+     *
      * @param registrationDate Ngày mua xe (purchaseDate).
      * @return Số tháng đã trôi qua (làm tròn xuống).
      */
@@ -415,41 +419,40 @@ public class MaintenanceChecklistService {
         if (!detail.getChecklist().getTechnician().getUserId().equals(currentUserId)) {
             throw new InvalidDataException("You are not the assigned technician for this checklist.");
         }
-
-
-        String status = request.status();
+        ChecklistDetailStatus newStatusEnum;
+        try {
+            newStatusEnum = ChecklistDetailStatus.valueOf(request.status().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid status value from request: {}", request.status());
+            throw new InvalidDataException("Invalid status value provided: " + request.status());
+        }
         Integer partId = request.partId();
-
-        detail.setStatus(status);
+        detail.setStatus(newStatusEnum);
         detail.setNote(request.note());
         detail.setPart(null);
         detail.setLaborCost(BigDecimal.ZERO);
         detail.setMaterialCost(BigDecimal.ZERO);
+        detail.setApprovalStatus(ApprovalStatus.PENDING);
 
-        if (STATUS_REPLACE.equalsIgnoreCase(status) && partId != null) {
+        if (newStatusEnum == ChecklistDetailStatus.REPLACE && partId != null) {
             Part part = partRepo.findById(partId)
                     .orElseThrow(() -> new ResourceNotFoundException("Part not found with ID: " + partId));
-
             if (part.getQuantity() <= 0) {
                 throw new InvalidDataException("Part is out of stock: " + part.getName());
             }
-
             detail.setPart(part);
             detail.setLaborCost(Optional.ofNullable(part.getLaborCost()).orElse(BigDecimal.ZERO));
             detail.setMaterialCost(Optional.ofNullable(part.getMaterialCost()).orElse(BigDecimal.ZERO));
 
-        } else if (STATUS_REPAIR.equalsIgnoreCase(status)) {
-
+        } else if (newStatusEnum == ChecklistDetailStatus.REPAIR) {
             BigDecimal laborCost = Optional.ofNullable(request.laborCost()).orElse(BigDecimal.ZERO);
-            // Thêm validation nếu cần (ví dụ: không cho phép chi phí âm)
             if (laborCost.compareTo(BigDecimal.ZERO) < 0) {
                 throw new InvalidDataException("Chi phí sửa chữa không được âm.");
             }
-
             detail.setLaborCost(laborCost);
             detail.setMaterialCost(BigDecimal.ZERO);
 
-        } else if (STATUS_ADJUSTMENT.equalsIgnoreCase(status)) {
+        } else if (newStatusEnum == ChecklistDetailStatus.ADJUSTMENT || newStatusEnum == ChecklistDetailStatus.GOOD || newStatusEnum == ChecklistDetailStatus.PENDING) {
             detail.setLaborCost(BigDecimal.ZERO);
             detail.setMaterialCost(BigDecimal.ZERO);
         }
@@ -462,13 +465,33 @@ public class MaintenanceChecklistService {
         MaintenanceChecklistDetail detail = detailRepo.findById(detailId)
                 .orElseThrow(() -> new ResourceNotFoundException("Checklist detail not found"));
 
-        String standardizedStatus = approvalStatus.toUpperCase();
-        if (!List.of("APPROVED", "DECLINED", "PENDING").contains(standardizedStatus)) {
-            throw new InvalidDataException("Invalid approval status. Must be APPROVED, DECLINED, or PENDING.");
+        Integer checklistId = detail.getChecklist().getId();
+
+        Object lock = checklistLocks.computeIfAbsent(checklistId, k -> new Object());
+        synchronized (lock) {
+            // Validation
+            ApprovalStatus newApprovalStatus;
+            try {
+                newApprovalStatus = ApprovalStatus.valueOf(approvalStatus.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                log.error("Invalid approval status value: {}", approvalStatus);
+                throw new InvalidDataException("Invalid approval status. Must be APPROVED, DECLINED, or PENDING.");
+            }
+
+            // Kiểm tra nếu KTV chưa cập nhật status
+            if (detail.getStatus() == ChecklistDetailStatus.PENDING &&
+                    newApprovalStatus != ApprovalStatus.PENDING) {
+                throw new InvalidDataException("Cannot approve/decline an item that has not been inspected by the technician.");
+            }
+
+            detail.setApprovalStatus(newApprovalStatus);
+            detail.setCustomerNote(customerNote);
+            detailRepo.save(detail);
+            checkAndSetChecklistPendingApproval(checklistId);
+
+            log.info("Updated approval for detail {} on checklist {}", detailId, checklistId);
         }
-        detail.setApprovalStatus(standardizedStatus);
-        detail.setCustomerNote(customerNote);
-        detailRepo.save(detail);
+
     }
 
     /**
@@ -479,14 +502,14 @@ public class MaintenanceChecklistService {
         MaintenanceChecklist checklist = checklistRepo.findById(checklistId)
                 .orElseThrow(() -> new ResourceNotFoundException("Checklist not found."));
 
-        if (!"In Progress".equalsIgnoreCase(checklist.getStatus())) {
-            throw new InvalidDataException("Checklist must be 'In Progress' to complete.");
+        if (checklist.getStatus() != ChecklistStatus.PENDING_APPROVAL) {
+            throw new InvalidDataException("Checklist must be 'Pending Approval' by the customer to complete. Current status: " + checklist.getStatus());
         }
 
-        List<MaintenanceChecklistDetail> detailsToProcess = detailRepo.findByChecklist_IdAndApprovalStatus(checklistId, "APPROVED");
+        List<MaintenanceChecklistDetail> detailsToProcess = detailRepo.findByChecklist_IdAndApprovalStatus(checklistId, ApprovalStatus.APPROVED);
 
         for (MaintenanceChecklistDetail detail : detailsToProcess) {
-            if (STATUS_REPLACE.equalsIgnoreCase(detail.getStatus()) && detail.getPart() != null) {
+            if (detail.getStatus() == ChecklistDetailStatus.REPLACE && detail.getPart() != null) {
                 Part part = detail.getPart();
                 if (part.getQuantity() <= 0) {
                     log.error("Part out of stock during checklist completion: {}", part.getName());
@@ -498,7 +521,7 @@ public class MaintenanceChecklistService {
         }
         checklist.setEndTime(LocalDateTime.now()); // Ghi lại thời gian kết thúc
 
-        checklist.setStatus("Completed");
+        checklist.setStatus(ChecklistStatus.COMPLETED);
         checklistRepo.save(checklist);
         Booking booking = checklist.getBooking();
         if (booking != null) {
@@ -579,9 +602,10 @@ public class MaintenanceChecklistService {
     /**
      * Lấy chi tiết Checklist theo Booking ID cho Technician đang đăng nhập.
      * * @param bookingId ID của Booking (cũng là ID dùng để tìm Checklist)
+     *
      * @return MaintenanceChecklistResponse DTO
      * @throws ResourceNotFoundException Nếu không tìm thấy Checklist
-     * @throws AccessDeniedException Nếu Technician không được gán cho Checklist này
+     * @throws AccessDeniedException     Nếu Technician không được gán cho Checklist này
      */
     public MaintenanceChecklistResponse getChecklistByTechnicianAndBookingId(Integer bookingId) {
         // 1. Lấy thông tin Technician đang đăng nhập
@@ -604,5 +628,31 @@ public class MaintenanceChecklistService {
 
 
         return mapChecklistToResponseWithDetails(checklist);
+    }
+    private void checkAndSetChecklistPendingApproval(Integer checklistId) {
+        MaintenanceChecklist checklist = checklistRepo.findById(checklistId).orElse(null);
+        if (checklist == null || checklist.getStatus() != ChecklistStatus.IN_PROGRESS) {
+            return; // Chỉ xử lý khi checklist đang IN_PROGRESS
+        }
+
+        List<MaintenanceChecklistDetail> details = detailRepo.findByChecklist_Id(checklistId);
+        // Kiểm tra xem còn hạng mục nào đang chờ khách hàng duyệt (ApprovalStatus = PENDING) không
+        boolean allApprovedOrDeclined = details.stream()
+                .allMatch(d -> d.getApprovalStatus() == ApprovalStatus.APPROVED || d.getApprovalStatus() == ApprovalStatus.DECLINED);
+
+        // Kiểm tra xem còn hạng mục nào KTV chưa xử lý (ChecklistDetailStatus = PENDING) không
+        boolean allTechnicianProcessed = details.stream()
+                .allMatch(d -> d.getStatus() != ChecklistDetailStatus.PENDING);
+
+
+        // Nếu tất cả đã được KH duyệt/từ chối VÀ tất cả đã được KTV xử lý -> Chuyển Checklist sang PENDING_APPROVAL
+        if (allApprovedOrDeclined && allTechnicianProcessed) {
+            log.info("All details processed and approved/declined for checklist {}, setting status to PENDING_APPROVAL", checklistId);
+            checklist.setStatus(ChecklistStatus.PENDING_APPROVAL);
+            checklistRepo.save(checklist);
+        } else {
+            log.debug("Checklist {} not yet ready for PENDING_APPROVAL. All approved/declined: {}, All technician processed: {}",
+                    checklistId, allApprovedOrDeclined, allTechnicianProcessed);
+        }
     }
 }

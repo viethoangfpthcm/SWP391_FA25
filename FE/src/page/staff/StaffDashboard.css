@@ -272,65 +272,80 @@
 
   /* --- Badge trạng thái --- */
   .status-badge {
-    display: inline-block;
-    padding: 5px 12px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    border-radius: 15px;
-    white-space: nowrap;
-    text-align: center;
-    min-width: 100px;
-    border: 1px solid transparent;
-    line-height: 1.4;
-  }
+  display: inline-block;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 15px;
+  white-space: nowrap;
+  text-align: center;
+  min-width: 100px;
+  border: 1px solid transparent;
+  line-height: 1.4;
+}
 
-  .status-pending {
-    background-color: #ebd26d;
-    color: #b45309;
-    border-color: #fde68a;
-  }
+/* Pending: Vàng */
+.status-pending {
+  background-color: #fffbeb; /* Vàng rất nhạt */
+  color: #b45309; /* Nâu cam */
+  border-color: #fef3c7; /* Vàng nhạt */
+}
 
-  .status-approved {
-    background-color: #2475de;
-    color: #1d4ed8;
-    border-color: #bfdbfe;
-  }
+/* Approved: Xanh dương nhạt */
+.status-approved {
+  background-color: #eff6ff; /* Xanh dương rất nhạt */
+  color: #1d4ed8; /* Xanh dương đậm */
+  border-color: #dbeafe; /* Xanh dương nhạt */
+}
 
-  .status-assigned {
-    background-color: #62ff91;
-    color: #15803d;
-    border-color: #a7f3d0;
-  }
+/* Assigned: Xanh lá cây nhạt */
+.status-assigned {
+  background-color: #f0fdf4; /* Xanh lá rất nhạt */
+  color: #15803d; /* Xanh lá đậm */
+  border-color: #dcfce7; /* Xanh lá nhạt */
+}
 
-  .status-inprogress {
-    background-color: #a262ca;
-    color: #b45309;
-    border-color: #fcd34d;
-  }
+/* In Progress: Xanh dương đậm hơn (giống approved) */
+.status-inprogress {
+  background-color: #eff6ff; /* Xanh dương rất nhạt */
+  color: #1d4ed8; /* Xanh dương đậm */
+  border-color: #dbeafe; /* Xanh dương nhạt */
+}
 
-  .status-completed {
-    background-color: #2e90b7;
-    color: #047857;
-    border-color: #6ee7b7;
-  }
+/* Completed: Xanh lá đậm hơn (giống assigned) */
+.status-completed {
+  background-color: #f0fdf4; /* Xanh lá rất nhạt */
+  color: #15803d; /* Xanh lá đậm */
+  border-color: #dcfce7; /* Xanh lá nhạt */
+}
 
-  .status-declined {
-    background-color: #ff4a4a;
-    color: #b91c1c;
-    border-color: #fecaca;
-  }
+/* Paid: Tím nhạt */
+.status-paid {
+  background-color: #f5f3ff; /* Tím rất nhạt */
+  color: #5b21b6; /* Tím đậm */
+  border-color: #ede9fe; /* Tím nhạt */
+}
 
-  .status-paid {
-    background-color: #3fbd76;
-    color: #5b21b6;
-    border-color: #d8b4fe;
-  }
+/* Declined: Đỏ nhạt */
+.status-declined {
+  background-color: #fef2f2; /* Đỏ rất nhạt */
+  color: #b91c1c; /* Đỏ đậm */
+  border-color: #fee2e2; /* Đỏ nhạt */
+}
 
-  .status-default {
-    background-color: #f3f4f6;
-    color: #4b5563;
-    border-color: #e5e7eb;
-  }
+/* Cancelled: Dùng style giống Declined */
+.status-cancelled {
+  background-color: #fef2f2; /* Đỏ rất nhạt */
+  color: #b91c1c; /* Đỏ đậm */
+  border-color: #fee2e2; /* Đỏ nhạt */
+}
+
+/* Default/Unknown: Xám */
+.status-default {
+  background-color: #f3f4f6; /* Xám rất nhạt */
+  color: #4b5563; /* Xám đậm */
+  border-color: #e5e7eb; /* Xám nhạt */
+}
 
   /* --- Nút hành động trong ô --- */
   .action-buttons-cell {

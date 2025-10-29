@@ -2,6 +2,7 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.dto.*;
 import com.se1824.SWP391_FA25.entity.*;
+import com.se1824.SWP391_FA25.enums.BookingStatus;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.repository.*;
 import jakarta.persistence.EntityExistsException;
@@ -82,7 +83,7 @@ public class CustomerDashboardService {
                 .collect(Collectors.toMap(VehicleSchedule::getMaintenanceNo, vs -> vs));
 
         // Các maintenanceNo đã hoàn thành
-        Set<Integer> completedMaintenanceNos = bookingRepo.findByVehicle_LicensePlateAndStatus(licensePlate, "Completed")
+        Set<Integer> completedMaintenanceNos = bookingRepo.findByVehicle_LicensePlateAndStatus(licensePlate, BookingStatus.COMPLETED)
                 .stream()
                 .filter(booking -> booking.getMaintenancePlan() != null)
                 .map(booking -> booking.getMaintenancePlan().getMaintenanceNo())
@@ -155,7 +156,6 @@ public class CustomerDashboardService {
                 vehicleSchedule.setStatus(newStatus);
                 vehicleScheduleRepo.save(vehicleSchedule);
             }
-
             return dto;
         }).collect(Collectors.toList());
     }
@@ -239,10 +239,10 @@ public class CustomerDashboardService {
         BookingStatsDTO stats = new BookingStatsDTO();
         stats.setTotalBookings(bookings.size());
         stats.setPendingBookings((int) bookings.stream()
-                .filter(b -> "Pending".equals(b.getStatus()) || "Approved".equals(b.getStatus()))
+                .filter(b -> b.getStatus() == BookingStatus.PENDING || b.getStatus() == BookingStatus.APPROVED)
                 .count());
         stats.setCompletedBookings((int) bookings.stream()
-                .filter(b -> "Completed".equals(b.getStatus()))
+                .filter(b -> b.getStatus() == BookingStatus.COMPLETED)
                 .count());
         bookings.stream()
                 .map(Booking::getBookingDate)

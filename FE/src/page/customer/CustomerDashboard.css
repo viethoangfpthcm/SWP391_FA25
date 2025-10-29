@@ -1,4 +1,3 @@
-
 /* 🌌 Tổng thể */
 .dashboard-page {
   display: flex;
@@ -80,6 +79,7 @@
 .dashboard-page .modal-content.add-vehicle-form textarea::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
+
 .dashboard-section:hover,
 .vehicle-card:hover,
 .booking-item:hover {
@@ -404,39 +404,45 @@
   border-color: #bd2130;
 }
 
-.booking-list-container{
+.booking-list-container {
   color: #fefefe;
 }
 
 /* Pending - sáng vàng */
 .booking-item.status-pending .booking-item-header {
-  color: #ffe391; /* sáng hơn #f0ad4e */
+  color: #ffe391;
+  /* sáng hơn #f0ad4e */
 }
 
 /* In Progress - sáng xanh dương */
 .booking-item.status-in_progress .booking-item-header {
-  color: #6dc8ff; /* sáng hơn #0275d8 */
+  color: #6dc8ff;
+  /* sáng hơn #0275d8 */
 }
 
 /* Completed - sáng xanh lá */
 .booking-item.status-completed .booking-item-header {
-  color: #7fff9f; /* sáng hơn #28a745 */
+  color: #7fff9f;
+  /* sáng hơn #28a745 */
 }
 
 /* Cancelled / Declined - sáng đỏ */
 .booking-item.status-cancelled .booking-item-header,
 .booking-item.status-declined .booking-item-header {
-  color: #ff8c8c; /* sáng hơn #d9534f */
+  color: #ff8c8c;
+  /* sáng hơn #d9534f */
 }
 
 /* Paid - sáng xanh ngọc */
 .booking-item.status-paid .booking-item-header {
-  color: #63e5db; /* sáng hơn #17a2b8 */
+  color: #63e5db;
+  /* sáng hơn #17a2b8 */
 }
 
 /* Ready for Payment - sáng xanh nhạt */
 .booking-item.status-ready_for_payment .booking-item-header {
-  color: #a7ffb3; /* sáng hơn #5cb85c */
+  color: #a7ffb3;
+  /* sáng hơn #5cb85c */
 }
 
 /* Giữ biển số xe đậm rõ hơn */
@@ -498,15 +504,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 100px 20px; 
+  padding: 100px 20px;
   font-size: 18px;
-  color: #278598;      
-  min-height: 300px;  
+  color: #278598;
+  min-height: 300px;
 }
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -517,12 +525,13 @@
   animation: spin 1s linear infinite;
   margin-right: 10px;
   vertical-align: middle;
-  
 
-  color: #e9eaea;                   
-  background-color: transparent;   
-  fill: #f7faf9;      
-}            
+
+  color: #e9eaea;
+  background-color: transparent;
+  fill: #f7faf9;
+}
+
 /* =========================================================
    🪟 Modal nâng cấp (Thêm xe / Chỉnh sửa thông tin)
    ========================================================= */
@@ -558,7 +567,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   padding-bottom: 10px;
 }
 
@@ -609,7 +618,7 @@
 .modal-content input:focus,
 .modal-content select:focus {
   border-color: #0a8bff;
-  box-shadow: 0 0 0 3px rgba(10,139,255,0.25);
+  box-shadow: 0 0 0 3px rgba(10, 139, 255, 0.25);
   outline: none;
 }
 
@@ -618,7 +627,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  border-top: 1px solid rgba(255,255,255,0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   padding-top: 18px;
   margin-top: 25px;
 }
@@ -658,14 +667,16 @@
   transform: translateY(-1px);
   box-shadow: 0 6px 14px rgba(10, 79, 240, 0.4);
 }
+
 .modal-content select option {
- 
-  background: #1e1e1e; /* Màu nền tối (ví dụ: đen mờ) */
-  color: #fefefe; 
+
+  background: #1e1e1e;
+  /* Màu nền tối (ví dụ: đen mờ) */
+  color: #fefefe;
 }
 
 .modal-content select option:hover {
-  background: #0a4ff0; 
+  background: #0a4ff0;
   color: #fff;
 }
 
@@ -690,17 +701,20 @@
 
 .feedback-modal .stars .star-empty,
 .feedback-modal .stars .star-selected {
-  font-size: 2.5rem; /* Kích thước ngôi sao */
+  font-size: 2.5rem;
+  /* Kích thước ngôi sao */
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .feedback-modal .stars .star-empty {
-  color: #ccc; /* Màu sao rỗng */
+  color: #ccc;
+  /* Màu sao rỗng */
 }
 
 .feedback-modal .stars .star-selected {
-  color: #fadb14; /* Màu sao được chọn (vàng) */
+  color: #fadb14;
+  /* Màu sao được chọn (vàng) */
 }
 
 .feedback-modal .stars svg:hover {
@@ -713,36 +727,43 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   min-height: 100px;
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
+
 .btn-feedback {
   /* Màu nền vàng giống màu ngôi sao đã chọn */
-  background-color: #fadb14; 
-  
+  background-color: #fadb14;
+
   /* Màu chữ tối để dễ đọc trên nền vàng */
-  color: #333; 
-  
-  border: 1px solid #eab000; /* Viền vàng sậm hơn một chút */
+  color: #333;
+
+  border: 1px solid #eab000;
+  /* Viền vàng sậm hơn một chút */
   padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
-  font-weight: 600; /* Hơi đậm */
+  font-weight: 600;
+  /* Hơi đậm */
   font-size: 0.9rem;
-  
+
   /* Căn icon và chữ cho đẹp */
   display: inline-flex;
   align-items: center;
-  gap: 6px; /* Khoảng cách giữa icon FaStar và chữ */
-  
+  gap: 6px;
+  /* Khoảng cách giữa icon FaStar và chữ */
+
   transition: all 0.2s ease;
-  margin-top: 10px; /* Tạo khoảng cách với nội dung bên trên nó */
+  margin-top: 10px;
+  /* Tạo khoảng cách với nội dung bên trên nó */
 }
 
 /* Hiệu ứng khi di chuột qua */
 .btn-feedback:hover {
-  background-color: #f7d200; /* Hơi sậm hơn khi hover */
+  background-color: #f7d200;
+  /* Hơi sậm hơn khi hover */
   border-color: #eab000;
-  color: #000; /* Chữ đen hơn */
+  color: #000;
+  /* Chữ đen hơn */
 }
 
 /* Đảm bảo icon thẳng hàng (nếu cần) */
@@ -750,13 +771,52 @@
   vertical-align: middle;
 }
 
+.booking-item.status-approved {
+  border-left-color: #8a4af3;
+  /* Màu tím */
+}
+
+.status-label-approved {
+  background-color: #8a4af3;
+}
+
+.booking-item.status-approved .booking-item-header {
+  color: #d0b8ff;
+  /* Màu tím sáng */
+}
+
+.booking-item.status-assigned {
+  border-left-color: #007bff;
+}
+
+.status-label-assigned {
+  background-color: #007bff;
+}
+
+.booking-item.status-assigned .booking-item-header {
+  color: #80c7ff;
+  /* Màu xanh dương sáng */
+}
+
 /* Animation */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideIn {
-  from { transform: translateY(-25px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-25px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

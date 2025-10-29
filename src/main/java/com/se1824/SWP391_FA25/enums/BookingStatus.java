@@ -1,0 +1,5 @@
+package com.se1824.SWP391_FA25.enums;
+
+public enum BookingStatus {
+    PENDING, DECLINED, APPROVED, ASSIGNED, IN_PROGRESS, COMPLETED, PAID, CANCELLED
+}

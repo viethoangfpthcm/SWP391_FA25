@@ -18,18 +18,17 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
     @Query("SELECT p.booking.serviceCenter.name, SUM(p.laborCost + p.materialCost) " +
             "FROM Payment p " +
-            "WHERE p.status = 'PAID' " +
+            "WHERE p.status = com.se1824.SWP391_FA25.enums.PaymentStatus.PAID " +
             "AND YEAR(p.paymentDate) = :year AND MONTH(p.paymentDate) = :month " +
             "GROUP BY p.booking.serviceCenter.name")
     List<Object[]> findRevenueByMonthAndYear(@Param("month") int month, @Param("year") int year);
 
     @Query("SELECT FUNCTION('DAY', p.paymentDate), SUM(p.laborCost + p.materialCost) " +
             "FROM Payment p " +
-            "WHERE p.status = 'PAID' " +
+            "WHERE p.status = com.se1824.SWP391_FA25.enums.PaymentStatus.PAID " +
             "AND p.booking.serviceCenter.id = :centerId " +
             "AND YEAR(p.paymentDate) = :year AND MONTH(p.paymentDate) = :month " +
             "GROUP BY FUNCTION('DAY', p.paymentDate) " +
             "ORDER BY FUNCTION('DAY', p.paymentDate) ASC")
     List<Object[]> findRevenueByCenterAndMonthAndYear(@Param("centerId") int centerId, @Param("month") int month, @Param("year") int year);
-
 }
