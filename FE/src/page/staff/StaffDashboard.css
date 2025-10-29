@@ -286,63 +286,63 @@
 
 /* Pending: Vàng */
 .status-pending {
-  background-color: #fffbeb; /* Vàng rất nhạt */
+  background-color: #e6cd0ffe; /* Vàng rất nhạt */
   color: #b45309; /* Nâu cam */
   border-color: #fef3c7; /* Vàng nhạt */
 }
 
 /* Approved: Xanh dương nhạt */
 .status-approved {
-  background-color: #eff6ff; /* Xanh dương rất nhạt */
+  background-color: #d94498; /* Xanh dương rất nhạt */
   color: #1d4ed8; /* Xanh dương đậm */
   border-color: #dbeafe; /* Xanh dương nhạt */
 }
 
 /* Assigned: Xanh lá cây nhạt */
 .status-assigned {
-  background-color: #f0fdf4; /* Xanh lá rất nhạt */
+  background-color: #d94498; /* Xanh lá rất nhạt */
   color: #15803d; /* Xanh lá đậm */
   border-color: #dcfce7; /* Xanh lá nhạt */
 }
 
 /* In Progress: Xanh dương đậm hơn (giống approved) */
 .status-inprogress {
-  background-color: #eff6ff; /* Xanh dương rất nhạt */
+  background-color: #0a6ef1; /* Xanh dương rất nhạt */
   color: #1d4ed8; /* Xanh dương đậm */
   border-color: #dbeafe; /* Xanh dương nhạt */
 }
 
 /* Completed: Xanh lá đậm hơn (giống assigned) */
 .status-completed {
-  background-color: #f0fdf4; /* Xanh lá rất nhạt */
+  background-color: #38be60; /* Xanh lá rất nhạt */
   color: #15803d; /* Xanh lá đậm */
   border-color: #dcfce7; /* Xanh lá nhạt */
 }
 
 /* Paid: Tím nhạt */
 .status-paid {
-  background-color: #f5f3ff; /* Tím rất nhạt */
+  background-color: #7a62f1; /* Tím rất nhạt */
   color: #5b21b6; /* Tím đậm */
   border-color: #ede9fe; /* Tím nhạt */
 }
 
 /* Declined: Đỏ nhạt */
 .status-declined {
-  background-color: #fef2f2; /* Đỏ rất nhạt */
+  background-color: #e14646; /* Đỏ rất nhạt */
   color: #b91c1c; /* Đỏ đậm */
   border-color: #fee2e2; /* Đỏ nhạt */
 }
 
 /* Cancelled: Dùng style giống Declined */
 .status-cancelled {
-  background-color: #fef2f2; /* Đỏ rất nhạt */
+  background-color: #e14646; /* Đỏ rất nhạt */
   color: #b91c1c; /* Đỏ đậm */
   border-color: #fee2e2; /* Đỏ nhạt */
 }
 
 /* Default/Unknown: Xám */
 .status-default {
-  background-color: #f3f4f6; /* Xám rất nhạt */
+  background-color: #3b76eb; /* Xám rất nhạt */
   color: #4b5563; /* Xám đậm */
   border-color: #e5e7eb; /* Xám nhạt */
 }

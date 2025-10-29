@@ -40,6 +40,12 @@ export default function CheckList({ user }) {
     detail.approvalStatus?.toUpperCase() === 'DECLINED'
   );
 };
+const hasPendingApprovalItems = () => {
+    if (!checklist || !checklist.details) return false;
+    return checklist.details.some(detail =>
+      detail.approvalStatus?.toUpperCase() === 'PENDING'
+    );
+  };
   // Toast notification state
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
@@ -527,9 +533,7 @@ export default function CheckList({ user }) {
         <div className="summary-section">
           <p><strong>Trạng thái:</strong> <span className={`status-badge ${checklist.status === 'IN_PROGRESS' ? 'in-progress' : 'COMPLETED'}`}> {formatChecklistStatus(checklist.status)}</span></p>
           <p><strong>Biển số xe:</strong> {checklist.vehicleNumberPlate}</p>
-          {/* THÊM MODEL */}
           <p><strong>Mẫu xe:</strong> {checklist.vehicleModel || 'Đang cập nhật...'}</p>
-          {/* THÊM PLAN NAME */}
           <p><strong>Gói bảo dưỡng:</strong> {checklist.planName || 'Không có gói'}</p>
           <p><strong>KM bảo dưỡng:</strong> {checklist.currentKm} km</p>
           <p><strong>Bắt đầu:</strong> {new Date(checklist.startTime).toLocaleString('vi-VN')}</p>
@@ -542,7 +546,7 @@ export default function CheckList({ user }) {
             <button
               className="btn-complete"
               onClick={handleCompleteChecklist}
-              disabled={isUpdating}
+              disabled={isUpdating || hasPendingApprovalItems()}
             >
               {isUpdating ? <FaSpinner className="spin" /> : "Hoàn thành Checklist"}
             </button>
@@ -554,8 +558,13 @@ export default function CheckList({ user }) {
               Vui lòng lưu tất cả thay đổi và đợi khách hàng phê duyệt...
             </small>
           )}
+          {hasPendingApprovalItems() && !isCompleted && (
+             <small style={{color: '#ff4d4f', marginTop: '8px', display: 'block', fontWeight: 'bold'}}>
+              Không thể hoàn thành. Vẫn còn hạng mục đang chờ khách hàng phê duyệt.
+            </small>
+          )}
 
-          {checklist.status === 'PENDING_APPROVAL' && !isCompleted && (
+         {checklist.status === 'PENDING_APPROVAL' && !isCompleted && !hasPendingApprovalItems() && (
             <small className="text-green-500 mt-2 block">
               Khách hàng đã phê duyệt. Bạn có thể hoàn thành checklist!
             </small>
