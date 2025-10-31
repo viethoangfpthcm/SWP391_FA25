@@ -1,6 +1,7 @@
 package com.se1824.SWP391_FA25.controller;
 
 import com.se1824.SWP391_FA25.entity.Part;
+import com.se1824.SWP391_FA25.entity.Users;
 import com.se1824.SWP391_FA25.model.request.PartCreateRequest;
 import com.se1824.SWP391_FA25.service.AuthenticationService;
 import com.se1824.SWP391_FA25.service.ManagerService;
@@ -54,5 +55,17 @@ public class ManagerController {
 
         Part updatedPart = serviceCenterService.updatePart(partId, requestDTO);
         return new ResponseEntity<>(updatedPart, HttpStatus.OK);
+    }
+
+    @GetMapping("/bookings")
+    public ResponseEntity<?> getBookings() {
+        Users user = authentication.getCurrentAccount();
+        return ResponseEntity.ok(managerService.getAllBookings(user.getUserId()));
+    }
+
+    @GetMapping("/payment")
+    public ResponseEntity<?> getPayments() {
+        Users user = authentication.getCurrentAccount();
+        return ResponseEntity.ok(managerService.getPaymentsByCenter(user.getCenter().getId(), user.getUserId()));
     }
 }
