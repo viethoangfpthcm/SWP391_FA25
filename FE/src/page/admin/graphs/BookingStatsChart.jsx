@@ -11,30 +11,58 @@ export default function BookingStatsChart({ chartData }) {
     }
 
     const statusColors = {
-        'Completed': ['rgba(34,197,94,0.85)', '#22c55e'],
-        'Cancelled': ['rgba(239,68,68,0.85)', '#ef4444'],
-        'Pending': ['rgba(251,191,36,0.85)', '#fbbf24'],
-        'Approved': ['rgba(59,130,246,0.85)', '#3b82f6'],
-        'In Progress': ['rgba(168,85,247,0.85)', '#a855f7'],
-        'Declined': ['rgba(148,163,184,0.85)', '#94a3b8'],
-        'Paid': ['rgba(16,185,129,0.85)', '#10b981']
+        "Completed": ["#22c55e", "#16a34a"],
+        "Cancelled": ["#ef4444", "#dc2626"],
+        "Pending": ["#facc15", "#eab308"],
+        "Approved": ["#3b82f6", "#2563eb"],
+        "In Progress": ["#a855f7", "#9333ea"],
+        "Declined": ["#94a3b8", "#64748b"],
+        "Paid": ["#10b981", "#059669"],
     };
 
-    const defaultColor = ['rgba(107,114,128,0.85)', '#6b7280'];
+    const defaultColor = ["#6b7280", "#4b5563"];
 
     const data = {
         labels: chartData.labels,
         datasets: [
             {
                 data: chartData.counts,
-                backgroundColor: chartData.labels.map(l => (statusColors[l] || defaultColor)[0]),
-                borderColor: chartData.labels.map(l => (statusColors[l] || defaultColor)[1]),
+                backgroundColor: chartData.labels.map((label) => {
+                    const key = label.trim().toLowerCase();
+                    const color = Object.entries(statusColors).find(
+                        ([status]) => status.toLowerCase() === key
+                    );
+                    return color ? color[1][0] : defaultColor[0];
+                }),
+                borderColor: chartData.labels.map((label) => {
+                    const key = label.trim().toLowerCase();
+                    const color = Object.entries(statusColors).find(
+                        ([status]) => status.toLowerCase() === key
+                    );
+                    return color ? color[1][1] : defaultColor[1];
+                }),
                 borderWidth: 3,
             },
         ],
     };
 
-    const options = { responsive: true, maintainAspectRatio: false };
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: "bottom",
+                labels: {
+                    color: "#1e293b",
+                    font: { size: 14, weight: "600" },
+                },
+            },
+        },
+    };
 
-    return <Pie data={data} options={options} />;
+    return (
+        <div className="booking-chart-container">
+            <Pie data={data} options={options} />
+        </div>
+    );
 }

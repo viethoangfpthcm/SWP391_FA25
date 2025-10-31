@@ -36,7 +36,7 @@ public class PaymentService {
     private final VNPayConfig vnPayConfig;
     private final VehicleScheduleRepository vehicleScheduleRepository;
     private final VehicleRepository vehicleRepository;
-
+    private final EmailService emailService;
 
     @Transactional
     public String createVnPayPayment(Integer bookingId, String ipAddress) {
@@ -194,8 +194,6 @@ public class PaymentService {
                     booking.setStatus(BookingStatus.PAID);
                     bookingRepository.save(booking);
                 }
-
-                // (Phần code cập nhật VehicleSchedule của bạn)
                 if (booking.getMaintenanceNo() != null && booking.getVehicle() != null) {
                     Vehicle vehicle = booking.getVehicle();
                     vehicle.setCurrentMaintenanceNo(booking.getMaintenanceNo());
@@ -212,6 +210,12 @@ public class PaymentService {
                             });
                 }
                 log.info("Payment for booking ID {} was successful.", payment.getBooking().getBookingId());
+                try {
+                    log.info("Attempting to send invoice email for payment ID: {}", payment.getPaymentId());
+                    emailService.sendInvoiceEmail(payment);
+                } catch (Exception e) {
+                    log.error("CRITICAL: Payment successful, but FAILED to send invoice email for payment ID: {}", payment.getPaymentId(), e);
+                }
             }
             return 0; // Thành công
         } else {

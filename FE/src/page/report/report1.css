@@ -758,6 +758,9 @@
   color: #ff8c8c;
   /* Đỏ nhạt */
 }
+.detail-approval-toggle input[type="checkbox"]::before {
+  display: none !important;
+}
 
 /* ---------------------- */
 /* Animations */

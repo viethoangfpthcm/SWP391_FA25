@@ -797,6 +797,33 @@
   color: #80c7ff;
   /* Màu xanh dương sáng */
 }
+.vehicle-actions {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: red;
+  gap: 5px; /* khoảng cách giữa 2 nút */
+  margin-top: 15px;
+}
+
+.vehicle-actions button {
+  flex: none;
+}
+
+/* Nút Xóa xe màu đỏ */
+.btn-delete {
+  background: rgba(255, 0, 0, 0.15);
+  color: #ff4d4d;
+  border: 1.5px solid #ff4d4d;
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background: #ff4d4d;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+}
 
 /* Animation */
 @keyframes fadeIn {

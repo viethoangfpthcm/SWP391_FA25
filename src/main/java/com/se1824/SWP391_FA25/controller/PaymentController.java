@@ -21,7 +21,6 @@ import java.util.Map;
 @SecurityRequirement(name = "api")
 @RequiredArgsConstructor
 public class PaymentController {
-    @Autowired
     private final PaymentService paymentService;
 
 
