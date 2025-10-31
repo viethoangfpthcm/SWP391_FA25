@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 public record ChecklistDetailUpdateRequest(String status,
                                            String note,
                                            Integer partId,
-                                           BigDecimal laborCost
-                                           ) {
-
-}
+                                           BigDecimal laborCost,
+                                           BigDecimal materialCost
+                                           ) { }

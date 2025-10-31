@@ -120,6 +120,7 @@ const hasPendingApprovalItems = () => {
           note: detail.note || "",
           partId: initialPartId,
           laborCost: detail.laborCost || 0,
+          materialCost: detail.materialCost || 0,
         };
       });
       setDetailUpdates(initialUpdates);
@@ -173,7 +174,6 @@ const hasPendingApprovalItems = () => {
     }
   };
 
-  // Hàm xử lý thay đổi trong form (Select Status, Select Part, Input Note)
   const handleDetailChange = (detailId, field, value) => {
     setDetailUpdates(prev => ({
       ...prev,
@@ -196,9 +196,9 @@ const hasPendingApprovalItems = () => {
       const noteChanged = updates.note !== (detail.note || "");
       const partChanged = updates.partId !== (detail.partId || (detail.part ? detail.part.partId : null));
       const laborCostChanged = Number(updates.laborCost || 0) !== Number(detail.laborCost || 0);
+      const materialCostChanged = Number(updates.materialCost || 0) !== Number(detail.materialCost || 0);
 
-
-      return statusChanged || noteChanged || partChanged || laborCostChanged;
+      return statusChanged || noteChanged || partChanged || laborCostChanged || materialCostChanged;
     });
   };
 
@@ -214,12 +214,9 @@ const hasPendingApprovalItems = () => {
       const statusChanged = updates.status !== detail.status;
       const noteChanged = updates.note !== (detail.note || "");
       const partChanged = updates.partId !== (detail.partId || (detail.part ? detail.part.partId : null));
-
       const laborCostChanged = Number(updates.laborCost || 0) !== Number(detail.laborCost || 0);
-
-
-      // --- CẬP NHẬT DÒNG RETURN CỦA FILTER ---
-      return statusChanged || noteChanged || partChanged || laborCostChanged;
+      const materialCostChanged = Number(updates.materialCost || 0) !== Number(detail.materialCost || 0);
+      return statusChanged || noteChanged || partChanged || laborCostChanged || materialCostChanged;
     });
 
     if (changedDetails.length === 0) {
@@ -261,6 +258,7 @@ const hasPendingApprovalItems = () => {
 
               // Chỉ gửi chi phí nếu là REPAIR, nếu không gửi 0
               laborCost: updates.status === "REPAIR" ? (updates.laborCost || 0) : 0,
+              materialCost: updates.status === "REPAIR" ? (updates.materialCost || 0) : 0,
             }),
           });
           // --- KẾT THÚC CẬP NHẬT BODY ---
@@ -272,7 +270,7 @@ const hasPendingApprovalItems = () => {
         } catch (error) {
           console.error(`Lỗi cập nhật detail ${detail.id}:`, error);
           failCount++;
-        }x
+        }
       }
 
       // Tải lại checklist để thấy chi phí mới từ Backend
@@ -409,14 +407,12 @@ const hasPendingApprovalItems = () => {
             </div>
           ) : (
             <div className="checklist-list">
-              {/* Lưu ý: Dữ liệu này là SUMMARY DTO, KHÔNG CÓ TRƯỜNG details */}
               {checklistList.map((item) => (
                 <div key={item.id} className="checklist-card">
                   <div className="checklist-card-header">
                     <span className={`status-badge ${item.status === 'IN_PROGRESS' ? 'in-progress' : 'COMPLETED'}`}>
                       {formatChecklistStatus(item.status)}
                     </span>
-                    {/* Backend trả về Checklist ID là 'id'. Ta cần Booking ID để gọi API Detail */}
                     <span className="booking-id">Booking ID #{item.bookingId}</span>
                   </div>
 
@@ -601,7 +597,7 @@ const hasPendingApprovalItems = () => {
                 currentMaterialCost = selectedPart.materialCost;
               } else if (currentStatus === "REPAIR") {
                 currentLaborCost = Number(currentUpdates.laborCost || 0);
-                currentMaterialCost = 0;
+                currentMaterialCost = Number(currentUpdates.materialCost || 0);
               }
               const totalCost = currentLaborCost + currentMaterialCost;
 
@@ -693,9 +689,27 @@ const hasPendingApprovalItems = () => {
                       currentLaborCost.toLocaleString('vi-VN')
                     )}
                   </td>
-                  {/* CỘT 7: CHI PHÍ VẬT LIỆU */}
+                  {/* CỘT 7: CHI PHÍ VẬT TƯ */}
                   <td className="cost-cell">
-                    {currentMaterialCost.toLocaleString('vi-VN')}
+                   {(currentStatus === "REPAIR") ? (
+                        <input
+                          type="number"
+                          className="cost-input"
+                          value={currentUpdates.materialCost || 0}
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber || 0;
+                            if (value >= 0) {
+                              handleDetailChange(detail.id, 'materialCost', value);
+                            }
+                          }}
+                          min="0"
+                          disabled={isCompleted || detail.approvalStatus?.toUpperCase() === 'APPROVED'}
+                          placeholder="Nhập vật tư"
+                          style={{ width: '120px', textAlign: 'right', fontSize: '14px' }}
+                        />
+                      ) : (
+                        currentMaterialCost.toLocaleString('vi-VN')
+                      )}
                   </td>
                   <td className="cost-cell">
                     {totalCost.toLocaleString('vi-VN')}

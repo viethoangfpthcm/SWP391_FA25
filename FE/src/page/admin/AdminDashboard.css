@@ -237,8 +237,12 @@ input:disabled + .slider:before {
 }
 
 .role-staff {
-  background-color: #dbeafe;
+  background-color: #399093;
   color: #1e40af;
+}
+.role-manager {
+  background-color: #dbeafe;
+  color: #c726bf;
 }
 
 .role-technician {

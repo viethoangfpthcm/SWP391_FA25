@@ -254,8 +254,8 @@
     display: inline-block;
 }
 
-.status-badge.in-progress { background-color: #fbbf24; color: #333; }
-.status-badge.completed { background-color: #10b981; }
+.status-badge.in-progress { background-color: #cfcc19; color: #333; }
+.status-badge.COMPLETED { background-color: #10b981; }
 
 .cost-approved { 
     color: #0284c7; 

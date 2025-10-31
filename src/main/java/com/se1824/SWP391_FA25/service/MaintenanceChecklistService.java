@@ -447,10 +447,15 @@ public class MaintenanceChecklistService {
         } else if (newStatusEnum == ChecklistDetailStatus.REPAIR) {
             BigDecimal laborCost = Optional.ofNullable(request.laborCost()).orElse(BigDecimal.ZERO);
             if (laborCost.compareTo(BigDecimal.ZERO) < 0) {
-                throw new InvalidDataException("Chi phí sửa chữa không được âm.");
+                throw new InvalidDataException("Labor cost must be greater than 0.");
+            }
+            BigDecimal materialCost = Optional.ofNullable(request.materialCost()).orElse(BigDecimal.ZERO);
+            if (materialCost.compareTo(BigDecimal.ZERO) < 0) {
+                throw new InvalidDataException("Material cost must be greater than 0.");
             }
             detail.setLaborCost(laborCost);
-            detail.setMaterialCost(BigDecimal.ZERO);
+            detail.setMaterialCost(materialCost);
+
 
         } else if (newStatusEnum == ChecklistDetailStatus.ADJUSTMENT || newStatusEnum == ChecklistDetailStatus.GOOD || newStatusEnum == ChecklistDetailStatus.PENDING) {
             detail.setLaborCost(BigDecimal.ZERO);
@@ -625,8 +630,6 @@ public class MaintenanceChecklistService {
                     currentTechnician.getUserId(), bookingId);
             throw new AccessDeniedException("You are not the assigned technician for this checklist.");
         }
-
-
         return mapChecklistToResponseWithDetails(checklist);
     }
     private void checkAndSetChecklistPendingApproval(Integer checklistId) {
@@ -634,17 +637,13 @@ public class MaintenanceChecklistService {
         if (checklist == null || checklist.getStatus() != ChecklistStatus.IN_PROGRESS) {
             return; // Chỉ xử lý khi checklist đang IN_PROGRESS
         }
-
         List<MaintenanceChecklistDetail> details = detailRepo.findByChecklist_Id(checklistId);
         // Kiểm tra xem còn hạng mục nào đang chờ khách hàng duyệt (ApprovalStatus = PENDING) không
         boolean allApprovedOrDeclined = details.stream()
                 .allMatch(d -> d.getApprovalStatus() == ApprovalStatus.APPROVED || d.getApprovalStatus() == ApprovalStatus.DECLINED);
-
         // Kiểm tra xem còn hạng mục nào KTV chưa xử lý (ChecklistDetailStatus = PENDING) không
         boolean allTechnicianProcessed = details.stream()
                 .allMatch(d -> d.getStatus() != ChecklistDetailStatus.PENDING);
-
-
         // Nếu tất cả đã được KH duyệt/từ chối VÀ tất cả đã được KTV xử lý -> Chuyển Checklist sang PENDING_APPROVAL
         if (allApprovedOrDeclined && allTechnicianProcessed) {
             log.info("All details processed and approved/declined for checklist {}, setting status to PENDING_APPROVAL", checklistId);

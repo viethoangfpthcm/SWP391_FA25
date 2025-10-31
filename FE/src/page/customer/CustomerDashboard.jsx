@@ -806,7 +806,7 @@ const executeDeleteVehicle = async (licensePlate) => {
                   <p><strong>Biển số:</strong> {vehicle.licensePlate}</p>
                   <p><strong>Số KM hiện tại:</strong> {vehicle.currentKm?.toLocaleString() || 'Chưa cập nhật'} km</p>
                   <div className="vehicle-actions">
-  <button onClick={() => handleViewMaintenance(vehicle.licensePlate)}>Xem lịch bảo dưỡng</button>
+  <button onClick={() => handleViewSchedule(vehicle.licensePlate)}>Xem lịch bảo dưỡng</button>
   <button className="btn-delete" onClick={() => handleDeleteVehicleClick(vehicle.licensePlate)}>Xóa xe</button>
 </div>
 

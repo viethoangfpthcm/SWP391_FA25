@@ -193,9 +193,7 @@
   background-color: #fbbf24;
 }
 
-.status-badge.in-progress {
-  background-color: #3b82f6;
-}
+.status-badge.in-progress { background-color: #e5e527; color: #333; }
 
 .status-badge.completed {
   background-color: #10b981;
