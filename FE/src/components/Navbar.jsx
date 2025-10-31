@@ -36,7 +36,7 @@ export default function Navbar() {
         {!isLoggedIn && (
           <>
             <Link to="/about">Về Chúng Tôi</Link>
-            <Link to="/contact">Liên Hệ</Link>
+            
           </>
         )}
 
@@ -46,7 +46,7 @@ export default function Navbar() {
             <Link to="/customer/dashboard">Bảng điều khiển</Link>
             <Link to="/appoint">Dịch Vụ</Link>
             <Link to="/about">Về Chúng Tôi</Link>
-            <Link to="/contact">Liên Hệ</Link>
+            
             <Link to="/report1">Biên Bản</Link>
           </>
         )}
