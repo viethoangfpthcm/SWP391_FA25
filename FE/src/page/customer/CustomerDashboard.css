@@ -121,6 +121,7 @@
   margin: 8px 0;
   font-size: 1rem;
   color: #cdd3df;
+  margin-left: 10px;
 }
 
 .profile-details strong {
@@ -466,6 +467,7 @@
   gap: 6px;
   box-shadow: 0 2px 8px rgba(10, 79, 240, 0.3);
   transition: all 0.25s ease;
+  margin-bottom: 10px;
 }
 
 .edit-profile-btn:hover {

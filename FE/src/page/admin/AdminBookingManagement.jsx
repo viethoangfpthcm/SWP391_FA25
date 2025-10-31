@@ -182,7 +182,36 @@ export default function AdminBookingManagement() {
         }
     };
 
+const statusOrder = [
+    'pending',
+    'approved',
+    'assigned',
+    'in_progress',
+    'paid',
+    'completed',
+    'declined',
+    'cancelled'
+  ];
 
+  const sortedAppointments = [...filteredBookings].sort((a, b) => {
+    const statusA = a.status?.toLowerCase().trim() || '';
+    const statusB = b.status?.toLowerCase().trim() || '';
+
+    const rankA = statusOrder.indexOf(statusA);
+    const rankB = statusOrder.indexOf(statusB);
+
+    // DÒNG DEBUG: Dán dòng này vào để xem chính xác nó đang so sánh gì
+    console.log(`Comparing: '${statusA}' (rank ${rankA}) vs '${statusB}' (rank ${rankB})`);
+
+    const finalRankA = rankA === -1 ? Infinity : rankA;
+    const finalRankB = rankB === -1 ? Infinity : rankB;
+
+    if (finalRankA !== finalRankB) {
+      return finalRankA - finalRankB;
+    }
+
+    return new Date(a.bookingDate) - new Date(b.bookingDate);
+  });
     if (loading && !userInfo) { // Cập nhật text loading
         return (
             <div className="dashboard-container admin-theme">
@@ -224,6 +253,7 @@ export default function AdminBookingManagement() {
                             value={filterStatus}
                             onChange={(e) => setFilterStatus(e.target.value)}
                         >
+                            <option value="all">All</option>
                             <option value="PENDING">Pending</option>
                             <option value="APPROVED">Approved</option>
                             <option value="ASSIGNED">Assigned</option>
@@ -280,8 +310,8 @@ export default function AdminBookingManagement() {
                                             <FaSpinner className="spinner" /> Đang tải...
                                         </td>
                                     </tr>
-                                ) : filteredBookings.length > 0 ? (
-                                    filteredBookings.map((booking) => (
+                                ) : sortedAppointments.length > 0 ? (
+                                    sortedAppointments.map((booking) => (
                                         <tr key={booking.bookingId}>
                                             <td>#{booking.bookingId}</td>
                                             <td>

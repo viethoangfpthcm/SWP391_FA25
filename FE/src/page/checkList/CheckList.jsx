@@ -272,7 +272,7 @@ const hasPendingApprovalItems = () => {
         } catch (error) {
           console.error(`Lỗi cập nhật detail ${detail.id}:`, error);
           failCount++;
-        }
+        }x
       }
 
       // Tải lại checklist để thấy chi phí mới từ Backend
