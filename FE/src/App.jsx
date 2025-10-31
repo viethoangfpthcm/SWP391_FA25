@@ -4,7 +4,6 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import LoginForm from "./page/login/LoginForm.jsx";
 import Homepage from "./page/home/Homepage.jsx";
 import About from "./page/home/AboutUs.jsx";
-import Contact from "./page/home/Contact.jsx";
 import ResetPassword from "./page/login/ResetPassword.jsx";
 import ProfilePage from "./page/ProfilePage/ProfilePage.jsx";
 
@@ -42,7 +41,7 @@ function App() {
       {/* Public routes */}
       <Route path="/home" element={<Homepage />} />
       <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
+
       <Route path="/login" element={<LoginForm />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route
