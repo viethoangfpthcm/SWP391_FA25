@@ -4,7 +4,6 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import LoginForm from "./page/login/LoginForm.jsx";
 import Homepage from "./page/home/Homepage.jsx";
 import About from "./page/home/AboutUs.jsx";
-import Contact from "./page/home/Contact.jsx";
 import ResetPassword from "./page/login/ResetPassword.jsx";
 import ProfilePage from "./page/ProfilePage/ProfilePage.jsx";
 
