@@ -41,7 +41,7 @@ function App() {
       {/* Public routes */}
       <Route path="/home" element={<Homepage />} />
       <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
+
       <Route path="/login" element={<LoginForm />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route
