@@ -60,9 +60,9 @@ public class EmailService {
             Users customer = (booking != null) ? booking.getCustomer() : null;
             Vehicle vehicle = (booking != null) ? booking.getVehicle() : null;
 
-            if (payment == null || booking == null || customer == null || vehicle == null) {
+            if (booking == null || customer == null || vehicle == null) {
                 log.error("Can't send invoice email due to missing data.");
-                if (payment != null) {
+                if (payment.getPaymentId() != null) {
                     log.error("Error in paymemnt: {}", payment.getPaymentId());
                 }
                 return;
