@@ -61,6 +61,8 @@ function CustomerDashboard() {
     rating: 0,
     comment: '',
   });
+  const [vehicleToDelete, setVehicleToDelete] = useState(null);
+
 
   const vinfastModels = [
     "VinFast VF 3",
@@ -132,6 +134,51 @@ function CustomerDashboard() {
     setOnConfirmAction(() => () => executeCancelBookingDashboard(bookingId));
     setShowConfirmModal(true);
   };
+  // Hàm mở modal xác nhận xóa xe
+const handleDeleteVehicleClick = (licensePlate) => {
+  setConfirmModalMessage(`Bạn có chắc chắn muốn xóa xe có biển số ${licensePlate}?`);
+  setOnConfirmAction(() => () => executeDeleteVehicle(licensePlate));
+  setShowConfirmModal(true);
+};
+
+// Hàm gọi API xóa xe
+const executeDeleteVehicle = async (licensePlate) => {
+  const token = localStorage.getItem("token");
+  setCancelBookingLoading(true); // có thể dùng chung loading state này
+
+  try {
+    const response = await fetch(
+      `${API_BASE}/api/customer/delete-vehicle?licensePlate=${encodeURIComponent(licensePlate)}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || `Lỗi ${response.status}`);
+    }
+
+    setShowConfirmModal(false);
+    setSuccessModalMessage("Xóa xe thành công!");
+    setShowSuccessModal(true);
+
+    // Cập nhật lại danh sách xe sau khi xóa
+    fetchDashboardData();
+
+  } catch (err) {
+    console.error("Lỗi khi xóa xe:", err);
+    setError(err.message || "Đã xảy ra lỗi khi xóa xe.");
+    setShowConfirmModal(false);
+  } finally {
+    setCancelBookingLoading(false);
+  }
+};
+
 
   const executeCancelBookingDashboard = async (bookingId) => {
     setCancelBookingLoading(true);
@@ -758,9 +805,11 @@ function CustomerDashboard() {
                   <h3>{vehicle.model} ({vehicle.year})</h3>
                   <p><strong>Biển số:</strong> {vehicle.licensePlate}</p>
                   <p><strong>Số KM hiện tại:</strong> {vehicle.currentKm?.toLocaleString() || 'Chưa cập nhật'} km</p>
-                  <button onClick={() => handleViewSchedule(vehicle.licensePlate)}>
-                    Xem lịch bảo dưỡng
-                  </button>
+                  <div className="vehicle-actions">
+  <button onClick={() => handleViewMaintenance(vehicle.licensePlate)}>Xem lịch bảo dưỡng</button>
+  <button className="btn-delete" onClick={() => handleDeleteVehicleClick(vehicle.licensePlate)}>Xóa xe</button>
+</div>
+
                 </div>
               ))}
             </div>
