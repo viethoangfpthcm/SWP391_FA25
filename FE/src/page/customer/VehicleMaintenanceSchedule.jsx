@@ -7,15 +7,15 @@ import './VehicleMaintenanceSchedule.css';
 import { FaCalendarAlt, FaTools, FaCheckCircle, FaExclamationTriangle, FaCalendarPlus, FaTimes, FaLock, FaSpinner } from 'react-icons/fa';
 
 const BOOKING_STATUS_MAP = {
-  PENDING:     { text: 'Chờ xử lý',    className: 'pending' },
-  APPROVED:    { text: 'Đã duyệt',     className: 'approved' },
-  ASSIGNED:    { text: 'Đã gán thợ',    className: 'assigned' },
-  IN_PROGRESS: { text: 'Đang xử lý',   className: 'in-progress' },
-  COMPLETED:   { text: 'Hoàn thành',   className: 'completed' },
-  PAID:        { text: 'Đã thanh toán', className: 'paid' },
-  CANCELLED:   { text: 'Đã hủy',       className: 'cancelled' },
-  DECLINED:    { text: 'Đã từ chối',  className: 'declined' },
-  DEFAULT:     { text: 'Không rõ',     className: 'default' }
+  PENDING: { text: 'Chờ xử lý', className: 'pending' },
+  APPROVED: { text: 'Đã duyệt', className: 'approved' },
+  ASSIGNED: { text: 'Đã gán thợ', className: 'assigned' },
+  IN_PROGRESS: { text: 'Đang xử lý', className: 'in-progress' },
+  COMPLETED: { text: 'Hoàn thành', className: 'completed' },
+  PAID: { text: 'Đã thanh toán', className: 'paid' },
+  CANCELLED: { text: 'Đã hủy', className: 'cancelled' },
+  DECLINED: { text: 'Đã từ chối', className: 'declined' },
+  DEFAULT: { text: 'Không rõ', className: 'default' }
 };
 
 const getStatusDisplay = (status) => {
@@ -57,16 +57,45 @@ function VehicleMaintenanceSchedule() {
 
 
   // Danh sách trung tâm
-  const [serviceCenters] = useState([
-    { id: 1, name: "EV Center 1", address: "25 Nguyễn Huệ, Quận 1, TP.HCM", phone: "0787052810" },
-    { id: 2, name: "EV Center 2", address: "12 Võ Văn Ngân, Thủ Đức, TP.HCM", phone: "0787052811" },
-    { id: 3, name: "EV Center 3", address: "200 Nguyễn Văn Cừ, Quận 5, TP.HCM", phone: "0787052812" },
-  ]);
+
+  const [serviceCenters, setServiceCenters] = useState([]);
+
 
   const API_BASE = import.meta.env.VITE_API_URL || "https://103.90.226.216:8443";
 
   // useEffect (Không đổi)
   useEffect(() => {
+
+    const fetchServiceCenters = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/api/customer/service-centers`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+          }
+        });
+
+        if (!response.ok) {
+          console.error(`Lỗi khi gọi API: ${response.status}`);
+          return;
+        }
+
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setServiceCenters(data);
+        } else {
+          console.error("Dữ liệu trả về không đúng định dạng mảng:", data);
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải danh sách trung tâm:", error);
+      }
+    };
+
+    fetchServiceCenters();
+
     const fetchScheduleAndBookings = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
