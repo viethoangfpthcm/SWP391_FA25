@@ -9,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "maintenance_schedule")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)

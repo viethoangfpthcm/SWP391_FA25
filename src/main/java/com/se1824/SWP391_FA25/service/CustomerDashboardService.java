@@ -126,11 +126,8 @@ public class CustomerDashboardService {
                 newStatus = "ON_TIME"; // Đã hoàn thành
             } else {
 
-
-                // Check 1: Overdue by date
                 boolean overdueByDate = currentDate.isAfter(deadline);
 
-                // Check 2: Overdue by KM (null-safe)
                 boolean overdueByKm = false;
                 Integer intervalKm = plan.getIntervalKm();
 
@@ -139,8 +136,6 @@ public class CustomerDashboardService {
                         overdueByKm = true;
                     }
                 }
-
-                // Combine checks: Overdue if EITHER date OR KM is exceeded
                 if (overdueByDate || overdueByKm) {
                     newStatus = "OVERDUE";
                 } else {

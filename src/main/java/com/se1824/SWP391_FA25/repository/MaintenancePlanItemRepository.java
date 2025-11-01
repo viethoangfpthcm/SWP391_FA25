@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface MaintenancePlanItemRepository extends JpaRepository<MaintenancePlanItem, Integer> {
     List<MaintenancePlanItem> findByPlan_Id(Integer planId);
+    void deleteByPlan_Id(Integer planId);
 }

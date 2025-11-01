@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface MaintenancePlanRepository extends JpaRepository<MaintenancePlan, Integer> {
     List<MaintenancePlan> findBySchedule_Id(Integer scheduleId);
+    void deleteBySchedule_Id(Integer scheduleId);
+    boolean existsBySchedule_IdAndMaintenanceNo(Integer scheduleId, Integer maintenanceNo);
 }
