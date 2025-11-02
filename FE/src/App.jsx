@@ -1,37 +1,37 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ProtectedRoute from "@components/shared/ProtectedRoute.jsx";
 
-import LoginForm from "./page/login/LoginForm.jsx";
-import Homepage from "./page/home/Homepage.jsx";
-import About from "./page/home/AboutUs.jsx";
-import ResetPassword from "./page/login/ResetPassword.jsx";
-import ProfilePage from "./page/ProfilePage/ProfilePage.jsx";
+import LoginForm from "@features/auth/components/LoginForm.jsx";
+import Homepage from "@pages/HomePage.jsx";
+import About from "@components/shared/AboutUs.jsx";
+import ResetPassword from "@features/auth/components/ResetPassword.jsx";
+import ProfilePage from "@pages/ProfilePage.jsx";
 
 // Staff
-import StaffDashboard from "./page/staff/StaffDashboard.jsx";
-import StaffCheckList from "./page/checkList/StaffCheckList.jsx";
+import StaffDashboard from "@features/staff/components/StaffDashboard.jsx";
+import StaffCheckList from "@features/checklist/components/StaffCheckList.jsx";
 
 // Technician
-import TechnicianTask from "./page/technican/technicantask.jsx";
-import CheckList from "./page/checkList/CheckList.jsx";
+import TechnicianTask from "@features/technician/components/technicantask.jsx";
+import CheckList from "@features/checklist/components/CheckList.jsx";
 
 // Admin
-import AdminDashboard from "./page/admin/AdminDashboard.jsx";
-import ServiceCenterManagement from "./page/admin/ServiceCenterManagement.jsx";
-import PartManagement from "./page/admin/PartManagement.jsx";
-import AdminBookingManagement from "./page/admin/AdminBookingManagement.jsx";
-import AdminPaymentManagement from "./page/admin/AdminPaymentManagement.jsx";
-import AdminChecklistDetail from "./page/admin/AdminChecklistDetail.jsx";
-import AdminAnalytics from "./page/admin/AdminAnalytics.jsx";
+import AdminDashboard from "@features/admin/components/AdminDashboard.jsx";
+import ServiceCenterManagement from "@features/admin/components/ServiceCenterManagement.jsx";
+import PartManagement from "@features/admin/components/PartManagement.jsx";
+import AdminBookingManagement from "@features/admin/components/AdminBookingManagement.jsx";
+import AdminPaymentManagement from "@features/admin/components/AdminPaymentManagement.jsx";
+import AdminChecklistDetail from "@features/admin/components/AdminChecklistDetail.jsx";
+import AdminAnalytics from "@features/admin/components/AdminAnalytics.jsx";
 
 // Customer
-import CustomerDashboard from "./page/customer/CustomerDashboard.jsx";
-import VehicleMaintenanceSchedule from "./page/customer/VehicleMaintenanceSchedule.jsx";
-import Appoint from "./page/home/Appoint.jsx";
-import Report1 from "./page/report/report1.jsx";
+import CustomerDashboard from "@features/customer/components/CustomerDashboard.jsx";
+import VehicleMaintenanceSchedule from "@features/customer/components/VehicleMaintenanceSchedule.jsx";
+import Appoint from "@components/shared/Appoint.jsx";
+import Report1 from "@features/report/components/report1.jsx";
 
 // Payment
-import PaymentResult from "./page/payment/PaymentResult.jsx";
+import PaymentResult from "@features/payment/components/PaymentResult.jsx";
 
 function App() {
   return (

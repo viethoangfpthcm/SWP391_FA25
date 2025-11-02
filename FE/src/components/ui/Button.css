@@ -1,0 +1,21 @@
+.app-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:12px 20px;
+  border-radius:28px;
+  border:none;
+  cursor:pointer;
+  background:linear-gradient(90deg,#0ea5ff,#0066ff);
+  color:white;
+  font-weight:600;
+  box-shadow:0 6px 18px rgba(3,102,214,0.18);
+  transition:transform .08s ease, opacity .12s ease;
+}
+.app-btn:disabled{ opacity:0.6; cursor:not-allowed; transform: none }
+.app-btn:hover:not(:disabled){ transform:translateY(-1px) }
+
+.btn-loading{ display:inline-flex; align-items:center }
+.spinner{ width:18px; height:18px; animation:spin 1s linear infinite; stroke:rgba(255,255,255,0.9); fill:none; stroke-width:4 }
+@keyframes spin{ to{ transform:rotate(360deg) } }
