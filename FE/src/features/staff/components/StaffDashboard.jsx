@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { FaCheck, FaTimes, FaEye, FaFilter, FaSpinner, FaExclamationTriangle, FaCalendarAlt } from "react-icons/fa";
 import "./StaffDashboard.css";
 import Sidebar from "@components/layout/Sidebar.jsx";
-import { useNavigate } from "react-router-dom";import Button from '@components/ui/Button.jsx';
+import { useNavigate } from "react-router-dom";
+import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 
 

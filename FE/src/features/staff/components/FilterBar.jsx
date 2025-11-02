@@ -1,0 +1,28 @@
+import React from "react";
+import { FaFilter } from "react-icons/fa";
+
+export default function FilterBar({ statusFilter, setStatusFilter }) {
+  return (
+    <div className="actions-bar">
+      <div className="filter-group">
+        <label htmlFor="statusFilter"><FaFilter /> Lọc:</label>
+        <select
+          id="statusFilter"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="status-filter-select"
+        >
+          <option value="all">Tất cả</option>
+          <option value="pending">Chờ xử lý</option>
+          <option value="approved">Đã duyệt</option>
+          <option value="assigned">Đã phân công</option>
+          <option value="in_progress">Đang thực hiện</option>
+          <option value="paid">Đã thanh toán (Chờ bàn giao)</option>
+          <option value="completed">Đã hoàn tất</option>
+          <option value="declined">Đã từ chối</option>
+          <option value="cancelled">Đã hủy</option>
+        </select>
+      </div>
+    </div>
+  );
+}

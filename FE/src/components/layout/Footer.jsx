@@ -31,15 +31,15 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div className="footer-column">
-          <h4>Kết nối với chúng tôi</h4>
-          <div className="footer-socials">
-            <a href="#"><FaFacebookF /></a>
-            <a href="#"><FaInstagram /></a>
-            <a href="#"><FaTwitter /></a>
+          <div className="footer-column">
+            <h4>Kết nối với chúng tôi</h4>
+            <div className="footer-socials">
+              <a href="https://www.facebook.com/akk.7105?locale=vi_VN"><FaFacebookF /></a>
+              <a href="#"><FaInstagram /></a>
+              <a href="#"><FaTwitter /></a>
+            </div>
           </div>
         </div>
-      </div>
 
       <div className="footer-bottom">
         © 2025 <strong>EV Car Center</strong>. All rights reserved.
