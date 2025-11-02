@@ -12,7 +12,7 @@ import StaffDashboard from "@features/staff/components/StaffDashboard.jsx";
 import StaffCheckList from "@features/checklist/components/StaffCheckList.jsx";
 
 // Technician
-import TechnicianTask from "@features/technician/components/technicantask.jsx";
+import TechnicianTask from "@features/technician/components/Techniciantask.jsx";
 import CheckList from "@features/checklist/components/CheckList.jsx";
 
 // Admin

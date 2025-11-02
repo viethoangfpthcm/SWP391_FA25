@@ -3,12 +3,12 @@ import { ToastContainer, toast } from "react-toastify";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import "./technicantask.css";
+import "./Techniciantask.css";
 import Loading from "@components/ui/Loading.jsx";
 import TechnicianHeader from "./TechnicianHeader.jsx";
 import SummaryCards from "./SummaryCards.jsx";
 import FilterButtons from "./FilterButtons.jsx";
-import TaskTable from "./TaskTable.jsx";
+import TaskTable from "@features/technician/components/TaskTable.jsx";
 import KmModal from "./KmModal.jsx";
 
 const BOOKING_STATUS_MAP = {
