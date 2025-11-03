@@ -358,6 +358,18 @@ public class AdminService {
 
         return maintenanceScheduleRepo.findAll();
     }
+    public List<String> getAvailableVehicleModels(Integer adminId) {
+        log.info("Admin {} fetching all available vehicle models", adminId);
+        validateAdminRole(adminId);
+
+        List<MaintenanceSchedule> schedules = maintenanceScheduleRepo.findAll();
+
+        return schedules.stream()
+                .map(MaintenanceSchedule::getVehicleModel)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
 
     /**
      * Admin tạo một Maintenance Plan mới (Cấp bảo dưỡng) cho một Schedule cụ thể.
