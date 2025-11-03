@@ -17,6 +17,17 @@
   font-size: 14px;
 }
 
+.filters-container {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+}
+
 .filter-bar {
   display: flex;
   gap: 20px;
@@ -43,6 +54,7 @@
   gap: 6px;
 }
 
+.filter-select,
 .filter-group select {
   padding: 8px 12px;
   border: 2px solid #e2e8f0;
@@ -55,10 +67,12 @@
   min-width: 120px;
 }
 
+.filter-select:hover,
 .filter-group select:hover {
   border-color: #cbd5e0;
 }
 
+.filter-select:focus,
 .filter-group select:focus {
   outline: none;
   border-color: #667eea;
@@ -77,10 +91,16 @@
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  min-height: 400px;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
 }
 
 .analytics-card.full-width {
   grid-column: 1 / -1;
+  min-height: 450px;
+  max-height: 550px;
 }
 
 .analytics-card h2 {
@@ -90,6 +110,14 @@
   margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 2px solid #f0f0f0;
+  flex-shrink: 0;
+}
+
+.analytics-card > div:last-child,
+.analytics-card > canvas {
+  flex: 1;
+  min-height: 0;
+  position: relative;
 }
 
 .loading-container {

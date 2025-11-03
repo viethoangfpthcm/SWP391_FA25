@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaChartLine, FaExclamationTriangle, FaCalendarAlt, FaFilter } from "react-icons/fa";
+import { FaChartLine, FaExclamationTriangle, FaCalendarAlt, FaFilter, FaEye } from "react-icons/fa";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import Loading from "@components/ui/Loading.jsx";
 import RevenueChart from "@features/admin/graphs/RevenueChart.jsx";
@@ -18,10 +18,14 @@ const StaffAnalytics = () => {
   const [bookingStatsData, setBookingStatsData] = useState(null);
   const [feedbackData, setFeedbackData] = useState(null);
 
+  // Filter states
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
   const API_BASE = "";
   const token = localStorage.getItem("token");
 
-  // Fetch user info on mount (1 lần duy nhất)
+  // Fetch user info on mount ONLY
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -30,67 +34,73 @@ const StaffAnalytics = () => {
         setUserInfo(parsed);
       } catch (err) {
         console.error("Error parsing user info:", err);
-        setLoading(false); // Set false nếu parse lỗi
       }
-    } else {
-      // Nếu không có user, vẫn cho hiển thị trang với data rỗng
-      setLoading(false);
     }
-    
-    // Safety timeout: force stop loading sau 2 giây
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    
-    return () => clearTimeout(timeout);
-  }, []); // Chỉ fetch user info 1 lần
+  }, []); // EMPTY dependency - chỉ chạy 1 lần khi mount
   
-  // Fetch analytics chỉ khi đã có userInfo (tránh fetch 2 lần do React Strict Mode)
+  // Fetch analytics when filters change (bao gồm cả lần đầu mount)
   useEffect(() => {
-    if (!userInfo) return;
-    
     fetchAllAnalytics();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userInfo]); // Chỉ fetch khi đã có userInfo
+  }, [selectedMonth, selectedYear]); // Chỉ khi filter thay đổi
 
   const fetchAllAnalytics = async () => {
     setLoading(true);
     setError(null);
     
-    // Fetch all analytics independently - don't fail all if one fails
-    await Promise.allSettled([
-      fetchRevenueData(),
-      fetchPartsData(),
-      fetchBookingStatsData(),
-      fetchFeedbackData(),
-    ]);
+    // Safety timeout: force stop loading sau 5 giây
+    const timeout = setTimeout(() => {
+      console.warn("Analytics loading timeout - forcing stop");
+      setLoading(false);
+    }, 5000);
     
-    setLoading(false);
+    try {
+      await Promise.allSettled([
+        fetchRevenueData(),
+        fetchPartsData(),
+        fetchBookingStatsData(),
+        fetchFeedbackData(),
+      ]);
+    } catch (err) {
+      console.error("fetchAllAnalytics error:", err);
+    } finally {
+      clearTimeout(timeout);
+      setLoading(false);
+    }
   };
 
   const fetchRevenueData = async () => {
     try {
-      const url = `${API_BASE}/api/staff/analytics/revenue`;
+      const url = `${API_BASE}/api/staff/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
+      console.log("Staff fetching revenue from:", url);
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error(`Lỗi API revenue: ${res.status}`);
+      if (!res.ok) {
+        console.warn("Revenue API not available:", res.status);
+        return;
+      }
       const data = await res.json();
+      console.log("Staff revenue data received:", data);
       setRevenueData(data);
     } catch (err) {
       console.error("fetchRevenueData error:", err);
-      // Không set error để không hiển thị lỗi cho user
     }
   };
 
   const fetchPartsData = async () => {
     try {
-      const url = `${API_BASE}/api/staff/analytics/parts`;
+      const url = `${API_BASE}/api/staff/analytics/parts?year=${selectedYear}&month=${selectedMonth}`;
+      console.log("Staff fetching parts from:", url);
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error(`Lỗi API parts: ${res.status}`);
+      if (!res.ok) {
+        console.warn("Parts API not available:", res.status);
+        return;
+      }
       const data = await res.json();
+      console.log("Staff parts data received:", data);
       setPartsData(data);
     } catch (err) {
       console.error("fetchPartsData error:", err);
@@ -99,12 +109,17 @@ const StaffAnalytics = () => {
 
   const fetchBookingStatsData = async () => {
     try {
-      const url = `${API_BASE}/api/staff/analytics/bookings`;
+      const url = `${API_BASE}/api/staff/analytics/bookings?month=${selectedMonth}&year=${selectedYear}`;
+      console.log("Staff fetching bookings from:", url);
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error(`Lỗi API bookingStats: ${res.status}`);
+      if (!res.ok) {
+        console.warn("Bookings API not available:", res.status);
+        return;
+      }
       const data = await res.json();
+      console.log("Staff bookings data received:", data);
       setBookingStatsData(data);
     } catch (err) {
       console.error("fetchBookingStatsData error:", err);
@@ -114,15 +129,33 @@ const StaffAnalytics = () => {
   const fetchFeedbackData = async () => {
     try {
       const url = `${API_BASE}/api/staff/analytics/feedbacks`;
+      console.log("Staff fetching feedbacks from:", url);
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error(`Lỗi API feedback: ${res.status}`);
+      if (!res.ok) {
+        console.warn("Feedback API not available:", res.status);
+        return;
+      }
       const data = await res.json();
+      console.log("Staff feedback data received:", data);
       setFeedbackData(data);
     } catch (err) {
       console.error("fetchFeedbackData error:", err);
     }
+  };
+
+  // Render helpers
+  const renderMonthOptions = () => Array.from({ length: 12 }, (_, i) => (
+    <option key={i + 1} value={i + 1}>Tháng {i + 1}</option>
+  ));
+
+  const renderYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    return Array.from({ length: 3 }, (_, i) => {
+      const year = currentYear - i;
+      return <option key={year} value={year}>Năm {year}</option>;
+    });
   };
 
   return (
@@ -138,9 +171,38 @@ const StaffAnalytics = () => {
             <FaChartLine /> Thống kê & Báo cáo
           </h1>
           <p className="read-only-badge">
-            <FaCalendarAlt /> Chế độ xem - Chỉ đọc
+            <FaEye /> Chế độ xem - Chỉ đọc
           </p>
         </header>
+
+        {/* Filters */}
+        <div className="filters-container">
+          <div className="filter-group">
+            <label>
+              <FaFilter /> Tháng:
+            </label>
+            <select 
+              value={selectedMonth} 
+              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+              className="filter-select"
+            >
+              {renderMonthOptions()}
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>
+              <FaCalendarAlt /> Năm:
+            </label>
+            <select 
+              value={selectedYear} 
+              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+              className="filter-select"
+            >
+              {renderYearOptions()}
+            </select>
+          </div>
+        </div>
 
         {error && (
           <div className="error-message">
@@ -157,28 +219,28 @@ const StaffAnalytics = () => {
           <div className="analytics-grid">
             <div className="analytics-card full-width">
               <h2>Doanh thu</h2>
-              {revenueData ? (
+              {revenueData && revenueData.revenue?.length > 0 ? (
                 <RevenueChart chartData={revenueData} />
               ) : (
-                <p className="no-data">Không có dữ liệu</p>
+                <p className="no-data">Không có dữ liệu doanh thu</p>
               )}
             </div>
 
             <div className="analytics-card">
               <h2>Thống kê booking</h2>
-              {bookingStatsData ? (
+              {bookingStatsData && bookingStatsData.counts?.length > 0 ? (
                 <BookingStatsChart chartData={bookingStatsData} />
               ) : (
-                <p className="no-data">Không có dữ liệu</p>
+                <p className="no-data">Không có dữ liệu booking</p>
               )}
             </div>
 
             <div className="analytics-card">
               <h2>Phụ tùng sử dụng</h2>
-              {partsData ? (
+              {partsData && partsData.counts?.length > 0 ? (
                 <PartsUsageChart chartData={partsData} />
               ) : (
-                <p className="no-data">Không có dữ liệu</p>
+                <p className="no-data">Không có dữ liệu phụ tùng</p>
               )}
             </div>
 
@@ -187,7 +249,7 @@ const StaffAnalytics = () => {
               {feedbackData ? (
                 <FeedbackGaugeChart chartData={feedbackData} />
               ) : (
-                <p className="no-data">Không có dữ liệu</p>
+                <p className="no-data">Không có dữ liệu feedback</p>
               )}
             </div>
           </div>

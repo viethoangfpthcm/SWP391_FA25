@@ -61,75 +61,76 @@ export default function ManagerAnalytics() {
     // --- Fetch Revenue Data (Manager Center Only) ---
     const fetchRevenueData = async () => {
         try {
-            // TODO: API endpoint cho manager analytics
-            // const url = `${API_BASE}/api/manager/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
-            // const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-            // if (!res.ok) throw new Error(`Lỗi API revenue: ${res.status}`);
-            // const data = await res.json();
-            
-            // Mock data cho demo
-            const mockData = {
-                labels: Array.from({ length: 30 }, (_, i) => `${i + 1}/${selectedMonth}`),
-                values: Array.from({ length: 30 }, () => Math.random() * 10000000 + 5000000)
-            };
-            setRevenueData(mockData);
+            const url = `${API_BASE}/api/manager/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
+            console.log("Fetching revenue from:", url);
+            const res = await fetch(url, { 
+                headers: { Authorization: `Bearer ${token}` } 
+            });
+            if (!res.ok) {
+                console.warn("Revenue API not available:", res.status);
+                return;
+            }
+            const data = await res.json();
+            console.log("Revenue data received:", data);
+            setRevenueData(data);
         } catch (err) {
             console.error("fetchRevenueData error:", err);
-            setError(err.message);
         }
     };
 
     // --- Fetch Parts Usage Data ---
     const fetchPartsData = async () => {
         try {
-            // TODO: API endpoint
-            // const url = `${API_BASE}/api/manager/analytics/parts?month=${selectedMonth}&year=${selectedYear}`;
-            
-            // Mock data
-            const mockData = {
-                labels: ["Ắc quy", "Lọc gió", "Dầu động cơ", "Phanh", "Lốp xe"],
-                counts: [45, 32, 78, 23, 15]
-            };
-            setPartsData(mockData);
+            const url = `${API_BASE}/api/manager/analytics/parts?month=${selectedMonth}&year=${selectedYear}`;
+            const res = await fetch(url, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!res.ok) {
+                console.warn("Parts API not available:", res.status);
+                return;
+            }
+            const data = await res.json();
+            setPartsData(data);
         } catch (err) {
             console.error("fetchPartsData error:", err);
-            setError(err.message);
         }
     };
 
     // --- Fetch Booking Stats ---
     const fetchBookingStatsData = async () => {
         try {
-            // TODO: API endpoint
-            // const url = `${API_BASE}/api/manager/analytics/bookings?month=${selectedMonth}&year=${selectedYear}`;
-            
-            // Mock data
-            const mockData = {
-                labels: ["Hoàn thành", "Đang xử lý", "Chờ duyệt", "Đã hủy"],
-                counts: [45, 12, 8, 3]
-            };
-            setBookingStatsData(mockData);
+            const url = `${API_BASE}/api/manager/analytics/bookings?month=${selectedMonth}&year=${selectedYear}`;
+            console.log("Fetching bookings from:", url);
+            const res = await fetch(url, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!res.ok) {
+                console.warn("Bookings API not available:", res.status);
+                return;
+            }
+            const data = await res.json();
+            console.log("Bookings data received:", data);
+            setBookingStatsData(data);
         } catch (err) {
             console.error("fetchBookingStatsData error:", err);
-            setError(err.message);
         }
     };
 
     // --- Fetch Feedback Data ---
     const fetchFeedbackData = async () => {
         try {
-            // TODO: API endpoint
-            // const url = `${API_BASE}/api/manager/analytics/feedbacks`;
-            
-            // Mock data
-            const mockData = {
-                averageRating: 4.3,
-                totalFeedbacks: 127
-            };
-            setFeedbackData(mockData);
+            const url = `${API_BASE}/api/manager/analytics/feedbacks`;
+            const res = await fetch(url, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!res.ok) {
+                console.warn("Feedback API not available:", res.status);
+                return;
+            }
+            const data = await res.json();
+            setFeedbackData(data);
         } catch (err) {
             console.error("fetchFeedbackData error:", err);
-            setError(err.message);
         }
     };
 
@@ -148,7 +149,8 @@ export default function ManagerAnalytics() {
         setLoading(true);
         setError(null);
         
-        Promise.all([
+        // Promise.allSettled để các API fail độc lập không ảnh hưởng nhau
+        Promise.allSettled([
             fetchRevenueData(),
             fetchPartsData(),
             fetchBookingStatsData(),

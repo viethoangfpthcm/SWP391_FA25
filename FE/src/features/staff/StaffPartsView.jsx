@@ -41,6 +41,7 @@ const StaffPartsView = () => {
       }
 
       const data = await response.json();
+      console.log("Staff parts data:", data);
       setParts(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Error fetching parts:", err);
@@ -53,9 +54,10 @@ const StaffPartsView = () => {
   const filteredParts = parts.filter((part) => {
     const search = searchTerm.toLowerCase();
     return (
-      part.partName?.toLowerCase().includes(search) ||
-      part.partId?.toString().includes(search) ||
-      part.manufacturer?.toLowerCase().includes(search)
+      part.name?.toLowerCase().includes(search) ||
+      part.id?.toString().includes(search) ||
+      part.description?.toLowerCase().includes(search) ||
+      part.partType?.name?.toLowerCase().includes(search)
     );
   });
 
@@ -111,30 +113,32 @@ const StaffPartsView = () => {
                 <tr>
                   <th>ID</th>
                   <th>Tên phụ tùng</th>
-                  <th>Hãng sản xuất</th>
-                  <th>Số lượng tồn</th>
+                  <th>Loại</th>
+                  <th>Số lượng</th>
                   <th>Đơn giá</th>
+                  <th>Chi phí vật liệu</th>
+                  <th>Chi phí nhân công</th>
                   <th>Trạng thái</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="6" className="empty-state">
+                    <td colSpan="9" className="empty-state">
                       <Loading inline /> Đang tải danh sách phụ tùng...
                     </td>
                   </tr>
                 ) : filteredParts.length > 0 ? (
                   filteredParts.map((part) => (
-                    <tr key={part.partId}>
+                    <tr key={part.id}>
                       <td>
-                        <span className="cell-main">#{part.partId}</span>
+                        <span className="cell-main">#{part.id}</span>
                       </td>
                       <td>
-                        <span className="cell-main">{part.partName}</span>
+                        <span className="cell-main">{part.name}</span>
                       </td>
                       <td>
-                        <span className="cell-sub">{part.manufacturer || "N/A"}</span>
+                        <span className="cell-sub">{part.partType?.name || "N/A"}</span>
                       </td>
                       <td>
                         <span
@@ -151,7 +155,17 @@ const StaffPartsView = () => {
                       </td>
                       <td>
                         <span className="cell-main">
-                          {formatCurrency(part.price || 0)}
+                          {formatCurrency(part.unitPrice || 0)}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="cell-sub">
+                          {formatCurrency(part.materialCost || 0)}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="cell-sub">
+                          {formatCurrency(part.laborCost || 0)}
                         </span>
                       </td>
                       <td>
@@ -167,7 +181,7 @@ const StaffPartsView = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="empty-state">
+                    <td colSpan="9" className="empty-state">
                       {searchTerm
                         ? `Không tìm thấy phụ tùng nào với từ khóa "${searchTerm}"`
                         : "Chưa có phụ tùng nào trong hệ thống"}

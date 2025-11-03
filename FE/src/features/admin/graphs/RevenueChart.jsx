@@ -10,6 +10,7 @@ import {
     Title,
     Tooltip,
     Legend,
+    Filler,
 } from "chart.js";
 import "./RevenueChart.css";
 
@@ -21,7 +22,8 @@ ChartJS.register(
     PointElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Filler
 );
 
 export default function RevenueChart({ chartData }) {
@@ -53,5 +55,9 @@ export default function RevenueChart({ chartData }) {
     };
 
     const ChartComponent = chartData.labels.length > 1 ? Line : Bar;
-    return <ChartComponent data={data} options={options} />;
+    return (
+        <div style={{ width: '100%', height: '100%', minHeight: '300px', position: 'relative' }}>
+            <ChartComponent data={data} options={options} />
+        </div>
+    );
 }

@@ -15,7 +15,8 @@ import "./AdminAnalytics.css";
 import RevenueChart from "./graphs/RevenueChart.jsx";
 import BookingStatsChart from "./graphs/BookingStatsChart.jsx";
 import PartsUsageChart from "./graphs/PartsUsageChart.jsx";
-import FeedbackGaugeChart from "./graphs/FeedbackGaugeChart.jsx";import Loading from '@components/ui/Loading.jsx';
+import FeedbackGaugeChart from "./graphs/FeedbackGaugeChart.jsx";
+import Loading from '@components/ui/Loading.jsx';
 
 
 export default function AdminAnalytics() {
@@ -66,59 +67,97 @@ export default function AdminAnalytics() {
 
     const fetchRevenueData = async () => {
         try {
-            let url = `${API_BASE}/api/admin/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
-            if (selectedCenter !== "all") url = `${API_BASE}/api/admin/analytics/revenue/center/${selectedCenter}?month=${selectedMonth}&year=${selectedYear}`;
+            console.log('🔍 Selected center:', selectedCenter, 'Type:', typeof selectedCenter);
+            let url;
+            if (selectedCenter === "all") {
+                url = `${API_BASE}/api/admin/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
+            } else {
+                // Ensure centerId is a number
+                const centerId = Number(selectedCenter);
+                url = `${API_BASE}/api/admin/analytics/revenue/center/${centerId}?month=${selectedMonth}&year=${selectedYear}`;
+            }
+            console.log('✅ Admin fetching revenue from:', url);
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-            if (!res.ok) throw new Error(`Lỗi API revenue: ${res.status}`);
+            if (!res.ok) {
+                console.error('❌ Revenue API failed:', res.status, res.statusText);
+                throw new Error(`Lỗi API revenue: ${res.status}`);
+            }
             const data = await res.json();
+            console.log('✅ Admin revenue data:', data);
             setRevenueData(data);
         } catch (err) {
-            console.error("fetchRevenueData error:", err);
-            setError(err.message);
+            console.error("❌ fetchRevenueData error:", err);
+            setRevenueData(null);
         }
     };
 
     const fetchPartsData = async () => {
         try {
-            if (selectedCenter === "all") { setPartsData({ labels: [], counts: [] }); return; }
-            const url = `${API_BASE}/api/admin/analytics/parts?centerId=${selectedCenter}&month=${selectedMonth}&year=${selectedYear}`;
+            if (selectedCenter === "all") { 
+                setPartsData({ labels: [], counts: [] }); 
+                return; 
+            }
+            const centerId = Number(selectedCenter);
+            const url = `${API_BASE}/api/admin/analytics/parts?centerId=${centerId}&month=${selectedMonth}&year=${selectedYear}`;
+            console.log('✅ Admin fetching parts from:', url);
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-            if (!res.ok) throw new Error(`Lỗi API parts: ${res.status}`);
+            if (!res.ok) {
+                console.error('❌ Parts API failed:', res.status);
+                setPartsData({ labels: [], counts: [] });
+                return;
+            }
             const data = await res.json();
+            console.log('✅ Admin parts data:', data);
             setPartsData(data);
         } catch (err) {
-            console.error("fetchPartsData error:", err);
-            setError(err.message);
+            console.error("❌ fetchPartsData error:", err);
+            setPartsData({ labels: [], counts: [] });
         }
     };
 
     const fetchBookingStatsData = async () => {
         try {
-            let url = `${API_BASE}/api/admin/analytics/bookings?month=${selectedMonth}&year=${selectedYear}`;
-            if (selectedCenter !== "all") url = `${API_BASE}/api/admin/analytics/bookings/center/${selectedCenter}?month=${selectedMonth}&year=${selectedYear}`;
+            const centerId = selectedCenter !== "all" ? Number(selectedCenter) : null;
+            const url = `${API_BASE}/api/admin/analytics/bookings?month=${selectedMonth}&year=${selectedYear}${centerId ? `&centerId=${centerId}` : ''}`;
+            console.log('✅ Admin fetching bookings from:', url);
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-            if (!res.ok) throw new Error(`Lỗi API bookingStats: ${res.status}`);
+            if (!res.ok) {
+                console.error('❌ Bookings API failed:', res.status);
+                setBookingStatsData({ labels: [], counts: [] });
+                return;
+            }
             const data = await res.json();
+            console.log('✅ Admin bookings data:', data);
             setBookingStatsData(data);
         } catch (err) {
-            console.error("fetchBookingStatsData error:", err);
-            setError(err.message);
+            console.error("❌ fetchBookingStatsData error:", err);
+            setBookingStatsData({ labels: [], counts: [] });
         }
     };
 
     const fetchFeedbackData = async () => {
         try {
-            if (selectedCenter === "all") { setFeedbackData(null); return; }
-            const url = `${API_BASE}/api/admin/analytics/feedbacks/${selectedCenter}`;
+            if (selectedCenter === "all") { 
+                setFeedbackData(null); 
+                return; 
+            }
+            const centerId = Number(selectedCenter);
+            const url = `${API_BASE}/api/admin/analytics/feedbacks?centerId=${centerId}`;
+            console.log('✅ Admin fetching feedbacks from:', url);
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-            if (!res.ok) throw new Error(`Lỗi API feedback: ${res.status}`);
+            if (!res.ok) {
+                console.error('❌ Feedback API failed:', res.status);
+                setFeedbackData(null);
+                return;
+            }
             const data = await res.json();
+            console.log('✅ Admin feedback data:', data);
             const avg = data.averageRating ?? data.avgRating ?? data.rating ?? data.score ?? 0;
             const total = data.totalFeedbacks ?? data.count ?? data.total ?? data.feedbackCount ?? 0;
             setFeedbackData({ averageRating: Number(avg), totalFeedbacks: Number(total), raw: data });
         } catch (err) {
-            console.error("fetchFeedbackData error:", err);
-            setError(err.message);
+            console.error("❌ fetchFeedbackData error:", err);
+            setFeedbackData(null);
         }
     };
 

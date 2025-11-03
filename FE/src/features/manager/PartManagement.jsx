@@ -106,13 +106,34 @@ export default function PartManagement() {
         : "/api/manager/parts-create";
       const method = editingPart ? "PUT" : "POST";
 
+      // Nếu đang edit: gửi toàn bộ thông tin cần thiết
+      const body = editingPart
+        ? {
+          name: editingPart.name || "",
+          description: editingPart.description || "",
+          unitPrice: Number(editingPart.unitPrice) || 0,
+          quantity: parseInt(formData.quantity) || 0,
+          materialCost: Number(editingPart.materialCost || editingPart.materialcost) || 0,
+          laborCost: Number(editingPart.laborCost) || 0,
+          partTypeId: editingPart.partType?.id || editingPart.partTypeId || 0,
+        }
+        : {
+          name: formData.name,
+          description: formData.description,
+          unitPrice: parseFloat(formData.unitPrice),
+          quantity: parseInt(formData.quantity),
+          manufacturer: formData.manufacturer,
+        };
+
+      console.log("Sending PUT request body:", body); // Debug log
+
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(body),
       });
 
       if (response.ok) {
@@ -122,12 +143,13 @@ export default function PartManagement() {
         setFormData({
           name: "",
           description: "",
-          price: "",
+          unitPrice: "",
           quantity: "",
           manufacturer: "",
         });
       } else {
         const errorData = await response.json();
+        console.error("API Error Response:", errorData); // Debug log
         setError(errorData.message || "Có lỗi xảy ra");
       }
     } catch (error) {
@@ -180,9 +202,7 @@ export default function PartManagement() {
             </h1>
             <p className="subtitle">Quản lý kho phụ tùng và yêu cầu nhập hàng</p>
           </div>
-          <Button className="btn-add-part" onClick={handleAddClick}>
-            <FaPlus /> Thêm phụ tùng
-          </Button>
+
         </header>
 
         <div className="admin-content">
