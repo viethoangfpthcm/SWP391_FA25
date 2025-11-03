@@ -13,7 +13,6 @@ const ProtectedRoute = ({ children, requiredRole }) => {
     // Role không đúng → về home
     return <Navigate to="/home" replace />;
   }
-
   return children;
 };
 

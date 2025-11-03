@@ -1,37 +1,44 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "@components/shared/ProtectedRoute.jsx";
 
-import LoginForm from "@features/auth/components/LoginForm.jsx";
+import LoginForm from "@features/auth/LoginForm.jsx";
 import Homepage from "@pages/HomePage.jsx";
 import About from "@components/shared/AboutUs.jsx";
-import ResetPassword from "@features/auth/components/ResetPassword.jsx";
+import ResetPassword from "@features/auth/ResetPassword.jsx";
 import ProfilePage from "@pages/ProfilePage.jsx";
 
 // Staff
-import StaffDashboard from "@features/staff/components/StaffDashboard.jsx";
-import StaffCheckList from "@features/checklist/components/StaffCheckList.jsx";
+import StaffDashboard from "@features/staff/StaffDashboard.jsx";
+import StaffCheckList from "@features/checklist/StaffCheckList.jsx";
 
 // Technician
-import TechnicianTask from "@features/technician/components/technicantask.jsx";
-import CheckList from "@features/checklist/components/CheckList.jsx";
+import TechnicianTask from "@features/technician/technicantask.jsx";
+import CheckList from "@features/checklist/CheckList.jsx";
 
 // Admin
-import AdminDashboard from "@features/admin/components/AdminDashboard.jsx";
-import ServiceCenterManagement from "@features/admin/components/ServiceCenterManagement.jsx";
-import PartManagement from "@features/admin/components/PartManagement.jsx";
-import AdminBookingManagement from "@features/admin/components/AdminBookingManagement.jsx";
-import AdminPaymentManagement from "@features/admin/components/AdminPaymentManagement.jsx";
-import AdminChecklistDetail from "@features/admin/components/AdminChecklistDetail.jsx";
-import AdminAnalytics from "@features/admin/components/AdminAnalytics.jsx";
+import AdminDashboard from "@features/admin/AdminDashboard.jsx";
+import ServiceCenterManagement from "@features/admin/ServiceCenterManagement.jsx";
+import PartManagement from "@features/admin/PartManagement.jsx";
+import AdminBookingManagement from "@features/admin/AdminBookingManagement.jsx";
+import AdminPaymentManagement from "@features/admin/AdminPaymentManagement.jsx";
+import AdminChecklistDetail from "@features/admin/AdminChecklistDetail.jsx";
+import AdminAnalytics from "@features/admin/AdminAnalytics.jsx";
+
+// Manager
+import ManagerDashboard from "@features/manager/ManagerDashboard.jsx";
+import ManagerPartManagement from "@features/manager/PartManagement.jsx";
+import ManagerBookingManagement from "@features/manager/BookingManagement.jsx";
+import ManagerPaymentManagement from "@features/manager/PaymentManagement.jsx";
+import ManagerAnalytics from "@features/manager/ManagerAnalytics.jsx";
 
 // Customer
-import CustomerDashboard from "@features/customer/components/CustomerDashboard.jsx";
-import VehicleMaintenanceSchedule from "@features/customer/components/VehicleMaintenanceSchedule.jsx";
+import CustomerDashboard from "@features/customer/CustomerDashboard.jsx";
+import VehicleMaintenanceSchedule from "@features/customer/VehicleMaintenanceSchedule.jsx";
 import Appoint from "@components/shared/Appoint.jsx";
-import Report1 from "@features/report/components/report1.jsx";
+import Report1 from "@features/report/report1.jsx";
 
 // Payment
-import PaymentResult from "@features/payment/components/PaymentResult.jsx";
+import PaymentResult from "@features/payment/PaymentResult.jsx";
 
 function App() {
   return (
@@ -146,6 +153,47 @@ function App() {
         }
       />
 
+      {/* Manager */}
+      <Route
+        path="/manager"
+        element={
+          <ProtectedRoute requiredRole="MANAGER">
+            <ManagerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manager/parts"
+        element={
+          <ProtectedRoute requiredRole="MANAGER">
+            <ManagerPartManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manager/bookings"
+        element={
+          <ProtectedRoute requiredRole="MANAGER">
+            <ManagerBookingManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manager/payments"
+        element={
+          <ProtectedRoute requiredRole="MANAGER">
+            <ManagerPaymentManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manager/analytics"
+        element={
+          <ProtectedRoute requiredRole="MANAGER">
+            <ManagerAnalytics />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Customer */}
       <Route

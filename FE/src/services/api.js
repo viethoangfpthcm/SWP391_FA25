@@ -27,12 +27,7 @@ export const apiRequest = async (endpoint, options = {}) => {
   }
 
   try {
-    console.log(`🚀 API Request: ${options.method || 'GET'} ${url}`);
-    
     const response = await fetch(url, defaultOptions);
-    
-    console.log(`✅ API Response: ${response.status} ${url}`);
-
     // Handle non-JSON responses
     const contentType = response.headers.get("content-type");
     let data;

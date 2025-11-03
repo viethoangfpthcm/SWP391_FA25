@@ -13,6 +13,8 @@ import {
   FaFileInvoiceDollar,
   FaBookOpen,
   FaChartLine,
+  FaBox,
+  FaChartBar,
 } from "react-icons/fa";
 import "./Sidebar.css";
 import Button from "@components/ui/Button.jsx";
@@ -29,6 +31,9 @@ const Sidebar = ({ userName, userRole }) => {
   switch (role) {
     case "admin":
       defaultHomePath = "/admin";
+      break;
+    case "manager":
+      defaultHomePath = "/manager";
       break;
     case "staff":
       defaultHomePath = "/staff";
@@ -125,6 +130,27 @@ const Sidebar = ({ userName, userRole }) => {
 
           </>
         )}
+
+        {role === "manager" && (
+          <>
+            <Link to="/manager" className={`menu-item ${isActive("/manager", true) ? "active" : ""}`}>
+              <FaUserCog /> <span>Quản lý người dùng</span>
+            </Link>
+            <Link to="/manager/parts" className={`menu-item ${isActive("/manager/parts") ? "active" : ""}`}>
+              <FaBox /> <span>Quản lý phụ tùng</span>
+            </Link>
+            <Link to="/manager/bookings" className={`menu-item ${isActive("/manager/bookings") ? "active" : ""}`}>
+              <FaCalendarCheck /> <span>Quản lý Booking</span>
+            </Link>
+            <Link to="/manager/payments" className={`menu-item ${isActive("/manager/payments") ? "active" : ""}`}>
+              <FaFileInvoiceDollar /> <span>Quản lý Thanh toán</span>
+            </Link>
+            <Link to="/manager/analytics" className={`menu-item ${isActive("/manager/analytics") ? "active" : ""}`}>
+              <FaChartBar /> <span>Phân tích & Báo cáo</span>
+            </Link>
+          </>
+        )}
+
         <div className="menu-footer">
           <Link
             to="/profile"

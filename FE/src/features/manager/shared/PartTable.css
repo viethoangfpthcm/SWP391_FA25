@@ -1,0 +1,194 @@
+.part-table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.part-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.part-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.part-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.part-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #4a5568;
+}
+
+.part-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.part-table tbody tr:hover {
+  background-color: #f7fafc;
+}
+
+.part-table tbody tr.stock-out {
+  background-color: #fef2f2;
+}
+
+.part-table tbody tr.stock-low {
+  background-color: #fffbeb;
+}
+
+.part-name {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.part-description {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+.part-price {
+  font-weight: 600;
+  color: #10b981;
+  white-space: nowrap;
+}
+
+.part-quantity {
+  text-align: center;
+}
+
+.quantity-badge {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  min-width: 50px;
+  text-align: center;
+}
+
+.quantity-badge.stock-ok {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.quantity-badge.stock-low {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.quantity-badge.stock-out {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.stock-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.stock-status.stock-ok {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.stock-status.stock-low {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.stock-status.stock-out {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.part-actions {
+  display: flex;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.btn-edit-part {
+  background: #667eea;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-edit-part:hover {
+  background: #5568d3;
+}
+
+.btn-restock {
+  background: #f59e0b;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-restock:hover {
+  background: #d97706;
+}
+
+.no-parts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: #a0aec0;
+}
+
+.no-parts svg {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .part-table {
+    font-size: 0.85rem;
+  }
+
+  .part-table th,
+  .part-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .part-description {
+    max-width: 150px;
+  }
+
+  .part-actions {
+    flex-direction: column;
+  }
+}
