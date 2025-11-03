@@ -25,8 +25,8 @@ import AdminChecklistDetail from "@features/admin/components/AdminChecklistDetai
 import AdminAnalytics from "@features/admin/components/AdminAnalytics.jsx";
 
 // Customer
-import CustomerDashboard from "@features/customer/components/CustomerDashboard.jsx";
-import VehicleMaintenanceSchedule from "@features/customer/components/VehicleMaintenanceSchedule.jsx";
+import CustomerDashboard from "@features/customer/mainLayout/CustomerDashboard.jsx";
+import VehicleMaintenanceSchedule from "@features/customer/scheduletables/VehicleMaintenanceSchedule.jsx";
 import Appoint from "@components/shared/Appoint.jsx";
 import Report1 from "@features/report/components/report1.jsx";
 
