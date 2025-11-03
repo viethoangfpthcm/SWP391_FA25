@@ -106,7 +106,7 @@ export default function ManagerDashboard() {
               <FaUserPlus /> Quản lý người dùng
             </h1>
             <p className="subtitle">
-              Thêm, chỉnh sửa và quản lý người dùng trong hệ thống.
+              Quản lý người dùng trong nội bộ hệ thống.
             </p>
           </div>
         </header>

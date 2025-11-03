@@ -10,9 +10,11 @@ import ProfilePage from "@pages/ProfilePage.jsx";
 // Staff
 import StaffDashboard from "@features/staff/StaffDashboard.jsx";
 import StaffCheckList from "@features/checklist/StaffCheckList.jsx";
+import StaffAnalytics from "@features/staff/StaffAnalytics.jsx";
+import StaffPartsView from "@features/staff/StaffPartsView.jsx";
 
 // Technician
-import TechnicianTask from "@features/technician/technicantask.jsx";
+import TechnicianTask from "@features/technician/TechnicianTask.jsx";
 import CheckList from "@features/checklist/CheckList.jsx";
 
 // Admin
@@ -73,6 +75,22 @@ function App() {
         element={
           <ProtectedRoute requiredRole="STAFF">
             <StaffCheckList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/staff/analytics"
+        element={
+          <ProtectedRoute requiredRole="STAFF">
+            <StaffAnalytics />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/staff/parts"
+        element={
+          <ProtectedRoute requiredRole="STAFF">
+            <StaffPartsView />
           </ProtectedRoute>
         }
       />

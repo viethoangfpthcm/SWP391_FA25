@@ -15,6 +15,7 @@ import {
   FaChartLine,
   FaBox,
   FaChartBar,
+  FaCog,
 } from "react-icons/fa";
 import "./Sidebar.css";
 import Button from "@components/ui/Button.jsx";
@@ -78,9 +79,17 @@ const Sidebar = ({ userName, userRole }) => {
         </Link>
 
         {(role === "staff") && (
-          <Link to="/staff" className={`menu-item ${isActive("/staff", true) ? "active" : ""}`}>
-            <FaCalendarCheck /> <span>Quản lý lịch hẹn</span>
-          </Link>
+          <>
+            <Link to="/staff" className={`menu-item ${isActive("/staff", true) ? "active" : ""}`}>
+              <FaCalendarCheck /> <span>Quản lý lịch hẹn</span>
+            </Link>
+            <Link to="/staff/analytics" className={`menu-item ${isActive("/staff/analytics") ? "active" : ""}`}>
+              <FaChartLine /> <span>Thống kê & Báo cáo</span>
+            </Link>
+            <Link to="/staff/parts" className={`menu-item ${isActive("/staff/parts") ? "active" : ""}`}>
+              <FaCog /> <span>Danh sách phụ tùng</span>
+            </Link>
+          </>
         )}
 
 

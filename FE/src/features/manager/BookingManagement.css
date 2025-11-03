@@ -132,8 +132,9 @@
 }
 
 .status-default {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 600;
 }
 
 .no-bookings {

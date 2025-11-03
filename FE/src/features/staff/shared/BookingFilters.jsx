@@ -1,11 +1,14 @@
 import React from "react";
 import { FaFilter } from "react-icons/fa";
+import "./BookingFilters.css";
 
-export default function FilterBar({ statusFilter, setStatusFilter }) {
+export default function BookingFilters({ statusFilter, setStatusFilter }) {
   return (
     <div className="actions-bar">
       <div className="filter-group">
-        <label htmlFor="statusFilter"><FaFilter /> Lọc:</label>
+        <label htmlFor="statusFilter">
+          <FaFilter /> Lọc:
+        </label>
         <select
           id="statusFilter"
           value={statusFilter}

@@ -55,10 +55,6 @@ export default function UserManagement() {
 
   return (
     <div className="user-management">
-      <div className="user-management-header">
-        <h2>👥 Quản lý người dùng trung tâm</h2>
-        <p className="subtitle">Xem và quản lý nhân viên trong trung tâm của bạn</p>
-      </div>
 
       <FiltersBar
         filterRole={filterRole}
