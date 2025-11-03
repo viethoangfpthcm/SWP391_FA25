@@ -6,6 +6,7 @@ import RevenueChart from "@features/admin/graphs/RevenueChart.jsx";
 import BookingStatsChart from "@features/admin/graphs/BookingStatsChart.jsx";
 import PartsUsageChart from "@features/admin/graphs/PartsUsageChart.jsx";
 import FeedbackGaugeChart from "@features/admin/graphs/FeedbackGaugeChart.jsx";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 import "./StaffAnalytics.css";
 
 const StaffAnalytics = () => {
@@ -21,6 +22,9 @@ const StaffAnalytics = () => {
   // Filter states
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+  // Use minimum delay hook for better UX (show loading for at least 1 second)
+  const showLoading = useMinimumDelay(loading, 1000);
 
   const API_BASE = "";
   const token = localStorage.getItem("token");
@@ -210,7 +214,7 @@ const StaffAnalytics = () => {
           </div>
         )}
 
-        {loading ? (
+        {showLoading ? (
           <div className="loading-container">
             <Loading />
             <p>Đang tải dữ liệu thống kê...</p>

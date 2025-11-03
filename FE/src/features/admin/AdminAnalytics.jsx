@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { useNavigate } from "react-router-dom";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 import "./AdminAnalytics.css";
 
 import RevenueChart from "./graphs/RevenueChart.jsx";
@@ -37,6 +38,10 @@ export default function AdminAnalytics() {
     const navigate = useNavigate();
     const API_BASE = "";
     const token = localStorage.getItem("token");
+    
+    // Use minimum delay hook for better UX
+    const showLoading = useMinimumDelay(loading, 1000);
+    
     const fetchUserInfo = async () => {
         try {
             const res = await fetch(`${API_BASE}/api/users/account/current`, {
@@ -186,13 +191,12 @@ export default function AdminAnalytics() {
         return [<option key={currentYear} value={currentYear}>Năm {currentYear}</option>];
     };
 
-    if (!userInfo && loading) {
+    if (!userInfo && showLoading) {
         return (
             <div className="dashboard-container">
                 <Sidebar />
                 <main className="main-content loading-state">
-                    <Loading inline />
-                    <p>Đang tải dữ liệu người dùng...</p>
+                    <Loading text="Đang tải dữ liệu người dùng..." />
                 </main>
             </div>
         );
@@ -211,26 +215,26 @@ export default function AdminAnalytics() {
                 <div className="actions-bar analytics-filters">
                     <div className="filter-group">
                         <label htmlFor="monthFilter"><FaFilter /> Tháng:</label>
-                        <select id="monthFilter" value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))} disabled={loading}>
+                        <select id="monthFilter" value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))} disabled={showLoading}>
                             {renderMonthOptions()}
                         </select>
                     </div>
                     <div className="filter-group">
                         <label htmlFor="yearFilter"><FaFilter /> Năm:</label>
-                        <select id="yearFilter" value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))} disabled={loading}>
+                        <select id="yearFilter" value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))} disabled={showLoading}>
                             {renderYearOptions()}
                         </select>
                     </div>
                     <div className="filter-group">
                         <label htmlFor="centerFilter"><FaFilter /> Trung tâm:</label>
-                        <select id="centerFilter" value={selectedCenter} onChange={e => setSelectedCenter(e.target.value)} disabled={loading}>
+                        <select id="centerFilter" value={selectedCenter} onChange={e => setSelectedCenter(e.target.value)} disabled={showLoading}>
                             <option value="all">Tất cả trung tâm</option>
                             {centers.map(center => <option key={center.id} value={center.id}>{center.name}</option>)}
                         </select>
                     </div>
                 </div>
 
-                {error && !loading && <div className="error-message general-error"><FaExclamationTriangle /> {error}</div>}
+                {error && !showLoading && <div className="error-message general-error"><FaExclamationTriangle /> {error}</div>}
 
                 {/* BIỂU ĐỒ */}
                 <div className="analytics-charts">
