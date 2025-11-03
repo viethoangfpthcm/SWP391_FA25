@@ -11,13 +11,10 @@ import com.se1824.SWP391_FA25.service.AuthenticationService;
 import com.se1824.SWP391_FA25.service.MaintenanceChecklistService;
 import com.se1824.SWP391_FA25.service.StaffService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-
-import java.time.LocalDate;
 import java.util.List;
 
 @SecurityRequirement(name = "api")
