@@ -135,8 +135,7 @@ function VehicleMaintenanceSchedule() {
           const validSchedule = Array.isArray(scheduleData) ? scheduleData : [];
           setSchedule(validSchedule);
           setError('');
-          const bookableItem = validSchedule.find(item => item.status === 'NEXT_TIME') ||
-            validSchedule.find(item => item.status === 'OVERDUE');
+          const bookableItem = validSchedule.find(item => item.status === 'NEXT_TIME');   
 
           setNextTimePlanId(bookableItem ? bookableItem.maintenancePlanId : null);
         }
