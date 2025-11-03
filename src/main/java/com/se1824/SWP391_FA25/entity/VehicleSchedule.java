@@ -1,10 +1,13 @@
 package com.se1824.SWP391_FA25.entity;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.se1824.SWP391_FA25.enums.VehicleScheduleStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+
 @Entity
 @Table(name = "Vehicle_Schedule")
 @Getter
@@ -39,6 +42,7 @@ public class VehicleSchedule {
     @Column(name = "deadline", nullable = false)
     LocalDate deadline;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20, nullable = false)
-    String status;
+    VehicleScheduleStatus status;
 }

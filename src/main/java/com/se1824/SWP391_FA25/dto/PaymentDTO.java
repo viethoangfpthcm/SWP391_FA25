@@ -21,4 +21,5 @@ public class PaymentDTO {
     String note;
     Integer centerId;
     String centerName;
+    String customerName;
 }

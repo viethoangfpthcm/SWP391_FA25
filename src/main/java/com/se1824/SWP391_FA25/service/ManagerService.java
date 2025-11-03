@@ -1,25 +1,22 @@
 package com.se1824.SWP391_FA25.service;
 
-import com.se1824.SWP391_FA25.dto.PaymentDTO;
-import com.se1824.SWP391_FA25.dto.StaffBookingDTO;
-import com.se1824.SWP391_FA25.dto.UserManagementDTO;
-import com.se1824.SWP391_FA25.entity.Booking;
-import com.se1824.SWP391_FA25.entity.Part;
-import com.se1824.SWP391_FA25.entity.Payment;
-import com.se1824.SWP391_FA25.entity.Users;
+import com.se1824.SWP391_FA25.dto.*;
+import com.se1824.SWP391_FA25.entity.*;
 import com.se1824.SWP391_FA25.enums.UserRole;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
-import com.se1824.SWP391_FA25.model.request.PartCreateRequest;
+import com.se1824.SWP391_FA25.model.response.BookingAnalyticsResponse;
+import com.se1824.SWP391_FA25.model.response.MaintenanceChecklistResponse;
+import com.se1824.SWP391_FA25.model.response.PartAnalyticsResponse;
+import com.se1824.SWP391_FA25.model.response.RevenueAnalyticsResponse;
 import com.se1824.SWP391_FA25.repository.*;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +40,14 @@ public class ManagerService {
     ServiceCenterRepository serviceCenterRepo;
     @Autowired
     PaymentRepository paymentRepo;
+    @Autowired
+    AnalyticService analyticService;
+    @Autowired
+    ServiceCenterService serviceCenterService;
+    @Autowired
+    FeedbackService feedbackService;
+    @Autowired
+    MaintenanceChecklistService checklistService;
 
     /*
      * Lấy part theo centerId mà Manager đang làm việc
@@ -97,6 +102,127 @@ public class ManagerService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Lấy dữ liệu doanh thu cho Manager (chỉ center của Manager)
+     */
+    public RevenueAnalyticsResponse getRevenueAnalyticsForManager(Integer month, Integer year) {
+        Users manager = auth.getCurrentAccount();
+        if (manager.getRole() != UserRole.MANAGER) {
+            throw new InvalidDataException("Only MANAGER can perform this action");
+        }
+        Integer centerId = manager.getCenter().getId();
+        log.info("Fetching revenue analytics for Manager at center: {}, month: {}, year: {}", centerId, month, year);
+
+        // Gọi AnalyticService với đúng thứ tự tham số: month, year, centerId
+        return analyticService.getRevenueAnalytics(month, year, centerId);
+    }
+
+    /**
+     * Lấy dữ liệu booking cho Manager (chỉ center của Manager)
+     */
+    public BookingAnalyticsResponse getBookingAnalyticsForManager(Integer month, Integer year) {
+        Users manager = auth.getCurrentAccount();
+        if (manager.getRole() != UserRole.MANAGER) {
+            throw new InvalidDataException("Only MANAGER can perform this action");
+        }
+        Integer centerId = manager.getCenter().getId();
+        log.info("Fetching booking analytics for Manager at center: {}, month: {}, year: {}", centerId, month, year);
+
+        // Gọi AnalyticService với đúng thứ tự tham số: month, year, centerId
+        return analyticService.getBookingAnalytics(month, year, centerId);
+    }
+
+    /**
+     * Lấy dữ liệu linh kiện cho Manager (chỉ center của Manager)
+     */
+    public PartAnalyticsResponse getPartAnalyticsForManager(Integer month, int year) {
+        Users manager = auth.getCurrentAccount();
+        validateManagerRole(manager.getUserId());
+
+        // Tự động lấy centerId của Manager
+        Integer centerId = manager.getCenter().getId();
+        log.info("Fetching part analytics for Manager at center: {}", centerId);
+
+        // Gọi service chung với centerId cố định
+        return serviceCenterService.getPartAnalytics(centerId, month, year);
+    }
+    /**
+     * Lấy dữ liệu feedback cho Manager (chỉ center của Manager)
+     */
+    public FeedbackStatsDTO getFeedbackAnalyticsForManager() {
+        Users manager = auth.getCurrentAccount();
+        if (manager.getRole() != UserRole.MANAGER) {
+            throw new InvalidDataException("Only MANAGER can perform this action");
+        }
+        Integer centerId = manager.getCenter().getId();
+        log.info("Fetching feedback analytics for Manager at center: {}", centerId);
+        return feedbackService.getFeedbackStats(centerId);
+    }
+
+    /**
+     * MANAGER: Lấy chi tiết 1 booking
+     */
+    public StaffBookingDTO getBookingById(Integer bookingId, Integer managerId) {
+        validateManagerRole(managerId);
+        Users manager = auth.getCurrentAccount();
+
+        Booking booking = bookingRepo.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingId));
+
+        // Validation: Booking có thuộc center của Manager không?
+        if (!booking.getServiceCenter().getId().equals(manager.getCenter().getId())) {
+            throw new InvalidDataException("This booking does not belong to your service center.");
+        }
+        return mapToStaffBookingDTO(booking);
+    }
+
+    /**
+     * MANAGER: Lấy chi tiết 1 payment (theo bookingId)
+     */
+    public PaymentDTO getPaymentByBookingId(Integer bookingId, Integer managerId) {
+        validateManagerRole(managerId);
+        Users manager = auth.getCurrentAccount();
+
+        Payment payment = paymentRepo.findByBooking_BookingId(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found for booking ID: " + bookingId));
+
+        // Validation: Payment có thuộc center của Manager không?
+        if (!payment.getBooking().getServiceCenter().getId().equals(manager.getCenter().getId())) {
+            throw new InvalidDataException("This payment does not belong to your service center.");
+        }
+        return mapToPaymentDTO(payment);
+    }
+
+    /**
+     * MANAGER: Lấy chi tiết 1 checklist (theo bookingId)
+     */
+    public MaintenanceChecklistResponse getChecklistByBookingId(Integer bookingId, Integer managerId) {
+        validateManagerRole(managerId);
+        // Hàm getChecklistByBookingIdForStaff đã bao gồm logic kiểm tra center
+        // (Vì nó được thiết kế cho Staff/Manager)
+        return checklistService.getChecklistByBookingIdForStaff(bookingId);
+    }
+
+    /**
+     * MANAGER: Lấy chi tiết 1 feedback (theo bookingId)
+     */
+    public FeedbackDTO getFeedbackByBookingId(Integer bookingId, Integer managerId) {
+        validateManagerRole(managerId);
+        Users manager = auth.getCurrentAccount();
+
+        Feedback feedback = feedbackService.getFeedbackByBookingId(bookingId);
+        if (feedback == null) {
+            throw new ResourceNotFoundException("Feedback not found for booking ID: " + bookingId);
+        }
+
+        // Validation: Feedback có thuộc center của Manager không?
+        if (!feedback.getBooking().getServiceCenter().getId().equals(manager.getCenter().getId())) {
+            throw new InvalidDataException("This feedback does not belong to your service center.");
+        }
+        // Yêu cầu hàm convertToDto trong FeedbackService phải là public
+        return feedbackService.convertToDto(feedback);
+    }
+
     //=====================================================================
     private UserManagementDTO mapToUserManagementDTO(Users user) {
         UserManagementDTO dto = new UserManagementDTO();
@@ -130,6 +256,11 @@ public class ManagerService {
         } else {
             dto.setTechnicianName(null);
         }
+        if (booking.getMaintenancePlan() != null) {
+            dto.setPlanName(booking.getMaintenancePlan().getName());
+        } else {
+            dto.setPlanName(null);
+        }
         checklistRepo.findByBooking_BookingId(booking.getBookingId())
                 .ifPresent(checklist -> {
                     if (checklist.getStatus() != null) {
@@ -158,6 +289,7 @@ public class ManagerService {
         PaymentDTO dto = new PaymentDTO();
         dto.setPaymentId(payment.getPaymentId());
         dto.setBookingId(payment.getBooking().getBookingId());
+        dto.setCustomerName(payment.getBooking().getCustomer().getFullName());
         if (payment.getBooking() != null && payment.getBooking().getServiceCenter() != null) {
             dto.setCenterId(payment.getBooking().getServiceCenter().getId());
             dto.setCenterName(payment.getBooking().getServiceCenter().getName());
