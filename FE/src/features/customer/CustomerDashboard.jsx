@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from "@components/layout/Navbar.jsx";
 import Footer from "@components/layout/Footer.jsx";
+import { API_BASE } from "@config/api.js";
 import './CustomerDashboard.css';
 
 
-import { FaUser, FaCar, FaCalendarAlt, FaPlus, FaTimes, FaEdit, FaCheckCircle, FaExclamationTriangle, FaSpinner, FaStar } from 'react-icons/fa';import Button from '@components/ui/Button.jsx';
+import { FaUser, FaCar, FaCalendarAlt, FaPlus, FaTimes, FaEdit, FaCheckCircle, FaExclamationTriangle, FaSpinner, FaStar } from 'react-icons/fa';
+import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 
 
@@ -64,16 +66,37 @@ function CustomerDashboard() {
     comment: '',
   });
   const [vehicleToDelete, setVehicleToDelete] = useState(null);
+  const [vehicleModels, setVehicleModels] = useState([]);
+  const [loadingModels, setLoadingModels] = useState(true);
 
+  // Load danh sách xe từ API khi component mount
+  useEffect(() => {
+    const fetchVehicleModels = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${API_BASE}/api/customer/vehicle-models`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-  const vinfastModels = [
-    "VinFast VF 3",
-    "VinFast VF 5",
-    "VinFast VF 7",
-    "VinFast VF 9",
-  ];
+        if (!response.ok) throw new Error("Failed to fetch vehicle models");
 
-  const API_BASE = "";
+        const data = await response.json();
+        setVehicleModels(Array.isArray(data) ? data : []);
+      } catch (err) {
+        // Fallback nếu API lỗi
+        setVehicleModels([
+          "VinFast VF 3",
+          "VinFast VF 5",
+          "VinFast VF 7",
+          "VinFast VF 9",
+        ]);
+      } finally {
+        setLoadingModels(false);
+      }
+    };
+
+    fetchVehicleModels();
+  }, []);
 
 
 
@@ -580,9 +603,11 @@ const executeDeleteVehicle = async (licensePlate) => {
                 </div>
                 <div className="form-group">
                   <label htmlFor="model">Dòng xe (Model) *</label>
-                  <select id="model" name="model" value={newVehicleData.model} onChange={handleNewVehicleChange} required >
-                    <option value="" disabled>-- Chọn dòng xe --</option>
-                    {vinfastModels.map(modelName => (
+                  <select id="model" name="model" value={newVehicleData.model} onChange={handleNewVehicleChange} required disabled={loadingModels}>
+                    <option value="" disabled>
+                      {loadingModels ? "Đang tải..." : `-- Chọn dòng xe (${vehicleModels.length} xe) --`}
+                    </option>
+                    {vehicleModels.map(modelName => (
                       <option key={modelName} value={modelName}>
                         {modelName}
                       </option>

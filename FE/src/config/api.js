@@ -6,6 +6,9 @@
 // Base API URL - sử dụng proxy của Vite
 export const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 
+// Alias for backward compatibility
+export const API_BASE = API_BASE_URL;
+
 // Các endpoints thường dùng
 export const API_ENDPOINTS = {
   // Auth

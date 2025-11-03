@@ -35,7 +35,7 @@ import ManagerAnalytics from "@features/manager/ManagerAnalytics.jsx";
 
 // Customer
 import CustomerDashboard from "@features/customer/CustomerDashboard.jsx";
-import VehicleMaintenanceSchedule from "@features/customer/VehicleMaintenanceSchedule.jsx";
+import VehicleMaintenanceSchedule from "@features/customer/shared/VehicleMaintenanceSchedule.jsx";
 import Appoint from "@components/shared/Appoint.jsx";
 import Report1 from "@features/report/report1.jsx";
 

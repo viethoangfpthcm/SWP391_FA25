@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
+import { API_BASE } from "@config/api.js";
 
 function FeedbackModal({ bookingId, onClose, onSuccess }) {
   const [feedbackData, setFeedbackData] = useState({ rating: 0, comment: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const API_BASE = "";
 
   useEffect(() => {
     const loadFeedback = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log('🔍 Loading feedback for booking:', bookingId);
         const res = await fetch(`${API_BASE}/api/feedback/booking/${bookingId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
           const data = await res.json();
-          console.log('✅ Existing feedback:', data);
           if (data && data.rating) {
             setFeedbackData({
               rating: data.rating,
@@ -27,7 +25,7 @@ function FeedbackModal({ bookingId, onClose, onSuccess }) {
           }
         }
       } catch (err) {
-        console.error("❌ Fetch feedback error:", err);
+        console.error("Fetch feedback error:", err);
       }
     };
     if (bookingId) {
@@ -60,8 +58,6 @@ function FeedbackModal({ bookingId, onClose, onSuccess }) {
         comment: feedbackData.comment.trim(),
       };
       
-      console.log('📤 Submitting feedback:', payload);
-      
       const response = await fetch(`${API_BASE}/api/feedback`, {
         method: "POST",
         headers: {
@@ -76,11 +72,10 @@ function FeedbackModal({ bookingId, onClose, onSuccess }) {
         throw new Error(errorData.message || `Lỗi ${response.status}: ${response.statusText}`);
       }
       
-      const result = await response.json();
-      console.log('✅ Feedback submitted:', result);
+      await response.json();
       onSuccess();
     } catch (err) {
-      console.error("❌ Feedback submit error:", err);
+      console.error("Feedback submit error:", err);
       setError(err.message || "Lỗi khi gửi đánh giá. Vui lòng thử lại.");
     } finally {
       setLoading(false);

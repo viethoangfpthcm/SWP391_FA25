@@ -72,26 +72,21 @@ export default function AdminAnalytics() {
 
     const fetchRevenueData = async () => {
         try {
-            console.log('🔍 Selected center:', selectedCenter, 'Type:', typeof selectedCenter);
             let url;
             if (selectedCenter === "all") {
                 url = `${API_BASE}/api/admin/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
             } else {
-                // Ensure centerId is a number
                 const centerId = Number(selectedCenter);
                 url = `${API_BASE}/api/admin/analytics/revenue/center/${centerId}?month=${selectedMonth}&year=${selectedYear}`;
             }
-            console.log('✅ Admin fetching revenue from:', url);
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
             if (!res.ok) {
-                console.error('❌ Revenue API failed:', res.status, res.statusText);
                 throw new Error(`Lỗi API revenue: ${res.status}`);
             }
             const data = await res.json();
-            console.log('✅ Admin revenue data:', data);
             setRevenueData(data);
         } catch (err) {
-            console.error("❌ fetchRevenueData error:", err);
+            console.error("fetchRevenueData error:", err);
             setRevenueData(null);
         }
     };
@@ -104,18 +99,15 @@ export default function AdminAnalytics() {
             }
             const centerId = Number(selectedCenter);
             const url = `${API_BASE}/api/admin/analytics/parts?centerId=${centerId}&month=${selectedMonth}&year=${selectedYear}`;
-            console.log('✅ Admin fetching parts from:', url);
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
             if (!res.ok) {
-                console.error('❌ Parts API failed:', res.status);
                 setPartsData({ labels: [], counts: [] });
                 return;
             }
             const data = await res.json();
-            console.log('✅ Admin parts data:', data);
             setPartsData(data);
         } catch (err) {
-            console.error("❌ fetchPartsData error:", err);
+            console.error("fetchPartsData error:", err);
             setPartsData({ labels: [], counts: [] });
         }
     };
@@ -148,20 +140,17 @@ export default function AdminAnalytics() {
             }
             const centerId = Number(selectedCenter);
             const url = `${API_BASE}/api/admin/analytics/feedbacks?centerId=${centerId}`;
-            console.log('✅ Admin fetching feedbacks from:', url);
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
             if (!res.ok) {
-                console.error('❌ Feedback API failed:', res.status);
                 setFeedbackData(null);
                 return;
             }
             const data = await res.json();
-            console.log('✅ Admin feedback data:', data);
             const avg = data.averageRating ?? data.avgRating ?? data.rating ?? data.score ?? 0;
             const total = data.totalFeedbacks ?? data.count ?? data.total ?? data.feedbackCount ?? 0;
             setFeedbackData({ averageRating: Number(avg), totalFeedbacks: Number(total), raw: data });
         } catch (err) {
-            console.error("❌ fetchFeedbackData error:", err);
+            console.error("fetchFeedbackData error:", err);
             setFeedbackData(null);
         }
     };

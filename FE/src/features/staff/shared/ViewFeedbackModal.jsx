@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes, FaStar } from "react-icons/fa";
 import Loading from "@components/ui/Loading.jsx";
 import Button from "@components/ui/Button.jsx";
+import { API_BASE } from "@config/api.js";
 import "./ViewFeedbackModal.css";
 
 const ViewFeedbackModal = ({ bookingId, onClose }) => {
@@ -20,17 +21,23 @@ const ViewFeedbackModal = ({ bookingId, onClose }) => {
     setError(null);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        `/api/staff/feedback/${bookingId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const url = `${API_BASE}/api/staff/feedback/${bookingId}`;
+      
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
+        if (response.status === 400 || response.status === 403) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.message || "Bạn không có quyền xem feedback này.");
+        }
+        if (response.status === 404) {
+          throw new Error("Khách hàng chưa gửi feedback cho booking này.");
+        }
         throw new Error("Không thể tải feedback");
       }
 

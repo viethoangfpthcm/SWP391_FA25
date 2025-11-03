@@ -76,16 +76,11 @@ const StaffAnalytics = () => {
   const fetchRevenueData = async () => {
     try {
       const url = `${API_BASE}/api/staff/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
-      console.log("Staff fetching revenue from:", url);
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) {
-        console.warn("Revenue API not available:", res.status);
-        return;
-      }
+      if (!res.ok) return;
       const data = await res.json();
-      console.log("Staff revenue data received:", data);
       setRevenueData(data);
     } catch (err) {
       console.error("fetchRevenueData error:", err);
@@ -95,16 +90,11 @@ const StaffAnalytics = () => {
   const fetchPartsData = async () => {
     try {
       const url = `${API_BASE}/api/staff/analytics/parts?year=${selectedYear}&month=${selectedMonth}`;
-      console.log("Staff fetching parts from:", url);
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) {
-        console.warn("Parts API not available:", res.status);
-        return;
-      }
+      if (!res.ok) return;
       const data = await res.json();
-      console.log("Staff parts data received:", data);
       setPartsData(data);
     } catch (err) {
       console.error("fetchPartsData error:", err);
@@ -114,16 +104,11 @@ const StaffAnalytics = () => {
   const fetchBookingStatsData = async () => {
     try {
       const url = `${API_BASE}/api/staff/analytics/bookings?month=${selectedMonth}&year=${selectedYear}`;
-      console.log("Staff fetching bookings from:", url);
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) {
-        console.warn("Bookings API not available:", res.status);
-        return;
-      }
+      if (!res.ok) return;
       const data = await res.json();
-      console.log("Staff bookings data received:", data);
       setBookingStatsData(data);
     } catch (err) {
       console.error("fetchBookingStatsData error:", err);
@@ -133,16 +118,11 @@ const StaffAnalytics = () => {
   const fetchFeedbackData = async () => {
     try {
       const url = `${API_BASE}/api/staff/analytics/feedbacks`;
-      console.log("Staff fetching feedbacks from:", url);
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) {
-        console.warn("Feedback API not available:", res.status);
-        return;
-      }
+      if (!res.ok) return;
       const data = await res.json();
-      console.log("Staff feedback data received:", data);
       setFeedbackData(data);
     } catch (err) {
       console.error("fetchFeedbackData error:", err);

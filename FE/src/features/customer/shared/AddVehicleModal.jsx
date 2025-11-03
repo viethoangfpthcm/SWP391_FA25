@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
+import { API_BASE } from "@config/api.js";
 
 export default function AddVehicleModal({ onClose, onSuccess }) {
   const [vehicleData, setVehicleData] = useState({
@@ -14,52 +15,29 @@ export default function AddVehicleModal({ onClose, onSuccess }) {
   const [loadingModels, setLoadingModels] = useState(true);
   const [error, setError] = useState("");
 
-  const API_BASE = "";
-
-  // Fetch vehicle models from API
+  // Load danh sách xe từ server
   useEffect(() => {
     const fetchVehicleModels = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log("🚗 Fetching vehicle models from API...");
-        console.log("🔑 Token exists:", !!token);
-        
         const response = await fetch(`${API_BASE}/api/customer/vehicle-models`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log("📡 Response status:", response.status);
-        console.log("📡 Response OK:", response.ok);
-        
         if (!response.ok) {
-          const errorText = await response.text();
-          console.error("❌ Response error:", errorText);
-          throw new Error(`Failed to fetch vehicle models: ${response.status}`);
+          throw new Error("Failed to fetch vehicle models");
         }
 
         const data = await response.json();
-        console.log("✅ Vehicle models received:", data);
-        console.log("📊 Type of data:", Array.isArray(data) ? "Array" : typeof data);
-        console.log("📏 Data length:", data?.length);
-        console.log("🔍 First item:", data?.[0]);
-        
         if (Array.isArray(data) && data.length > 0) {
           setVehicleModels(data);
-          console.log("✅ Set vehicle models successfully:", data.length, "items");
         } else {
-          console.warn("⚠️ No vehicle models found or invalid data format");
-          console.warn("⚠️ Data structure:", JSON.stringify(data));
           setError("Không có dữ liệu xe nào.");
         }
       } catch (err) {
-        console.error("❌ Error fetching vehicle models:", err);
-        console.error("❌ Error details:", err.message);
         setError("Không thể tải danh sách xe. Vui lòng thử lại.");
       } finally {
         setLoadingModels(false);
-        console.log("🏁 Loading models finished");
       }
     };
 
@@ -70,6 +48,7 @@ export default function AddVehicleModal({ onClose, onSuccess }) {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     try {
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
@@ -87,7 +66,6 @@ export default function AddVehicleModal({ onClose, onSuccess }) {
 
       onSuccess();
     } catch (err) {
-      console.error(err);
       setError("Thêm xe thất bại. Vui lòng thử lại.");
     } finally {
       setLoading(false);
