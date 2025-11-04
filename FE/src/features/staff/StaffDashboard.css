@@ -120,26 +120,22 @@
   width: 100%;
 }
 
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;
-}
+.data-table { 
+   width: 100%;       
+   table-layout: auto; 
+ }
 
 .data-table thead tr {
   background-color: #f8f9fa;
   border-bottom: 2px solid #e0e7ff;
 }
 
-.data-table th {
-  padding: 12px 15px;
-  text-align: left;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #4b5563;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
+.data-table th, .data-table td { 
+   white-space: normal;   
+   word-break: break-word; 
+   padding: 5px 5px; 
+   font-size: 0.85rem; 
+ }
 
 /* --- Cột --- */
 .data-table th:nth-child(1) { width: 5%; }
@@ -162,12 +158,6 @@
   background-color: #f0f4ff;
 }
 
-.data-table td {
-  padding: 14px 15px;
-  vertical-align: middle;
-  font-size: 0.9rem;
-  color: #333;
-}
 
 .cell-main {
   font-weight: 600;
