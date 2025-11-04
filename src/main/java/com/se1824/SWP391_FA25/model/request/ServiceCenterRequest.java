@@ -1,8 +1,12 @@
 package com.se1824.SWP391_FA25.model.request;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+
+import java.time.LocalTime;
 
 @Data
 public class ServiceCenterRequest {
@@ -23,4 +27,12 @@ public class ServiceCenterRequest {
     @NotBlank(message = "Can not blank address.")
     @Size(max = 500, message = "Must be in 500 character.")
     private String address;
+
+    @NotNull(message = "Opening hour cannot be null.")
+    @JsonFormat(pattern = "HH:mm:ss", shape = JsonFormat.Shape.STRING) // Định dạng HH:mm:ss, "08:00:00"
+    private LocalTime openingHour;
+
+    @NotNull(message = "Closing hour cannot be null.")
+    @JsonFormat(pattern = "HH:mm:ss", shape = JsonFormat.Shape.STRING)
+    private LocalTime closingHour;
 }

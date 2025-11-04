@@ -45,7 +45,8 @@ public class ServiceCenterService {
         serviceCenter.setName(trimmedName);
         serviceCenter.setPhone(trimmedPhone);
         serviceCenter.setAddress(requestDTO.getAddress().trim());
-
+        serviceCenter.setOpeningHour(requestDTO.getOpeningHour());
+        serviceCenter.setClosingHour(requestDTO.getClosingHour());
         return serviceCenterRepository.save(serviceCenter);
     }
 
@@ -87,6 +88,8 @@ public class ServiceCenterService {
             existingCenter.setPhone(trimmedPhone);
         }
         existingCenter.setAddress(requestDTO.getAddress().trim());
+        existingCenter.setOpeningHour(requestDTO.getOpeningHour());
+        existingCenter.setClosingHour(requestDTO.getClosingHour());
 
         return serviceCenterRepository.save(existingCenter);
     }
