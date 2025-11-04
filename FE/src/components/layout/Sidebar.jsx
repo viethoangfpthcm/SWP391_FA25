@@ -135,7 +135,12 @@ const Sidebar = ({ userName, userRole }) => {
             >
               <FaChartLine /> <span>Phân tích thống kê</span>
             </Link>
-
+<Link
+              to="/admin/update"
+              className={`menu-item ${isActive("/admin/update") ? "active" : ""}`}
+            >
+              <FaChartLine /> <span>Nâng Cấp Hệ Thống</span>
+            </Link>
 
           </>
         )}

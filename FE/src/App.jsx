@@ -25,6 +25,7 @@ import AdminBookingManagement from "@features/admin/AdminBookingManagement.jsx";
 import AdminPaymentManagement from "@features/admin/AdminPaymentManagement.jsx";
 import AdminChecklistDetail from "@features/admin/AdminChecklistDetail.jsx";
 import AdminAnalytics from "@features/admin/AdminAnalytics.jsx";
+import AdminUpdate from "@features/admin/AdminScheduleManagement.jsx";
 
 // Manager
 import ManagerDashboard from "@features/manager/ManagerDashboard.jsx";
@@ -41,6 +42,7 @@ import Report1 from "@features/report/report1.jsx";
 
 // Payment
 import PaymentResult from "@features/payment/PaymentResult.jsx";
+import AdminScheduleManagement from "./features/admin/AdminScheduleManagement";
 
 function App() {
   return (
@@ -170,7 +172,14 @@ function App() {
           </ProtectedRoute>
         }
       />
-
+ <Route
+        path="/admin/update"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminScheduleManagement />
+          </ProtectedRoute>
+        }
+      />
       {/* Manager */}
       <Route
         path="/manager"
