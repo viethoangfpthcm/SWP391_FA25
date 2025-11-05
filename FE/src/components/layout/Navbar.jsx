@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "/public/bo may lay.png";
+import logo from "/bo may lay.png";
 import "./Navbar.css";
 import Button from "@components/ui/Button.jsx";
 
