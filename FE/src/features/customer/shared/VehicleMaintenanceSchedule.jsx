@@ -7,6 +7,7 @@ import './VehicleMaintenanceSchedule.css';
 import { FaCalendarAlt, FaTools, FaCheckCircle, FaExclamationTriangle, FaCalendarPlus, FaTimes, FaLock, FaSpinner } from 'react-icons/fa';
 import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
+import { API_BASE_URL } from "@config/api.js";
 
 
 const BOOKING_STATUS_MAP = {
@@ -64,7 +65,7 @@ function VehicleMaintenanceSchedule() {
   const [serviceCenters, setServiceCenters] = useState([]);
 
 
-  const API_BASE = "";
+  const API_BASE = API_BASE_URL;
 
   // useEffect (Không đổi)
   useEffect(() => {

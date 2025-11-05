@@ -11,6 +11,7 @@ import {
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
+import { API_BASE_URL } from "@config/api.js";
 import "./AdminAnalytics.css";
 
 import RevenueChart from "./graphs/RevenueChart.jsx";
@@ -36,7 +37,7 @@ export default function AdminAnalytics() {
     const [feedbackData, setFeedbackData] = useState(null);
 
     const navigate = useNavigate();
-    const API_BASE = "";
+    const API_BASE = API_BASE_URL;
     const token = localStorage.getItem("token");
     
     // Use minimum delay hook for better UX

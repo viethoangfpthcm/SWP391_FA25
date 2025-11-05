@@ -14,6 +14,7 @@ import "./AdminScheduleManagement.css";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 import Loading from '@components/ui/Loading.jsx';
+import { API_BASE_URL } from "@config/api.js";
 
 export default function AdminScheduleManagement() {
     const [schedules, setSchedules] = useState([]);
@@ -27,7 +28,7 @@ export default function AdminScheduleManagement() {
     const [filterVehicle, setFilterVehicle] = useState("all");
 
     const navigate = useNavigate();
-    const API_BASE = "";
+    const API_BASE = API_BASE_URL;
 
     const getToken = () => localStorage.getItem("token");
 

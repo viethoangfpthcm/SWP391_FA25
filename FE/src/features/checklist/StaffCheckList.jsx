@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { useParams, useNavigate } from "react-router-dom";
-import "./CheckList.css";import Button from '@components/ui/Button.jsx';
+import "./CheckList.css";
+import Button from '@components/ui/Button.jsx';
+import { API_BASE_URL } from "@config/api.js";
 
 
 export default function StaffCheckList() {
@@ -10,7 +12,7 @@ export default function StaffCheckList() {
   const [checklist, setChecklist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const API_BASE = "";
+  const API_BASE = API_BASE_URL;
   const token = localStorage.getItem("token");
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 

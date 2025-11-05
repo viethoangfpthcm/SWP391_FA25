@@ -20,6 +20,7 @@ import Loading from '@components/ui/Loading.jsx';
 import FiltersBar from './shared/FiltersBar.jsx';
 import UserTable from './shared/UserTable.jsx';
 import UserForm from './shared/UserForm.jsx';
+import { API_BASE_URL } from "@config/api.js";
 
 
 // --- Helper Functions for Validation ---
@@ -68,7 +69,7 @@ export default function AdminDashboard() {
   const [userToDeleteId, setUserToDeleteId] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false); // Loading state specifically for delete action
   const [isToggling, setIsToggling] = useState(false);
-  const API_BASE = "";
+  const API_BASE = API_BASE_URL;
   const token = localStorage.getItem("token");
 
   // Fetch current admin user info
@@ -80,7 +81,18 @@ export default function AdminDashboard() {
       if (res.status === 401) {
         localStorage.clear(); navigate("/"); return;
       }
-      if (!res.ok) throw new Error("Không thể tải thông tin người dùng");
+      if (!res.ok) {
+        console.error("Failed to fetch user info:", res.status);
+        return;
+      }
+      
+      // Check if response is JSON
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("User info response is not JSON:", contentType);
+        return;
+      }
+      
       const data = await res.json();
       localStorage.setItem("fullName", data.fullName || "Admin");
       localStorage.setItem("role", data.role || "ADMIN");
@@ -102,7 +114,23 @@ export default function AdminDashboard() {
       if (res.status === 401) {
         localStorage.clear(); navigate("/"); return;
       }
-      if (!res.ok) throw new Error(`Lỗi tải danh sách người dùng (${res.status})`);
+      if (!res.ok) {
+        setError(`Lỗi tải danh sách người dùng (${res.status})`);
+        setLoading(false);
+        return;
+      }
+      
+      // Check if response is JSON
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        console.error("Users response is not JSON:", contentType);
+        const text = await res.text();
+        console.error("Response body:", text.substring(0, 200));
+        setError("API trả về dữ liệu không hợp lệ. Vui lòng kiểm tra backend.");
+        setLoading(false);
+        return;
+      }
+      
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
     } catch (err) {

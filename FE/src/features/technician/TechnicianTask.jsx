@@ -10,6 +10,7 @@ import SummaryCards from "./SummaryCards.jsx";
 import FilterButtons from "./FilterButtons.jsx";
 import TaskTable from "./TaskTable.jsx";
 import KmModal from "./KmModal.jsx";
+import { API_BASE_URL } from "@config/api.js";
 
 const BOOKING_STATUS_MAP = {
   ASSIGNED: { text: "Chờ xử lý", className: "pending" },
@@ -35,7 +36,7 @@ export default function TechnicianTask() {
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const API_BASE = "";
+  const API_BASE = API_BASE_URL;
 
   // Fetch thông tin user
   const fetchUserInfo = async () => {

@@ -9,8 +9,10 @@ import {
   FaChevronRight, FaChevronDown, FaChevronUp
 } from "react-icons/fa6";
 import { FaSpinner, FaTools, FaCalendarAlt } from "react-icons/fa";
-import "./report1.css";import Button from '@components/ui/Button.jsx';
+import "./report1.css";
+import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
+import { API_BASE_URL } from "@config/api.js";
 
 
 // Hàm format nằm ngoài component
@@ -44,7 +46,7 @@ export default function Report1() {
 
   const token = localStorage.getItem("token");
   const customerId = localStorage.getItem("userId");
-  const API_BASE = "";
+  const API_BASE = API_BASE_URL;
 
   // === Hàm xử lý ===
   const showToast = (message, type = "success") => {

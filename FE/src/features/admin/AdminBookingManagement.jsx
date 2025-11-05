@@ -10,8 +10,10 @@ import {
 } from "react-icons/fa";
 import "./AdminBookingManagement.css";
 import Sidebar from "@components/layout/Sidebar.jsx";
-import { useNavigate } from "react-router-dom";import Button from '@components/ui/Button.jsx';
+import { useNavigate } from "react-router-dom";
+import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
+import { API_BASE_URL } from "@config/api.js";
 
 const BOOKING_STATUS_MAP = {
     PENDING: { text: 'Chờ xử lý', className: 'role-pending' },
@@ -46,7 +48,7 @@ export default function AdminBookingManagement() {
     const [feedbackLoading, setFeedbackLoading] = useState(false);
     const [feedbackError, setFeedbackError] = useState(null);
 
-    const API_BASE = "";
+    const API_BASE = API_BASE_URL;
     const token = localStorage.getItem("token");
 
     // Fetch current user info (Giữ nguyên)

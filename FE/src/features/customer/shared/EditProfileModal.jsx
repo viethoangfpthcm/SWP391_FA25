@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
+import { API_BASE_URL } from "@config/api.js";
 
 function EditProfileModal({ profile, onClose, onSuccess }) {
   const [formData, setFormData] = useState(profile || {});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const API_BASE = "";
+  const API_BASE = API_BASE_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

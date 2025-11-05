@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FaSpinner, FaCreditCard } from 'react-icons/fa';
-import Button from "@components/ui/Button.jsx";import Loading from '@components/ui/Loading.jsx';
+import { FaCreditCard } from 'react-icons/fa';
+import Button from "@components/ui/Button.jsx";
+import Loading from '@components/ui/Loading.jsx';
+import { API_BASE_URL } from "@config/api.js";
 
 
 /**
@@ -13,7 +15,7 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const location = useLocation();
-  const API_BASE = '';
+  const API_BASE = API_BASE_URL;
 
   // ✅ Xử lý redirect về từ VNPay
   useEffect(() => {

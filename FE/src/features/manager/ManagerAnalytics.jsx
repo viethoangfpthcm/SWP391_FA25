@@ -16,6 +16,7 @@ import RevenueChart from "../admin/graphs/RevenueChart.jsx";
 import BookingStatsChart from "../admin/graphs/BookingStatsChart.jsx";
 import PartsUsageChart from "../admin/graphs/PartsUsageChart.jsx";
 import FeedbackGaugeChart from "../admin/graphs/FeedbackGaugeChart.jsx";
+import { API_BASE_URL } from "@config/api.js";
 
 export default function ManagerAnalytics() {
     const [userInfo, setUserInfo] = useState(null);
@@ -31,7 +32,7 @@ export default function ManagerAnalytics() {
     const [feedbackData, setFeedbackData] = useState(null);
 
     const navigate = useNavigate();
-    const API_BASE = "";
+    const API_BASE = API_BASE_URL;
     const token = localStorage.getItem("token");
 
     // --- Fetch User Info ---

@@ -3,7 +3,9 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { FaCircleCheck, FaCircleXmark } from 'react-icons/fa6';
 import Navbar from "@components/layout/Navbar.jsx";
 import Footer from "@components/layout/Footer.jsx";
-import './PaymentResult.css';import Button from '@components/ui/Button.jsx';
+import { API_BASE_URL } from "@config/api.js";
+import './PaymentResult.css';
+import Button from '@components/ui/Button.jsx';
 
 
 export default function PaymentResult() {
@@ -15,7 +17,7 @@ export default function PaymentResult() {
   const isSuccess = responseCode === '00';
   const token = localStorage.getItem('token');
   const customerId = localStorage.getItem('userId');
-  const API_BASE = '';
+  const API_BASE = API_BASE_URL;
 
   // Cập nhật danh sách reports khi thanh toán thành công
   useEffect(() => {

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     FaCreditCard,
     FaSpinner,
@@ -7,7 +7,9 @@ import {
 } from "react-icons/fa";
 import "./AdminPaymentManagement.css";
 import Sidebar from "@components/layout/Sidebar.jsx";
-import { useNavigate } from "react-router-dom";import Loading from '@components/ui/Loading.jsx';
+import { useNavigate } from "react-router-dom";
+import Loading from '@components/ui/Loading.jsx';
+import { API_BASE_URL } from "@config/api.js";
 
 
 if (import.meta.env.MODE !== "development") {
@@ -23,10 +25,10 @@ export default function AdminPaymentManagement() {
     const [selectedCenter, setSelectedCenter] = useState("all");
 
     const navigate = useNavigate();
-    const API_BASE = "";
+    const API_BASE = API_BASE_URL;
     const token = localStorage.getItem("token");
 
-    // --- Lấy thông tin user ---
+    // --- L?y th�ng tin user ---
     const fetchUserInfo = async () => {
         try {
             const res = await fetch(`${API_BASE}/api/users/account/current`, {
@@ -37,24 +39,24 @@ export default function AdminPaymentManagement() {
                 navigate("/");
                 return;
             }
-            if (!res.ok) throw new Error("Không thể tải thông tin người dùng");
+            if (!res.ok) throw new Error("Kh�ng th? t?i th�ng tin ngu?i d�ng");
             const data = await res.json();
             localStorage.setItem("fullName", data.fullName || "Admin");
             localStorage.setItem("role", data.role || "Admin");
             setUserInfo({ fullName: data.fullName, role: data.role });
         } catch (err) {
             console.error(err);
-            setError("Không thể tải thông tin người dùng.");
+            setError("Kh�ng th? t?i th�ng tin ngu?i d�ng.");
         }
     };
 
-    // --- Lấy danh sách trung tâm ---
+    // --- L?y danh s�ch trung t�m ---
     const fetchCenters = async () => {
         try {
             const res = await fetch(`${API_BASE}/api/admin/service-centers`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            if (!res.ok) throw new Error("Không thể tải danh sách trung tâm");
+            if (!res.ok) throw new Error("Kh�ng th? t?i danh s�ch trung t�m");
             const data = await res.json();
             setCenters(data);
         } catch (e) {
@@ -62,7 +64,7 @@ export default function AdminPaymentManagement() {
         }
     };
 
-    // --- Lấy danh sách thanh toán ---
+    // --- L?y danh s�ch thanh to�n ---
     const fetchPayments = async () => {
         try {
             setLoading(true);
@@ -78,8 +80,8 @@ export default function AdminPaymentManagement() {
             });
 
             if (res.status === 403) {
-                console.warn("⚠️ Không có quyền truy cập API thanh toán này.");
-                setError("Bạn không có quyền truy cập dữ liệu này.");
+                console.warn("?? Kh�ng c� quy?n truy c?p API thanh to�n n�y.");
+                setError("B?n kh�ng c� quy?n truy c?p d? li?u n�y.");
                 return;
             }
 
@@ -87,7 +89,7 @@ export default function AdminPaymentManagement() {
             setPayments(data);
         } catch (err) {
             console.error(err);
-            setError("Không thể tải danh sách thanh toán.");
+            setError("Kh�ng th? t?i danh s�ch thanh to�n.");
         } finally {
             setLoading(false);
         }
@@ -109,11 +111,11 @@ export default function AdminPaymentManagement() {
 
     // --- Helper format ---
 const formatCurrency= (amount) => {
-  if (!amount) return "0 VNĐ";
-  if (amount >= 1_000_000_000) return (amount / 1_000_000_000).toFixed(1) + " Tỷ";
-  if (amount >= 1_000_000) return (amount / 1_000_000).toFixed(1) + " Triệu";
+  if (!amount) return "0 VN�";
+  if (amount >= 1_000_000_000) return (amount / 1_000_000_000).toFixed(1) + " T?";
+  if (amount >= 1_000_000) return (amount / 1_000_000).toFixed(1) + " Tri?u";
   if (amount >= 1_000) return (amount / 1_000).toFixed(0) + "K";
-  return amount + " VNĐ";
+  return amount + " VN�";
 };
 
     const formatDate = (dateString) =>
@@ -144,7 +146,7 @@ const formatCurrency= (amount) => {
                 <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
                 <main className="main-content loading-state">
                     <Loading inline />
-                    <p>Đang tải dữ liệu thanh toán...</p>
+                    <p>�ang t?i d? li?u thanh to�n...</p>
                 </main>
             </div>
         );
@@ -156,9 +158,9 @@ const formatCurrency= (amount) => {
             <main className="main-content">
                 <header className="page-header">
                     <h1>
-                        <FaCreditCard /> Quản lý Thanh toán
+                        <FaCreditCard /> Qu?n l� Thanh to�n
                     </h1>
-                    <p>Xem và theo dõi tất cả thanh toán trong hệ thống.</p>
+                    <p>Xem v� theo d�i t?t c? thanh to�n trong h? th?ng.</p>
                 </header>
 
                 {error && (
@@ -170,14 +172,14 @@ const formatCurrency= (amount) => {
                 <div className="actions-bar">
                     <div className="filter-group">
                         <label htmlFor="statusFilter">
-                            <FaFilter /> Lọc trạng thái:
+                            <FaFilter /> L?c tr?ng th�i:
                         </label>
                         <select
                             id="statusFilter"
                             value={filterStatus}
                             onChange={(e) => setFilterStatus(e.target.value)}
                         >
-                            <option value="all">Tất cả</option>
+                            <option value="all">T?t c?</option>
                             <option value="PENDING">Pending</option>
                             <option value="PAID">Paid</option>
                             <option value="FAILED">Failed</option>
@@ -186,14 +188,14 @@ const formatCurrency= (amount) => {
 
                     <div className="filter-group">
                         <label htmlFor="centerFilter">
-                            <FaFilter /> Trung tâm:
+                            <FaFilter /> Trung t�m:
                         </label>
                         <select
                             id="centerFilter"
-                            value={selectedCenter} // liên kết với state
-                            onChange={(e) => setSelectedCenter(e.target.value)} // cập nhật state
+                            value={selectedCenter} // li�n k?t v?i state
+                            onChange={(e) => setSelectedCenter(e.target.value)} // c?p nh?t state
                         >
-                            <option key="all" value="all">Tất cả trung tâm</option>
+                            <option key="all" value="all">T?t c? trung t�m</option>
                             {centers.map((center) => (
                                 <option key={center.id} value={center.id}>
                                     {center.name}
@@ -210,20 +212,20 @@ const formatCurrency= (amount) => {
                                 <tr>
                                     <th>Payment ID</th>
                                     <th>Booking ID</th>
-                                    <th>Trung tâm</th>
-                                    <th>Ngày thanh toán</th>
-                                    <th>Phương thức</th>
-                                    <th>Chi phí (Lao động)</th>
-                                    <th>Chi phí (Vật tư)</th>
-                                    <th>Tổng cộng</th>
-                                    <th>Trạng thái</th>
+                                    <th>Trung t�m</th>
+                                    <th>Ng�y thanh to�n</th>
+                                    <th>Phuong th?c</th>
+                                    <th>Chi ph� (Lao d?ng)</th>
+                                    <th>Chi ph� (V?t tu)</th>
+                                    <th>T?ng c?ng</th>
+                                    <th>Tr?ng th�i</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
                                     <tr>
                                         <td colSpan="9" className="empty-state">
-                                            <Loading inline /> Đang tải...
+                                            <Loading inline /> �ang t?i...
                                         </td>
                                     </tr>
                                 ) : filteredPayments.length > 0 ? (
@@ -255,7 +257,7 @@ const formatCurrency= (amount) => {
                                 ) : (
                                     <tr>
                                         <td colSpan="9" className="empty-state">
-                                            Không có dữ liệu thanh toán.
+                                            Kh�ng c� d? li?u thanh to�n.
                                         </td>
                                     </tr>
                                 )}

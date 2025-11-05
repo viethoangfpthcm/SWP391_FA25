@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
+import { API_BASE_URL } from "@config/api.js";
 
 export default function AddVehicleModal({ onClose, onSuccess }) {
   const [vehicleData, setVehicleData] = useState({
@@ -14,7 +15,7 @@ export default function AddVehicleModal({ onClose, onSuccess }) {
   const [loadingModels, setLoadingModels] = useState(true);
   const [error, setError] = useState("");
 
-  const API_BASE = "";
+  const API_BASE = API_BASE_URL;
 
   // Fetch vehicle models from API
   useEffect(() => {

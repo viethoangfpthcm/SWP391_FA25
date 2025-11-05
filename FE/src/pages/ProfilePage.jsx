@@ -1,8 +1,10 @@
 import Sidebar from "@components/layout/Sidebar.jsx";
 import React, { useState, useEffect } from "react";
 import { FaSpinner, FaSave, FaCheckCircle, FaTimes } from "react-icons/fa";
+import { API_BASE_URL } from "@config/api.js";
 import "./ProfilePage.css";
-import Button from "@components/ui/Button.jsx";import Loading from '@components/ui/Loading.jsx';
+import Button from "@components/ui/Button.jsx";
+import Loading from '@components/ui/Loading.jsx';
 
 
 export default function ProfilePage({ user }) {
@@ -26,7 +28,7 @@ export default function ProfilePage({ user }) {
             setToast({ show: false, message: "", type: "" });
         }, 4000);
     };
-    const API_BASE = "";
+    const API_BASE = API_BASE_URL;
 
     // 1. Lấy thông tin profile khi tải trang
     useEffect(() => {

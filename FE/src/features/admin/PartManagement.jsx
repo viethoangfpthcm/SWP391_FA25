@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaWrench,
   FaPlus,
@@ -9,11 +9,13 @@ import {
   FaArrowLeft,
   FaTrash,
 } from "react-icons/fa";
-import "./PartManagement.css"; // ✅ ĐÃ CHỈNH: dùng file CSS riêng cho Part Management
+import "./PartManagement.css"; // ? �� CH?NH: d�ng file CSS ri�ng cho Part Management
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { useNavigate, useParams } from "react-router-dom";
-import ConfirmationModal from "@components/ui/ConfirmationModal.jsx";import Button from '@components/ui/Button.jsx';
+import ConfirmationModal from "@components/ui/ConfirmationModal.jsx";
+import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
+import { API_BASE_URL } from "@config/api.js";
 
 
 
@@ -60,7 +62,7 @@ export default function PartManagement() {
 
   const { centerId } = useParams(); // Get centerId from URL
   const navigate = useNavigate();
-  const API_BASE = "";
+  const API_BASE = API_BASE_URL;
   const token = localStorage.getItem("token");
 
   // Fetch center info, parts for this center, and all part types
@@ -73,28 +75,28 @@ export default function PartManagement() {
       // Fetch Center Info
       const centerRes = await fetch(`${API_BASE}/api/admin/service-centers/${centerId}`, { headers: { Authorization: `Bearer ${token}` } });
       if (centerRes.status === 401) throw new Error("Unauthorized");
-      if (!centerRes.ok) throw new Error(`Lỗi tải thông tin trung tâm`);
+      if (!centerRes.ok) throw new Error(`L?i t?i th�ng tin trung t�m`);
       const centerData = await centerRes.json();
       setCenterInfo(centerData);
 
       // Fetch Parts for this Center
       const partsRes = await fetch(`${API_BASE}/api/admin/service-centers/${centerId}/parts`, { headers: { Authorization: `Bearer ${token}` } });
       if (partsRes.status === 401) throw new Error("Unauthorized");
-      if (!partsRes.ok) throw new Error(`Lỗi tải danh sách phụ tùng`);
+      if (!partsRes.ok) throw new Error(`L?i t?i danh s�ch ph? t�ng`);
       const partsData = await partsRes.json();
       setParts(Array.isArray(partsData) ? partsData : []);
 
       // Fetch All Part Types (for dropdown)
       const partTypeRes = await fetch(`${API_BASE}/api/admin/part-types`, { headers: { Authorization: `Bearer ${token}` } });
       if (partTypeRes.status === 401) throw new Error("Unauthorized");
-      if (!partTypeRes.ok) throw new Error(`Lỗi tải danh sách loại phụ tùng`);
+      if (!partTypeRes.ok) throw new Error(`L?i t?i danh s�ch lo?i ph? t�ng`);
       const partTypeData = await partTypeRes.json();
       setPartTypes(Array.isArray(partTypeData) ? partTypeData : []);
 
     } catch (err) {
       console.error("Fetch Data Error:", err);
       if (err.message === "Unauthorized") { localStorage.clear(); navigate("/"); }
-      else { setError("Không thể tải dữ liệu. Vui lòng thử lại."); }
+      else { setError("Kh�ng th? t?i d? li?u. Vui l�ng th? l?i."); }
     } finally {
       setLoading(false);
     }
@@ -118,18 +120,18 @@ export default function PartManagement() {
       });
       if (res.status === 401) { localStorage.clear(); navigate("/"); return; }
       if (!res.ok) {
-        let errorMsg = "Không thể xóa phụ tùng.";
-         try { const errorData = await res.json(); errorMsg = errorData.message || `Lỗi ${res.status}`; } catch(e){}
+        let errorMsg = "Kh�ng th? x�a ph? t�ng.";
+         try { const errorData = await res.json(); errorMsg = errorData.message || `L?i ${res.status}`; } catch(e){}
          throw new Error(errorMsg);
       }
       // Success
       setShowConfirmModal(false);
       setPartToDeleteId(null);
       await fetchData(); // Refresh list
-      // Optional: Success toast: toast.success('Xóa phụ tùng thành công!');
+      // Optional: Success toast: toast.success('X�a ph? t�ng th�nh c�ng!');
     } catch (err) {
       console.error("Delete Part Error:", err);
-      setError(err.message || "Xóa phụ tùng thất bại.");
+      setError(err.message || "X�a ph? t�ng th?t b?i.");
       // Keep modal open on error?
       // setShowConfirmModal(false);
     } finally {
@@ -185,23 +187,23 @@ export default function PartManagement() {
   const validateForm = () => {
     const errors = {};
     if (!isValidPartName(formData.name)) {
-        errors.name = "Tên phụ tùng không hợp lệ (ít nhất 2 ký tự).";
+        errors.name = "T�n ph? t�ng kh�ng h?p l? (�t nh?t 2 k� t?).";
     }
     if (!formData.partTypeId) {
-        errors.partTypeId = "Vui lòng chọn loại phụ tùng.";
+        errors.partTypeId = "Vui l�ng ch?n lo?i ph? t�ng.";
     }
     // Check if numbers are valid and non-negative
     if (!isPositiveNumberOrZero(formData.quantity)) {
-        errors.quantity = "Số lượng không hợp lệ (phải là số >= 0).";
+        errors.quantity = "S? lu?ng kh�ng h?p l? (ph?i l� s? >= 0).";
     }
     if (!isPositiveNumberOrZero(formData.unitPrice)) {
-        errors.unitPrice = "Đơn giá không hợp lệ (phải là số >= 0).";
+        errors.unitPrice = "�on gi� kh�ng h?p l? (ph?i l� s? >= 0).";
     }
      if (!isPositiveNumberOrZero(formData.laborCost)) {
-        errors.laborCost = "Phí nhân công không hợp lệ (phải là số >= 0).";
+        errors.laborCost = "Ph� nh�n c�ng kh�ng h?p l? (ph?i l� s? >= 0).";
     }
      if (!isPositiveNumberOrZero(formData.materialCost)) {
-        errors.materialCost = "Phí vật tư không hợp lệ (phải là số >= 0).";
+        errors.materialCost = "Ph� v?t tu kh�ng h?p l? (ph?i l� s? >= 0).";
     }
 
     setFormErrors(errors);
@@ -244,17 +246,17 @@ export default function PartManagement() {
       if (res.status === 401) throw new Error("Unauthorized");
 
       if (!res.ok) {
-        let errorMsg = "Đã có lỗi xảy ra.";
+        let errorMsg = "�� c� l?i x?y ra.";
         let fieldErrors = {};
          try {
           const errorData = await res.json();
-          errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
+          errorMsg = errorData.message || errorData.error || `L?i ${res.status}`;
            if (errorData.fieldErrors && typeof errorData.fieldErrors === 'object') {
              fieldErrors = errorData.fieldErrors;
              setFormErrors(prev => ({ ...prev, ...fieldErrors }));
-             errorMsg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
+             errorMsg = "D? li?u kh�ng h?p l?. Vui l�ng ki?m tra l?i.";
           }
-        } catch (parseError) { errorMsg = `Lỗi ${res.status}. Không thể đọc chi tiết.`; }
+        } catch (parseError) { errorMsg = `L?i ${res.status}. Kh�ng th? d?c chi ti?t.`; }
         throw new Error(errorMsg);
       }
 
@@ -262,26 +264,26 @@ export default function PartManagement() {
       await fetchData(); // Refresh data
       setShowForm(false);
       setEditingPart(null);
-      // Optional: Success toast: toast.success('Lưu phụ tùng thành công!');
+      // Optional: Success toast: toast.success('Luu ph? t�ng th�nh c�ng!');
 
     } catch (err) {
       console.error("Submit Part Error:", err);
        if (err.message === "Unauthorized") { localStorage.clear(); navigate("/"); }
-       else { setError(err.message || "Không thể lưu thông tin phụ tùng."); }
+       else { setError(err.message || "Kh�ng th? luu th�ng tin ph? t�ng."); }
     } finally {
       setActionLoading(false);
     }
   };
 
   // Loading state
- if (loading) { // Chỉ cần kiểm tra biến loading
+ if (loading) { // Ch? c?n ki?m tra bi?n loading
     return (
       <div className="dashboard-container">
-        {/* Giữ nguyên Sidebar và nội dung loading */}
+        {/* Gi? nguy�n Sidebar v� n?i dung loading */}
         <Sidebar userName={userInfo.fullName} userRole={userInfo.role} />
         <main className="main-content loading-state">
           <Loading inline />
-          <p>Đang tải dữ liệu...</p> {/* Có thể đổi text nếu muốn */}
+          <p>�ang t?i d? li?u...</p> {/* C� th? d?i text n?u mu?n */}
         </main>
       </div>
     );
@@ -293,17 +295,17 @@ export default function PartManagement() {
       <Sidebar userName={userInfo.fullName} userRole={userInfo.role} />
       <main className="main-content">
         <header className="page-header">
-          <h1><FaWrench /> Quản lý Phụ tùng</h1>
-          <p>Danh sách phụ tùng tại: <strong>{centerInfo?.name || `Trung tâm ID #${centerId}`}</strong></p>
+          <h1><FaWrench /> Qu?n l� Ph? t�ng</h1>
+          <p>Danh s�ch ph? t�ng t?i: <strong>{centerInfo?.name || `Trung t�m ID #${centerId}`}</strong></p>
         </header>
 
         {/* Action Bar: Back and Add buttons */}
         <div className="actions-bar">
           <Button className="btn-back" onClick={() => navigate("/admin/service-centers")} disabled={actionLoading || isDeleting}>
-            <FaArrowLeft /> Quay lại QL Trung tâm
+            <FaArrowLeft /> Quay l?i QL Trung t�m
           </Button>
           <Button className="btn-add" onClick={() => openForm()} disabled={actionLoading || isDeleting}>
-            <FaPlus /> Thêm phụ tùng
+            <FaPlus /> Th�m ph? t�ng
           </Button>
         </div>
 
@@ -316,17 +318,17 @@ export default function PartManagement() {
 
         {/* Parts List Table */}
         <div className="table-card">
-          {(loading && parts.length > 0) && <div className="table-loading-overlay"><Loading inline /> Đang tải lại...</div>}
+          {(loading && parts.length > 0) && <div className="table-loading-overlay"><Loading inline /> �ang t?i l?i...</div>}
           <div className="table-wrapper">
             <table className="data-table parts-table">
               <thead>
                 <tr>
-                  <th>ID</th><th>Tên Phụ tùng</th><th>Loại</th>
-                  <th className="numeric-cell">Số lượng</th>
-                  <th className="numeric-cell">Đơn giá</th>
-                  <th className="numeric-cell">Phí Nhân Công</th>
-                  <th className="numeric-cell">Phí Vật Tư</th>
-                  <th>Thao tác</th>
+                  <th>ID</th><th>T�n Ph? t�ng</th><th>Lo?i</th>
+                  <th className="numeric-cell">S? lu?ng</th>
+                  <th className="numeric-cell">�on gi�</th>
+                  <th className="numeric-cell">Ph� Nh�n C�ng</th>
+                  <th className="numeric-cell">Ph� V?t Tu</th>
+                  <th>Thao t�c</th>
                 </tr>
               </thead>
               <tbody>
@@ -343,16 +345,16 @@ export default function PartManagement() {
                       <td className="numeric-cell">{part.materialCost != null ? part.materialCost.toLocaleString('vi-VN') : 'N/A'}</td>
                       <td className="action-buttons-cell">
                         <Button className="btn-action btn-edit" onClick={() => openForm(part)} disabled={actionLoading || isDeleting}>
-                          <FaEdit /> Sửa
+                          <FaEdit /> S?a
                         </Button>
                          <Button className="btn-action btn-delete" onClick={() => handleDeleteClick(part.id)} disabled={actionLoading || isDeleting}>
-                          <FaTrash /> Xóa
+                          <FaTrash /> X�a
                         </Button>
                       </td>
                     </tr>
                   ))
                 ) : (
-                  <tr><td colSpan="8" className="empty-state-row">{loading ? "Đang tải..." : "Trung tâm này chưa có phụ tùng nào."}</td></tr>
+                  <tr><td colSpan="8" className="empty-state-row">{loading ? "�ang t?i..." : "Trung t�m n�y chua c� ph? t�ng n�o."}</td></tr>
                 )}
               </tbody>
             </table>
@@ -363,7 +365,7 @@ export default function PartManagement() {
         {showForm && (
           <div className="modal-overlay" onClick={() => !actionLoading && setShowForm(false)}>
             <div className="modal part-edit-modal" onClick={(e) => e.stopPropagation()}>
-              <h2>{editingPart ? "Chỉnh sửa phụ tùng" : "Thêm phụ tùng mới"}</h2>
+              <h2>{editingPart ? "Ch?nh s?a ph? t�ng" : "Th�m ph? t�ng m?i"}</h2>
 
               {/* Display Submit Errors INSIDE Modal */}
               {error && (
@@ -375,7 +377,7 @@ export default function PartManagement() {
               <form onSubmit={handleSubmit} className="user-form part-form" noValidate>
                  {/* Name */}
                  <div className="form-group">
-                   <label htmlFor="name">Tên Phụ tùng:</label>
+                   <label htmlFor="name">T�n Ph? t�ng:</label>
                    <input
                      type="text" id="name" name="name"
                      value={formData.name} onChange={handleChange}
@@ -387,7 +389,7 @@ export default function PartManagement() {
 
                 {/* Part Type */}
                 <div className="form-group">
-                   <label htmlFor="partTypeId">Loại Phụ tùng:</label>
+                   <label htmlFor="partTypeId">Lo?i Ph? t�ng:</label>
                    <select
                      id="partTypeId" name="partTypeId"
                      value={formData.partTypeId} onChange={handleChange}
@@ -395,7 +397,7 @@ export default function PartManagement() {
                      aria-describedby="partTypeIdError" aria-invalid={!!formErrors.partTypeId}
                      disabled={!!editingPart}
                    >
-                     <option value="">-- Chọn loại --</option>
+                     <option value="">-- Ch?n lo?i --</option>
                      {partTypes.map((type) => (
                        <option key={type.id} value={type.id}>{type.name}</option>
                      ))}
@@ -405,7 +407,7 @@ export default function PartManagement() {
 
                  {/* Quantity */}
                  <div className="form-group">
-                   <label htmlFor="quantity">Số lượng:</label>
+                   <label htmlFor="quantity">S? lu?ng:</label>
                    <input
                      type="number" id="quantity" name="quantity"
                      value={formData.quantity} onChange={handleChange}
@@ -418,7 +420,7 @@ export default function PartManagement() {
 
                  {/* Unit Price */}
                  <div className="form-group">
-                   <label htmlFor="unitPrice">Đơn giá (VND):</label>
+                   <label htmlFor="unitPrice">�on gi� (VND):</label>
                    <input
                      type="number" id="unitPrice" name="unitPrice"
                      value={formData.unitPrice} onChange={handleChange}
@@ -431,7 +433,7 @@ export default function PartManagement() {
 
                  {/* Labor Cost */}
                  <div className="form-group">
-                   <label htmlFor="laborCost">Phí nhân công (VND):</label>
+                   <label htmlFor="laborCost">Ph� nh�n c�ng (VND):</label>
                    <input
                      type="number" id="laborCost" name="laborCost"
                      value={formData.laborCost} onChange={handleChange}
@@ -444,8 +446,8 @@ export default function PartManagement() {
 
                  {/* Material Cost */}
                  <div className="form-group">
-                   <label htmlFor="materialCost">Phí vật tư (VND):</label>
-                   {/* <small className="field-hint">Phí này là chi phí chung...</small> */} {/* Optional hint */}
+                   <label htmlFor="materialCost">Ph� v?t tu (VND):</label>
+                   {/* <small className="field-hint">Ph� n�y l� chi ph� chung...</small> */} {/* Optional hint */}
                    <input
                      type="number" id="materialCost" name="materialCost"
                      value={formData.materialCost} onChange={handleChange}
@@ -460,10 +462,10 @@ export default function PartManagement() {
                 <div className="form-actions">
                   <Button type="submit" className="btn-save" disabled={actionLoading}>
                     {actionLoading ? <Loading inline /> : <FaSave />}{" "}
-                    {actionLoading ? "Đang lưu..." : "Lưu"}
+                    {actionLoading ? "�ang luu..." : "Luu"}
                   </Button>
                   <Button type="button" className="btn-cancel" onClick={() => setShowForm(false)} disabled={actionLoading}>
-                    Hủy
+                    H?y
                   </Button>
                 </div>
               </form>
@@ -474,7 +476,7 @@ export default function PartManagement() {
         {/* --- Confirmation Modal for Deletion --- */}
         <ConfirmationModal
           show={showConfirmModal}
-          message={`Bạn chắc chắn muốn xóa Phụ tùng ID: ${partToDeleteId}?`}
+          message={`B?n ch?c ch?n mu?n x�a Ph? t�ng ID: ${partToDeleteId}?`}
           onConfirm={confirmDelete}
           onCancel={cancelDelete}
           isLoading={isDeleting}

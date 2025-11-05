@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaExclamationTriangle, FaCalendarAlt } from "react-icons/fa";
 import "./StaffDashboard.css";
 import Sidebar from "@components/layout/Sidebar.jsx";
@@ -9,6 +9,7 @@ import BookingFilters from "./shared/BookingFilters";
 import BookingTable from "./shared/BookingTable";
 import ViewFeedbackModal from "./shared/ViewFeedbackModal";
 import ViewPaymentModal from "./shared/ViewPaymentModal";
+import { API_BASE_URL } from "@config/api.js";
 
 export default function StaffDashboard({ user, userRole }) {
   const [appointments, setAppointments] = useState([]);
@@ -26,12 +27,12 @@ export default function StaffDashboard({ user, userRole }) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState(null);
 
-  const API_BASE = "";
+  const API_BASE = API_BASE_URL;
   const token = localStorage.getItem("token");
 
   const fetchUserInfo = async () => {
     const token = localStorage.getItem("token");
-    // Kiểm tra token và tránh lỗi
+    // Ki?m tra token v� tr�nh l?i
     if (!token) {
       setLoading(false);
       navigate("/");
@@ -49,24 +50,24 @@ export default function StaffDashboard({ user, userRole }) {
       if (!response.ok) {
         console.error("Failed to fetch user info:", response.status);
         if (response.status === 401) {
-          // Xử lý lỗi 401: Đăng xuất
+          // X? l� l?i 401: �ang xu?t
           localStorage.removeItem("token");
           localStorage.removeItem("fullName");
           localStorage.removeItem("role");
           navigate("/");
         }
-        throw new Error("Không thể tải thông tin người dùng.");
+        throw new Error("Kh�ng th? t?i th�ng tin ngu?i d�ng.");
       }
 
       const data = await response.json();
       const fetchedFullName = data.fullName || data.name || "N/A";
       const fetchedRole = data.role || "N/A";
 
-      // LƯU VÀO LOCAL STORAGE
+      // LUU V�O LOCAL STORAGE
       localStorage.setItem('fullName', fetchedFullName);
       localStorage.setItem('role', fetchedRole);
 
-      // CẬP NHẬT STATE
+      // C?P NH?T STATE
       setUserInfo({
         fullName: fetchedFullName,
         role: fetchedRole
@@ -75,15 +76,15 @@ export default function StaffDashboard({ user, userRole }) {
 
     } catch (err) {
       console.error("Error fetching user info:", err);
-      setError(`Lỗi tải thông tin người dùng: ${err.message}`);
+      setError(`L?i t?i th�ng tin ngu?i d�ng: ${err.message}`);
     }
   };
 
-  // Hàm fetch danh sách lịch hẹn
+  // H�m fetch danh s�ch l?ch h?n
   const fetchAppointments = async () => {
     try {
       setError(null);
-      // API này trả về StaffBookingDTO (đã bao gồm checklistStatus)
+      // API n�y tr? v? StaffBookingDTO (d� bao g?m checklistStatus)
       const response = await fetch(`${API_BASE}/api/staff/bookings`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -95,7 +96,7 @@ export default function StaffDashboard({ user, userRole }) {
         const errorText = await response.text();
         console.error("Appointments API failed:", response.status, errorText);
         if (response.status === 401) {
-          setError("Phiên đăng nhập hết hạn. Đang chuyển hướng...");
+          setError("Phi�n dang nh?p h?t h?n. �ang chuy?n hu?ng...");
           setTimeout(() => {
             localStorage.removeItem("token");
             localStorage.removeItem("userId");
@@ -103,14 +104,14 @@ export default function StaffDashboard({ user, userRole }) {
             navigate("/");
           }, 2000);
         } else {
-          setError(`Không thể tải lịch hẹn (${response.status}): ${errorText}`);
+          setError(`Kh�ng th? t?i l?ch h?n (${response.status}): ${errorText}`);
         }
         setAppointments([]);
         return false;
       }
 
       const data = await response.json();
-      // Sắp xếp cho booking mới nhất lên đầu
+      // S?p x?p cho booking m?i nh?t l�n d?u
       const sortedData = (Array.isArray(data) ? data : []).sort((a, b) =>
         new Date(b.bookingDate) - new Date(a.bookingDate)
       );
@@ -118,14 +119,14 @@ export default function StaffDashboard({ user, userRole }) {
       return true;
 
     } catch (error) {
-      console.error("❌ Error fetching appointments:", error);
-      setError("Lỗi kết nối hoặc xử lý dữ liệu lịch hẹn.");
+      console.error("? Error fetching appointments:", error);
+      setError("L?i k?t n?i ho?c x? l� d? li?u l?ch h?n.");
       setAppointments([]);
       return false;
     }
   };
 
-  // Hàm fetch danh sách kỹ thuật viên
+  // H�m fetch danh s�ch k? thu?t vi�n
   const fetchTechnicians = async () => {
     try {
       setError(null);
@@ -140,9 +141,9 @@ export default function StaffDashboard({ user, userRole }) {
         const errorText = await res.text();
         console.error("Technicians API failed:", res.status, errorText);
         if (res.status === 401) {
-          setError("Phiên đăng nhập hết hạn khi tải KTV.");
+          setError("Phi�n dang nh?p h?t h?n khi t?i KTV.");
         } else {
-          setError(`Không thể tải danh sách KTV (${res.status}): ${errorText}`)
+          setError(`Kh�ng th? t?i danh s�ch KTV (${res.status}): ${errorText}`)
         }
         setTechnicians([]);
         return false;
@@ -164,26 +165,26 @@ export default function StaffDashboard({ user, userRole }) {
       return true;
 
     } catch (err) {
-      console.error("❌ Error fetching technicians:", err);
-      setError("Lỗi kết nối hoặc xử lý dữ liệu kỹ thuật viên.");
+      console.error("? Error fetching technicians:", err);
+      setError("L?i k?t n?i ho?c x? l� d? li?u k? thu?t vi�n.");
       setTechnicians([]);
       return false;
     }
   };
 
-  // Load data khi component được mount
+  // Load data khi component du?c mount
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       setError(null);
       await fetchUserInfo();
-      // Chạy song song
+      // Ch?y song song
       await Promise.allSettled([fetchAppointments(), fetchTechnicians()]);
       setLoading(false);
     };
 
     if (!token) {
-      setError("Vui lòng đăng nhập để truy cập trang này.");
+      setError("Vui l�ng dang nh?p d? truy c?p trang n�y.");
       setLoading(false);
       navigate("/");
       return;
@@ -191,7 +192,7 @@ export default function StaffDashboard({ user, userRole }) {
     loadData();
   }, [token, navigate]);
 
-  // Xử lý khi chọn kỹ thuật viên
+  // X? l� khi ch?n k? thu?t vi�n
   const handleTechnicianChange = (bookingId, technicianId) => {
     setSelectedTechnicians((prev) => ({
       ...prev,
@@ -199,18 +200,18 @@ export default function StaffDashboard({ user, userRole }) {
     }));
   };
 
-  // Hàm lấy tên technician từ danh sách bằng userId
+  // H�m l?y t�n technician t? danh s�ch b?ng userId
   const getTechnicianName = (technicianId) => {
-    if (!technicianId) return '—';
+    if (!technicianId) return '�';
     const tech = technicians.find(t => String(t.userId) === String(technicianId));
     return tech ? tech.fullName : `KTV #${technicianId}`;
   };
 
-  // Hàm xử lý phê duyệt và phân công
+  // H�m x? l� ph� duy?t v� ph�n c�ng
   const handleAssign = async (bookingId) => {
     const technicianId = selectedTechnicians[bookingId];
     if (!technicianId) {
-      setError("Vui lòng chọn một kỹ thuật viên để phân công.");
+      setError("Vui l�ng ch?n m?t k? thu?t vi�n d? ph�n c�ng.");
       return;
     }
 
@@ -233,7 +234,7 @@ export default function StaffDashboard({ user, userRole }) {
       if (!res.ok) {
         const errorText = await res.text();
         console.error("Assignment API failed:", res.status, errorText);
-        throw new Error(errorText || "Phân công thất bại.");
+        throw new Error(errorText || "Ph�n c�ng th?t b?i.");
       }
       setSelectedTechnicians((prev) => {
         const next = { ...prev };
@@ -242,11 +243,11 @@ export default function StaffDashboard({ user, userRole }) {
       });
 
       await fetchAppointments();
-      await fetchTechnicians(); // Tải lại KTV để cập nhật số việc
+      await fetchTechnicians(); // T?i l?i KTV d? c?p nh?t s? vi?c
 
     } catch (err) {
-      console.error("❌ Error assigning technician:", err);
-      setError(`Lỗi khi phân công: ${err.message}`);
+      console.error("? Error assigning technician:", err);
+      setError(`L?i khi ph�n c�ng: ${err.message}`);
     } finally {
       setActionLoading(null);
     }
@@ -272,26 +273,26 @@ export default function StaffDashboard({ user, userRole }) {
         console.error("Approve API failed:", res.status, errorText);
 
         if (res.status === 401) {
-          setError("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+          setError("Phi�n dang nh?p h?t h?n. Vui l�ng dang nh?p l?i.");
           setTimeout(() => navigate("/"), 1500);
         } else {
-          throw new Error(errorText || `Duyệt thất bại (${res.status})`);
+          throw new Error(errorText || `Duy?t th?t b?i (${res.status})`);
         }
-        return; // Dừng lại nếu lỗi
+        return; // D?ng l?i n?u l?i
       }
-      await fetchAppointments(); // Tải lại danh sách để cập nhật trạng thái
+      await fetchAppointments(); // T?i l?i danh s�ch d? c?p nh?t tr?ng th�i
 
     } catch (err) {
       console.error(" Error approving booking:", err);
-      setError(`Lỗi khi duyệt: ${err.message}`);
+      setError(`L?i khi duy?t: ${err.message}`);
     } finally {
       setActionLoading(null);
     }
   };
 
-  // Hàm xử lý từ chối
+  // H�m x? l� t? ch?i
   const handleDecline = async (bookingId) => {
-    const reason = prompt("Nhập lý do từ chối (bắt buộc):");
+    const reason = prompt("Nh?p l� do t? ch?i (b?t bu?c):");
     if (!reason) {
       return;
     }
@@ -313,21 +314,21 @@ export default function StaffDashboard({ user, userRole }) {
       if (!res.ok) {
         const errorText = await res.text();
         console.error("Decline API failed:", res.status, errorText);
-        throw new Error(errorText || "Từ chối thất bại.");
+        throw new Error(errorText || "T? ch?i th?t b?i.");
       }
       await fetchAppointments();
 
     } catch (err) {
-      console.error("❌ Error declining appointment:", err);
-      setError(`Lỗi khi từ chối: ${err.message}`);
+      console.error("? Error declining appointment:", err);
+      setError(`L?i khi t? ch?i: ${err.message}`);
     } finally {
       setActionLoading(null);
     }
   };
 
-  // *** THÊM MỚI: HÀM BÀN GIAO XE ***
+  // *** TH�M M?I: H�M B�N GIAO XE ***
   const handleHandover = async (bookingId) => {
-    if (!window.confirm("Bạn có chắc chắn muốn BÀN GIAO XE và hoàn tất booking này?")) {
+    if (!window.confirm("B?n c� ch?c ch?n mu?n B�N GIAO XE v� ho�n t?t booking n�y?")) {
       return;
     }
 
@@ -348,14 +349,14 @@ export default function StaffDashboard({ user, userRole }) {
       if (!res.ok) {
         const errorText = await res.text();
         console.error("Handover API failed:", res.status, errorText);
-        // Hiển thị lỗi nghiệp vụ từ backend
-        throw new Error(errorText || "Bàn giao thất bại.");
+        // Hi?n th? l?i nghi?p v? t? backend
+        throw new Error(errorText || "B�n giao th?t b?i.");
       }
-      await fetchAppointments(); // Tải lại danh sách để thấy status 'Completed'
+      await fetchAppointments(); // T?i l?i danh s�ch d? th?y status 'Completed'
 
     } catch (err) {
-      console.error("❌ Error handing over vehicle:", err);
-      setError(`Lỗi khi bàn giao: ${err.message}`);
+      console.error("? Error handing over vehicle:", err);
+      setError(`L?i khi b�n giao: ${err.message}`);
     } finally {
       setActionLoading(null);
     }
@@ -363,16 +364,16 @@ export default function StaffDashboard({ user, userRole }) {
 
 
 
-  // *** SỬA LẠI HÀM NÀY: Staff có thể xem checklist sớm hơn ***
+  // *** S?A L?I H�M N�Y: Staff c� th? xem checklist s?m hon ***
   const hasChecklist = (status) => {
     const statusText = status ? status.toLowerCase() : '';
-    // Staff có thể xem checklist ngay khi đã phân công
+    // Staff c� th? xem checklist ngay khi d� ph�n c�ng
     return ['assigned', 'in_progress', 'completed', 'paid'].includes(statusText);
   };
 
-  // Hàm điều hướng đến trang xem Checklist
+  // H�m di?u hu?ng d?n trang xem Checklist
   const handleViewChecklist = (bookingId) => {
-    // Sử dụng Booking ID để gọi API Checklist của Staff
+    // S? d?ng Booking ID d? g?i API Checklist c?a Staff
     navigate(`/staff/checklist/${bookingId}`);
   };
 
@@ -408,7 +409,7 @@ export default function StaffDashboard({ user, userRole }) {
     const rankA = statusOrder.indexOf(statusA);
     const rankB = statusOrder.indexOf(statusB);
 
-    // DÒNG DEBUG: Dán dòng này vào để xem chính xác nó đang so sánh gì vs '${statusB}' (rank ${rankB})`);
+    // D�NG DEBUG: D�n d�ng n�y v�o d? xem ch�nh x�c n� dang so s�nh g� vs '${statusB}' (rank ${rankB})`);
 
     const finalRankA = rankA === -1 ? Infinity : rankA;
     const finalRankB = rankB === -1 ? Infinity : rankB;
@@ -419,13 +420,13 @@ export default function StaffDashboard({ user, userRole }) {
 
     return new Date(a.bookingDate) - new Date(b.bookingDate);
   });
-  // --- Auto refresh danh sách lịch hẹn mỗi 30 giây ---
+  // --- Auto refresh danh s�ch l?ch h?n m?i 30 gi�y ---
   useEffect(() => {
     const interval = setInterval(() => {
       fetchAppointments();
-    }, 30000); // 30 giây - tránh gọi API quá nhiều
+    }, 30000); // 30 gi�y - tr�nh g?i API qu� nhi?u
 
-    return () => clearInterval(interval); // Dọn dẹp khi rời trang
+    return () => clearInterval(interval); // D?n d?p khi r?i trang
   }, []);
 
   // --- Render ---
@@ -440,7 +441,7 @@ export default function StaffDashboard({ user, userRole }) {
         />
         <main className="main-content loading-state">
           <Loading inline />
-          <p>Đang tải dữ liệu...</p>
+          <p>�ang t?i d? li?u...</p>
         </main>
       </div>
     );
@@ -457,8 +458,8 @@ export default function StaffDashboard({ user, userRole }) {
       />
       <main className="main-content">
         <header className="page-header">
-          <h1><FaCalendarAlt /> Quản lý lịch hẹn</h1>
-          <p>Xem xét, phân công và theo dõi các lịch hẹn của khách hàng.</p>
+          <h1><FaCalendarAlt /> Qu?n l� l?ch h?n</h1>
+          <p>Xem x�t, ph�n c�ng v� theo d�i c�c l?ch h?n c?a kh�ch h�ng.</p>
         </header>
 
         {error && (
