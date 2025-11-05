@@ -4,10 +4,10 @@ import "./Home.css";
 import { motion } from "framer-motion";
 
 const partners = [
-  "/public/VF3.png",
-  "/public/VF5.png",
-  "/public/VF7.png",
-  "/public/VF9.png"
+  "/VF3.png",
+  "/VF5.png",
+  "/VF7.png",
+  "/VF9.png"
 ];
 
 const Home = () => {
@@ -76,7 +76,7 @@ const Home = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1 }}
         >
-          <img src="/public/VFbrand.jpg" alt="Authorized Service Center" />
+          <img src="/VFbrand.jpg" alt="Authorized Service Center" />
         </motion.div>
       </section>
 
