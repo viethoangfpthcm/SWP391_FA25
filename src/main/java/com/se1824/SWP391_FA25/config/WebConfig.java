@@ -10,7 +10,11 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // Allow localhost on any port for development and keep the swagger host
         registry.addMapping("/api/**") // Áp dụng cho tất cả các đường dẫn bắt đầu bằng /api/
-                .allowedOriginPatterns("http://localhost:*", "https://localhost:*", "http://103.90.226.216:3000") // Cho phép nguồn gốc này
+                .allowedOrigins(
+                        "http://103.90.226.216:3000",
+                        "http://localhost:3000",
+                        "http://localhost:5173"
+                ) // Cho phép nguồn gốc này
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Các phương thức được phép
                 .allowedHeaders("*") // Cho phép tất cả các header
                 .allowCredentials(true); // Cho phép gửi cookie và thông tin xác thực

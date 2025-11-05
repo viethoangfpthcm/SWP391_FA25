@@ -20,7 +20,7 @@ import Loading from '@components/ui/Loading.jsx';
 import FiltersBar from './shared/FiltersBar.jsx';
 import UserTable from './shared/UserTable.jsx';
 import UserForm from './shared/UserForm.jsx';
-
+import { getApiUrl, API_BASE_URL, API_ENDPOINTS } from "@config/api.js";
 
 // --- Helper Functions for Validation ---
 const isValidEmail = (email) => {
@@ -68,13 +68,13 @@ export default function AdminDashboard() {
   const [userToDeleteId, setUserToDeleteId] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false); // Loading state specifically for delete action
   const [isToggling, setIsToggling] = useState(false);
-  const API_BASE = "";
+
   const token = localStorage.getItem("token");
 
   // Fetch current admin user info
   const fetchUserInfo = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/users/account/current`, {
+      const res = await fetch(getApiUrl("/api/admin/users"), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 401) {
@@ -96,7 +96,7 @@ export default function AdminDashboard() {
     try {
       setError(null);
       setLoading(true);
-      const res = await fetch(`${API_BASE}/api/admin/users`, {
+      const res = await fetch(getApiUrl("/api/admin/users"), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 401) {
@@ -239,9 +239,8 @@ export default function AdminDashboard() {
     try {
       const method = editingUser ? "PUT" : "POST";
       const endpoint = editingUser
-        ? `${API_BASE}/api/admin/users-update?userIdToUpdate=${editingUser.userId}`
-        : `${API_BASE}/api/admin/users-create`;
-
+        ? getApiUrl(`/api/admin/users-update?userIdToUpdate=${editingUser.userId}`)
+        : getApiUrl("/api/admin/users-create");
       const requestBody = {
         fullName: formData.fullName.trim(),
         email: formData.email.trim(),
@@ -310,7 +309,7 @@ export default function AdminDashboard() {
     setError(null);      // Clear previous error
 
     try {
-      const res = await fetch(`${API_BASE}/api/admin/users/${userToDeleteId}`, {
+      const res = await fetch(getApiUrl(`/api/admin/users/${userToDeleteId}`), {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -353,13 +352,15 @@ export default function AdminDashboard() {
     const newIsActive = !userToToggle.isActive;
 
     try {
-      const res = await fetch(`${API_BASE}/api/admin/user/active?userId=${userToToggle.userId}&isActive=${newIsActive}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Accept": "application/json",
-        },
-      });
+      const res = await fetch(
+        getApiUrl(`/api/admin/user/active?userId=${userToToggle.userId}&isActive=${newIsActive}`),
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Accept": "application/json",
+          },
+        });
 
       if (res.status === 401) {
         localStorage.clear(); navigate("/"); return;
