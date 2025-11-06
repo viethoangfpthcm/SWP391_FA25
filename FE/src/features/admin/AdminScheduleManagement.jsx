@@ -34,6 +34,9 @@ export default function AdminScheduleManagement() {
         loading: false
     });
 
+    // Danh sách part types
+    const [partTypes, setPartTypes] = useState([]);
+
     const navigate = useNavigate();
     const API_BASE = "";
 
@@ -85,7 +88,6 @@ export default function AdminScheduleManagement() {
             });
             if (!res.ok) throw new Error("Không thể tải danh sách mốc bảo dưỡng");
             const data = await res.json();
-
             const sanitizedPlans = data.map(plan => ({
                 ...plan,
                 maintenanceNo: plan.maintenanceNo ?? 0,
@@ -94,13 +96,27 @@ export default function AdminScheduleManagement() {
                 name: plan.name || "",
                 description: plan.description || ""
             }));
-
             setPlans(sanitizedPlans);
         } catch (err) {
             console.error(err);
             setError("Không thể tải danh sách mốc bảo dưỡng.");
         } finally {
             setLoading(false);
+        }
+    };
+
+    // LẤY PART TYPES TỪ API
+    const fetchPartTypes = async () => {
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/part-types`, {
+                headers: { Authorization: `Bearer ${getToken()}` }
+            });
+            if (!res.ok) throw new Error("Không thể tải loại linh kiện");
+            const data = await res.json();
+            setPartTypes(Array.isArray(data) ? data : []);
+        } catch (err) {
+            console.error("Lỗi tải part types:", err);
+            setPartTypes([]);
         }
     };
 
@@ -149,36 +165,46 @@ export default function AdminScheduleManagement() {
         }
     };
 
-    // Lưu schedule
+    // Lưu schedule – GIỮ ?query
     const handleSaveSchedule = async () => {
         try {
-            if (!selectedSchedule?.name?.trim()) throw new Error("Tên lịch trình không được để trống");
-            if (!selectedSchedule?.vehicleModel?.trim()) throw new Error("Dòng xe không được để trống");
+            const name = selectedSchedule?.name?.trim();
+            const vehicleModel = selectedSchedule?.vehicleModel?.trim();
+            const description = selectedSchedule?.description?.trim() || "";
 
-            const bodyData = {
-                name: selectedSchedule.name.trim(),
-                description: selectedSchedule.description?.trim() || "",
-                vehicleModel: selectedSchedule.vehicleModel.trim(),
-            };
+            if (!name) throw new Error("Tên lịch trình không được để trống");
+            if (!vehicleModel) throw new Error("Dòng xe không được để trống");
+
+            const query = new URLSearchParams({ name, vehicleModel, description }).toString();
+            const bodyData = { name, vehicleModel, description };
 
             let res;
             if (modalMode === "add") {
-                res = await fetch(`${API_BASE}/api/admin/schedules`, {
+                res = await fetch(`${API_BASE}/api/admin/schedules?${query}`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${getToken()}`,
+                    },
                     body: JSON.stringify(bodyData),
                 });
             } else if (modalMode === "edit" && selectedSchedule?.id) {
-                res = await fetch(`${API_BASE}/api/admin/schedules/${selectedSchedule.id}`, {
+                res = await fetch(`${API_BASE}/api/admin/schedules/${selectedSchedule.id}?${query}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${getToken()}`,
+                    },
                     body: JSON.stringify(bodyData),
                 });
             }
 
-            if (!res.ok) throw new Error(`Lỗi server: ${res.status}`);
-            const data = await res.json();
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`Lỗi ${res.status}: ${text}`);
+            }
 
+            const data = await res.json();
             setSelectedSchedule(data);
             setSchedules(prev => modalMode === "add" ? [...prev, data] : prev.map(s => s.id === data.id ? data : s));
             return data;
@@ -219,68 +245,55 @@ export default function AdminScheduleManagement() {
         }
     };
 
-    // === CHỈNH SỬA CHÍNH: handleEditItems ===
+    // MỞ MODAL ITEMS + LOAD PART TYPES TRƯỚC
     const handleEditItems = async (plan) => {
-        if (!plan?.id) { alert("Không có ID mốc bảo dưỡng!"); return; }
+        if (!plan?.id) return alert("Không có ID mốc bảo dưỡng!");
 
         setItemsModal({ open: true, plan, items: [], loading: true });
 
         try {
+            // ĐẢM BẢO PART TYPES LOAD TRƯỚC
+            await fetchPartTypes();
+
             const res = await fetch(`${API_BASE}/api/admin/plans/${plan.id}/items`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${getToken()}`,
-                    'Accept': 'application/json'
-                }
+                headers: { Authorization: `Bearer ${getToken()}` }
             });
 
-            if (res.status === 401) {
-                alert("Phiên đăng nhập hết hạn!");
-                localStorage.clear();
-                navigate("/");
-                return;
-            }
-
-            if (!res.ok) {
-                const errorText = await res.text();
-                throw new Error(`Lỗi ${res.status}: ${errorText}`);
-            }
+            if (!res.ok) throw new Error(`Lỗi ${res.status}`);
 
             const data = await res.json();
-
-            const sanitizedItems = Array.isArray(data) ? data.map(item => ({
+            const sanitized = Array.isArray(data) ? data.map(item => ({
                 id: item.id,
                 planId: plan.id,
                 itemName: item.itemName || "",
                 actionType: item.actionType || "INSPECT",
+                part_type_id: item.part_type_id || null,
                 note: item.note || "",
                 isNew: false
             })) : [];
 
-            setItemsModal({ open: true, plan, items: sanitizedItems, loading: false });
+            setItemsModal({ open: true, plan, items: sanitized, loading: false });
         } catch (err) {
-            console.error("Lỗi tải công việc:", err);
-            alert("Không thể tải công việc: " + err.message);
+            alert("Lỗi: " + err.message);
             setItemsModal({ open: false, plan: null, items: [], loading: false });
         }
     };
 
-    // Thêm item
     const addItem = () => {
         const newItem = {
             id: `temp_${Date.now()}`,
             planId: itemsModal.plan.id,
             itemName: "",
             actionType: "INSPECT",
+            part_type_id: null, // CHO PHÉP NULL
             note: "",
             isNew: true
         };
         setItemsModal(prev => ({ ...prev, items: [...prev.items, newItem] }));
     };
 
-    // Xóa item
     const deleteItem = async (itemId, isNew) => {
-        if (!window.confirm("Bạn có chắc muốn xóa công việc này?")) return;
+        if (!window.confirm("Xóa công việc này?")) return;
         if (isNew || itemId.toString().startsWith('temp_')) {
             setItemsModal(prev => ({ ...prev, items: prev.items.filter(i => i.id !== itemId) }));
             return;
@@ -293,11 +306,10 @@ export default function AdminScheduleManagement() {
             if (!res.ok) throw new Error("Không thể xóa công việc");
             setItemsModal(prev => ({ ...prev, items: prev.items.filter(i => i.id !== itemId) }));
         } catch (err) {
-            alert("Lỗi xóa công việc: " + err.message);
+            alert("Lỗi xóa: " + err.message);
         }
     };
 
-    // Cập nhật item
     const updateItem = (itemId, field, value) => {
         setItemsModal(prev => ({
             ...prev,
@@ -307,18 +319,22 @@ export default function AdminScheduleManagement() {
         }));
     };
 
-    // Lưu tất cả items
+    // LƯU ITEMS – KHÔNG BẮT BUỘC part_type_id
     const saveAllItems = async () => {
         const token = getToken();
-        if (!token) { alert("Phiên đăng nhập hết hạn!"); return; }
-
-        let successCount = 0, errorCount = 0;
+        if (!token) return alert("Phiên hết hạn!");
 
         for (const item of itemsModal.items) {
+            if (!item.itemName?.trim()) {
+                alert("Tên công việc không được để trống!");
+                return;
+            }
+
             const body = {
                 planId: itemsModal.plan.id,
-                itemName: item.itemName?.trim() || "",
-                actionType: item.actionType || "INSPECT",
+                item_name: item.itemName.trim(),
+                actionType: item.actionType,
+                part_type_id: item.part_type_id || null, // CHO PHÉP NULL
                 note: item.note?.trim() || ""
             };
 
@@ -338,18 +354,18 @@ export default function AdminScheduleManagement() {
                     });
                 } else continue;
 
-                if (!res.ok) throw new Error(`Lỗi ${res.status}`);
-                successCount++;
+                if (!res.ok) {
+                    const err = await res.text();
+                    throw new Error(`Lỗi ${res.status}: ${err}`);
+                }
             } catch (err) {
                 console.error(err);
-                errorCount++;
+                alert("Lỗi lưu công việc: " + err.message);
+                return;
             }
         }
 
-        alert(errorCount === 0
-            ? `Đã lưu thành công ${successCount} công việc!`
-            : `Lưu thành công ${successCount}, thất bại ${errorCount}`
-        );
+        alert("Đã lưu tất cả công việc!");
         setItemsModal(prev => ({ ...prev, open: false }));
     };
 
@@ -357,7 +373,6 @@ export default function AdminScheduleManagement() {
     const savePlans = async (scheduleId) => {
         const token = getToken();
         if (!token) { alert("Phiên hết hạn!"); navigate("/"); return; }
-
         for (const plan of plans) {
             const planData = {
                 scheduleId,
@@ -367,7 +382,6 @@ export default function AdminScheduleManagement() {
                 name: plan.name || "",
                 description: plan.description || "",
             };
-
             if (plan.isNew || plan.id.toString().startsWith('temp_')) {
                 const res = await fetch(`${API_BASE}/api/admin/plans`, {
                     method: 'POST',
@@ -391,11 +405,9 @@ export default function AdminScheduleManagement() {
         try {
             const savedSchedule = await handleSaveSchedule();
             if (!savedSchedule?.id) throw new Error("Không lấy được ID lịch trình");
-
             if (modalMode !== "add" && plans.some(p => p.modified || p.isNew)) {
                 await savePlans(savedSchedule.id);
             }
-
             alert("Đã lưu thành công!");
             setShowModal(false);
             setSelectedSchedule(null);
@@ -443,9 +455,7 @@ export default function AdminScheduleManagement() {
                     <h1><FaCalendarAlt /> Quản lý Lịch trình Bảo dưỡng</h1>
                     <p>Quản lý lịch trình và mốc bảo dưỡng cho từng dòng xe.</p>
                 </header>
-
                 {error && <div className="error-message"><FaExclamationTriangle /> {error}</div>}
-
                 <div className="actions-bar">
                     <div className="filter-group">
                         <label><FaFilter /> Lọc theo dòng xe:</label>
@@ -456,7 +466,6 @@ export default function AdminScheduleManagement() {
                     </div>
                     <button className="btn-primary" onClick={handleAddSchedule}><FaPlus /> Thêm lịch trình</button>
                 </div>
-
                 <div className="table-card">
                     <div className="table-wrapper">
                         <table className="data-table">
@@ -504,7 +513,6 @@ export default function AdminScheduleManagement() {
                                 </h2>
                                 <button className="btn-close" onClick={() => setShowModal(false)}><FaTimes /></button>
                             </div>
-
                             <div className="modal-body">
                                 <div className="form-section">
                                     <h3>Thông tin lịch trình</h3>
@@ -523,14 +531,12 @@ export default function AdminScheduleManagement() {
                                         <textarea rows="3" value={selectedSchedule?.description || ""} onChange={e => setSelectedSchedule({ ...selectedSchedule, description: e.target.value })} disabled={modalMode === "view"} />
                                     </div>
                                 </div>
-
                                 {modalMode !== "add" && (
                                     <div className="form-section">
                                         <div className="section-header">
                                             <h3>Các mốc bảo dưỡng</h3>
                                             {modalMode !== "view" && <button className="btn-secondary" onClick={handleAddPlan}><FaPlus /> Thêm mốc</button>}
                                         </div>
-
                                         <div className="plans-list">
                                             {plans.length === 0 ? (
                                                 <p className="empty-state">Chưa có mốc bảo dưỡng nào.</p>
@@ -546,7 +552,6 @@ export default function AdminScheduleManagement() {
                                                                 </div>
                                                             )}
                                                         </div>
-
                                                         <div className="form-grid">
                                                             <div className="form-group">
                                                                 <label>Số thứ tự *</label>
@@ -565,27 +570,16 @@ export default function AdminScheduleManagement() {
                                                                 <input type="number" value={plan.intervalMonth ?? 0} onChange={e => handlePlanChange(plan.id, 'intervalMonth', e.target.value)} disabled={modalMode === "view"} min="0" />
                                                             </div>
                                                         </div>
-
                                                         <div className="form-group">
                                                             <label>Mô tả chi tiết</label>
                                                             <textarea rows="3" value={plan.description ?? ''} onChange={e => handlePlanChange(plan.id, 'description', e.target.value)} disabled={modalMode === "view"} />
                                                         </div>
-
-                                                        {modalMode === "view" && (
-                                                            <div className="plan-summary">
-                                                                <div className="summary-item">
-                                                                    <span className="summary-label">Chu kỳ:</span>
-                                                                    <span className="summary-value">{formatKm(plan.intervalKm)} hoặc {formatMonth(plan.intervalMonth)}</span>
-                                                                </div>
-                                                            </div>
-                                                        )}
                                                     </div>
                                                 ))
                                             )}
                                         </div>
                                     </div>
                                 )}
-
                                 <div className="modal-footer">
                                     <button className="btn-secondary" onClick={() => setShowModal(false)}>Đóng</button>
                                     {modalMode !== "view" && <button className="btn-primary" onClick={handleSaveAll}><FaSave /> Lưu thay đổi</button>}
@@ -595,7 +589,7 @@ export default function AdminScheduleManagement() {
                     </div>
                 )}
 
-                {/* Modal items */}
+                {/* Modal items - KHÔNG BẮT BUỘC CHỌN part_type */}
                 {itemsModal.open && (
                     <div className="modal-overlay" onClick={() => setItemsModal({ ...itemsModal, open: false })}>
                         <div className="modal-content plan-items-modal" onClick={e => e.stopPropagation()}>
@@ -603,16 +597,14 @@ export default function AdminScheduleManagement() {
                                 <h2>Chỉnh sửa công việc - {itemsModal.plan.name || `Mốc #${itemsModal.plan.maintenanceNo}`}</h2>
                                 <button className="btn-close" onClick={() => setItemsModal({ ...itemsModal, open: false })}><FaTimes /></button>
                             </div>
-
                             <div className="modal-body">
                                 <div className="d-flex gap-2 mb-3">
                                     <button className="btn-secondary" onClick={addItem}><FaPlus /> Thêm công việc</button>
                                 </div>
-
                                 {itemsModal.loading ? (
-                                    <div className="text-center"><Loading inline /> Đang tải công việc...</div>
+                                    <div className="text-center"><Loading inline /> Đang tải...</div>
                                 ) : itemsModal.items.length === 0 ? (
-                                    <p className="empty-state">Chưa có công việc nào. Thêm mới để bắt đầu!</p>
+                                    <p className="empty-state">Chưa có công việc nào. Thêm để bắt đầu!</p>
                                 ) : (
                                     <div className="items-list">
                                         {itemsModal.items.map((item, idx) => (
@@ -621,12 +613,10 @@ export default function AdminScheduleManagement() {
                                                     <span>Công việc #{idx + 1}</span>
                                                     <button className="btn-icon btn-delete" onClick={() => deleteItem(item.id, item.isNew)}><FaTrash /></button>
                                                 </div>
-
                                                 <div className="form-group">
                                                     <label>Tên công việc *</label>
                                                     <input type="text" value={item.itemName || ""} onChange={e => updateItem(item.id, "itemName", e.target.value)} placeholder="VD: Kiểm tra dầu máy" />
                                                 </div>
-
                                                 <div className="form-group">
                                                     <label>Loại hành động</label>
                                                     <select value={item.actionType || "INSPECT"} onChange={e => updateItem(item.id, "actionType", e.target.value)}>
@@ -637,7 +627,27 @@ export default function AdminScheduleManagement() {
                                                         <option value="REPAIR">Sửa chữa</option>
                                                     </select>
                                                 </div>
+                                                <div className="form-group">
+                                                    <label>Loại linh kiện</label>
+                                                    <select
+                                                        value={item.part_type_id || ""}
+                                                        onChange={e => updateItem(item.id, "part_type_id", e.target.value ? Number(e.target.value) : null)}
+                                                    >
+                                                        <option value="">-- Chọn loại linh kiện --</option>
+                                                        {partTypes.map(pt => (
+                                                            <option key={pt.id} value={pt.id}>
+                                                                {pt.name || pt.type_name || `ID: ${pt.id}`}
+                                                            </option>
+                                                        ))}
+                                                    </select>
 
+                                                    {/* HIỂN THỊ TÊN CŨ NẾU CHƯA LOAD */}
+                                                    {item.part_type_id && !partTypes.find(pt => pt.id === item.part_type_id) && (
+                                                        <small className="text-muted d-block mt-1">
+                                                            Đã chọn: ID {item.part_type_id} (đang tải tên...)
+                                                        </small>
+                                                    )}
+                                                </div>
                                                 <div className="form-group">
                                                     <label>Ghi chú</label>
                                                     <textarea rows="3" value={item.note || ""} onChange={e => updateItem(item.id, "note", e.target.value)} placeholder="Chi tiết..." />
@@ -647,7 +657,6 @@ export default function AdminScheduleManagement() {
                                     </div>
                                 )}
                             </div>
-
                             <div className="modal-footer">
                                 <button className="btn-secondary" onClick={() => setItemsModal({ ...itemsModal, open: false })}>Hủy</button>
                                 <button className="btn-primary" onClick={saveAllItems}><FaSave /> Lưu công việc</button>
