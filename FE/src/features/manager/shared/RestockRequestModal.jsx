@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Button from "@components/ui/Button.jsx";
+import { API_BASE_URL } from "@config/api.js";
 import { FaTimes, FaBox } from "react-icons/fa";
 import "./RestockRequestModal.css";
 

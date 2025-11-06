@@ -88,11 +88,12 @@
 
 .status-badge {
   display: inline-block;
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
   font-weight: 600;
   white-space: nowrap;
+  letter-spacing: -0.02em;
 }
 
 .status-pending {
@@ -108,6 +109,42 @@
 .status-assigned {
   background: #e0e7ff;
   color: #4338ca;
+}
+
+.status-replace {
+  background: #fef3c7;
+  color: #d97706;
+  font-weight: 700;
+}
+
+.status-repair {
+  background: #dbeafe;
+  color: #1e40af;
+  font-weight: 700;
+}
+
+.status-adjust {
+  background: #e0e7ff;
+  color: #4f46e5;
+  font-weight: 700;
+}
+
+.status-check {
+  background: #d1fae5;
+  color: #059669;
+  font-weight: 700;
+}
+
+.status-good {
+  background: #d1fae5;
+  color: #059669;
+  font-weight: 700;
+}
+
+.status-clean {
+  background: #e0f2fe;
+  color: #0284c7;
+  font-weight: 700;
 }
 
 .status-inprogress {
@@ -177,5 +214,296 @@
   .booking-table th,
   .booking-table td {
     padding: 0.75rem 0.5rem;
+  }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 1600px;
+  width: 96%;
+  max-height: 95vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.3s ease;
+}
+
+/* Checklist modal - wider for table content */
+.modal-content-checklist {
+  max-width: 900px !important;
+  width: 92% !important;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.75rem 2rem;
+  border-bottom: 2px solid #e2e8f0;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+  border-radius: 16px 16px 0 0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  padding: 2rem;
+  background: #fafafa;
+}
+
+/* Checklist Details */
+.checklist-details {
+  animation: fadeIn 0.3s ease;
+}
+
+.checklist-info {
+  background: white;
+  padding: 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 0.75rem 2rem;
+  max-height: none;
+}
+
+.checklist-info p {
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #475569;
+  word-break: break-word;
+}
+
+.checklist-info strong {
+  min-width: 150px;
+  color: #1e293b;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.checklist-items h3 {
+  color: #1e293b;
+  margin-bottom: 1rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.checklist-items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  font-size: 0.8rem;
+  table-layout: fixed;
+}
+
+.checklist-items-table thead {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+.checklist-items-table th {
+  padding: 0.7rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: white;
+  border-bottom: none;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.checklist-items-table th:nth-child(1) {
+  width: 45%;
+}
+
+.checklist-items-table th:nth-child(2) {
+  width: 15%;
+  text-align: center;
+}
+
+.checklist-items-table th:nth-child(3) {
+  width: 20%;
+  text-align: right;
+}
+
+.checklist-items-table th:nth-child(4) {
+  width: 20%;
+  text-align: right;
+}
+
+.checklist-items-table td {
+  padding: 0.7rem 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 0.8rem;
+  vertical-align: middle;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.checklist-items-table td:nth-child(2) {
+  text-align: center;
+}
+
+.checklist-items-table td:nth-child(3),
+.checklist-items-table td:nth-child(4) {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.checklist-items-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.checklist-items-table tbody tr:hover {
+  background: #f8fafc;
+  transform: scale(1.01);
+}
+
+.checklist-items-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.checklist-total {
+  text-align: center;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Feedback Details */
+.feedback-details {
+  animation: fadeIn 0.3s ease;
+}
+
+.feedback-rating {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+.feedback-rating p {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.stars {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.feedback-info {
+  background: white;
+  padding: 1.75rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+.feedback-info p {
+  margin: 0.75rem 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.feedback-info strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.feedback-comment {
+  margin-top: 1.5rem;
+}
+
+.feedback-comment p {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.comment-box {
+  background: white;
+  padding: 1.75rem;
+  border-radius: 12px;
+  border-left: 5px solid #4f46e5;
+  line-height: 1.7;
+  color: #475569;
+  min-height: 120px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  border-left: 5px solid #4f46e5;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

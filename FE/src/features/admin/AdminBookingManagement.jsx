@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     FaCalendarAlt,
     FaSpinner,
@@ -10,23 +10,25 @@ import {
 } from "react-icons/fa";
 import "./AdminBookingManagement.css";
 import Sidebar from "@components/layout/Sidebar.jsx";
-import { useNavigate } from "react-router-dom";import Button from '@components/ui/Button.jsx';
+import { useNavigate } from "react-router-dom";
+import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
+import { API_BASE_URL } from "@config/api.js";
 
 const BOOKING_STATUS_MAP = {
-    PENDING: { text: 'Chờ xử lý', className: 'role-pending' },
-    APPROVED: { text: 'Đã duyệt', className: 'role-approved' },
-    ASSIGNED: { text: 'Đã gán thợ', className: 'role-assigned' },
-    IN_PROGRESS: { text: 'Đang xử lý', className: 'role-in progress' },
-    COMPLETED: { text: 'Hoàn thành', className: 'role-completed' },
-    PAID: { text: 'Đã thanh toán', className: 'role-paid' },
-    CANCELLED: { text: 'Đã hủy', className: 'role-cancelled' },
-    DECLINED: { text: 'Đã từ chối', className: 'role-declined' },
-    PENDING_APPROVAL: { text: 'Chờ duyệt cuối', className: 'role-pending' },
-    DEFAULT: { text: 'Không rõ', className: 'role-default' }
+    PENDING: { text: 'Ch? x? l�', className: 'role-pending' },
+    APPROVED: { text: '�� duy?t', className: 'role-approved' },
+    ASSIGNED: { text: '�� g�n th?', className: 'role-assigned' },
+    IN_PROGRESS: { text: '�ang x? l�', className: 'role-in progress' },
+    COMPLETED: { text: 'Ho�n th�nh', className: 'role-completed' },
+    PAID: { text: '�� thanh to�n', className: 'role-paid' },
+    CANCELLED: { text: '�� h?y', className: 'role-cancelled' },
+    DECLINED: { text: '�� t? ch?i', className: 'role-declined' },
+    PENDING_APPROVAL: { text: 'Ch? duy?t cu?i', className: 'role-pending' },
+    DEFAULT: { text: 'Kh�ng r�', className: 'role-default' }
 };
 const getStatusDisplay = (status) => {
-    return BOOKING_STATUS_MAP[status] || { text: status || 'Không rõ', className: 'role-default' };
+    return BOOKING_STATUS_MAP[status] || { text: status || 'Kh�ng r�', className: 'role-default' };
 };
 
 if (import.meta.env.MODE !== "development") {
@@ -46,13 +48,13 @@ export default function AdminBookingManagement() {
     const [feedbackLoading, setFeedbackLoading] = useState(false);
     const [feedbackError, setFeedbackError] = useState(null);
 
-    const API_BASE = "";
+    
     const token = localStorage.getItem("token");
 
-    // Fetch current user info (Giữ nguyên)
+    // Fetch current user info (Gi? nguy�n)
     const fetchUserInfo = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/users/account/current`, {
+            const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (res.status === 401) {
@@ -60,22 +62,22 @@ export default function AdminBookingManagement() {
                 navigate("/");
                 return;
             }
-            if (!res.ok) throw new Error("Không thể tải thông tin người dùng");
+            if (!res.ok) throw new Error("Kh�ng th? t?i th�ng tin ngu?i d�ng");
             const data = await res.json();
             localStorage.setItem("fullName", data.fullName || "Admin");
             localStorage.setItem("role", data.role || "Admin");
             setUserInfo({ fullName: data.fullName, role: data.role });
         } catch (err) {
             console.error(err);
-            setError("Không thể tải thông tin người dùng.");
+            setError("Kh�ng th? t?i th�ng tin ngu?i d�ng.");
         }
     };
     const fetchCenters = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/admin/service-centers`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/service-centers`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            if (!res.ok) throw new Error("Không thể tải danh sách trung tâm");
+            if (!res.ok) throw new Error("Kh�ng th? t?i danh s�ch trung t�m");
             const data = await res.json();
             setCenters(data);
         } catch (e) {
@@ -86,24 +88,24 @@ export default function AdminBookingManagement() {
         navigate(`/admin/checklist/booking/${bookingId}`);
     };
     const handleViewFeedback = async (bookingId) => {
-        setShowFeedbackModal(true); // Mở modal
+        setShowFeedbackModal(true); // M? modal
         setFeedbackLoading(true);
         setSelectedFeedback(null);
         setFeedbackError(null);
 
         try {
-            // Gọi API ADMIN mới
-            const res = await fetch(`${API_BASE}/api/admin/feedback/${bookingId}`, {
+            // G?i API ADMIN m?i
+            const res = await fetch(`${API_BASE_URL}/api/admin/feedback/${bookingId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
             if (res.status === 404) {
-                // Sửa lỗi 404 từ backend
+                // S?a l?i 404 t? backend
                 const errorText = await res.text();
-                throw new Error(errorText || "Không tìm thấy feedback cho lịch hẹn này.");
+                throw new Error(errorText || "Kh�ng t�m th?y feedback cho l?ch h?n n�y.");
             }
             if (!res.ok) {
-                throw new Error("Lỗi khi tải feedback.");
+                throw new Error("L?i khi t?i feedback.");
             }
 
             const data = await res.json();
@@ -116,15 +118,15 @@ export default function AdminBookingManagement() {
         }
     };
 
-    // Fetch danh sách booking 
+    // Fetch danh s�ch booking 
     const fetchBookings = async () => {
         try {
             setError(null);
             setLoading(true);
             const url =
                 selectedCenter === "all"
-                    ? `${API_BASE}/api/admin/bookings`
-                    : `${API_BASE}/api/admin/bookings/by-center/${selectedCenter}`;
+                    ? `${API_BASE_URL}/api/admin/bookings`
+                    : `${API_BASE_URL}/api/admin/bookings/by-center/${selectedCenter}`;
 
             const res = await fetch(url, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -136,17 +138,16 @@ export default function AdminBookingManagement() {
                 return;
             }
 
-            if (!res.ok) throw new Error(`Lỗi tải danh sách đặt lịch (${res.status})`);
+            if (!res.ok) throw new Error(`L?i t?i danh s�ch d?t l?ch (${res.status})`);
             const data = await res.json();
             setBookings(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error(err);
-            setError("Không thể tải danh sách đặt lịch.");
+            setError("Kh�ng th? t?i danh s�ch d?t l?ch.");
         } finally {
             setLoading(false);
         }
     };
-
 
     useEffect(() => {
         if (!token) {
@@ -161,14 +162,13 @@ export default function AdminBookingManagement() {
         fetchBookings();
     }, [selectedCenter]);
 
-
     const filteredBookings =
         filterStatus === "all"
             ? bookings
             : bookings.filter(
                 (b) => b.status === filterStatus
             );
-    // Helper định dạng ngày (Mới)
+    // Helper d?nh d?ng ng�y (M?i)
     const formatDate = (dateString) => {
         if (!dateString) return "N/A";
         try {
@@ -200,7 +200,7 @@ const statusOrder = [
     const rankA = statusOrder.indexOf(statusA);
     const rankB = statusOrder.indexOf(statusB);
 
-    // DÒNG DEBUG: Dán dòng này vào để xem chính xác nó đang so sánh gì vs '${statusB}' (rank ${rankB})`);
+    // D�NG DEBUG: D�n d�ng n�y v�o d? xem ch�nh x�c n� dang so s�nh g� vs '${statusB}' (rank ${rankB})`);
 
     const finalRankA = rankA === -1 ? Infinity : rankA;
     const finalRankB = rankB === -1 ? Infinity : rankB;
@@ -211,13 +211,13 @@ const statusOrder = [
 
     return new Date(a.bookingDate) - new Date(b.bookingDate);
   });
-    if (loading && !userInfo) { // Cập nhật text loading
+    if (loading && !userInfo) { // C?p nh?t text loading
         return (
             <div className="dashboard-container admin-theme">
                 <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
                 <main className="main-content loading-state">
                     <Loading inline />
-                    <p>Đang tải dữ liệu đặt lịch...</p>
+                    <p>�ang t?i d? li?u d?t l?ch...</p>
                 </main>
             </div>
         );
@@ -230,9 +230,9 @@ const statusOrder = [
             <main className="main-content">
                 <header className="page-header">
                     <h1>
-                        <FaCalendarAlt /> Quản lý Đặt lịch
+                        <FaCalendarAlt /> Qu?n l� �?t l?ch
                     </h1>
-                    <p>Xem và theo dõi tất cả lịch hẹn trong hệ thống.</p>
+                    <p>Xem v� theo d�i t?t c? l?ch h?n trong h? th?ng.</p>
                 </header>
 
                 {error && (
@@ -241,11 +241,11 @@ const statusOrder = [
                     </div>
                 )}
 
-                {/* Bộ lọc (Thay đổi) */}
+                {/* B? l?c (Thay d?i) */}
                 <div className="actions-bar">
                     <div className="filter-group admin-group">
                         <label htmlFor="statusFilter">
-                            <FaFilter /> Lọc trạng thái:
+                            <FaFilter /> L?c tr?ng th�i:
                         </label>
                         <select
                             id="statusFilter"
@@ -265,7 +265,7 @@ const statusOrder = [
                     </div>
                     <div className="filter-group">
                         <label htmlFor="centerFilter">
-                            <FaFilter /> Trung tâm:
+                            <FaFilter /> Trung t�m:
                         </label>
                         <select
                             id="centerFilter"
@@ -273,7 +273,7 @@ const statusOrder = [
                             onChange={(e) => setSelectedCenter(e.target.value)}
                         >
                             <option key="all" value="all">
-                                Tất cả trung tâm
+                                T?t c? trung t�m
                             </option>
                             {centers.map((center) => (
                                 <option key={center.id} value={center.id}>
@@ -284,29 +284,27 @@ const statusOrder = [
                     </div>
                 </div>
 
-
-
                 <div className="table-card">
                     <div className="table-wrapper">
                         <table className="data-table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Khách hàng</th>
+                                    <th>Kh�ch h�ng</th>
                                     <th>Xe</th>
-                                    <th>Trung tâm</th>
-                                    <th>Ngày hẹn</th>
-                                    <th>Kỹ thuật viên</th>
-                                    <th>Trạng thái (Booking)</th>
-                                    <th>Trạng thái (Checklist)</th>
-                                    <th>Thao tác</th>
+                                    <th>Trung t�m</th>
+                                    <th>Ng�y h?n</th>
+                                    <th>K? thu?t vi�n</th>
+                                    <th>Tr?ng th�i (Booking)</th>
+                                    <th>Tr?ng th�i (Checklist)</th>
+                                    <th>Thao t�c</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
                                     <tr>
                                         <td colSpan="9" className="empty-state">
-                                            <Loading inline /> Đang tải...
+                                            <Loading inline /> �ang t?i...
                                         </td>
                                     </tr>
                                 ) : sortedAppointments.length > 0 ? (
@@ -325,7 +323,7 @@ const statusOrder = [
                                             </td>
                                             <td>{booking.centerName || "N/A"}</td>
                                             <td>{formatDate(booking.bookingDate)}</td>
-                                            <td>{booking.technicianName || "Chưa gán"}</td>
+                                            <td>{booking.technicianName || "Chua g�n"}</td>
                                             <td>
                                                 <span
                                                     className={`role-badge ${getStatusDisplay(booking.status).className}`}
@@ -337,7 +335,7 @@ const statusOrder = [
                                                 <span
                                                     className={`role-badge ${getStatusDisplay(booking.checklistStatus).className}`}
                                                 >
-                                                    {getStatusDisplay(booking.checklistStatus).text || "Chưa có"}
+                                                    {getStatusDisplay(booking.checklistStatus).text || "Chua c�"}
                                                 </span>
                                             </td>
                                             <td>
@@ -345,7 +343,7 @@ const statusOrder = [
                                                     className="action-button view-checklist"
                                                     onClick={() => handleViewChecklist(booking.bookingId)}
                                                     disabled={!booking.checklistStatus}
-                                                    title={!booking.checklistStatus ? "Checklist chưa được tạo" : "Xem chi tiết checklist"}
+                                                    title={!booking.checklistStatus ? "Checklist chua du?c t?o" : "Xem chi ti?t checklist"}
                                                 >
                                                     Xem Checklist
                                                 </Button>
@@ -353,7 +351,7 @@ const statusOrder = [
                                                     className="action-button view-feedback"
                                                     onClick={() => handleViewFeedback(booking.bookingId)}
                                                     disabled={!booking.hasFeedback}
-                                                    title={booking.hasFeedback ? "Xem feedback của khách hàng" : "Chưa có feedback"}
+                                                    title={booking.hasFeedback ? "Xem feedback c?a kh�ch h�ng" : "Chua c� feedback"}
                                                 >
                                                     <FaCommentAlt /> Xem Feedback
                                                 </Button>
@@ -363,7 +361,7 @@ const statusOrder = [
                                 ) : (
                                     <tr>
                                         <td colSpan="9" className="empty-state">
-                                            Không có dữ liệu đặt lịch.
+                                            Kh�ng c� d? li?u d?t l?ch.
                                         </td>
                                     </tr>
                                 )}
@@ -375,7 +373,7 @@ const statusOrder = [
                     <div className="modal-overlay" >
                         <div className="modal-content admin-modal feedback-modal">
                             <div className="modal-header">
-                                <h2>Chi tiết Feedback</h2>
+                                <h2>Chi ti?t Feedback</h2>
                                 <Button
                                     onClick={() => setShowFeedbackModal(false)}
                                     className="close-modal-btn"
@@ -387,7 +385,7 @@ const statusOrder = [
                             <div className="modal-body" >
                                 {feedbackLoading && (
                                     <div className="loading-state" style={{ padding: '40px' }}>
-                                        <Loading inline /> Đang tải...
+                                        <Loading inline /> �ang t?i...
                                     </div>
                                 )}
 
@@ -399,13 +397,13 @@ const statusOrder = [
 
                                 {selectedFeedback && (
                                     <div className="feedback-details">
-                                        <p><strong>Khách hàng:</strong> {selectedFeedback.userName}</p>
+                                        <p><strong>Kh�ch h�ng:</strong> {selectedFeedback.userName}</p>
                                         <p><strong>Xe:</strong> {selectedFeedback.licensePlate}</p>
-                                        <p><strong>Trung tâm:</strong> {selectedFeedback.centerName}</p>
-                                        <p><strong>Ngày:</strong> {formatDate(selectedFeedback.feedbackDate)}</p>
+                                        <p><strong>Trung t�m:</strong> {selectedFeedback.centerName}</p>
+                                        <p><strong>Ng�y:</strong> {formatDate(selectedFeedback.feedbackDate)}</p>
 
                                         <div className="feedback-rating">
-                                            <strong>Đánh giá:</strong>
+                                            <strong>��nh gi�:</strong>
                                             <div className="stars">
                                                 {[...Array(5)].map((_, i) => (
                                                     <FaStar
@@ -418,13 +416,13 @@ const statusOrder = [
                                         </div>
 
                                         <div className="feedback-comment">
-                                            <strong>Bình luận:</strong>
+                                            <strong>B�nh lu?n:</strong>
                                             <p className="comment-box">
-                                                {selectedFeedback.comment || <em>(Không có bình luận)</em>}
+                                                {selectedFeedback.comment || <em>(Kh�ng c� b�nh lu?n)</em>}
                                             </p>
                                         </div>
 
-                                        <p><strong>Trạng thái:</strong> {selectedFeedback.isPublished ? "Đã duyệt" : "Chưa duyệt"}</p>
+                                        <p><strong>Tr?ng th�i:</strong> {selectedFeedback.isPublished ? "�� duy?t" : "Chua duy?t"}</p>
                                     </div>
                                 )}
                             </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
-import { API_BASE } from "@config/api.js";
+import { API_BASE_URL } from "@config/api.js";
 
 export default function AddVehicleModal({ onClose, onSuccess }) {
   const [vehicleData, setVehicleData] = useState({
@@ -20,7 +20,7 @@ export default function AddVehicleModal({ onClose, onSuccess }) {
     const fetchVehicleModels = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${API_BASE}/api/customer/vehicle-models`, {
+        const response = await fetch(`${API_BASE_URL}/api/customer/vehicle-models`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -53,7 +53,7 @@ export default function AddVehicleModal({ onClose, onSuccess }) {
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId");
 
-      const response = await fetch(`${API_BASE}/api/customer/create-vehicle`, {
+      const response = await fetch(`${API_BASE_URL}/api/customer/create-vehicle`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

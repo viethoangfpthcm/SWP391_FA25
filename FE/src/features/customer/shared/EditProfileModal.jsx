@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
+import { API_BASE_URL } from "@config/api.js";
 
 function EditProfileModal({ profile, onClose, onSuccess }) {
   const [formData, setFormData] = useState(profile || {});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const API_BASE = "";
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +17,7 @@ function EditProfileModal({ profile, onClose, onSuccess }) {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${API_BASE}/api/users/update-profile`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/update-profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

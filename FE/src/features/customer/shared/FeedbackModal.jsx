@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
-import { API_BASE } from "@config/api.js";
+import { API_BASE_URL } from "@config/api.js";
 
 function FeedbackModal({ bookingId, onClose, onSuccess }) {
   const [feedbackData, setFeedbackData] = useState({ rating: 0, comment: "" });
@@ -12,7 +12,7 @@ function FeedbackModal({ bookingId, onClose, onSuccess }) {
     const loadFeedback = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${API_BASE}/api/feedback/booking/${bookingId}`, {
+        const res = await fetch(`${API_BASE_URL}/api/feedback/booking/${bookingId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
@@ -58,7 +58,7 @@ function FeedbackModal({ bookingId, onClose, onSuccess }) {
         comment: feedbackData.comment.trim(),
       };
       
-      const response = await fetch(`${API_BASE}/api/feedback`, {
+      const response = await fetch(`${API_BASE_URL}/api/feedback`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -8,6 +8,7 @@ import PartsUsageChart from "@features/admin/graphs/PartsUsageChart.jsx";
 import FeedbackGaugeChart from "@features/admin/graphs/FeedbackGaugeChart.jsx";
 import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 import "./StaffAnalytics.css";
+import { API_BASE_URL } from "@config/api.js";
 
 const StaffAnalytics = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -26,7 +27,7 @@ const StaffAnalytics = () => {
   // Use minimum delay hook for better UX (show loading for at least 1 second)
   const showLoading = useMinimumDelay(loading, 1000);
 
-  const API_BASE = "";
+  
   const token = localStorage.getItem("token");
 
   // Fetch user info on mount ONLY
@@ -75,7 +76,7 @@ const StaffAnalytics = () => {
 
   const fetchRevenueData = async () => {
     try {
-      const url = `${API_BASE}/api/staff/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
+      const url = `${API_BASE_URL}/api/staff/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -89,7 +90,7 @@ const StaffAnalytics = () => {
 
   const fetchPartsData = async () => {
     try {
-      const url = `${API_BASE}/api/staff/analytics/parts?year=${selectedYear}&month=${selectedMonth}`;
+      const url = `${API_BASE_URL}/api/staff/analytics/parts?year=${selectedYear}&month=${selectedMonth}`;
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -103,7 +104,7 @@ const StaffAnalytics = () => {
 
   const fetchBookingStatsData = async () => {
     try {
-      const url = `${API_BASE}/api/staff/analytics/bookings?month=${selectedMonth}&year=${selectedYear}`;
+      const url = `${API_BASE_URL}/api/staff/analytics/bookings?month=${selectedMonth}&year=${selectedYear}`;
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -117,7 +118,7 @@ const StaffAnalytics = () => {
 
   const fetchFeedbackData = async () => {
     try {
-      const url = `${API_BASE}/api/staff/analytics/feedbacks`;
+      const url = `${API_BASE_URL}/api/staff/analytics/feedbacks`;
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });

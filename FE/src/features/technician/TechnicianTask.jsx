@@ -10,6 +10,7 @@ import SummaryCards from "./SummaryCards.jsx";
 import FilterButtons from "./FilterButtons.jsx";
 import TaskTable from "./TaskTable.jsx";
 import KmModal from "./KmModal.jsx";
+import { API_BASE_URL } from "@config/api.js";
 
 const BOOKING_STATUS_MAP = {
   ASSIGNED: { text: "Chờ xử lý", className: "pending" },
@@ -35,13 +36,13 @@ export default function TechnicianTask() {
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const API_BASE = "";
+  
 
   // Fetch thông tin user
   const fetchUserInfo = async () => {
     if (!token) return navigate("/");
     try {
-      const res = await fetch(`${API_BASE}/api/users/account/current`, {
+      const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
         headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
       });
       if (!res.ok) throw new Error("Không thể tải thông tin người dùng.");
@@ -58,7 +59,7 @@ export default function TechnicianTask() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/technician/my-tasks`, {
+      const res = await fetch(`${API_BASE_URL}/api/technician/my-tasks`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error("Không thể tải danh sách nhiệm vụ");
@@ -99,7 +100,7 @@ export default function TechnicianTask() {
     const km = parseInt(actualKm);
     if (isNaN(km) || km <= 0) return toast.error("Vui lòng nhập số km hợp lệ.");
     try {
-      const res = await fetch(`${API_BASE}/api/technician/start/${currentBookingId}?actualKm=${km}`, {
+      const res = await fetch(`${API_BASE_URL}/api/technician/start/${currentBookingId}?actualKm=${km}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });

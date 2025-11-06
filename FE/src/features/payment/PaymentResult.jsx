@@ -3,8 +3,9 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { FaCircleCheck, FaCircleXmark } from 'react-icons/fa6';
 import Navbar from "@components/layout/Navbar.jsx";
 import Footer from "@components/layout/Footer.jsx";
-import './PaymentResult.css';import Button from '@components/ui/Button.jsx';
-
+import { API_BASE_URL } from "@config/api.js";
+import './PaymentResult.css';
+import Button from '@components/ui/Button.jsx';
 
 export default function PaymentResult() {
   const [searchParams] = useSearchParams();
@@ -15,14 +16,14 @@ export default function PaymentResult() {
   const isSuccess = responseCode === '00';
   const token = localStorage.getItem('token');
   const customerId = localStorage.getItem('userId');
-  const API_BASE = '';
+  
 
   // Cập nhật danh sách reports khi thanh toán thành công
   useEffect(() => {
     if (isSuccess && token && customerId) {
       const fetchReportsList = async () => {
         try {
-          const listUrl = `${API_BASE}/api/customer/maintenance/checklists?customerId=${encodeURIComponent(customerId)}`;
+          const listUrl = `${API_BASE_URL}/api/customer/maintenance/checklists?customerId=${encodeURIComponent(customerId)}`;
           const response = await fetch(listUrl, { headers: { Authorization: `Bearer ${token}` } });
           if (response.ok) {
             const data = await response.json();

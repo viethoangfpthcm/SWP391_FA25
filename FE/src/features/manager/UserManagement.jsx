@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
+import { API_BASE_URL } from "@config/api.js";
 import { FaUserPlus, FaEdit, FaTrash, FaCheck, FaTimes } from "react-icons/fa";
 import FiltersBar from "./shared/UserFiltersBar";
 import UserTable from "./shared/UserTable";
@@ -21,7 +22,7 @@ export default function UserManagement() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("/api/manager/users", {
+      const response = await fetch(`${API_BASE_URL}/api/manager/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

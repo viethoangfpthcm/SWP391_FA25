@@ -7,6 +7,7 @@ import { FaUserPlus, FaEdit, FaTrash, FaCheck, FaTimes } from "react-icons/fa";
 import FiltersBar from "./shared/UserFiltersBar";
 import UserTable from "./shared/UserTable";
 import "./ManagerDashboard.css";
+import { API_BASE_URL } from "@config/api.js";
 
 export default function ManagerDashboard() {
   const [users, setUsers] = useState([]);
@@ -17,7 +18,7 @@ export default function ManagerDashboard() {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
-  const API_BASE = "";
+  
 
   useEffect(() => {
     fetchUserInfo();
@@ -38,7 +39,7 @@ export default function ManagerDashboard() {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/api/users/account/current`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/account/current`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -64,7 +65,7 @@ export default function ManagerDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/manager/users`, {
+      const response = await fetch(`${API_BASE_URL}/api/manager/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

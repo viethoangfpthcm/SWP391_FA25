@@ -1,9 +1,10 @@
 import Sidebar from "@components/layout/Sidebar.jsx";
 import React, { useState, useEffect } from "react";
 import { FaSpinner, FaSave, FaCheckCircle, FaTimes } from "react-icons/fa";
+import { API_BASE_URL } from "@config/api.js";
 import "./ProfilePage.css";
-import Button from "@components/ui/Button.jsx";import Loading from '@components/ui/Loading.jsx';
-
+import Button from "@components/ui/Button.jsx";
+import Loading from '@components/ui/Loading.jsx';
 
 export default function ProfilePage({ user }) {
     const [loading, setLoading] = useState(true);
@@ -26,14 +27,14 @@ export default function ProfilePage({ user }) {
             setToast({ show: false, message: "", type: "" });
         }, 4000);
     };
-    const API_BASE = "";
+    
 
     // 1. Lấy thông tin profile khi tải trang
     useEffect(() => {
         const fetchProfile = async () => {
             setLoading(true);
             try {
-                const res = await fetch(`${API_BASE}/api/users/profile`, {
+                const res = await fetch(`${API_BASE_URL}/api/users/profile`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -103,7 +104,7 @@ export default function ProfilePage({ user }) {
         }
 
         try {
-            const res = await fetch(`${API_BASE}/api/users/update-profile`, {
+            const res = await fetch(`${API_BASE_URL}/api/users/update-profile`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

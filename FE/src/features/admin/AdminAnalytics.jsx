@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     FaChartBar,
     FaChartPie,
@@ -11,6 +11,7 @@ import {
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
+import { API_BASE_URL } from "@config/api.js";
 import "./AdminAnalytics.css";
 
 import RevenueChart from "./graphs/RevenueChart.jsx";
@@ -18,7 +19,6 @@ import BookingStatsChart from "./graphs/BookingStatsChart.jsx";
 import PartsUsageChart from "./graphs/PartsUsageChart.jsx";
 import FeedbackGaugeChart from "./graphs/FeedbackGaugeChart.jsx";
 import Loading from '@components/ui/Loading.jsx';
-
 
 export default function AdminAnalytics() {
     const [userInfo, setUserInfo] = useState(null);
@@ -36,7 +36,7 @@ export default function AdminAnalytics() {
     const [feedbackData, setFeedbackData] = useState(null);
 
     const navigate = useNavigate();
-    const API_BASE = "";
+    
     const token = localStorage.getItem("token");
     
     // Use minimum delay hook for better UX
@@ -44,10 +44,10 @@ export default function AdminAnalytics() {
     
     const fetchUserInfo = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/users/account/current`, {
+            const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            if (!res.ok) throw new Error(`Lỗi API userInfo: ${res.status}`);
+            if (!res.ok) throw new Error(`L?i API userInfo: ${res.status}`);
             const data = await res.json();
             setUserInfo({ fullName: data.fullName || "Admin", role: data.role || "Admin" });
         } catch (err) {
@@ -58,10 +58,10 @@ export default function AdminAnalytics() {
 
     const fetchCenters = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/admin/service-centers`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/service-centers`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            if (!res.ok) throw new Error(`Lỗi API centers: ${res.status}`);
+            if (!res.ok) throw new Error(`L?i API centers: ${res.status}`);
             const data = await res.json();
             setCenters(Array.isArray(data) ? data : []);
         } catch (err) {
@@ -74,14 +74,14 @@ export default function AdminAnalytics() {
         try {
             let url;
             if (selectedCenter === "all") {
-                url = `${API_BASE}/api/admin/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
+                url = `${API_BASE_URL}/api/admin/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
             } else {
                 const centerId = Number(selectedCenter);
-                url = `${API_BASE}/api/admin/analytics/revenue/center/${centerId}?month=${selectedMonth}&year=${selectedYear}`;
+                url = `${API_BASE_URL}/api/admin/analytics/revenue/center/${centerId}?month=${selectedMonth}&year=${selectedYear}`;
             }
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
             if (!res.ok) {
-                throw new Error(`Lỗi API revenue: ${res.status}`);
+                throw new Error(`L?i API revenue: ${res.status}`);
             }
             const data = await res.json();
             setRevenueData(data);
@@ -98,7 +98,7 @@ export default function AdminAnalytics() {
                 return; 
             }
             const centerId = Number(selectedCenter);
-            const url = `${API_BASE}/api/admin/analytics/parts?centerId=${centerId}&month=${selectedMonth}&year=${selectedYear}`;
+            const url = `${API_BASE_URL}/api/admin/analytics/parts?centerId=${centerId}&month=${selectedMonth}&year=${selectedYear}`;
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
             if (!res.ok) {
                 setPartsData({ labels: [], counts: [] });
@@ -115,19 +115,19 @@ export default function AdminAnalytics() {
     const fetchBookingStatsData = async () => {
         try {
             const centerId = selectedCenter !== "all" ? Number(selectedCenter) : null;
-            const url = `${API_BASE}/api/admin/analytics/bookings?month=${selectedMonth}&year=${selectedYear}${centerId ? `&centerId=${centerId}` : ''}`;
-            console.log('✅ Admin fetching bookings from:', url);
+            const url = `${API_BASE_URL}/api/admin/analytics/bookings?month=${selectedMonth}&year=${selectedYear}${centerId ? `&centerId=${centerId}` : ''}`;
+            console.log('? Admin fetching bookings from:', url);
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
             if (!res.ok) {
-                console.error('❌ Bookings API failed:', res.status);
+                console.error('? Bookings API failed:', res.status);
                 setBookingStatsData({ labels: [], counts: [] });
                 return;
             }
             const data = await res.json();
-            console.log('✅ Admin bookings data:', data);
+            console.log('? Admin bookings data:', data);
             setBookingStatsData(data);
         } catch (err) {
-            console.error("❌ fetchBookingStatsData error:", err);
+            console.error("? fetchBookingStatsData error:", err);
             setBookingStatsData({ labels: [], counts: [] });
         }
     };
@@ -139,7 +139,7 @@ export default function AdminAnalytics() {
                 return; 
             }
             const centerId = Number(selectedCenter);
-            const url = `${API_BASE}/api/admin/analytics/feedbacks?centerId=${centerId}`;
+            const url = `${API_BASE_URL}/api/admin/analytics/feedbacks?centerId=${centerId}`;
             const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
             if (!res.ok) {
                 setFeedbackData(null);
@@ -173,11 +173,11 @@ export default function AdminAnalytics() {
 
     // --- Render helpers ---
     const renderMonthOptions = () => Array.from({ length: 12 }, (_, i) => (
-        <option key={i + 1} value={i + 1}>Tháng {i + 1}</option>
+        <option key={i + 1} value={i + 1}>Th�ng {i + 1}</option>
     ));
     const renderYearOptions = () => {
         const currentYear = new Date().getFullYear();
-        return [<option key={currentYear} value={currentYear}>Năm {currentYear}</option>];
+        return [<option key={currentYear} value={currentYear}>Nam {currentYear}</option>];
     };
 
     if (!userInfo && showLoading) {
@@ -185,7 +185,7 @@ export default function AdminAnalytics() {
             <div className="dashboard-container">
                 <Sidebar />
                 <main className="main-content loading-state">
-                    <Loading text="Đang tải dữ liệu người dùng..." />
+                    <Loading text="�ang t?i d? li?u ngu?i d�ng..." />
                 </main>
             </div>
         );
@@ -196,28 +196,28 @@ export default function AdminAnalytics() {
             <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
             <main className="main-content">
                 <header className="page-header">
-                    <h1><FaChartBar /> Bảng điều khiển & Phân tích</h1>
-                    <p>Tổng quan về hiệu suất hoạt động của hệ thống.</p>
+                    <h1><FaChartBar /> B?ng di?u khi?n & Ph�n t�ch</h1>
+                    <p>T?ng quan v? hi?u su?t ho?t d?ng c?a h? th?ng.</p>
                 </header>
 
-                {/* BỘ LỌC */}
+                {/* B? L?C */}
                 <div className="actions-bar analytics-filters">
                     <div className="filter-group">
-                        <label htmlFor="monthFilter"><FaFilter /> Tháng:</label>
+                        <label htmlFor="monthFilter"><FaFilter /> Th�ng:</label>
                         <select id="monthFilter" value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))} disabled={showLoading}>
                             {renderMonthOptions()}
                         </select>
                     </div>
                     <div className="filter-group">
-                        <label htmlFor="yearFilter"><FaFilter /> Năm:</label>
+                        <label htmlFor="yearFilter"><FaFilter /> Nam:</label>
                         <select id="yearFilter" value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))} disabled={showLoading}>
                             {renderYearOptions()}
                         </select>
                     </div>
                     <div className="filter-group">
-                        <label htmlFor="centerFilter"><FaFilter /> Trung tâm:</label>
+                        <label htmlFor="centerFilter"><FaFilter /> Trung t�m:</label>
                         <select id="centerFilter" value={selectedCenter} onChange={e => setSelectedCenter(e.target.value)} disabled={showLoading}>
-                            <option value="all">Tất cả trung tâm</option>
+                            <option value="all">T?t c? trung t�m</option>
                             {centers.map(center => <option key={center.id} value={center.id}>{center.name}</option>)}
                         </select>
                     </div>
@@ -225,7 +225,7 @@ export default function AdminAnalytics() {
 
                 {error && !showLoading && <div className="error-message general-error"><FaExclamationTriangle /> {error}</div>}
 
-                {/* BIỂU ĐỒ */}
+                {/* BI?U �? */}
                 <div className="analytics-charts">
                     <div className="chart-box"><RevenueChart chartData={revenueData} /></div>
                     <div className="chart-box"><BookingStatsChart chartData={bookingStatsData} /></div>

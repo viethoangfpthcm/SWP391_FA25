@@ -3,11 +3,20 @@
  * Sử dụng Vite proxy trong development, direct URL trong production
  */
 
-// Base API URL - sử dụng proxy của Vite
-export const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+// Use global variable injected by Vite define plugin
+// This ensures API_BASE_URL is always defined, even with module loading issues
+const _API_BASE_URL = typeof __API_BASE_URL__ !== 'undefined' 
+    ? __API_BASE_URL__ 
+    : "https://103.90.226.216:8443";
+
+// Export as function to avoid timing issues with module loading
+export const getApiBaseUrl = () => _API_BASE_URL;
+
+// Export as constant for backward compatibility
+export const API_BASE_URL = _API_BASE_URL;
 
 // Alias for backward compatibility
-export const API_BASE = API_BASE_URL;
+export const API_BASE = _API_BASE_URL;
 
 // Các endpoints thường dùng
 export const API_ENDPOINTS = {

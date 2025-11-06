@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { API_BASE_URL } from "@config/api.js";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
 import Sidebar from "@components/layout/Sidebar.jsx";
@@ -36,7 +37,7 @@ export default function PartManagement() {
 
   const fetchParts = async () => {
     try {
-      const response = await fetch("/api/manager/parts", {
+      const response = await fetch(`${API_BASE_URL}/api/manager/parts`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -67,7 +68,7 @@ export default function PartManagement() {
   const handleEditClick = async (part) => {
     setActionLoading(`view-${part.id}`);
     try {
-      const response = await fetch(`/api/manager/parts/${part.id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/manager/parts/${part.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -102,8 +103,8 @@ export default function PartManagement() {
 
     try {
       const url = editingPart
-        ? `/api/manager/parts/${editingPart.id}`
-        : "/api/manager/parts-create";
+        ? `${API_BASE_URL}/api/manager/parts/${editingPart.id}`
+        : `${API_BASE_URL}/api/manager/parts-create`;
       const method = editingPart ? "PUT" : "POST";
 
       // Nếu đang edit: gửi toàn bộ thông tin cần thiết
@@ -142,10 +143,8 @@ export default function PartManagement() {
         setEditingPart(null);
         setFormData({
           name: "",
-          description: "",
           unitPrice: "",
           quantity: "",
-          manufacturer: "",
         });
       } else {
         const errorData = await response.json();

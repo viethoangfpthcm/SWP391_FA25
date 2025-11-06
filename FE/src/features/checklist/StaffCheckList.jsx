@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { useParams, useNavigate } from "react-router-dom";
-import "./CheckList.css";import Button from '@components/ui/Button.jsx';
-
+import "./CheckList.css";
+import Button from '@components/ui/Button.jsx';
+import { API_BASE_URL } from "@config/api.js";
 
 export default function StaffCheckList() {
   const { bookingId } = useParams();
@@ -10,7 +11,7 @@ export default function StaffCheckList() {
   const [checklist, setChecklist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const API_BASE = "";
+  
   const token = localStorage.getItem("token");
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -43,7 +44,7 @@ export default function StaffCheckList() {
   useEffect(() => {
     const fetchChecklist = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/staff/checklist/${bookingId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/staff/checklist/${bookingId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",

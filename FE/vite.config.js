@@ -4,6 +4,11 @@ import path from "path";
 
 export default defineConfig({
     plugins: [react()],
+    define: {
+        // Force inject API_BASE_URL as a global constant
+        'import.meta.env.VITE_API_URL': JSON.stringify('https://103.90.226.216:8443'),
+        '__API_BASE_URL__': JSON.stringify('https://103.90.226.216:8443')
+    },
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),
@@ -16,6 +21,16 @@ export default defineConfig({
             "@config": path.resolve(__dirname, "./src/config"),
             "@assets": path.resolve(__dirname, "./src/assets"),
         },
+    },
+    build: {
+        rollupOptions: {
+            output: {
+                // Force new hash every build to bust cache
+                entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+                chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+                assetFileNames: `assets/[name]-[hash]-${Date.now()}.[ext]`
+            }
+        }
     },
     server: {
         proxy: {
