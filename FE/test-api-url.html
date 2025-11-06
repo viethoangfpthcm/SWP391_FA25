@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API_BASE_URL</title>
+</head>
+<body>
+    <h1>Testing API_BASE_URL Export</h1>
+    <div id="result"></div>
+    
+    <script type="module">
+        import { API_BASE_URL } from './src/config/api.js';
+        
+        const resultDiv = document.getElementById('result');
+        
+        if (typeof API_BASE_URL === 'undefined') {
+            resultDiv.innerHTML = '<p style="color: red;">❌ API_BASE_URL is UNDEFINED!</p>';
+            resultDiv.innerHTML += '<p>This is the problem!</p>';
+        } else if (API_BASE_URL === '') {
+            resultDiv.innerHTML = '<p style="color: orange;">⚠️ API_BASE_URL is EMPTY STRING!</p>';
+            resultDiv.innerHTML += `<p>Value: "${API_BASE_URL}"</p>`;
+        } else {
+            resultDiv.innerHTML = '<p style="color: green;">✅ API_BASE_URL is DEFINED!</p>';
+            resultDiv.innerHTML += `<p>Value: <strong>${API_BASE_URL}</strong></p>`;
+        }
+        
+        console.log('API_BASE_URL:', API_BASE_URL);
+        console.log('Type:', typeof API_BASE_URL);
+    </script>
+</body>
+</html>

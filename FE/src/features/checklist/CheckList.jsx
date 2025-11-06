@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "@config/api.js";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { FaSpinner, FaFloppyDisk, FaEye, FaCircleCheck, FaTriangleExclamation, FaXmark } from "react-icons/fa6";
-import "./CheckList.css";import Button from '@components/ui/Button.jsx';
+import "./CheckList.css";
+import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 
 
@@ -133,7 +135,7 @@ const hasPendingApprovalItems = () => {
     setLoading(true);
     try {
       // API này trả về List<MaintenanceChecklistSummaryResponse>
-      const apiUrl = `/api/technician/my-checklists`;
+      const apiUrl = `${API_BASE_URL}/api/technician/my-checklists`;
 
       const res = await fetch(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
@@ -157,7 +159,7 @@ const hasPendingApprovalItems = () => {
     setLoading(true);
     try {
       // API này trả về MaintenanceChecklistResponse (có details)
-      const apiUrl = `/api/technician/my-checklists/${id}`;
+      const apiUrl = `${API_BASE_URL}/api/technician/my-checklists/${id}`;
 
       const res = await fetch(apiUrl, {
         headers: { Authorization: `Bearer ${token}` },
@@ -244,7 +246,7 @@ const hasPendingApprovalItems = () => {
       for (const detail of changedDetails) {
         const updates = detailUpdates[detail.id];
         try {
-          const apiUrl = `/api/technician/update-detail/${detail.id}`;
+          const apiUrl = `${API_BASE_URL}/api/technician/update-detail/${detail.id}`;
 
           // --- CẬP NHẬT BODY TRONG FETCH ---
           const res = await fetch(apiUrl, {
@@ -298,7 +300,7 @@ const hasPendingApprovalItems = () => {
 
     try {
       // API hoàn thành dùng Checklist ID, không phải Booking ID
-      const apiUrl = `/api/technician/${checklist.id}/complete`;
+      const apiUrl = `${API_BASE_URL}/api/technician/${checklist.id}/complete`;
 
       const res = await fetch(apiUrl, {
         method: 'POST',

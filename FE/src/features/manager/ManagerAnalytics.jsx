@@ -32,13 +32,13 @@ export default function ManagerAnalytics() {
     const [feedbackData, setFeedbackData] = useState(null);
 
     const navigate = useNavigate();
-    const API_BASE = API_BASE_URL;
+    
     const token = localStorage.getItem("token");
 
     // --- Fetch User Info ---
     const fetchUserInfo = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/users/account/current`, {
+            const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) {
@@ -62,7 +62,7 @@ export default function ManagerAnalytics() {
     // --- Fetch Revenue Data (Manager Center Only) ---
     const fetchRevenueData = async () => {
         try {
-            const url = `${API_BASE}/api/manager/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
+            const url = `${API_BASE_URL}/api/manager/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
             console.log("Fetching revenue from:", url);
             const res = await fetch(url, { 
                 headers: { Authorization: `Bearer ${token}` } 
@@ -82,7 +82,7 @@ export default function ManagerAnalytics() {
     // --- Fetch Parts Usage Data ---
     const fetchPartsData = async () => {
         try {
-            const url = `${API_BASE}/api/manager/analytics/parts?month=${selectedMonth}&year=${selectedYear}`;
+            const url = `${API_BASE_URL}/api/manager/analytics/parts?month=${selectedMonth}&year=${selectedYear}`;
             const res = await fetch(url, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -100,7 +100,7 @@ export default function ManagerAnalytics() {
     // --- Fetch Booking Stats ---
     const fetchBookingStatsData = async () => {
         try {
-            const url = `${API_BASE}/api/manager/analytics/bookings?month=${selectedMonth}&year=${selectedYear}`;
+            const url = `${API_BASE_URL}/api/manager/analytics/bookings?month=${selectedMonth}&year=${selectedYear}`;
             console.log("Fetching bookings from:", url);
             const res = await fetch(url, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -120,7 +120,7 @@ export default function ManagerAnalytics() {
     // --- Fetch Feedback Data ---
     const fetchFeedbackData = async () => {
         try {
-            const url = `${API_BASE}/api/manager/analytics/feedbacks`;
+            const url = `${API_BASE_URL}/api/manager/analytics/feedbacks`;
             const res = await fetch(url, {
                 headers: { Authorization: `Bearer ${token}` }
             });

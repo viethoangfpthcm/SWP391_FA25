@@ -5,7 +5,6 @@ import Button from "@components/ui/Button.jsx";
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-
 /**
  * Nút thanh toán VNPay — bản ổn định, không xổ, giao diện đồng bộ trang Report
  */
@@ -15,7 +14,7 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const location = useLocation();
-  const API_BASE = API_BASE_URL;
+  
 
   // ✅ Xử lý redirect về từ VNPay
   useEffect(() => {
@@ -47,7 +46,7 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
     setError('');
 
     try {
-      const response = await fetch(`${API_BASE}/api/payment/create-vnpay-payment/${bookingId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/payment/create-vnpay-payment/${bookingId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -227,7 +226,6 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
   from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
-
 
       .payment-error-message {
         color: #ff8080;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { API_BASE_URL } from "@config/api.js";
 import Loading from "@components/ui/Loading.jsx";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { FaMoneyBillWave, FaCheck, FaTimes } from "react-icons/fa";
@@ -17,7 +18,7 @@ export default function PaymentManagement() {
 
   const fetchPayments = async () => {
     try {
-      const response = await fetch("/api/manager/payment", {
+      const response = await fetch(`${API_BASE_URL}/api/manager/payment`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

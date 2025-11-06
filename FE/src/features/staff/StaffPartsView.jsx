@@ -3,6 +3,7 @@ import { FaCog, FaExclamationTriangle, FaSearch, FaEye } from "react-icons/fa";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import Loading from "@components/ui/Loading.jsx";
 import Button from "@components/ui/Button.jsx";
+import { API_BASE_URL } from "@config/api.js";
 import "./StaffPartsView.css";
 
 const StaffPartsView = () => {
@@ -29,7 +30,7 @@ const StaffPartsView = () => {
     setError(null);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("/api/staff/parts", {
+      const response = await fetch(`${API_BASE_URL}/api/staff/parts`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

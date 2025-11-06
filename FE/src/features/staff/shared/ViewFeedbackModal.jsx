@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes, FaStar } from "react-icons/fa";
 import Loading from "@components/ui/Loading.jsx";
 import Button from "@components/ui/Button.jsx";
-import { API_BASE } from "@config/api.js";
+import { API_BASE_URL } from "@config/api.js";
 import "./ViewFeedbackModal.css";
 
 const ViewFeedbackModal = ({ bookingId, onClose }) => {
@@ -21,7 +21,7 @@ const ViewFeedbackModal = ({ bookingId, onClose }) => {
     setError(null);
     try {
       const token = localStorage.getItem("token");
-      const url = `${API_BASE}/api/staff/feedback/${bookingId}`;
+      const url = `${API_BASE_URL}/api/staff/feedback/${bookingId}`;
       
       const response = await fetch(url, {
         headers: {

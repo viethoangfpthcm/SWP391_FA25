@@ -36,11 +36,11 @@ export default function PartTable({
           <tr>
             <th>ID</th>
             <th>Tên phụ tùng</th>
-            <th>Mô tả</th>
+            
             <th>Giá</th>
             <th>Số lượng</th>
             <th>Nhà sản xuất</th>
-            <th>Trạng thái</th>
+            
             <th>Thao tác</th>
           </tr>
         </thead>
@@ -53,7 +53,6 @@ export default function PartTable({
                 <td className="part-name">
                   <strong>{part.name}</strong>
                 </td>
-                <td className="part-description">{part.description}</td>
                 <td className="part-price">
                   {part.unitPrice != null 
                     ? new Intl.NumberFormat("vi-VN", {
@@ -67,7 +66,7 @@ export default function PartTable({
                     {part.quantity}
                   </span>
                 </td>
-                <td>{part.manufacturer}</td>
+                
                 <td>
                   <span className={`stock-status ${stockStatus.className}`}>
                     {part.quantity <= 10 && <FaExclamationTriangle />}

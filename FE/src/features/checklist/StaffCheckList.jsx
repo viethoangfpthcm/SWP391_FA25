@@ -5,14 +5,13 @@ import "./CheckList.css";
 import Button from '@components/ui/Button.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-
 export default function StaffCheckList() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
   const [checklist, setChecklist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const API_BASE = API_BASE_URL;
+  
   const token = localStorage.getItem("token");
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -45,7 +44,7 @@ export default function StaffCheckList() {
   useEffect(() => {
     const fetchChecklist = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/staff/checklist/${bookingId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/staff/checklist/${bookingId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",

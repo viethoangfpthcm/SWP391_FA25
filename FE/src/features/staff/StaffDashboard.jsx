@@ -27,7 +27,7 @@ export default function StaffDashboard({ user, userRole }) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState(null);
 
-  const API_BASE = API_BASE_URL;
+  
   const token = localStorage.getItem("token");
 
   const fetchUserInfo = async () => {
@@ -40,7 +40,7 @@ export default function StaffDashboard({ user, userRole }) {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/api/users/account/current`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/account/current`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -85,7 +85,7 @@ export default function StaffDashboard({ user, userRole }) {
     try {
       setError(null);
       // API n�y tr? v? StaffBookingDTO (d� bao g?m checklistStatus)
-      const response = await fetch(`${API_BASE}/api/staff/bookings`, {
+      const response = await fetch(`${API_BASE_URL}/api/staff/bookings`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -130,7 +130,7 @@ export default function StaffDashboard({ user, userRole }) {
   const fetchTechnicians = async () => {
     try {
       setError(null);
-      const res = await fetch(`${API_BASE}/api/staff/technicians`, {
+      const res = await fetch(`${API_BASE_URL}/api/staff/technicians`, {
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -220,7 +220,7 @@ export default function StaffDashboard({ user, userRole }) {
 
     try {
       const res = await fetch(
-        `${API_BASE}/api/staff/bookings/assign-technician`,
+        `${API_BASE_URL}/api/staff/bookings/assign-technician`,
         {
           method: "POST",
           headers: {
@@ -258,7 +258,7 @@ export default function StaffDashboard({ user, userRole }) {
 
     try {
       const res = await fetch(
-        `${API_BASE}/api/staff/bookings/${bookingId}/approve`,
+        `${API_BASE_URL}/api/staff/bookings/${bookingId}/approve`,
         {
           method: "POST",
           headers: {
@@ -301,7 +301,7 @@ export default function StaffDashboard({ user, userRole }) {
     setError(null);
 
     try {
-      const url = `${API_BASE}/api/staff/bookings/${bookingId}/decline?reason=${encodeURIComponent(reason)}`;
+      const url = `${API_BASE_URL}/api/staff/bookings/${bookingId}/decline?reason=${encodeURIComponent(reason)}`;
 
       const res = await fetch(url, {
         method: "POST",
@@ -336,7 +336,7 @@ export default function StaffDashboard({ user, userRole }) {
     setError(null);
 
     try {
-      const url = `${API_BASE}/api/staff/bookings/${bookingId}/handover`;
+      const url = `${API_BASE_URL}/api/staff/bookings/${bookingId}/handover`;
 
       const res = await fetch(url, {
         method: "POST",
@@ -361,8 +361,6 @@ export default function StaffDashboard({ user, userRole }) {
       setActionLoading(null);
     }
   };
-
-
 
   // *** S?A L?I H�M N�Y: Staff c� th? xem checklist s?m hon ***
   const hasChecklist = (status) => {
@@ -446,8 +444,6 @@ export default function StaffDashboard({ user, userRole }) {
       </div>
     );
   }
-
-
 
   return (
     <div className="dashboard-container">

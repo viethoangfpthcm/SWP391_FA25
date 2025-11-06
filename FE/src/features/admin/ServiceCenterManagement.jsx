@@ -17,7 +17,6 @@ import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-
 // --- Helper Functions ---
 const isValidPhone = (phone) => {
   if (!phone) return false;
@@ -56,14 +55,14 @@ export default function ServiceCenterManagement() {
   });
 
   const navigate = useNavigate();
-  const API_BASE = API_BASE_URL;
+  
   const token = localStorage.getItem("token");
 
   const fetchCenters = async () => {
     try {
       setError(null);
       setLoading(true);
-      const res = await fetch(`${API_BASE}/api/admin/service-centers`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/service-centers`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 401) {
@@ -141,8 +140,8 @@ export default function ServiceCenterManagement() {
     try {
       const method = editingCenter ? "PUT" : "POST";
       const endpoint = editingCenter
-        ? `${API_BASE}/api/admin/service-centers/${editingCenter.id}`
-        : `${API_BASE}/api/admin/service-centers`;
+        ? `${API_BASE_URL}/api/admin/service-centers/${editingCenter.id}`
+        : `${API_BASE_URL}/api/admin/service-centers`;
 
       const body = {
         name: formData.name.trim(),
@@ -198,7 +197,7 @@ export default function ServiceCenterManagement() {
     setIsDeleting(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE}/api/admin/service-centers/${centerToDeleteId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/service-centers/${centerToDeleteId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

@@ -9,7 +9,6 @@ import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-
 const BOOKING_STATUS_MAP = {
   PENDING: { text: 'Chờ xử lý', className: 'pending' },
   APPROVED: { text: 'Đã duyệt', className: 'approved' },
@@ -59,13 +58,11 @@ function VehicleMaintenanceSchedule() {
   const [confirmModalMessage, setConfirmModalMessage] = useState('');
   const [onConfirmAction, setOnConfirmAction] = useState(null); // Hàm sẽ chạy khi bấm "Xác nhận"
 
-
   // Danh sách trung tâm
 
   const [serviceCenters, setServiceCenters] = useState([]);
 
-
-  const API_BASE = API_BASE_URL;
+  
 
   // useEffect (Không đổi)
   useEffect(() => {
@@ -75,7 +72,7 @@ function VehicleMaintenanceSchedule() {
       if (!token) return;
 
       try {
-        const response = await fetch(`${API_BASE}/api/customer/service-centers`, {
+        const response = await fetch(`${API_BASE_URL}/api/customer/service-centers`, {
           headers: {
             "Authorization": `Bearer ${token}`,
             "Accept": "application/json"
@@ -115,7 +112,7 @@ function VehicleMaintenanceSchedule() {
         setActiveBookings([]);
 
         // --- 1. Fetch Lịch Bảo Dưỡng ---
-        const scheduleResponse = await fetch(`${API_BASE}/api/customer/maintenance-schedule?licensePlate=${encodeURIComponent(licensePlate)}`, {
+        const scheduleResponse = await fetch(`${API_BASE_URL}/api/customer/maintenance-schedule?licensePlate=${encodeURIComponent(licensePlate)}`, {
           headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
         });
         if (!scheduleResponse.ok) {
@@ -142,7 +139,7 @@ function VehicleMaintenanceSchedule() {
         }
 
         // --- 2. Fetch Thông tin Booking hiện tại của xe ---
-        const bookingsResponse = await fetch(`${API_BASE}/api/customer/bookings/vehicle/${encodeURIComponent(licensePlate)}`, {
+        const bookingsResponse = await fetch(`${API_BASE_URL}/api/customer/bookings/vehicle/${encodeURIComponent(licensePlate)}`, {
           headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
         });
         if (bookingsResponse.ok) {
@@ -246,7 +243,7 @@ function VehicleMaintenanceSchedule() {
         maintenancePlanId: selectedPlanForBooking.maintenancePlanId,
         note: bookingFormData.note
       };
-      const response = await fetch(`${API_BASE}/api/customer/bookings`, {
+      const response = await fetch(`${API_BASE_URL}/api/customer/bookings`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -283,7 +280,6 @@ function VehicleMaintenanceSchedule() {
     }
   };
 
-
   // *** SỬA LẠI: TÁCH HÀM HỦY LÀM 2 BƯỚC ***
 
   // Bước 1: Hàm này được gọi bởi nút "Hủy lịch hẹn"
@@ -302,7 +298,7 @@ function VehicleMaintenanceSchedule() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(`${API_BASE}/api/customer/bookings/${bookingId}/cancel`, {
+      const response = await fetch(`${API_BASE_URL}/api/customer/bookings/${bookingId}/cancel`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -342,7 +338,6 @@ function VehicleMaintenanceSchedule() {
     }
   };
   // *** KẾT THÚC SỬA ***
-
 
   if (loading) {
     return (
@@ -496,7 +491,6 @@ function VehicleMaintenanceSchedule() {
           </div>
         )}
         {/* --- Kết thúc Modal Confirm --- */}
-
 
         {/* --- Danh sách lịch bảo dưỡng (Không thay đổi) --- */}
         {schedule.length > 0 ? (

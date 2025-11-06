@@ -7,7 +7,6 @@ import { API_BASE_URL } from "@config/api.js";
 import './PaymentResult.css';
 import Button from '@components/ui/Button.jsx';
 
-
 export default function PaymentResult() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -17,14 +16,14 @@ export default function PaymentResult() {
   const isSuccess = responseCode === '00';
   const token = localStorage.getItem('token');
   const customerId = localStorage.getItem('userId');
-  const API_BASE = API_BASE_URL;
+  
 
   // Cập nhật danh sách reports khi thanh toán thành công
   useEffect(() => {
     if (isSuccess && token && customerId) {
       const fetchReportsList = async () => {
         try {
-          const listUrl = `${API_BASE}/api/customer/maintenance/checklists?customerId=${encodeURIComponent(customerId)}`;
+          const listUrl = `${API_BASE_URL}/api/customer/maintenance/checklists?customerId=${encodeURIComponent(customerId)}`;
           const response = await fetch(listUrl, { headers: { Authorization: `Bearer ${token}` } });
           if (response.ok) {
             const data = await response.json();

@@ -17,8 +17,6 @@ import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-
-
 // --- Helper Functions ---
 const isValidPartName = (name) => {
     // Basic check: not empty, at least 2 chars. Allows most characters.
@@ -62,7 +60,7 @@ export default function PartManagement() {
 
   const { centerId } = useParams(); // Get centerId from URL
   const navigate = useNavigate();
-  const API_BASE = API_BASE_URL;
+  
   const token = localStorage.getItem("token");
 
   // Fetch center info, parts for this center, and all part types
@@ -73,21 +71,21 @@ export default function PartManagement() {
       setLoading(true);
 
       // Fetch Center Info
-      const centerRes = await fetch(`${API_BASE}/api/admin/service-centers/${centerId}`, { headers: { Authorization: `Bearer ${token}` } });
+      const centerRes = await fetch(`${API_BASE_URL}/api/admin/service-centers/${centerId}`, { headers: { Authorization: `Bearer ${token}` } });
       if (centerRes.status === 401) throw new Error("Unauthorized");
       if (!centerRes.ok) throw new Error(`L?i t?i th�ng tin trung t�m`);
       const centerData = await centerRes.json();
       setCenterInfo(centerData);
 
       // Fetch Parts for this Center
-      const partsRes = await fetch(`${API_BASE}/api/admin/service-centers/${centerId}/parts`, { headers: { Authorization: `Bearer ${token}` } });
+      const partsRes = await fetch(`${API_BASE_URL}/api/admin/service-centers/${centerId}/parts`, { headers: { Authorization: `Bearer ${token}` } });
       if (partsRes.status === 401) throw new Error("Unauthorized");
       if (!partsRes.ok) throw new Error(`L?i t?i danh s�ch ph? t�ng`);
       const partsData = await partsRes.json();
       setParts(Array.isArray(partsData) ? partsData : []);
 
       // Fetch All Part Types (for dropdown)
-      const partTypeRes = await fetch(`${API_BASE}/api/admin/part-types`, { headers: { Authorization: `Bearer ${token}` } });
+      const partTypeRes = await fetch(`${API_BASE_URL}/api/admin/part-types`, { headers: { Authorization: `Bearer ${token}` } });
       if (partTypeRes.status === 401) throw new Error("Unauthorized");
       if (!partTypeRes.ok) throw new Error(`L?i t?i danh s�ch lo?i ph? t�ng`);
       const partTypeData = await partTypeRes.json();
@@ -114,7 +112,7 @@ export default function PartManagement() {
     setIsDeleting(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE}/api/admin/parts/${partToDeleteId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/parts/${partToDeleteId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -224,8 +222,8 @@ export default function PartManagement() {
     try {
       const method = editingPart ? "PUT" : "POST";
       const endpoint = editingPart
-        ? `${API_BASE}/api/admin/parts/${editingPart.id}`
-        : `${API_BASE}/api/admin/service-centers/${centerId}/parts`;
+        ? `${API_BASE_URL}/api/admin/parts/${editingPart.id}`
+        : `${API_BASE_URL}/api/admin/service-centers/${centerId}/parts`;
 
       // Prepare body, ensuring numbers are correctly parsed from validated strings
       const body = {

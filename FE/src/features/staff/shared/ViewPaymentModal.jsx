@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes, FaDollarSign } from "react-icons/fa";
 import Loading from "@components/ui/Loading.jsx";
 import Button from "@components/ui/Button.jsx";
+import { API_BASE_URL } from "@config/api.js";
 import "./ViewPaymentModal.css";
 
 const ViewPaymentModal = ({ bookingId, onClose }) => {
@@ -21,7 +22,7 @@ const ViewPaymentModal = ({ bookingId, onClose }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `/api/staff/payments/booking/${bookingId}`,
+        `${API_BASE_URL}/api/staff/payments/booking/${bookingId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

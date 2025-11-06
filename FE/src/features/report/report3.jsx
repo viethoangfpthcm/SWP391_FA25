@@ -1,13 +1,15 @@
 // src/page/report/Report3.jsx
 import React, { useEffect, useState } from "react";
-import "./report3.css";import Button from '@components/ui/Button.jsx';
+import { API_BASE_URL } from "@config/api.js";
+import "./report3.css";
+import Button from '@components/ui/Button.jsx';
 
 
 const Report3 = () => {
   const [reports, setReports] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/customer/maintenance/checklists")
+    fetch(`${API_BASE_URL}/api/customer/maintenance/checklists`)
       .then((res) => res.json())
       .then((data) => setReports(data))
       .catch((err) => console.error(err));
@@ -16,7 +18,7 @@ const Report3 = () => {
   const handleApproval = async (detailId, isApproved) => {
     try {
       const response = await fetch(
-        `/api/customer/maintenance/checklists/details/${detailId}/approval`,
+        `${API_BASE_URL}/api/customer/maintenance/checklists/details/${detailId}/approval`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

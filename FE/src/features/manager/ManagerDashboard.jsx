@@ -18,7 +18,7 @@ export default function ManagerDashboard() {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
-  const API_BASE = API_BASE_URL;
+  
 
   useEffect(() => {
     fetchUserInfo();
@@ -39,7 +39,7 @@ export default function ManagerDashboard() {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/api/users/account/current`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/account/current`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -65,7 +65,7 @@ export default function ManagerDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/manager/users`, {
+      const response = await fetch(`${API_BASE_URL}/api/manager/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

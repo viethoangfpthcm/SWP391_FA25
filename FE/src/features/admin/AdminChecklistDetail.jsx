@@ -17,7 +17,6 @@ import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-
 if (import.meta.env.MODE !== "development") {
 }
 
@@ -31,13 +30,13 @@ export default function AdminChecklistDetail() {
     // L?y bookingId t? URL
     const { bookingId } = useParams();
 
-    const API_BASE = API_BASE_URL;
+    
     const token = localStorage.getItem("token");
 
     // 1. Fetch th�ng tin user (cho Sidebar)
     const fetchUserInfo = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/users/account/current`, {
+            const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (res.status === 401) {
@@ -67,7 +66,7 @@ export default function AdminChecklistDetail() {
         try {
             setError(null);
             setLoading(true);
-            const url = `${API_BASE}/api/admin/checklists/booking/${bookingId}`;
+            const url = `${API_BASE_URL}/api/admin/checklists/booking/${bookingId}`;
 
             const res = await fetch(url, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -131,7 +130,6 @@ export default function AdminChecklistDetail() {
 
         return `role-${formattedStatus}`;
     };
-
 
     // Helper m?i d? d?nh d?ng ti?n t?
     const formatCurrency = (amount) => {

@@ -28,14 +28,14 @@ export default function AdminScheduleManagement() {
     const [filterVehicle, setFilterVehicle] = useState("all");
 
     const navigate = useNavigate();
-    const API_BASE = API_BASE_URL;
+    
 
     const getToken = () => localStorage.getItem("token");
 
     // --- Lấy thông tin user ---
     const fetchUserInfo = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/users/account/current`, {
+            const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
                 headers: {
                     Authorization: `Bearer ${getToken()}`
                 },
@@ -60,7 +60,7 @@ export default function AdminScheduleManagement() {
     const fetchSchedules = async () => {
         try {
             setLoading(true);
-            const res = await fetch(`${API_BASE}/api/admin/schedules`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/schedules`, {
                 headers: {
                     Authorization: `Bearer ${getToken()}`
                 },
@@ -87,7 +87,7 @@ export default function AdminScheduleManagement() {
     const fetchPlans = async (scheduleId) => {
         try {
             setLoading(true);
-            const res = await fetch(`${API_BASE}/api/admin/schedules/${scheduleId}/plans`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/schedules/${scheduleId}/plans`, {
                 headers: {
                     Authorization: `Bearer ${getToken()}`
                 },
@@ -167,7 +167,7 @@ export default function AdminScheduleManagement() {
     const handleDeleteSchedule = async (scheduleId) => {
         if (!window.confirm("Bạn có chắc muốn xóa lịch trình này?")) return;
         try {
-            const res = await fetch(`${API_BASE}/api/admin/schedules/${scheduleId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/schedules/${scheduleId}`, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${getToken()}`
@@ -218,7 +218,7 @@ export default function AdminScheduleManagement() {
 
             if (modalMode === "add") {
                 // Thử cả 2 cách: query string VÀ body
-                res = await fetch(`${API_BASE}/api/admin/schedules?${query}`, {
+                res = await fetch(`${API_BASE_URL}/api/admin/schedules?${query}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -228,7 +228,7 @@ export default function AdminScheduleManagement() {
                 });
             } else if (modalMode === "edit" && selectedSchedule?.id) {
                 // Thử cả 2 cách: query string VÀ body
-                res = await fetch(`${API_BASE}/api/admin/schedules/${selectedSchedule.id}?${query}`, {
+                res = await fetch(`${API_BASE_URL}/api/admin/schedules/${selectedSchedule.id}?${query}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -293,7 +293,7 @@ export default function AdminScheduleManagement() {
 
             // Nếu là plan đã có trong DB, gọi API DELETE
             const res = await fetch(
-                `${API_BASE}/api/admin/plans/${planId}`,
+                `${API_BASE_URL}/api/admin/plans/${planId}`,
                 {
                     method: 'DELETE',
                     headers: { Authorization: `Bearer ${getToken()}` },
@@ -334,7 +334,7 @@ export default function AdminScheduleManagement() {
 
                 if (plan.isNew || plan.id.toString().startsWith('temp_')) {
                     // Thêm plan mới
-                    const res = await fetch(`${API_BASE}/api/admin/plans`, {
+                    const res = await fetch(`${API_BASE_URL}/api/admin/plans`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -357,7 +357,7 @@ export default function AdminScheduleManagement() {
                 } else if (plan.modified) {
                     // Cập nhật plan đã tồn tại
                     const res = await fetch(
-                        `${API_BASE}/api/admin/plans/${plan.id}`,
+                        `${API_BASE_URL}/api/admin/plans/${plan.id}`,
                         {
                             method: 'PUT',
                             headers: {

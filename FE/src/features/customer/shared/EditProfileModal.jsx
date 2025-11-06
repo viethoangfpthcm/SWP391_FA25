@@ -8,7 +8,7 @@ function EditProfileModal({ profile, onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const API_BASE = API_BASE_URL;
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +17,7 @@ function EditProfileModal({ profile, onClose, onSuccess }) {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${API_BASE}/api/users/update-profile`, {
+      const response = await fetch(`${API_BASE_URL}/api/users/update-profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

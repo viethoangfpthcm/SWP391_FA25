@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   FaUserCog,
   FaPlus,
@@ -12,7 +12,7 @@ import {
   FaCheck, // Import FaCheck for confirm button
 } from "react-icons/fa";
 import "./AdminDashboard.css";
-import Sidebar from "@components/layout/Sidebar.jsx"; // Đảm bảo đường dẫn đúng
+import Sidebar from "@components/layout/Sidebar.jsx"; // �?m b?o du?ng d?n d�ng
 import { useNavigate } from "react-router-dom";
 import ConfirmationModal from "@components/ui/ConfirmationModal.jsx";
 import Button from '@components/ui/Button.jsx';
@@ -21,7 +21,6 @@ import FiltersBar from './shared/FiltersBar.jsx';
 import UserTable from './shared/UserTable.jsx';
 import UserForm from './shared/UserForm.jsx';
 import { API_BASE_URL } from "@config/api.js";
-
 
 // --- Helper Functions for Validation ---
 const isValidEmail = (email) => {
@@ -69,13 +68,13 @@ export default function AdminDashboard() {
   const [userToDeleteId, setUserToDeleteId] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false); // Loading state specifically for delete action
   const [isToggling, setIsToggling] = useState(false);
-  const API_BASE = API_BASE_URL;
+
   const token = localStorage.getItem("token");
 
   // Fetch current admin user info
   const fetchUserInfo = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/users/account/current`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 401) {
@@ -108,14 +107,14 @@ export default function AdminDashboard() {
     try {
       setError(null);
       setLoading(true);
-      const res = await fetch(`${API_BASE}/api/admin/users`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 401) {
         localStorage.clear(); navigate("/"); return;
       }
       if (!res.ok) {
-        setError(`Lỗi tải danh sách người dùng (${res.status})`);
+        setError(`L?i t?i danh s�ch ngu?i d�ng (${res.status})`);
         setLoading(false);
         return;
       }
@@ -126,7 +125,7 @@ export default function AdminDashboard() {
         console.error("Users response is not JSON:", contentType);
         const text = await res.text();
         console.error("Response body:", text.substring(0, 200));
-        setError("API trả về dữ liệu không hợp lệ. Vui lòng kiểm tra backend.");
+        setError("API tr? v? d? li?u kh�ng h?p l?. Vui l�ng ki?m tra backend.");
         setLoading(false);
         return;
       }
@@ -135,7 +134,7 @@ export default function AdminDashboard() {
       setUsers(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Fetch Users Error:", err);
-      setError("Không thể tải danh sách người dùng. Vui lòng thử lại.");
+      setError("Kh�ng th? t?i danh s�ch ngu?i d�ng. Vui l�ng th? l?i.");
     } finally {
       setLoading(false);
     }
@@ -152,36 +151,35 @@ export default function AdminDashboard() {
   }, [token, navigate]);
 
   const centerList = useMemo(() => {
-    // Lấy tất cả 'centerName' có trong danh sách users
+    // L?y t?t c? 'centerName' c� trong danh s�ch users
     const centers = users
       .map(user => user.centerName)
-      .filter(Boolean); // Lọc bỏ các giá trị null/undefined/""
+      .filter(Boolean); // L?c b? c�c gi� tr? null/undefined/""
 
-    // Dùng Set để lấy duy nhất và sort theo ABC
+    // D�ng Set d? l?y duy nh?t v� sort theo ABC
     return [...new Set(centers)].sort();
-  }, [users]); // Chỉ chạy lại khi 'users' thay đổi
+  }, [users]); // Ch? ch?y l?i khi 'users' thay d?i
 
-  // --- Logic Lọc Chuỗi (Role -> Center -> Active) ---
+  // --- Logic L?c Chu?i (Role -> Center -> Active) ---
   const filteredUsers = users
     .filter(user => {
-      // 1. Lọc theo Role
+      // 1. L?c theo Role
       if (filterRole === "all") return true;
       return user.role && user.role.toLowerCase() === filterRole.toLowerCase();
     })
     .filter(user => {
-      // 2. Lọc theo Center
+      // 2. L?c theo Center
       if (filterCenter === "all") return true;
       if (filterCenter === "none") return !user.centerName;
       return user.centerName === filterCenter;
     })
     .filter(user => {
-      // 3. Lọc theo Trạng thái Active
+      // 3. L?c theo Tr?ng th�i Active
       if (filterActive === "all") return true;
       if (filterActive === "true") return !!user.isActive;
       if (filterActive === "false") return !user.isActive;
       return true;
     });
-
 
   // Handle input changes in the form
   const handleChange = (e) => {
@@ -228,25 +226,25 @@ export default function AdminDashboard() {
   const validateForm = () => {
     const errors = {};
     if (!formData.fullName || formData.fullName.trim() === "") {
-      errors.fullName = "Họ tên không được để trống.";
+      errors.fullName = "H? t�n kh�ng du?c d? tr?ng.";
     }
     if (!formData.email || !isValidEmail(formData.email.trim())) {
-      errors.email = "Email không đúng định dạng.";
+      errors.email = "Email kh�ng d�ng d?nh d?ng.";
     }
     if (!formData.phone || !isValidPhone(formData.phone.trim())) {
-      errors.phone = "Số điện thoại không đúng định dạng VN (10 số).";
+      errors.phone = "S? di?n tho?i kh�ng d�ng d?nh d?ng VN (10 s?).";
     }
     if (!formData.role) {
-      errors.role = "Vui lòng chọn vai trò.";
+      errors.role = "Vui l�ng ch?n vai tr�.";
     }
     // Password required only when adding a new user
     if (!editingUser && (!formData.password || formData.password.length < 6)) {
-      errors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
+      errors.password = "M?t kh?u ph?i c� �t nh?t 6 k� t?.";
     }
     // Center ID required (and must be positive number) for Staff/Technician
     const centerIdValue = formData.centerId ? String(formData.centerId).trim() : "";
     if ((formData.role === "STAFF" || formData.role === "TECHNICIAN") && (centerIdValue === "" || isNaN(parseInt(centerIdValue)) || parseInt(centerIdValue) <= 0)) {
-      errors.centerId = "Center ID là bắt buộc (số dương) cho Staff/Technician.";
+      errors.centerId = "Center ID l� b?t bu?c (s? duong) cho Staff/Technician.";
     }
 
     setFormErrors(errors); // Update the error state
@@ -267,9 +265,8 @@ export default function AdminDashboard() {
     try {
       const method = editingUser ? "PUT" : "POST";
       const endpoint = editingUser
-        ? `${API_BASE}/api/admin/users-update?userIdToUpdate=${editingUser.userId}`
-        : `${API_BASE}/api/admin/users-create`;
-
+        ? `${API_BASE_URL}/api/admin/users-update?userIdToUpdate=${editingUser.userId}`
+        : `${API_BASE_URL}/api/admin/users-create`;
       const requestBody = {
         fullName: formData.fullName.trim(),
         email: formData.email.trim(),
@@ -291,19 +288,19 @@ export default function AdminDashboard() {
 
       // Handle response errors (including validation errors from backend)
       if (!res.ok) {
-        let errorMsg = "Đã có lỗi xảy ra khi lưu.";
+        let errorMsg = "�� c� l?i x?y ra khi luu.";
         let fieldErrors = {};
         try {
           const errorData = await res.json();
-          errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
+          errorMsg = errorData.message || errorData.error || `L?i ${res.status}`;
           // Check if backend returned field-specific errors
           if (errorData.fieldErrors && typeof errorData.fieldErrors === 'object') {
             fieldErrors = errorData.fieldErrors;
             setFormErrors(prev => ({ ...prev, ...fieldErrors })); // Set field errors state
-            errorMsg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các trường."; // More generic message
+            errorMsg = "D? li?u kh�ng h?p l?. Vui l�ng ki?m tra l?i c�c tru?ng."; // More generic message
           }
         } catch (parseError) {
-          errorMsg = `Lỗi ${res.status}. Không thể đọc chi tiết lỗi.`;
+          errorMsg = `L?i ${res.status}. Kh�ng th? d?c chi ti?t l?i.`;
         }
         throw new Error(errorMsg); // Throw error to be caught below
       }
@@ -312,12 +309,12 @@ export default function AdminDashboard() {
       await fetchUsers();   // Refresh the user list on success
       setShowForm(false);   // Close the modal
       setEditingUser(null); // Reset editing state
-      // Consider adding a success toast here: toast.success('Lưu thành công!');
+      // Consider adding a success toast here: toast.success('Luu th�nh c�ng!');
 
     } catch (err) {
       console.error("Submit error:", err);
       // Display general submit error inside the modal
-      setError(err.message || "Không thể thực hiện yêu cầu.");
+      setError(err.message || "Kh�ng th? th?c hi?n y�u c?u.");
     } finally {
       setActionLoading(false); // Stop loading spinner on save button
     }
@@ -338,7 +335,7 @@ export default function AdminDashboard() {
     setError(null);      // Clear previous error
 
     try {
-      const res = await fetch(`${API_BASE}/api/admin/users/${userToDeleteId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${userToDeleteId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -348,10 +345,10 @@ export default function AdminDashboard() {
       }
 
       if (!res.ok) {
-        let errorMsg = "Không thể xóa người dùng.";
+        let errorMsg = "Kh�ng th? x�a ngu?i d�ng.";
         try {
           const errorData = await res.json();
-          errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
+          errorMsg = errorData.message || errorData.error || `L?i ${res.status}`;
         } catch (e) { }
         throw new Error(errorMsg);
       }
@@ -360,12 +357,12 @@ export default function AdminDashboard() {
       setShowConfirmModal(false); // Close confirmation modal
       setUserToDeleteId(null);
       await fetchUsers(); // Refresh user list
-      // Consider adding a success toast here: toast.success('Xóa thành công!');
+      // Consider adding a success toast here: toast.success('X�a th�nh c�ng!');
 
     } catch (err) {
       console.error("Delete Error:", err);
       // Display error (can be shown as general error or inside confirmation modal if kept open)
-      setError(err.message || "Xóa người dùng thất bại.");
+      setError(err.message || "X�a ngu?i d�ng th?t b?i.");
       // setShowConfirmModal(false); // Optionally close modal even on error
     } finally {
       setIsDeleting(false); // Stop delete loading indicator
@@ -381,20 +378,22 @@ export default function AdminDashboard() {
     const newIsActive = !userToToggle.isActive;
 
     try {
-      const res = await fetch(`${API_BASE}/api/admin/user/active?userId=${userToToggle.userId}&isActive=${newIsActive}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Accept": "application/json",
-        },
-      });
+      const res = await fetch(
+        `${API_BASE_URL}/api/admin/user/active?userId=${userToToggle.userId}&isActive=${newIsActive}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Accept": "application/json",
+          },
+        });
 
       if (res.status === 401) {
         localStorage.clear(); navigate("/"); return;
       }
 
       if (!res.ok) {
-        let errorMsg = `Không thể cập nhật trạng thái. (Lỗi ${res.status})`;
+        let errorMsg = `Kh�ng th? c?p nh?t tr?ng th�i. (L?i ${res.status})`;
         try {
           const errorData = await res.json();
           errorMsg = errorData.message || errorData.error || errorMsg;
@@ -412,7 +411,7 @@ export default function AdminDashboard() {
 
     } catch (err) {
       console.error("Toggle Active Error:", err);
-      setError(err.message || "Cập nhật trạng thái thất bại.");
+      setError(err.message || "C?p nh?t tr?ng th�i th?t b?i.");
     } finally {
       setIsToggling(false);
     }
@@ -429,10 +428,10 @@ export default function AdminDashboard() {
   if (loading && !userInfo) {
     return (
       <div className="dashboard-container">
-        <Sidebar userName={"Đang tải..."} userRole={"Admin"} />
+        <Sidebar userName={"�ang t?i..."} userRole={"Admin"} />
         <main className="main-content loading-state">
           <Loading inline />
-          <p>Đang tải dữ liệu...</p>
+          <p>�ang t?i d? li?u...</p>
         </main>
       </div>
     );
@@ -445,8 +444,8 @@ export default function AdminDashboard() {
 
       <main className="main-content">
         <header className="page-header">
-          <h1> <FaUserCog /> Quản lý người dùng </h1>
-          <p>Thêm, chỉnh sửa và quản lý người dùng trong hệ thống.</p>
+          <h1> <FaUserCog /> Qu?n l� ngu?i d�ng </h1>
+          <p>Th�m, ch?nh s?a v� qu?n l� ngu?i d�ng trong h? th?ng.</p>
         </header>
 
         {/* Display General Errors (fetch errors, delete errors) when FORM IS CLOSED */}
@@ -494,7 +493,7 @@ export default function AdminDashboard() {
         {/* --- Confirmation Modal for Deletion --- */}
         <ConfirmationModal
           show={showConfirmModal}
-          message={`Bạn có chắc chắn muốn xóa người dùng ID: ${userToDeleteId}? Hành động này không thể hoàn tác.`}
+          message={`B?n c� ch?c ch?n mu?n x�a ngu?i d�ng ID: ${userToDeleteId}? H�nh d?ng n�y kh�ng th? ho�n t�c.`}
           onConfirm={confirmDelete}
           onCancel={cancelDelete}
           isLoading={isDeleting} // Pass the delete loading state

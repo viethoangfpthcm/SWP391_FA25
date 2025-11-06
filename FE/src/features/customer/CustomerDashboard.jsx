@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from "@config/api.js";
 import Navbar from "@components/layout/Navbar.jsx";
 import Footer from "@components/layout/Footer.jsx";
-import { API_BASE } from "@config/api.js";
-import './CustomerDashboard.css';
-
-
 import { FaUser, FaCar, FaCalendarAlt, FaPlus, FaTimes, FaEdit, FaCheckCircle, FaExclamationTriangle, FaSpinner, FaStar } from 'react-icons/fa';
 import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
+import './CustomerDashboard.css';
 
 
 const BOOKING_STATUS_MAP = {
@@ -74,7 +72,7 @@ function CustomerDashboard() {
     const fetchVehicleModels = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${API_BASE}/api/customer/vehicle-models`, {
+        const response = await fetch(API_BASE_URL + "/api/customer/vehicle-models", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -113,10 +111,10 @@ function CustomerDashboard() {
     setLoading(true);
 
     try {
-      const dashboardPromise = fetch(`${API_BASE}/api/customer/dashboard/${userId}`, {
+      const dashboardPromise = fetch(API_BASE_URL + "/api/customer/dashboard/" + userId, {
         headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
       });
-      const bookingsPromise = fetch(`${API_BASE}/api/customer/bookings/customerBookings/${userId}`, {
+      const bookingsPromise = fetch(API_BASE_URL + "/api/customer/bookings/customerBookings/" + userId, {
         headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
       });
 
@@ -173,7 +171,7 @@ const executeDeleteVehicle = async (licensePlate) => {
 
   try {
     const response = await fetch(
-      `${API_BASE}/api/customer/delete-vehicle?licensePlate=${encodeURIComponent(licensePlate)}`,
+      API_BASE_URL + "/api/customer/delete-vehicle?licensePlate=" + encodeURIComponent(licensePlate),
       {
         method: "DELETE",
         headers: {
@@ -211,7 +209,7 @@ const executeDeleteVehicle = async (licensePlate) => {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(`${API_BASE}/api/customer/bookings/${bookingId}/cancel`, {
+      const response = await fetch(API_BASE_URL + "/api/customer/bookings/" + bookingId + "/cancel", {
         method: "PUT",
         headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
       });
@@ -251,7 +249,7 @@ const executeDeleteVehicle = async (licensePlate) => {
     setShowFeedbackModal(true);
 
     try {
-      const response = await fetch(`${API_BASE}/api/feedback/${bookingId}`, {
+      const response = await fetch(API_BASE_URL + "/api/feedback/" + bookingId, {
         headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
       });
 
@@ -305,7 +303,7 @@ const executeDeleteVehicle = async (licensePlate) => {
     };
 
     try {
-      const response = await fetch(`${API_BASE}/api/feedback/${currentBookingId}`, {
+      const response = await fetch(API_BASE_URL + "/api/feedback/" + currentBookingId, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -384,7 +382,7 @@ const executeDeleteVehicle = async (licensePlate) => {
         year: parseInt(newVehicleData.year, 10) || null,
         currentKm: parseInt(newVehicleData.currentKm, 10) || 0,
       };
-      const response = await fetch(`${API_BASE}/api/customer/create-vehicle`, {
+      const response = await fetch(API_BASE_URL + "/api/customer/create-vehicle", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -479,7 +477,7 @@ const executeDeleteVehicle = async (licensePlate) => {
     };
 
     try {
-      const response = await fetch(`${API_BASE}/api/users/update-profile`, {
+      const response = await fetch(API_BASE_URL + "/api/users/update-profile", {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${token}`,

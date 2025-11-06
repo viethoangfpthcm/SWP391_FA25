@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-
 if (import.meta.env.MODE !== "development") {
 }
 
@@ -25,13 +24,13 @@ export default function AdminPaymentManagement() {
     const [selectedCenter, setSelectedCenter] = useState("all");
 
     const navigate = useNavigate();
-    const API_BASE = API_BASE_URL;
+    
     const token = localStorage.getItem("token");
 
     // --- L?y th�ng tin user ---
     const fetchUserInfo = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/users/account/current`, {
+            const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (res.status === 401) {
@@ -53,7 +52,7 @@ export default function AdminPaymentManagement() {
     // --- L?y danh s�ch trung t�m ---
     const fetchCenters = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/admin/service-centers`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/service-centers`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) throw new Error("Kh�ng th? t?i danh s�ch trung t�m");
@@ -71,9 +70,9 @@ export default function AdminPaymentManagement() {
             let endpoint;
 
             if (selectedCenter === "all" || !selectedCenter) {
-                endpoint = `${API_BASE}/api/admin/payments`;
+                endpoint = `${API_BASE_URL}/api/admin/payments`;
             } else {
-                endpoint = `${API_BASE}/api/admin/payments/by-center/${selectedCenter}`;
+                endpoint = `${API_BASE_URL}/api/admin/payments/by-center/${selectedCenter}`;
             }
             const res = await fetch(endpoint, {
                 headers: { Authorization: `Bearer ${token}` },

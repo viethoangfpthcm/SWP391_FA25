@@ -14,7 +14,6 @@ import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-
 // Hàm format nằm ngoài component
 const formatTechStatus = (status) => {
   switch (status) {
@@ -26,7 +25,6 @@ const formatTechStatus = (status) => {
     default: return status || 'Chưa rõ';
   }
 };
-
 
 export default function Report1() {
   // === State ===
@@ -46,7 +44,7 @@ export default function Report1() {
 
   const token = localStorage.getItem("token");
   const customerId = localStorage.getItem("userId");
-  const API_BASE = API_BASE_URL;
+  
 
   // === Hàm xử lý ===
   const showToast = (message, type = "success") => {
@@ -65,7 +63,7 @@ export default function Report1() {
         return;
       }
       try {
-        const listUrl = `${API_BASE}/api/customer/maintenance/checklists?customerId=${encodeURIComponent(customerId)}`;
+        const listUrl = `${API_BASE_URL}/api/customer/maintenance/checklists?customerId=${encodeURIComponent(customerId)}`;
         const response = await fetch(listUrl, { headers: { Authorization: `Bearer ${token}` } });
 
         if (!response.ok) {
@@ -119,11 +117,10 @@ export default function Report1() {
     if (!bookingId) return;
     setShowDetailModal(true); setDetailLoading(true); setCurrentReport(null);
     try {
-      const detailUrl = `${API_BASE}/api/customer/maintenance/checklists/${bookingId}`;
+      const detailUrl = `${API_BASE_URL}/api/customer/maintenance/checklists/${bookingId}`;
       const response = await fetch(detailUrl, { headers: { Authorization: `Bearer ${token}` } });
       if (!response.ok) { throw new Error("Không thể tải chi tiết."); }
       const detailData = await response.json();
-
 
       let updatedApprovedCost = detailData.totalCostApproved || 0;
       let updatedDeclinedCost = detailData.totalCostDeclined || 0;
@@ -220,7 +217,7 @@ export default function Report1() {
     showToast(`Đang cập nhật ${changes.length} mục...`, "info");
 
     const updatePromises = changes.map(detail => {
-      const approvalUrl = `${API_BASE}/api/customer/maintenance/checklists/details/${detail.id}/approval`;
+      const approvalUrl = `${API_BASE_URL}/api/customer/maintenance/checklists/details/${detail.id}/approval`;
       return fetch(approvalUrl, {
         method: 'PUT',
         headers: {
@@ -298,7 +295,6 @@ export default function Report1() {
               const hasPendingTechnicianStatus = currentReport.details.some(
                 d => d.status === 'PENDING' || !d.status
               );
-
 
               return (
                 <article className="report-document-modal">
