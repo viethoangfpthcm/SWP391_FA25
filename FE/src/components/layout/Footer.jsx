@@ -1,5 +1,5 @@
 import React from "react";
-import { FaFacebookF, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import "./Footer.css";
 
 export default function Footer() {
@@ -35,8 +35,8 @@ export default function Footer() {
             <h4>Kết nối với chúng tôi</h4>
             <div className="footer-socials">
               <a href="https://www.facebook.com/akk.7105?locale=vi_VN"><FaFacebookF /></a>
-              <a href="#"><FaInstagram /></a>
-              <a href="#"><FaTwitter /></a>
+              <a href="https://www.instagram.com/quthang_d12/"><FaInstagram /></a>
+              <a href="https://www.youtube.com/watch?v=QK5tzqdukW8&list=RDQK5tzqdukW8&start_radio=1"><FaYoutube /></a>
             </div>
           </div>
         </div>
