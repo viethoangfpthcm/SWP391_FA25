@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { FaSpinner, FaFloppyDisk, FaEye, FaCircleCheck, FaTriangleExclamation, FaXmark } from "react-icons/fa6";
-import "./CheckList.css";import Button from '@components/ui/Button.jsx';
+import "./CheckList.css";
+import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 
 
