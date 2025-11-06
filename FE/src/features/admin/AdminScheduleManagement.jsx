@@ -22,9 +22,17 @@ export default function AdminScheduleManagement() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [modalMode, setModalMode] = useState("view"); // view, edit, add
+    const [modalMode, setModalMode] = useState("view");
     const [userInfo, setUserInfo] = useState(null);
     const [filterVehicle, setFilterVehicle] = useState("all");
+
+    // Modal quản lý items
+    const [itemsModal, setItemsModal] = useState({
+        open: false,
+        plan: null,
+        items: [],
+        loading: false
+    });
 
     const navigate = useNavigate();
     const API_BASE = "";
@@ -35,15 +43,9 @@ export default function AdminScheduleManagement() {
     const fetchUserInfo = async () => {
         try {
             const res = await fetch(`${API_BASE}/api/users/account/current`, {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`
-                },
+                headers: { Authorization: `Bearer ${getToken()}` },
             });
-            if (res.status === 401) {
-                localStorage.clear();
-                navigate("/");
-                return;
-            }
+            if (res.status === 401) { localStorage.clear(); navigate("/"); return; }
             if (!res.ok) throw new Error("Không thể tải thông tin người dùng");
             const data = await res.json();
             localStorage.setItem("fullName", data.fullName || "Admin");
@@ -55,22 +57,14 @@ export default function AdminScheduleManagement() {
         }
     };
 
-    // Fetch all schedules
+    // Fetch schedules
     const fetchSchedules = async () => {
         try {
             setLoading(true);
             const res = await fetch(`${API_BASE}/api/admin/schedules`, {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`
-                },
+                headers: { Authorization: `Bearer ${getToken()}` },
             });
-
-            if (res.status === 401) {
-                localStorage.clear();
-                navigate("/");
-                return;
-            }
-
+            if (res.status === 401) { localStorage.clear(); navigate("/"); return; }
             if (!res.ok) throw new Error("Không thể tải danh sách lịch trình");
             const data = await res.json();
             setSchedules(data);
@@ -82,20 +76,16 @@ export default function AdminScheduleManagement() {
         }
     };
 
-    // Fetch plans for selected schedule
+    // Fetch plans
     const fetchPlans = async (scheduleId) => {
         try {
             setLoading(true);
             const res = await fetch(`${API_BASE}/api/admin/schedules/${scheduleId}/plans`, {
-                headers: {
-                    Authorization: `Bearer ${getToken()}`
-                },
+                headers: { Authorization: `Bearer ${getToken()}` },
             });
-
             if (!res.ok) throw new Error("Không thể tải danh sách mốc bảo dưỡng");
             const data = await res.json();
 
-            // Đảm bảo tất cả số đều có giá trị mặc định, không bao giờ undefined/null
             const sanitizedPlans = data.map(plan => ({
                 ...plan,
                 maintenanceNo: plan.maintenanceNo ?? 0,
@@ -116,48 +106,28 @@ export default function AdminScheduleManagement() {
 
     useEffect(() => {
         const token = getToken();
-        if (!token) {
-            navigate("/");
-            return;
-        }
-
-        // Lấy thông tin user và danh sách lịch trình
+        if (!token) { navigate("/"); return; }
         fetchUserInfo();
         fetchSchedules();
     }, [navigate]);
 
     // Modal handlers
     const handleViewSchedule = (schedule) => {
-        setSelectedSchedule({
-            ...schedule,
-            name: schedule.name || "",
-            description: schedule.description || "",
-            vehicleModel: schedule.vehicleModel || ""
-        });
+        setSelectedSchedule({ ...schedule, name: schedule.name || "", description: schedule.description || "", vehicleModel: schedule.vehicleModel || "" });
         fetchPlans(schedule.id);
         setModalMode("view");
         setShowModal(true);
     };
 
     const handleEditSchedule = (schedule) => {
-        setSelectedSchedule({
-            ...schedule,
-            name: schedule.name || "",
-            description: schedule.description || "",
-            vehicleModel: schedule.vehicleModel || ""
-        });
+        setSelectedSchedule({ ...schedule, name: schedule.name || "", description: schedule.description || "", vehicleModel: schedule.vehicleModel || "" });
         fetchPlans(schedule.id);
         setModalMode("edit");
         setShowModal(true);
     };
 
     const handleAddSchedule = () => {
-        setSelectedSchedule({
-            id: null,
-            name: "",
-            description: "",
-            vehicleModel: ""
-        });
+        setSelectedSchedule({ id: null, name: "", description: "", vehicleModel: "" });
         setPlans([]);
         setModalMode("add");
         setShowModal(true);
@@ -168,11 +138,8 @@ export default function AdminScheduleManagement() {
         try {
             const res = await fetch(`${API_BASE}/api/admin/schedules/${scheduleId}`, {
                 method: 'DELETE',
-                headers: {
-                    Authorization: `Bearer ${getToken()}`
-                },
+                headers: { Authorization: `Bearer ${getToken()}` },
             });
-
             if (!res.ok) throw new Error("Không thể xóa lịch trình");
             alert("Đã xóa lịch trình thành công");
             fetchSchedules();
@@ -182,24 +149,11 @@ export default function AdminScheduleManagement() {
         }
     };
 
-    // ✅ Sửa lại hàm này để return schedule data
+    // Lưu schedule
     const handleSaveSchedule = async () => {
         try {
-            // Validate dữ liệu
-            if (!selectedSchedule?.name?.trim()) {
-                alert("Vui lòng nhập tên lịch trình!");
-                throw new Error("Tên lịch trình không được để trống");
-            }
-            if (!selectedSchedule?.vehicleModel?.trim()) {
-                alert("Vui lòng nhập dòng xe!");
-                throw new Error("Dòng xe không được để trống");
-            }
-
-            const query = new URLSearchParams({
-                name: selectedSchedule.name.trim(),
-                description: selectedSchedule.description?.trim() || "",
-                vehicleModel: selectedSchedule.vehicleModel.trim(),
-            }).toString();
+            if (!selectedSchedule?.name?.trim()) throw new Error("Tên lịch trình không được để trống");
+            if (!selectedSchedule?.vehicleModel?.trim()) throw new Error("Dòng xe không được để trống");
 
             const bodyData = {
                 name: selectedSchedule.name.trim(),
@@ -207,60 +161,29 @@ export default function AdminScheduleManagement() {
                 vehicleModel: selectedSchedule.vehicleModel.trim(),
             };
 
-            console.log("🚀 Sending schedule data:", {
-                id: selectedSchedule?.id,
-                ...bodyData,
-                mode: modalMode
-            });
-
             let res;
-
             if (modalMode === "add") {
-                // Thử cả 2 cách: query string VÀ body
-                res = await fetch(`${API_BASE}/api/admin/schedules?${query}`, {
+                res = await fetch(`${API_BASE}/api/admin/schedules`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${getToken()}`,
-                    },
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
                     body: JSON.stringify(bodyData),
                 });
             } else if (modalMode === "edit" && selectedSchedule?.id) {
-                // Thử cả 2 cách: query string VÀ body
-                res = await fetch(`${API_BASE}/api/admin/schedules/${selectedSchedule.id}?${query}`, {
+                res = await fetch(`${API_BASE}/api/admin/schedules/${selectedSchedule.id}`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${getToken()}`,
-                    },
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
                     body: JSON.stringify(bodyData),
                 });
-            } else {
-                throw new Error("Không có ID hoặc modalMode không hợp lệ");
             }
 
-            if (!res.ok) {
-                const errorText = await res.text();
-                console.error("❌ Server error:", errorText);
-                throw new Error(`Lỗi server: ${res.status} - ${errorText}`);
-            }
-
+            if (!res.ok) throw new Error(`Lỗi server: ${res.status}`);
             const data = await res.json();
-            console.log("✅ Schedule saved successfully:", data);
 
-            // ✅ Cập nhật selectedSchedule với ID mới (quan trọng cho việc lưu plans)
             setSelectedSchedule(data);
-
-            // ✅ Cập nhật lại danh sách lịch trình
-            setSchedules((prev) => {
-                if (modalMode === "add") return [...prev, data];
-                return prev.map((s) => (s.id === data.id ? data : s));
-            });
-
-            // ✅ Trả về data để dùng cho savePlans
+            setSchedules(prev => modalMode === "add" ? [...prev, data] : prev.map(s => s.id === data.id ? data : s));
             return data;
         } catch (error) {
-            console.error("Lỗi khi lưu lịch trình:", error);
+            alert(error.message);
             throw error;
         }
     };
@@ -282,23 +205,12 @@ export default function AdminScheduleManagement() {
 
     const handleDeletePlan = async (planId, isNew) => {
         if (!window.confirm("Bạn có chắc muốn xóa mốc này?")) return;
-
+        if (isNew || planId.toString().startsWith('temp_')) {
+            setPlans(plans.filter(p => p.id !== planId));
+            return;
+        }
         try {
-            // Nếu là plan mới chưa lưu vào DB, chỉ cần xóa khỏi state
-            if (isNew || planId.toString().startsWith('temp_')) {
-                setPlans(plans.filter(p => p.id !== planId));
-                return;
-            }
-
-            // Nếu là plan đã có trong DB, gọi API DELETE
-            const res = await fetch(
-                `${API_BASE}/api/admin/plans/${planId}`,
-                {
-                    method: 'DELETE',
-                    headers: { Authorization: `Bearer ${getToken()}` },
-                }
-            );
-
+            const res = await fetch(`${API_BASE}/api/admin/plans/${planId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${getToken()}` } });
             if (!res.ok) throw new Error("Không thể xóa mốc");
             setPlans(plans.filter(p => p.id !== planId));
         } catch (err) {
@@ -307,151 +219,210 @@ export default function AdminScheduleManagement() {
         }
     };
 
-    // ✅ Sửa lại hàm savePlans để nhận scheduleId
-    const savePlans = async (scheduleId) => {
-        try {
-            const token = getToken();
+    // === CHỈNH SỬA CHÍNH: handleEditItems ===
+    const handleEditItems = async (plan) => {
+        if (!plan?.id) { alert("Không có ID mốc bảo dưỡng!"); return; }
 
-            // Kiểm tra token trước khi gửi request
-            if (!token) {
-                alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+        setItemsModal({ open: true, plan, items: [], loading: true });
+
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/plans/${plan.id}/items`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${getToken()}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (res.status === 401) {
+                alert("Phiên đăng nhập hết hạn!");
+                localStorage.clear();
                 navigate("/");
                 return;
             }
 
-            // Lọc và lưu các plans
-            for (const plan of plans) {
-                // Chuẩn hóa data trước khi gửi - đảm bảo không có NaN hoặc string rỗng
-                const planData = {
-                    scheduleId: scheduleId, // ✅ Dùng scheduleId từ tham số
-                    maintenanceNo: parseInt(plan.maintenanceNo) || 0,
-                    intervalKm: parseInt(plan.intervalKm) || 0,
-                    intervalMonth: parseInt(plan.intervalMonth) || 0,
-                    name: plan.name || "",
-                    description: plan.description || "",
-                };
-
-                if (plan.isNew || plan.id.toString().startsWith('temp_')) {
-                    // Thêm plan mới
-                    const res = await fetch(`${API_BASE}/api/admin/plans`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: JSON.stringify(planData),
-                    });
-
-                    if (res.status === 401 || res.status === 403) {
-                        alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-                        localStorage.clear();
-                        navigate("/");
-                        return;
-                    }
-
-                    if (!res.ok) {
-                        const error = await res.text();
-                        throw new Error(`Không thể thêm mốc: ${error}`);
-                    }
-                } else if (plan.modified) {
-                    // Cập nhật plan đã tồn tại
-                    const res = await fetch(
-                        `${API_BASE}/api/admin/plans/${plan.id}`,
-                        {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`,
-                            },
-                            body: JSON.stringify(planData),
-                        }
-                    );
-
-                    if (res.status === 401 || res.status === 403) {
-                        alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-                        localStorage.clear();
-                        navigate("/");
-                        return;
-                    }
-
-                    if (!res.ok) {
-                        const error = await res.text();
-                        throw new Error(`Không thể cập nhật mốc: ${error}`);
-                    }
-                }
+            if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(`Lỗi ${res.status}: ${errorText}`);
             }
+
+            const data = await res.json();
+
+            const sanitizedItems = Array.isArray(data) ? data.map(item => ({
+                id: item.id,
+                planId: plan.id,
+                itemName: item.itemName || "",
+                actionType: item.actionType || "INSPECT",
+                note: item.note || "",
+                isNew: false
+            })) : [];
+
+            setItemsModal({ open: true, plan, items: sanitizedItems, loading: false });
         } catch (err) {
-            console.error("Lỗi khi lưu plans:", err);
-            throw err;
+            console.error("Lỗi tải công việc:", err);
+            alert("Không thể tải công việc: " + err.message);
+            setItemsModal({ open: false, plan: null, items: [], loading: false });
         }
     };
 
-    // ✅ HÀM MỚI: Lưu cả schedule và plans
+    // Thêm item
+    const addItem = () => {
+        const newItem = {
+            id: `temp_${Date.now()}`,
+            planId: itemsModal.plan.id,
+            itemName: "",
+            actionType: "INSPECT",
+            note: "",
+            isNew: true
+        };
+        setItemsModal(prev => ({ ...prev, items: [...prev.items, newItem] }));
+    };
+
+    // Xóa item
+    const deleteItem = async (itemId, isNew) => {
+        if (!window.confirm("Bạn có chắc muốn xóa công việc này?")) return;
+        if (isNew || itemId.toString().startsWith('temp_')) {
+            setItemsModal(prev => ({ ...prev, items: prev.items.filter(i => i.id !== itemId) }));
+            return;
+        }
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/plan-items/${itemId}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${getToken()}` }
+            });
+            if (!res.ok) throw new Error("Không thể xóa công việc");
+            setItemsModal(prev => ({ ...prev, items: prev.items.filter(i => i.id !== itemId) }));
+        } catch (err) {
+            alert("Lỗi xóa công việc: " + err.message);
+        }
+    };
+
+    // Cập nhật item
+    const updateItem = (itemId, field, value) => {
+        setItemsModal(prev => ({
+            ...prev,
+            items: prev.items.map(item =>
+                item.id === itemId ? { ...item, [field]: value, modified: true } : item
+            )
+        }));
+    };
+
+    // Lưu tất cả items
+    const saveAllItems = async () => {
+        const token = getToken();
+        if (!token) { alert("Phiên đăng nhập hết hạn!"); return; }
+
+        let successCount = 0, errorCount = 0;
+
+        for (const item of itemsModal.items) {
+            const body = {
+                planId: itemsModal.plan.id,
+                itemName: item.itemName?.trim() || "",
+                actionType: item.actionType || "INSPECT",
+                note: item.note?.trim() || ""
+            };
+
+            try {
+                let res;
+                if (item.isNew || item.id.toString().startsWith('temp_')) {
+                    res = await fetch(`${API_BASE}/api/admin/plan-items`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                        body: JSON.stringify(body)
+                    });
+                } else if (item.modified) {
+                    res = await fetch(`${API_BASE}/api/admin/plan-items/${item.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                        body: JSON.stringify(body)
+                    });
+                } else continue;
+
+                if (!res.ok) throw new Error(`Lỗi ${res.status}`);
+                successCount++;
+            } catch (err) {
+                console.error(err);
+                errorCount++;
+            }
+        }
+
+        alert(errorCount === 0
+            ? `Đã lưu thành công ${successCount} công việc!`
+            : `Lưu thành công ${successCount}, thất bại ${errorCount}`
+        );
+        setItemsModal(prev => ({ ...prev, open: false }));
+    };
+
+    // Lưu plans
+    const savePlans = async (scheduleId) => {
+        const token = getToken();
+        if (!token) { alert("Phiên hết hạn!"); navigate("/"); return; }
+
+        for (const plan of plans) {
+            const planData = {
+                scheduleId,
+                maintenanceNo: parseInt(plan.maintenanceNo) || 0,
+                intervalKm: parseInt(plan.intervalKm) || 0,
+                intervalMonth: parseInt(plan.intervalMonth) || 0,
+                name: plan.name || "",
+                description: plan.description || "",
+            };
+
+            if (plan.isNew || plan.id.toString().startsWith('temp_')) {
+                const res = await fetch(`${API_BASE}/api/admin/plans`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(planData),
+                });
+                if (!res.ok) throw new Error(`Không thể thêm mốc: ${await res.text()}`);
+            } else if (plan.modified) {
+                const res = await fetch(`${API_BASE}/api/admin/plans/${plan.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(planData),
+                });
+                if (!res.ok) throw new Error(`Không thể cập nhật mốc: ${await res.text()}`);
+            }
+        }
+    };
+
+    // Lưu toàn bộ
     const handleSaveAll = async () => {
         try {
-            // Bước 1: Lưu schedule trước
             const savedSchedule = await handleSaveSchedule();
-            
-            if (!savedSchedule || !savedSchedule.id) {
-                throw new Error("Không lấy được ID của lịch trình sau khi lưu");
-            }
+            if (!savedSchedule?.id) throw new Error("Không lấy được ID lịch trình");
 
-            // Bước 2: Nếu có plans đã sửa/thêm và không phải mode "add", thì lưu plans
-            if (modalMode !== "add" && plans.length > 0) {
-                const hasChanges = plans.some(p => p.modified || p.isNew);
-                if (hasChanges) {
-                    await savePlans(savedSchedule.id);
-                }
+            if (modalMode !== "add" && plans.some(p => p.modified || p.isNew)) {
+                await savePlans(savedSchedule.id);
             }
 
             alert("Đã lưu thành công!");
             setShowModal(false);
             setSelectedSchedule(null);
             setPlans([]);
-            setModalMode("view");
-            
-            // Refresh danh sách
-            await fetchSchedules();
+            fetchSchedules();
         } catch (err) {
-            alert("Có lỗi xảy ra khi lưu: " + err.message);
-            console.error(err);
+            alert("Lỗi: " + err.message);
         }
     };
 
     const handlePlanChange = (planId, field, value) => {
         setPlans(plans.map(p => {
-            if (p.id === planId) {
-                // Xử lý giá trị number để tránh NaN
-                let processedValue = value;
-                if (field === 'maintenanceNo' || field === 'intervalKm' || field === 'intervalMonth') {
-                    processedValue = value === '' ? 0 : parseInt(value) || 0;
-                }
-                return { ...p, [field]: processedValue, modified: true };
+            if (p.id !== planId) return p;
+            let val = value;
+            if (['maintenanceNo', 'intervalKm', 'intervalMonth'].includes(field)) {
+                val = value === '' ? 0 : parseInt(value) || 0;
             }
-            return p;
+            return { ...p, [field]: val, modified: true };
         }));
     };
 
-    const formatKm = (km) => {
-        if (!km) return "0 km";
-        if (km >= 1000) return (km / 1000) + "K km";
-        return km + " km";
-    };
+    const formatKm = (km) => !km ? "0 km" : km >= 1000 ? (km / 1000) + "K km" : km + " km";
+    const formatMonth = (month) => !month ? "0 tháng" : month + " tháng";
 
-    const formatMonth = (month) => {
-        if (!month) return "0 tháng";
-        return month + " tháng";
-    };
-
-    // Lọc schedules theo dòng xe
-    const filteredSchedules = filterVehicle === "all"
-        ? schedules
-        : schedules.filter(s => s.vehicleModel === filterVehicle);
-
-    // Lấy danh sách unique vehicle models để hiển thị trong filter
+    const filteredSchedules = filterVehicle === "all" ? schedules : schedules.filter(s => s.vehicleModel === filterVehicle);
     const vehicleModels = [...new Set(schedules.map(s => s.vehicleModel))];
 
-    // Loading UI
     if (loading && !userInfo) {
         return (
             <div className="dashboard-container">
@@ -469,39 +440,21 @@ export default function AdminScheduleManagement() {
             <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
             <main className="main-content">
                 <header className="page-header">
-                    <h1>
-                        <FaCalendarAlt /> Quản lý Lịch trình Bảo dưỡng
-                    </h1>
+                    <h1><FaCalendarAlt /> Quản lý Lịch trình Bảo dưỡng</h1>
                     <p>Quản lý lịch trình và mốc bảo dưỡng cho từng dòng xe.</p>
                 </header>
 
-                {error && (
-                    <div className="error-message">
-                        <FaExclamationTriangle /> {error}
-                    </div>
-                )}
+                {error && <div className="error-message"><FaExclamationTriangle /> {error}</div>}
 
                 <div className="actions-bar">
                     <div className="filter-group">
-                        <label htmlFor="vehicleFilter">
-                            <FaFilter /> Lọc theo dòng xe:
-                        </label>
-                        <select
-                            id="vehicleFilter"
-                            value={filterVehicle}
-                            onChange={(e) => setFilterVehicle(e.target.value)}
-                        >
+                        <label><FaFilter /> Lọc theo dòng xe:</label>
+                        <select value={filterVehicle} onChange={e => setFilterVehicle(e.target.value)}>
                             <option value="all">Tất cả</option>
-                            {vehicleModels.map((model) => (
-                                <option key={model} value={model}>
-                                    {model}
-                                </option>
-                            ))}
+                            {vehicleModels.map(m => <option key={m} value={m}>{m}</option>)}
                         </select>
                     </div>
-                    <button className="btn-primary" onClick={handleAddSchedule}>
-                        <FaPlus /> Thêm lịch trình
-                    </button>
+                    <button className="btn-primary" onClick={handleAddSchedule}><FaPlus /> Thêm lịch trình</button>
                 </div>
 
                 <div className="table-card">
@@ -509,227 +462,120 @@ export default function AdminScheduleManagement() {
                         <table className="data-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Tên lịch trình</th>
-                                    <th>Mô tả</th>
-                                    <th>Dòng xe</th>
-                                    <th>Thao tác</th>
+                                    <th>ID</th><th>Tên lịch trình</th><th>Mô tả</th><th>Dòng xe</th><th>Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
-                                    <tr>
-                                        <td colSpan="5" className="empty-state">
-                                            <Loading inline /> Đang tải...
-                                        </td>
-                                    </tr>
+                                    <tr><td colSpan="5"><Loading inline /> Đang tải...</td></tr>
                                 ) : filteredSchedules.length > 0 ? (
-                                    filteredSchedules.map((schedule) => (
-                                        <tr key={schedule.id}>
-                                            <td>#{schedule.id}</td>
-                                            <td><strong>{schedule.name}</strong></td>
-                                            <td>{schedule.description}</td>
-                                            <td>
-                                                <span className="role-badge role-confirmed">
-                                                    {schedule.vehicleModel}
-                                                </span>
-                                            </td>
+                                    filteredSchedules.map(s => (
+                                        <tr key={s.id}>
+                                            <td>#{s.id}</td>
+                                            <td><strong>{s.name}</strong></td>
+                                            <td>{s.description}</td>
+                                            <td><span className="role-badge role-confirmed">{s.vehicleModel}</span></td>
                                             <td>
                                                 <div className="action-buttons">
-                                                    <button
-                                                        className="btn-icon btn-view"
-                                                        onClick={() => handleViewSchedule(schedule)}
-                                                        title="Xem chi tiết"
-                                                    >
-                                                        <FaEye />
-                                                    </button>
-                                                    <button
-                                                        className="btn-icon btn-edit"
-                                                        onClick={() => handleEditSchedule(schedule)}
-                                                        title="Chỉnh sửa"
-                                                    >
-                                                        <FaEdit />
-                                                    </button>
-                                                    <button
-                                                        className="btn-icon btn-delete"
-                                                        onClick={() => handleDeleteSchedule(schedule.id)}
-                                                        title="Xóa"
-                                                    >
-                                                        <FaTrash />
-                                                    </button>
+                                                    <button className="btn-icon btn-view" onClick={() => handleViewSchedule(s)} title="Xem"><FaEye /></button>
+                                                    <button className="btn-icon btn-edit" onClick={() => handleEditSchedule(s)} title="Sửa"><FaEdit /></button>
+                                                    <button className="btn-icon btn-delete" onClick={() => handleDeleteSchedule(s.id)} title="Xóa"><FaTrash /></button>
                                                 </div>
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
-                                    <tr>
-                                        <td colSpan="5" className="empty-state">
-                                            Không có lịch trình nào.
-                                        </td>
-                                    </tr>
+                                    <tr><td colSpan="5" className="empty-state">Không có lịch trình nào.</td></tr>
                                 )}
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                {/* Modal */}
+                {/* Modal chính */}
                 {showModal && (
                     <div className="modal-overlay" onClick={() => setShowModal(false)}>
-                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-content" onClick={e => e.stopPropagation()}>
                             <div className="modal-header">
                                 <h2>
                                     {modalMode === "view" && "Chi tiết lịch trình"}
                                     {modalMode === "edit" && "Chỉnh sửa lịch trình"}
                                     {modalMode === "add" && "Thêm lịch trình mới"}
                                 </h2>
-                                <button className="btn-close" onClick={() => setShowModal(false)}>
-                                    <FaTimes />
-                                </button>
+                                <button className="btn-close" onClick={() => setShowModal(false)}><FaTimes /></button>
                             </div>
 
                             <div className="modal-body">
-                                {/* Schedule Info */}
                                 <div className="form-section">
                                     <h3>Thông tin lịch trình</h3>
                                     <div className="form-grid">
                                         <div className="form-group">
                                             <label>Tên lịch trình *</label>
-                                            <input
-                                                type="text"
-                                                value={selectedSchedule?.name || ""}
-                                                onChange={(e) => setSelectedSchedule({
-                                                    ...selectedSchedule,
-                                                    name: e.target.value
-                                                })}
-                                                disabled={modalMode === "view"}
-                                            />
+                                            <input type="text" value={selectedSchedule?.name || ""} onChange={e => setSelectedSchedule({ ...selectedSchedule, name: e.target.value })} disabled={modalMode === "view"} />
                                         </div>
                                         <div className="form-group">
                                             <label>Dòng xe *</label>
-                                            <input
-                                                type="text"
-                                                value={selectedSchedule?.vehicleModel || ""}
-                                                onChange={(e) => setSelectedSchedule({
-                                                    ...selectedSchedule,
-                                                    vehicleModel: e.target.value
-                                                })}
-                                                disabled={modalMode === "view"}
-                                            />
+                                            <input type="text" value={selectedSchedule?.vehicleModel || ""} onChange={e => setSelectedSchedule({ ...selectedSchedule, vehicleModel: e.target.value })} disabled={modalMode === "view"} />
                                         </div>
                                     </div>
                                     <div className="form-group">
                                         <label>Mô tả</label>
-                                        <textarea
-                                            rows="3"
-                                            value={selectedSchedule?.description || ""}
-                                            onChange={(e) => setSelectedSchedule({
-                                                ...selectedSchedule,
-                                                description: e.target.value
-                                            })}
-                                            disabled={modalMode === "view"}
-                                        />
+                                        <textarea rows="3" value={selectedSchedule?.description || ""} onChange={e => setSelectedSchedule({ ...selectedSchedule, description: e.target.value })} disabled={modalMode === "view"} />
                                     </div>
                                 </div>
 
-                                {/* Plans List */}
                                 {modalMode !== "add" && (
                                     <div className="form-section">
                                         <div className="section-header">
                                             <h3>Các mốc bảo dưỡng</h3>
-                                            {modalMode !== "view" && (
-                                                <button className="btn-secondary" onClick={handleAddPlan}>
-                                                    <FaPlus /> Thêm mốc
-                                                </button>
-                                            )}
+                                            {modalMode !== "view" && <button className="btn-secondary" onClick={handleAddPlan}><FaPlus /> Thêm mốc</button>}
                                         </div>
 
                                         <div className="plans-list">
                                             {plans.length === 0 ? (
                                                 <p className="empty-state">Chưa có mốc bảo dưỡng nào.</p>
                                             ) : (
-                                                plans.map((plan, index) => (
+                                                plans.map((plan, idx) => (
                                                     <div key={plan.id} className="plan-card">
                                                         <div className="plan-header">
-                                                            <span className="plan-number">
-                                                                Mốc #{plan.maintenanceNo || index + 1}
-                                                            </span>
+                                                            <span className="plan-number">Mốc #{plan.maintenanceNo || idx + 1}</span>
                                                             {modalMode !== "view" && (
-                                                                <button
-                                                                    className="btn-icon btn-delete"
-                                                                    onClick={() => handleDeletePlan(plan.id, plan.isNew)}
-                                                                >
-                                                                    <FaTrash />
-                                                                </button>
+                                                                <div className="plan-actions">
+                                                                    <button className="btn-icon btn-edit" onClick={() => handleEditItems(plan)} title="Sửa công việc"><FaEdit /></button>
+                                                                    <button className="btn-icon btn-delete" onClick={() => handleDeletePlan(plan.id, plan.isNew)}><FaTrash /></button>
+                                                                </div>
                                                             )}
                                                         </div>
 
                                                         <div className="form-grid">
                                                             <div className="form-group">
                                                                 <label>Số thứ tự *</label>
-                                                                <input
-                                                                    type="number"
-                                                                    value={plan.maintenanceNo === '' ? '' : (plan.maintenanceNo ?? 0)}
-                                                                    onChange={(e) => handlePlanChange(plan.id, 'maintenanceNo', e.target.value)}
-                                                                    disabled={modalMode === "view"}
-                                                                    min="1"
-                                                                />
+                                                                <input type="number" value={plan.maintenanceNo ?? 0} onChange={e => handlePlanChange(plan.id, 'maintenanceNo', e.target.value)} disabled={modalMode === "view"} min="1" />
                                                             </div>
-
                                                             <div className="form-group">
                                                                 <label>Tên mốc *</label>
-                                                                <input
-                                                                    type="text"
-                                                                    value={plan.name ?? ''}
-                                                                    onChange={(e) => handlePlanChange(plan.id, 'name', e.target.value)}
-                                                                    disabled={modalMode === "view"}
-                                                                    placeholder="VD: Bảo dưỡng cấp 1"
-                                                                />
+                                                                <input type="text" value={plan.name ?? ''} onChange={e => handlePlanChange(plan.id, 'name', e.target.value)} disabled={modalMode === "view"} placeholder="VD: Bảo dưỡng cấp 1" />
                                                             </div>
-
                                                             <div className="form-group">
                                                                 <label>Quãng đường (km) *</label>
-                                                                <input
-                                                                    type="number"
-                                                                    value={plan.intervalKm === '' ? '' : (plan.intervalKm ?? 0)}
-                                                                    onChange={(e) => handlePlanChange(plan.id, 'intervalKm', e.target.value)}
-                                                                    disabled={modalMode === "view"}
-                                                                    min="0"
-                                                                    placeholder="VD: 12000"
-                                                                />
+                                                                <input type="number" value={plan.intervalKm ?? 0} onChange={e => handlePlanChange(plan.id, 'intervalKm', e.target.value)} disabled={modalMode === "view"} min="0" />
                                                             </div>
-
                                                             <div className="form-group">
                                                                 <label>Thời gian (tháng) *</label>
-                                                                <input
-                                                                    type="number"
-                                                                    value={plan.intervalMonth === '' ? '' : (plan.intervalMonth ?? 0)}
-                                                                    onChange={(e) => handlePlanChange(plan.id, 'intervalMonth', e.target.value)}
-                                                                    disabled={modalMode === "view"}
-                                                                    min="0"
-                                                                    placeholder="VD: 12"
-                                                                />
+                                                                <input type="number" value={plan.intervalMonth ?? 0} onChange={e => handlePlanChange(plan.id, 'intervalMonth', e.target.value)} disabled={modalMode === "view"} min="0" />
                                                             </div>
                                                         </div>
 
                                                         <div className="form-group">
                                                             <label>Mô tả chi tiết</label>
-                                                            <textarea
-                                                                rows="3"
-                                                                value={plan.description ?? ''}
-                                                                onChange={(e) => handlePlanChange(plan.id, 'description', e.target.value)}
-                                                                disabled={modalMode === "view"}
-                                                                placeholder="VD: Kiểm tra cơ bản, thay lọc gió điều hòa..."
-                                                            />
+                                                            <textarea rows="3" value={plan.description ?? ''} onChange={e => handlePlanChange(plan.id, 'description', e.target.value)} disabled={modalMode === "view"} />
                                                         </div>
 
                                                         {modalMode === "view" && (
                                                             <div className="plan-summary">
                                                                 <div className="summary-item">
                                                                     <span className="summary-label">Chu kỳ:</span>
-                                                                    <span className="summary-value">
-                                                                        {formatKm(plan.intervalKm)} hoặc {formatMonth(plan.intervalMonth)}
-                                                                    </span>
+                                                                    <span className="summary-value">{formatKm(plan.intervalKm)} hoặc {formatMonth(plan.intervalMonth)}</span>
                                                                 </div>
                                                             </div>
                                                         )}
@@ -740,17 +586,71 @@ export default function AdminScheduleManagement() {
                                     </div>
                                 )}
 
-                                {/* Footer modal */}
                                 <div className="modal-footer">
-                                    <button className="btn-secondary" onClick={() => setShowModal(false)}>
-                                        Đóng
-                                    </button>
-                                    {modalMode !== "view" && (
-                                        <button className="btn-primary" onClick={handleSaveAll}>
-                                            <FaSave /> Lưu thay đổi
-                                        </button>
-                                    )}
+                                    <button className="btn-secondary" onClick={() => setShowModal(false)}>Đóng</button>
+                                    {modalMode !== "view" && <button className="btn-primary" onClick={handleSaveAll}><FaSave /> Lưu thay đổi</button>}
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Modal items */}
+                {itemsModal.open && (
+                    <div className="modal-overlay" onClick={() => setItemsModal({ ...itemsModal, open: false })}>
+                        <div className="modal-content plan-items-modal" onClick={e => e.stopPropagation()}>
+                            <div className="modal-header">
+                                <h2>Chỉnh sửa công việc - {itemsModal.plan.name || `Mốc #${itemsModal.plan.maintenanceNo}`}</h2>
+                                <button className="btn-close" onClick={() => setItemsModal({ ...itemsModal, open: false })}><FaTimes /></button>
+                            </div>
+
+                            <div className="modal-body">
+                                <div className="d-flex gap-2 mb-3">
+                                    <button className="btn-secondary" onClick={addItem}><FaPlus /> Thêm công việc</button>
+                                </div>
+
+                                {itemsModal.loading ? (
+                                    <div className="text-center"><Loading inline /> Đang tải công việc...</div>
+                                ) : itemsModal.items.length === 0 ? (
+                                    <p className="empty-state">Chưa có công việc nào. Thêm mới để bắt đầu!</p>
+                                ) : (
+                                    <div className="items-list">
+                                        {itemsModal.items.map((item, idx) => (
+                                            <div key={item.id} className="item-card">
+                                                <div className="item-header">
+                                                    <span>Công việc #{idx + 1}</span>
+                                                    <button className="btn-icon btn-delete" onClick={() => deleteItem(item.id, item.isNew)}><FaTrash /></button>
+                                                </div>
+
+                                                <div className="form-group">
+                                                    <label>Tên công việc *</label>
+                                                    <input type="text" value={item.itemName || ""} onChange={e => updateItem(item.id, "itemName", e.target.value)} placeholder="VD: Kiểm tra dầu máy" />
+                                                </div>
+
+                                                <div className="form-group">
+                                                    <label>Loại hành động</label>
+                                                    <select value={item.actionType || "INSPECT"} onChange={e => updateItem(item.id, "actionType", e.target.value)}>
+                                                        <option value="INSPECT">Kiểm tra</option>
+                                                        <option value="REPLACE">Thay thế</option>
+                                                        <option value="CLEAN">Vệ sinh</option>
+                                                        <option value="ADJUST">Điều chỉnh</option>
+                                                        <option value="REPAIR">Sửa chữa</option>
+                                                    </select>
+                                                </div>
+
+                                                <div className="form-group">
+                                                    <label>Ghi chú</label>
+                                                    <textarea rows="3" value={item.note || ""} onChange={e => updateItem(item.id, "note", e.target.value)} placeholder="Chi tiết..." />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="modal-footer">
+                                <button className="btn-secondary" onClick={() => setItemsModal({ ...itemsModal, open: false })}>Hủy</button>
+                                <button className="btn-primary" onClick={saveAllItems}><FaSave /> Lưu công việc</button>
                             </div>
                         </div>
                     </div>
