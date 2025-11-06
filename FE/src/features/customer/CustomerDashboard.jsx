@@ -9,26 +9,26 @@
   import './CustomerDashboard.css';
 
 
-  const BOOKING_STATUS_MAP = {
-    PENDING:     { text: 'Chờ xử lý',    className: 'pending' },
-    APPROVED:    { text: 'Đã duyệt',     className: 'approved' }, 
-    ASSIGNED:    { text: 'Đã gán thợ',    className: 'assigned' }, 
-    IN_PROGRESS: { text: 'Đang xử lý',   className: 'in_progress' }, 
-    COMPLETED:   { text: 'Hoàn thành',   className: 'completed' },
-    PAID:        { text: 'Đã thanh toán', className: 'paid' },
-    CANCELLED:   { text: 'Đã hủy',       className: 'cancelled' },
-    DECLINED:    { text: 'Đã từ chối',  className: 'declined' },
-    DEFAULT:     { text: 'Không rõ',     className: 'default' }
-  };
-  const getStatusDisplay = (status) => {
-    return BOOKING_STATUS_MAP[status] || { text: status, className: 'default' };
-  };
-  function CustomerDashboard() {
-    const [dashboardData, setDashboardData] = useState(null);
-    const [bookings, setBookings] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+const BOOKING_STATUS_MAP = {
+  PENDING: { text: 'Chờ xử lý', className: 'pending' },
+  APPROVED: { text: 'Đã duyệt', className: 'approved' },
+  ASSIGNED: { text: 'Đã gán thợ', className: 'assigned' },
+  IN_PROGRESS: { text: 'Đang xử lý', className: 'in_progress' },
+  COMPLETED: { text: 'Hoàn thành', className: 'completed' },
+  PAID: { text: 'Đã thanh toán', className: 'paid' },
+  CANCELLED: { text: 'Đã hủy', className: 'cancelled' },
+  DECLINED: { text: 'Đã từ chối', className: 'declined' },
+  DEFAULT: { text: 'Không rõ', className: 'default' }
+};
+const getStatusDisplay = (status) => {
+  return BOOKING_STATUS_MAP[status] || { text: status, className: 'default' };
+};
+function CustomerDashboard() {
+  const [dashboardData, setDashboardData] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
 
     const [showAddVehicleForm, setShowAddVehicleForm] = useState(false);
@@ -54,27 +54,26 @@
     const [confirmModalMessage, setConfirmModalMessage] = useState('');
     const [onConfirmAction, setOnConfirmAction] = useState(null);
 
-    const [cancelBookingLoading, setCancelBookingLoading] = useState(false);
-    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-    const [feedbackLoading, setFeedbackLoading] = useState(false);
-    const [feedbackError, setFeedbackError] = useState('');
-    const [currentBookingId, setCurrentBookingId] = useState(null);
-    const [feedbackData, setFeedbackData] = useState({
-      rating: 0,
-      comment: '',
-    });
-    const [vehicleToDelete, setVehicleToDelete] = useState(null);
-    const [vehicleModels, setVehicleModels] = useState([]);
-    const [loadingModels, setLoadingModels] = useState(true);
-
-    // Load danh sách xe từ API khi component mount
-    useEffect(() => {
-      const fetchVehicleModels = async () => {
-        try {
-          const token = localStorage.getItem("token");
-          const response = await fetch(API_BASE_URL + "/api/customer/vehicle-models", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+  const [cancelBookingLoading, setCancelBookingLoading] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [feedbackError, setFeedbackError] = useState('');
+  const [currentBookingId, setCurrentBookingId] = useState(null);
+  const [feedbackData, setFeedbackData] = useState({
+    rating: 0,
+    comment: '',
+  });
+  const [vehicleToDelete, setVehicleToDelete] = useState(null);
+  const [vehicleModels, setVehicleModels] = useState([]);
+  const [loadingModels, setLoadingModels] = useState(true);
+  // Load danh sách xe từ API khi component mount
+  useEffect(() => {
+    const fetchVehicleModels = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(API_BASE_URL + "/api/customer/vehicle-models", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
           if (!response.ok) throw new Error("Failed to fetch vehicle models");
 
@@ -152,12 +151,12 @@
       }
     };
 
-    const handleCancelBookingClickDashboard = (bookingId) => {
-      setConfirmModalMessage("Bạn có chắc chắn muốn hủy lịch hẹn này?");
-      setOnConfirmAction(() => () => executeCancelBookingDashboard(bookingId));
-      setShowConfirmModal(true);
-    };
-    // Hàm mở modal xác nhận xóa xe
+  const handleCancelBookingClickDashboard = (bookingId) => {
+    setConfirmModalMessage("Bạn có chắc chắn muốn hủy lịch hẹn này?");
+    setOnConfirmAction(() => () => executeCancelBookingDashboard(bookingId));
+    setShowConfirmModal(true);
+  };
+  // Hàm mở modal xác nhận xóa xe
   const handleDeleteVehicleClick = (licensePlate) => {
     setConfirmModalMessage(`Bạn có chắc chắn muốn xóa xe có biển số ${licensePlate}?`);
     setOnConfirmAction(() => () => executeDeleteVehicle(licensePlate));
@@ -815,25 +814,25 @@
 
           <hr className="section-divider" />
 
-          {/* Danh sách xe (Giữ nguyên) */}
-          <section className="dashboard-section vehicle-section">
-            <div className="vehicle-header">
-              <h2><FaCar /> Danh sách xe</h2>
-              <Button className="add-vehicle-btn" onClick={handleAddVehicleClick} title="Thêm xe mới">
-                <FaPlus /> Thêm xe
-              </Button>
-            </div>
-            {vehicles && vehicles.length > 0 ? (
-              <div className="vehicle-list">
-                {vehicles.map((vehicle) => (
-                  <div key={vehicle.licensePlate} className="vehicle-card">
-                    <h3>{vehicle.model} ({vehicle.year})</h3>
-                    <p><strong>Biển số:</strong> {vehicle.licensePlate}</p>
-                    <p><strong>Số KM hiện tại:</strong> {vehicle.currentKm?.toLocaleString() || 'Chưa cập nhật'} km</p>
-                    <div className="vehicle-actions">
-    <Button onClick={() => handleViewSchedule(vehicle.licensePlate)}>Xem lịch bảo dưỡng</Button>
-    <Button className="btn-delete" onClick={() => handleDeleteVehicleClick(vehicle.licensePlate)}>Xóa xe</Button>
-  </div>
+        {/* Danh sách xe (Giữ nguyên) */}
+        <section className="dashboard-section vehicle-section">
+          <div className="vehicle-header">
+            <h2><FaCar /> Danh sách xe</h2>
+            <Button className="add-vehicle-btn" onClick={handleAddVehicleClick} title="Thêm xe mới">
+              <FaPlus /> Thêm xe
+            </Button>
+          </div>
+          {vehicles && vehicles.length > 0 ? (
+            <div className="vehicle-list">
+              {vehicles.map((vehicle) => (
+                <div key={vehicle.licensePlate} className="vehicle-card">
+                  <h3>{vehicle.model} ({vehicle.year})</h3>
+                  <p><strong>Biển số:</strong> {vehicle.licensePlate}</p>
+                  <p><strong>Số KM hiện tại:</strong> {vehicle.currentKm?.toLocaleString() || 'Chưa cập nhật'} km</p>
+                  <div className="vehicle-actions">
+                    <Button onClick={() => handleViewSchedule(vehicle.licensePlate)}>Xem lịch bảo dưỡng</Button>
+                    <Button className="btn-delete" onClick={() => handleDeleteVehicleClick(vehicle.licensePlate)}>Xóa xe</Button>
+                  </div>
 
                   </div>
                 ))}
@@ -923,13 +922,13 @@
               )}
             </div>
 
-            <div className="booking-list-container">
-              <h3>Lịch sử hẹn</h3>
-              {loading ? (
-                <p>Đang tải lịch sử...</p>
-              ) : bookingHistory.length > 0 ? (
-                <div className="booking-list">
-                  {bookingHistory.map(booking => (
+          <div className="booking-list-container">
+            <h3>Lịch sử hẹn</h3>
+            {loading ? (
+              <p>Đang tải lịch sử...</p>
+            ) : bookingHistory.length > 0 ? (
+              <div className="booking-list">
+                {bookingHistory.map(booking => (
                   <div key={booking.bookingId} className={`booking-item status-${getStatusDisplay(booking.status).className}`}>
                     <div className="booking-item-header">
                       <strong>{booking.vehiclePlate}</strong> ({booking.vehicleModel})
@@ -950,16 +949,16 @@
                     )}
                   </div>
                 ))}
-                </div>
-              ) : (
-                <p>Chưa có lịch sử hẹn nào.</p>
-              )}
-            </div>
-          </section>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+              </div>
+            ) : (
+              <p>Chưa có lịch sử hẹn nào.</p>
+            )}
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}
 
   export default CustomerDashboard;
