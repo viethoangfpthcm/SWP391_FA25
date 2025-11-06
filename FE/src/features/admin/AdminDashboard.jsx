@@ -12,7 +12,7 @@ import {
   FaCheck, // Import FaCheck for confirm button
 } from "react-icons/fa";
 import "./AdminDashboard.css";
-import Sidebar from "@components/layout/Sidebar.jsx"; // �?m b?o du?ng d?n d�ng
+import Sidebar from "@components/layout/Sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 import ConfirmationModal from "@components/ui/ConfirmationModal.jsx";
 import Button from '@components/ui/Button.jsx';
@@ -43,6 +43,7 @@ if (import.meta.env.MODE !== "development") {
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [filterRole, setFilterRole] = useState("all");
+  const [centers, setCenters] = useState([]);
   const [filterCenter, setFilterCenter] = useState("all");
   const [filterActive, setFilterActive] = useState("all");
   const [loading, setLoading] = useState(true); // Loading for initial user list
@@ -60,7 +61,7 @@ export default function AdminDashboard() {
     password: "",
   });
   const [formErrors, setFormErrors] = useState({}); // State to hold form validation errors
-  const [userInfo, setUserInfo] = useState(null); // Current admin user info
+  const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
 
   // --- States for Confirmation Modal ---
@@ -74,7 +75,7 @@ export default function AdminDashboard() {
   // Fetch current admin user info
   const fetchUserInfo = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
+      const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 401) {
@@ -84,14 +85,14 @@ export default function AdminDashboard() {
         console.error("Failed to fetch user info:", res.status);
         return;
       }
-      
+
       // Check if response is JSON
       const contentType = res.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         console.error("User info response is not JSON:", contentType);
         return;
       }
-      
+
       const data = await res.json();
       localStorage.setItem("fullName", data.fullName || "Admin");
       localStorage.setItem("role", data.role || "ADMIN");
@@ -99,6 +100,25 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error("Fetch User Info Error:", err);
       // Displaying error might be annoying here if transient
+    }
+  };
+
+  const fetchCenters = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/service-centers`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 401) {
+        localStorage.clear(); navigate("/"); return;
+      }
+      if (!res.ok) {
+        console.error("Failed to fetch centers:", res.status);
+        return;
+      }
+      const data = await res.json();
+      setCenters(data); // [{id, name, address,...}]
+    } catch (err) {
+      console.error("Fetch centers error:", err);
     }
   };
 
@@ -114,27 +134,27 @@ export default function AdminDashboard() {
         localStorage.clear(); navigate("/"); return;
       }
       if (!res.ok) {
-        setError(`L?i t?i danh s�ch ngu?i d�ng (${res.status})`);
+        setError(`Lỗi tải danh sách người dùng (${res.status})`);
         setLoading(false);
         return;
       }
-      
+
       // Check if response is JSON
       const contentType = res.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         console.error("Users response is not JSON:", contentType);
         const text = await res.text();
         console.error("Response body:", text.substring(0, 200));
-        setError("API tr? v? d? li?u kh�ng h?p l?. Vui l�ng ki?m tra backend.");
+        setError("API trả về dữ liệu không hợp lệ. Vui lòng kiểm tra backend.");
         setLoading(false);
         return;
       }
-      
+
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Fetch Users Error:", err);
-      setError("Kh�ng th? t?i danh s�ch ngu?i d�ng. Vui l�ng th? l?i.");
+      setError("Không thể tải danh sách nguời dùng. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -148,33 +168,33 @@ export default function AdminDashboard() {
     }
     fetchUserInfo();
     fetchUsers();
+    fetchCenters();
   }, [token, navigate]);
 
   const centerList = useMemo(() => {
-    // L?y t?t c? 'centerName' c� trong danh s�ch users
+
     const centers = users
       .map(user => user.centerName)
-      .filter(Boolean); // L?c b? c�c gi� tr? null/undefined/""
+      .filter(Boolean);
 
-    // D�ng Set d? l?y duy nh?t v� sort theo ABC
+
     return [...new Set(centers)].sort();
-  }, [users]); // Ch? ch?y l?i khi 'users' thay d?i
+  }, [users]);
 
-  // --- Logic L?c Chu?i (Role -> Center -> Active) ---
+
   const filteredUsers = users
     .filter(user => {
-      // 1. L?c theo Role
+
       if (filterRole === "all") return true;
       return user.role && user.role.toLowerCase() === filterRole.toLowerCase();
     })
     .filter(user => {
-      // 2. L?c theo Center
+
       if (filterCenter === "all") return true;
       if (filterCenter === "none") return !user.centerName;
       return user.centerName === filterCenter;
     })
     .filter(user => {
-      // 3. L?c theo Tr?ng th�i Active
       if (filterActive === "all") return true;
       if (filterActive === "true") return !!user.isActive;
       if (filterActive === "false") return !user.isActive;
@@ -226,25 +246,25 @@ export default function AdminDashboard() {
   const validateForm = () => {
     const errors = {};
     if (!formData.fullName || formData.fullName.trim() === "") {
-      errors.fullName = "H? t�n kh�ng du?c d? tr?ng.";
+      errors.fullName = "Họ tên không được để trống.";
     }
     if (!formData.email || !isValidEmail(formData.email.trim())) {
-      errors.email = "Email kh�ng d�ng d?nh d?ng.";
+      errors.email = "Email không đúng định dạng.";
     }
     if (!formData.phone || !isValidPhone(formData.phone.trim())) {
-      errors.phone = "S? di?n tho?i kh�ng d�ng d?nh d?ng VN (10 s?).";
+      errors.phone = "Số điện thoại không đúng định dạng VN (10 số).";
     }
     if (!formData.role) {
-      errors.role = "Vui l�ng ch?n vai tr�.";
+      errors.role = "Vui lòng chọn vai trò.";
     }
     // Password required only when adding a new user
     if (!editingUser && (!formData.password || formData.password.length < 6)) {
-      errors.password = "M?t kh?u ph?i c� �t nh?t 6 k� t?.";
+      errors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
     }
     // Center ID required (and must be positive number) for Staff/Technician
     const centerIdValue = formData.centerId ? String(formData.centerId).trim() : "";
-    if ((formData.role === "STAFF" || formData.role === "TECHNICIAN") && (centerIdValue === "" || isNaN(parseInt(centerIdValue)) || parseInt(centerIdValue) <= 0)) {
-      errors.centerId = "Center ID l� b?t bu?c (s? duong) cho Staff/Technician.";
+    if ((formData.role === "STAFF" || formData.role === "TECHNICIAN" || formData.role === "MANAGER") && (centerIdValue === "" || isNaN(parseInt(centerIdValue)) || parseInt(centerIdValue) <= 0)) {
+      errors.centerId = "Center ID là bắt buộc cho Staff/Technician/Manager.";
     }
 
     setFormErrors(errors); // Update the error state
@@ -288,7 +308,7 @@ export default function AdminDashboard() {
 
       // Handle response errors (including validation errors from backend)
       if (!res.ok) {
-        let errorMsg = "�� c� l?i x?y ra khi luu.";
+        let errorMsg = "Có lỗi xảy ra khi lưu.";
         let fieldErrors = {};
         try {
           const errorData = await res.json();
@@ -297,10 +317,10 @@ export default function AdminDashboard() {
           if (errorData.fieldErrors && typeof errorData.fieldErrors === 'object') {
             fieldErrors = errorData.fieldErrors;
             setFormErrors(prev => ({ ...prev, ...fieldErrors })); // Set field errors state
-            errorMsg = "D? li?u kh�ng h?p l?. Vui l�ng ki?m tra l?i c�c tru?ng."; // More generic message
+            errorMsg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin."; // More generic message
           }
         } catch (parseError) {
-          errorMsg = `L?i ${res.status}. Kh�ng th? d?c chi ti?t l?i.`;
+          errorMsg = `L?i ${res.status}. Không thể đọc chi tiết lỗi.`;
         }
         throw new Error(errorMsg); // Throw error to be caught below
       }
@@ -309,7 +329,7 @@ export default function AdminDashboard() {
       await fetchUsers();   // Refresh the user list on success
       setShowForm(false);   // Close the modal
       setEditingUser(null); // Reset editing state
-      // Consider adding a success toast here: toast.success('Luu th�nh c�ng!');
+
 
     } catch (err) {
       console.error("Submit error:", err);
@@ -357,13 +377,12 @@ export default function AdminDashboard() {
       setShowConfirmModal(false); // Close confirmation modal
       setUserToDeleteId(null);
       await fetchUsers(); // Refresh user list
-      // Consider adding a success toast here: toast.success('X�a th�nh c�ng!');
+
 
     } catch (err) {
       console.error("Delete Error:", err);
-      // Display error (can be shown as general error or inside confirmation modal if kept open)
-      setError(err.message || "X�a ngu?i d�ng th?t b?i.");
-      // setShowConfirmModal(false); // Optionally close modal even on error
+      // Display error 
+      setError(err.message || "Xóa người dùng thất bại.");
     } finally {
       setIsDeleting(false); // Stop delete loading indicator
     }
@@ -393,7 +412,7 @@ export default function AdminDashboard() {
       }
 
       if (!res.ok) {
-        let errorMsg = `Kh�ng th? c?p nh?t tr?ng th�i. (L?i ${res.status})`;
+        let errorMsg = `Không thể cập nhật trạng thái. (L?i ${res.status})`;
         try {
           const errorData = await res.json();
           errorMsg = errorData.message || errorData.error || errorMsg;
@@ -411,7 +430,7 @@ export default function AdminDashboard() {
 
     } catch (err) {
       console.error("Toggle Active Error:", err);
-      setError(err.message || "C?p nh?t tr?ng th�i th?t b?i.");
+      setError(err.message || "Cập nhật trạng thái thất bại.");
     } finally {
       setIsToggling(false);
     }
@@ -428,10 +447,10 @@ export default function AdminDashboard() {
   if (loading && !userInfo) {
     return (
       <div className="dashboard-container">
-        <Sidebar userName={"�ang t?i..."} userRole={"Admin"} />
+        <Sidebar userName={"Đang tải..."} userRole={"Admin"} />
         <main className="main-content loading-state">
           <Loading inline />
-          <p>�ang t?i d? li?u...</p>
+          <p>Đang tải dữ liệu...</p>
         </main>
       </div>
     );
@@ -444,8 +463,8 @@ export default function AdminDashboard() {
 
       <main className="main-content">
         <header className="page-header">
-          <h1> <FaUserCog /> Qu?n l� ngu?i d�ng </h1>
-          <p>Th�m, ch?nh s?a v� qu?n l� ngu?i d�ng trong h? th?ng.</p>
+          <h1> <FaUserCog /> Quản lí người dùng </h1>
+          <p>Thêm, chỉnh sửa và quản lý người dùng trong hệ thống.</p>
         </header>
 
         {/* Display General Errors (fetch errors, delete errors) when FORM IS CLOSED */}
@@ -488,12 +507,13 @@ export default function AdminDashboard() {
           actionLoading={actionLoading}
           onClose={() => { setShowForm(false); setEditingUser(null); }}
           error={error}
+          centers={centers}
         />
 
         {/* --- Confirmation Modal for Deletion --- */}
         <ConfirmationModal
           show={showConfirmModal}
-          message={`B?n c� ch?c ch?n mu?n x�a ngu?i d�ng ID: ${userToDeleteId}? H�nh d?ng n�y kh�ng th? ho�n t�c.`}
+          message={`Bạn có chắc chắn muốn xóa người dùng ID: ${userToDeleteId}? Hành động này không thể hoàn tác.`}
           onConfirm={confirmDelete}
           onCancel={cancelDelete}
           isLoading={isDeleting} // Pass the delete loading state

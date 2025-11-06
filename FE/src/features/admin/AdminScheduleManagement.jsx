@@ -16,7 +16,6 @@ import { useNavigate } from "react-router-dom";
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-const API_BASE = API_BASE_URL; // Tạm thời để tương thích với code cũ
 
 export default function AdminScheduleManagement() {
     const [schedules, setSchedules] = useState([]);
@@ -48,7 +47,7 @@ export default function AdminScheduleManagement() {
     // --- Lấy thông tin user ---
     const fetchUserInfo = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/users/account/current`, {
+            const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
                 headers: {
                     Authorization: `Bearer ${getToken()}`
                 },
@@ -69,7 +68,7 @@ export default function AdminScheduleManagement() {
     const fetchSchedules = async () => {
         try {
             setLoading(true);
-            const res = await fetch(`${API_BASE}/api/admin/schedules`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/schedules`, {
                 headers: {
                     Authorization: `Bearer ${getToken()}`
                 },
@@ -90,7 +89,7 @@ export default function AdminScheduleManagement() {
     const fetchPlans = async (scheduleId) => {
         try {
             setLoading(true);
-            const res = await fetch(`${API_BASE}/api/admin/schedules/${scheduleId}/plans`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/schedules/${scheduleId}/plans`, {
                 headers: {
                     Authorization: `Bearer ${getToken()}`
                 },
@@ -117,7 +116,7 @@ export default function AdminScheduleManagement() {
     // LẤY PART TYPES TỪ API
     const fetchPartTypes = async () => {
         try {
-            const res = await fetch(`${API_BASE}/api/admin/part-types`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/part-types`, {
                 headers: { Authorization: `Bearer ${getToken()}` }
             });
             if (!res.ok) throw new Error("Không thể tải loại linh kiện");
@@ -190,7 +189,7 @@ export default function AdminScheduleManagement() {
             let res;
             if (modalMode === "add") {
                 // Thử cả 2 cách: query string VÀ body
-                res = await fetch(`${API_BASE}/api/admin/schedules?${query}`, {
+                res = await fetch(`${API_BASE_URL}/api/admin/schedules?${query}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -200,7 +199,7 @@ export default function AdminScheduleManagement() {
                 });
             } else if (modalMode === "edit" && selectedSchedule?.id) {
                 // Thử cả 2 cách: query string VÀ body
-                res = await fetch(`${API_BASE}/api/admin/schedules/${selectedSchedule.id}?${query}`, {
+                res = await fetch(`${API_BASE_URL}/api/admin/schedules/${selectedSchedule.id}?${query}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -252,7 +251,7 @@ export default function AdminScheduleManagement() {
 
             // Nếu là plan đã có trong DB, gọi API DELETE
             const res = await fetch(
-                `${API_BASE}/api/admin/plans/${planId}`,
+                `${API_BASE_URL}/api/admin/plans/${planId}`,
                 {
                     method: 'DELETE',
                     headers: { Authorization: `Bearer ${getToken()}` },
@@ -277,7 +276,7 @@ export default function AdminScheduleManagement() {
             // ĐẢM BẢO PART TYPES LOAD TRƯỚC
             await fetchPartTypes();
 
-            const res = await fetch(`${API_BASE}/api/admin/plans/${plan.id}/items`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/plans/${plan.id}/items`, {
                 headers: { Authorization: `Bearer ${getToken()}` }
             });
 
@@ -321,7 +320,7 @@ export default function AdminScheduleManagement() {
             return;
         }
         try {
-            const res = await fetch(`${API_BASE}/api/admin/plan-items/${itemId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/plan-items/${itemId}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${getToken()}` }
             });
@@ -357,7 +356,7 @@ export default function AdminScheduleManagement() {
                 for (const plan of plans) {
                     // Chuẩn hóa data trước khi gửi - đảm bảo không có NaN hoặc string rỗng
                     const planData = {
-                        scheduleId: scheduleId, // ✅ Dùng scheduleId từ tham số
+                        scheduleId: scheduleId, //  Dùng scheduleId từ tham số
                         maintenanceNo: parseInt(plan.maintenanceNo) || 0,
                         intervalKm: parseInt(plan.intervalKm) || 0,
                         intervalMonth: parseInt(plan.intervalMonth) || 0,
@@ -367,7 +366,7 @@ export default function AdminScheduleManagement() {
 
                     if (plan.isNew || plan.id.toString().startsWith('temp_')) {
                         // Thêm plan mới
-                        const res = await fetch(`${API_BASE}/api/admin/plans`, {
+                        const res = await fetch(`${API_BASE_URL}/api/admin/plans`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -390,7 +389,7 @@ export default function AdminScheduleManagement() {
                     } else if (plan.modified) {
                         // Cập nhật plan đã tồn tại
                         const res = await fetch(
-                            `${API_BASE}/api/admin/plans/${plan.id}`,
+                            `${API_BASE_URL}/api/admin/plans/${plan.id}`,
                             {
                                 method: 'PUT',
                                 headers: {

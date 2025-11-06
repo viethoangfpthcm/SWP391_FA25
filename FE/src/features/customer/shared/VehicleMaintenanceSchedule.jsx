@@ -170,7 +170,7 @@ function VehicleMaintenanceSchedule() {
       }
     };
     fetchScheduleAndBookings();
-  }, [licensePlate, navigate, API_BASE]);
+  }, [licensePlate, navigate, API_BASE_URL]);
 
   // getStatusIcon (Không đổi)
   const getStatusIcon = (status) => {

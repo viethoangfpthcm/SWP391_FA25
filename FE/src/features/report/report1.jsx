@@ -111,7 +111,7 @@ export default function Report1() {
 
     fetchReportsList();
 
-  }, [token, customerId, navigate, API_BASE, lastUpdated]);
+  }, [token, customerId, navigate, API_BASE_URL, lastUpdated]);
 
   const handleViewDetails = async (bookingId) => {
     if (!bookingId) return;

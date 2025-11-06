@@ -63,7 +63,7 @@ export default function StaffCheckList() {
     };
 
     if (bookingId) fetchChecklist();
-  }, [bookingId, API_BASE, token]);
+  }, [bookingId, API_BASE_URL, token]);
 
   if (loading) return <p>Đang tải dữ liệu...</p>;
   if (error) return <p>{error}</p>;

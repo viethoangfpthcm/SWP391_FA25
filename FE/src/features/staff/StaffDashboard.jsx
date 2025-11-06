@@ -76,15 +76,14 @@ export default function StaffDashboard({ user, userRole }) {
 
     } catch (err) {
       console.error("Error fetching user info:", err);
-      setError(`L?i t?i th�ng tin ngu?i d�ng: ${err.message}`);
+      setError(`Lỗi tải thông tin nguời dùng: ${err.message}`);
     }
   };
 
-  // H�m fetch danh s�ch l?ch h?n
   const fetchAppointments = async () => {
     try {
       setError(null);
-      // API n�y tr? v? StaffBookingDTO (d� bao g?m checklistStatus)
+      
       const response = await fetch(`${API_BASE_URL}/api/staff/bookings`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -96,7 +95,7 @@ export default function StaffDashboard({ user, userRole }) {
         const errorText = await response.text();
         console.error("Appointments API failed:", response.status, errorText);
         if (response.status === 401) {
-          setError("Phi�n dang nh?p h?t h?n. �ang chuy?n hu?ng...");
+          setError("Phiên dang nhập hết hạn. Đang chuyển huớng...");
           setTimeout(() => {
             localStorage.removeItem("token");
             localStorage.removeItem("userId");
@@ -104,7 +103,7 @@ export default function StaffDashboard({ user, userRole }) {
             navigate("/");
           }, 2000);
         } else {
-          setError(`Kh�ng th? t?i l?ch h?n (${response.status}): ${errorText}`);
+          setError(`Không thể tải lịch hẹn (${response.status}): ${errorText}`);
         }
         setAppointments([]);
         return false;

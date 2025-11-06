@@ -42,7 +42,13 @@ export default function ServiceCenterManagement() {
   const [actionLoading, setActionLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingCenter, setEditingCenter] = useState(null);
-  const [formData, setFormData] = useState({ name: "", address: "", phone: "" });
+  const [formData, setFormData] = useState({ 
+    name: "", 
+    address: "", 
+    phone: "",
+    openingHour: "07:00",
+    closingHour: "20:00"
+  });
   const [formErrors, setFormErrors] = useState({});
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -70,12 +76,12 @@ export default function ServiceCenterManagement() {
         navigate("/");
         return;
       }
-      if (!res.ok) throw new Error(`L?i t?i danh s�ch trung t�m (${res.status})`);
+      if (!res.ok) throw new Error(`Lỗi tải danh sách trung tâm (${res.status})`);
       const data = await res.json();
       setCenters(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Fetch Centers Error:", err);
-      setError("Kh�ng th? t?i danh s�ch trung t�m.");
+      setError("Không thể tải danh sách trung tâm.");
     } finally {
       setLoading(false);
     }
@@ -98,7 +104,7 @@ export default function ServiceCenterManagement() {
     if (error) setError(null);
   };
 
-  const openForm = (center = null) => {
+const openForm = (center = null) => {
     setEditingCenter(center);
     setFormErrors({});
     setError(null);
@@ -109,9 +115,17 @@ export default function ServiceCenterManagement() {
         name: center.name || "",
         address: center.address || "",
         phone: center.phone || "",
+        openingHour: center.openingHour || "07:00",
+        closingHour: center.closingHour || "20:00",
       });
     } else {
-      setFormData({ name: "", address: "", phone: "" });
+      setFormData({ 
+        name: "", 
+        address: "", 
+        phone: "",
+        openingHour: "08:00",
+        closingHour: "18:00"
+      });
     }
   };
 
@@ -119,13 +133,23 @@ export default function ServiceCenterManagement() {
     const errors = {};
     if (!formData.name || !isValidName(formData.name)) {
       errors.name =
-        "T�n trung t�m kh�ng h?p l? (�t nh?t 2 k� t?, kh�ng ch?a k� t? d?c bi?t).";
+        "Tên trung tâm không hợp lệ (ít nhất 2 ký tự, không chứa ký tự đặc biệt).";
     }
     if (!formData.address || formData.address.trim() === "") {
-      errors.address = "�?a ch? kh�ng du?c d? tr?ng.";
+      errors.address = "Địa chỉ không được để trống.";
     }
     if (!formData.phone || !isValidPhone(formData.phone)) {
-      errors.phone = "S? di?n tho?i kh�ng d�ng d?nh d?ng VN (10 s?).";
+      errors.phone = "Số điện thoại không đúng định dạng VN (10 số).";
+    }
+    if (!formData.openingHour || !isValidTime(formData.openingHour)) {
+      errors.openingHour = "Giờ mở cửa không hợp lệ (định dạng HH:MM).";
+    }
+    if (!formData.closingHour || !isValidTime(formData.closingHour)) {
+      errors.closingHour = "Giờ đóng cửa không hợp lệ (định dạng HH:MM).";
+    }
+    if (formData.openingHour && formData.closingHour && 
+        formData.openingHour >= formData.closingHour) {
+      errors.closingHour = "Giờ đóng cửa phải sau giờ mở cửa.";
     }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -147,6 +171,8 @@ export default function ServiceCenterManagement() {
         name: formData.name.trim(),
         address: formData.address.trim(),
         phone: formData.phone.trim(),
+        openingHour: formData.openingHour.trim() + ":00",
+        closingHour: formData.closingHour.trim() + ":00",
       };
 
       const res = await fetch(endpoint, {
@@ -165,7 +191,7 @@ export default function ServiceCenterManagement() {
       }
 
       if (!res.ok) {
-        let errorMsg = "�� c� l?i x?y ra.";
+        let errorMsg = "Có lỗi xảy ra.";
         try {
           const errorData = await res.json();
           errorMsg = errorData.message || errorData.error || `L?i ${res.status}`;
@@ -180,7 +206,7 @@ export default function ServiceCenterManagement() {
       setEditingCenter(null);
     } catch (err) {
       console.error("Submit Center Error:", err);
-      setError(err.message || "Kh�ng th? luu th�ng tin trung t�m.");
+      setError(err.message || "Không thể lưu thông tin trung tâm.");
     } finally {
       setActionLoading(false);
     }
@@ -207,14 +233,14 @@ export default function ServiceCenterManagement() {
         return;
       }
       if (!res.ok) {
-        throw new Error("Kh�ng th? x�a trung t�m.");
+        throw new Error("Không thể xóa trung tâm.");
       }
       setShowConfirmModal(false);
       setCenterToDeleteId(null);
       await fetchCenters();
     } catch (err) {
       console.error("Delete Center Error:", err);
-      setError(err.message || "X�a trung t�m th?t b?i.");
+      setError(err.message || "Xóa trung tâm thất bại.");
     } finally {
       setIsDeleting(false);
     }
@@ -237,7 +263,7 @@ export default function ServiceCenterManagement() {
         <main className="scm-content">
           <div className="scm-loading">
             <Loading inline />
-            <p>�ang t?i d? li?u trung t�m...</p>
+            <p>Đang tải dữ liệu trung tâm...</p>
           </div>
         </main>
       </div>
@@ -250,9 +276,9 @@ export default function ServiceCenterManagement() {
       <main className="scm-content">
         <header className="scm-header">
           <h1>
-            <FaBuilding /> Qu?n l� Trung t�m D?ch v?
+            <FaBuilding /> Quản lý Trung tâm Dịch vụ
           </h1>
-          <p>Th�m, ch?nh s?a th�ng tin c�c trung t�m b?o du?ng.</p>
+          <p>Thêm, chỉnh sửa thông tin các trung tâm bảo duỡng.</p>
         </header>
 
         {error && !showForm && !showConfirmModal && (
@@ -267,24 +293,26 @@ export default function ServiceCenterManagement() {
             onClick={() => openForm()}
             disabled={actionLoading || isDeleting}
           >
-            <FaPlus /> Th�m trung t�m
+            <FaPlus /> Thêm trung tâm
           </Button>
         </div>
 
         <div className="scm-table-card">
           {(actionLoading || isDeleting) && (
             <div className="scm-table-loading">
-              <Loading inline /> �ang x? l�...
+              <Loading inline /> Đang xử lý...
             </div>
           )}
           <table className="scm-data-table">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>T�n Trung t�m</th>
-                <th>�?a ch?</th>
-                <th>S�T</th>
-                <th>Thao t�c</th>
+                <th>Tên Trung tâm</th>
+                <th>Địa chỉ</th>
+                <th>SĐT</th>
+                <th>Giờ mở cửa</th>
+                <th>Giờ đóng cửa</th>
+                <th>Thao tác</th>
               </tr>
             </thead>
             <tbody>
@@ -295,27 +323,29 @@ export default function ServiceCenterManagement() {
                     <td>{center.name}</td>
                     <td>{center.address}</td>
                     <td>{center.phone}</td>
+                    <td>{center.openingHour ? center.openingHour.substring(0, 5) : "N/A"}</td>
+                    <td>{center.closingHour ? center.closingHour.substring(0, 5) : "N/A"}</td>
                     <td className="scm-action-buttons">
                       <Button
                         className="scm-btn-action scm-btn-view"
                         onClick={() => handleViewParts(center.id)}
                         disabled={actionLoading || isDeleting}
                       >
-                        <FaEye /> Ph? t�ng
+                        <FaEye /> Phụ tùng
                       </Button>
                       <Button
                         className="scm-btn-action scm-btn-edit"
                         onClick={() => openForm(center)}
                         disabled={actionLoading || isDeleting}
                       >
-                        <FaEdit /> S?a
+                        <FaEdit /> Sửa
                       </Button>
                       <Button
                         className="scm-btn-action scm-btn-delete"
                         onClick={() => handleDeleteClick(center.id)}
                         disabled={actionLoading || isDeleting}
                       >
-                        <FaTrash /> X�a
+                        <FaTrash /> Xóa
                       </Button>
                     </td>
                   </tr>
@@ -323,7 +353,7 @@ export default function ServiceCenterManagement() {
               ) : (
                 <tr>
                   <td colSpan="5" style={{ textAlign: "center", color: "#666" }}>
-                    Chua c� trung t�m d?ch v? n�o.
+                    Chưa có trung tâm dịch vụ nào.
                   </td>
                 </tr>
               )}
@@ -337,7 +367,7 @@ export default function ServiceCenterManagement() {
             onClick={() => !actionLoading && setShowForm(false)}
           >
             <div className="scm-modal" onClick={(e) => e.stopPropagation()}>
-              <h2>{editingCenter ? "Ch?nh s?a trung t�m" : "Th�m trung t�m m?i"}</h2>
+              <h2>{editingCenter ? "Chỉnh sửa trung tâm" : "Thêm trung tâm mới"}</h2>
 
               {error && (
                 <div className="scm-error-message">
@@ -347,7 +377,7 @@ export default function ServiceCenterManagement() {
 
               <form onSubmit={handleSubmit} className="scm-user-form">
                 <div className="scm-form-group">
-                  <label htmlFor="name">T�n Trung t�m:</label>
+                  <label htmlFor="name">Tên Trung tâm:</label>
                   <input
                     id="name"
                     name="name"
@@ -361,7 +391,7 @@ export default function ServiceCenterManagement() {
                 </div>
 
                 <div className="scm-form-group">
-                  <label htmlFor="address">�?a ch?:</label>
+                  <label htmlFor="address">Địa chỉ:</label>
                   <input
                     id="address"
                     name="address"
@@ -375,7 +405,7 @@ export default function ServiceCenterManagement() {
                 </div>
 
                 <div className="scm-form-group">
-                  <label htmlFor="phone">S? di?n tho?i:</label>
+                  <label htmlFor="phone">Số điện thoại:</label>
                   <input
                     id="phone"
                     name="phone"
@@ -387,6 +417,35 @@ export default function ServiceCenterManagement() {
                     <span className="scm-error-text">{formErrors.phone}</span>
                   )}
                 </div>
+                <div className="scm-form-group">
+                  <label htmlFor="openingHour">Giờ mở cửa:</label>
+                  <input
+                    type="time"
+                    id="openingHour"
+                    name="openingHour"
+                    value={formData.openingHour}
+                    onChange={handleChange}
+                    className={formErrors.openingHour ? "scm-input-error" : ""}
+                  />
+                  {formErrors.openingHour && (
+                    <span className="scm-error-text">{formErrors.openingHour}</span>
+                  )}
+                </div>
+
+                <div className="scm-form-group">
+                  <label htmlFor="closingHour">Giờ đóng cửa:</label>
+                  <input
+                    type="time"
+                    id="closingHour"
+                    name="closingHour"
+                    value={formData.closingHour}
+                    onChange={handleChange}
+                    className={formErrors.closingHour ? "scm-input-error" : ""}
+                  />
+                  {formErrors.closingHour && (
+                    <span className="scm-error-text">{formErrors.closingHour}</span>
+                  )}
+                </div>
 
                 <div className="scm-form-actions">
                   <Button type="submit" className="scm-btn-save" disabled={actionLoading}>
@@ -395,7 +454,7 @@ export default function ServiceCenterManagement() {
                     ) : (
                       <FaSave />
                     )}{" "}
-                    {actionLoading ? "�ang luu..." : "Luu"}
+                    {actionLoading ? "Đang lưu..." : "Lưu"}
                   </Button>
                   <Button
                     type="button"
@@ -413,7 +472,7 @@ export default function ServiceCenterManagement() {
 
         <ConfirmationModal
           show={showConfirmModal}
-          message={`B?n ch?c ch?n mu?n x�a Trung t�m ID: ${centerToDeleteId}?`}
+          message={`Bạn chắc chắn muốn xóa Trung tâm ID: ${centerToDeleteId}?`}
           onConfirm={confirmDelete}
           onCancel={cancelDelete}
           isLoading={isDeleting}
