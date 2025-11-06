@@ -219,16 +219,18 @@
 .stat-value {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #ffffff;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
-  margin-bottom: 5px;
+  color: #ffffff !important;
+  text-shadow: 0 0 8px rgb(0, 0, 0);
 }
+
 
 .stat-label {
   font-size: 0.9rem;
-  color: #e9ecf3;
-  font-weight: 500;
+  color: #ffffff !important; 
+  font-weight: 600;
+  text-shadow: 0 0 6px rgb(22, 20, 20);
 }
+
 
 /* =========================================================
    📅 Booking Section
@@ -408,6 +410,9 @@
 .booking-list-container {
   color: #fefefe;
 }
+.booking-list-container h3 {
+  color: #fefefe;
+}
 
 /* Pending - sáng vàng */
 .booking-item.status-pending .booking-item-header {
@@ -564,6 +569,12 @@
 }
 
 /* Header của modal */
+.div  {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fd0000;
+}
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -577,7 +588,7 @@
   margin: 0;
   font-size: 1.3rem;
   font-weight: 700;
-  color: #0a8bff;
+  color: #ffffff !important;
   text-shadow: 0 0 8px rgba(10, 139, 255, 0.35);
 }
 
