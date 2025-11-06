@@ -1,28 +1,53 @@
-/* === FORM MODAL (Add/Edit Part) === */
+/* === FORM MODAL - GIỐNG Y MODAL MANAGER === */
 .modal-overlay {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px); /* Hiệu ứng mờ phía sau */
+  -webkit-backdrop-filter: blur(8px); /* Safari support */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
 }
 
-.part-edit-modal {
-  background: #fff;
-  border-radius: 16px;
-  width: 500px;
-  max-width: 95%;
-  padding: 24px 28px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  animation: fadeInUp 0.25s ease-out;
-}
-
-@keyframes fadeInUp {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* OVERRIDE TẤT CẢ CSS MODAL - BỎ VIỀN TRẮNG */
+.modal-overlay .modal.part-edit-modal,
+.modal-overlay .part-edit-modal,
+.modal.part-edit-modal,
+.part-edit-modal {
+  background: white;
+  border-radius: 16px;
+  max-width: 550px;
+  width: 90%;
+  max-height: 85vh !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4) !important;
+  animation: slideUp 0.3s ease;
+  border: none !important; /* BỎ viền */
+  outline: none !important;
+  padding: 0 !important; /* BỎ padding gây ra viền trắng */
+  margin: 0 !important;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -30,90 +55,171 @@
   }
 }
 
-.part-edit-modal h2 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  margin-bottom: 18px;
-  color: #2c3e50;
+.modal-header-custom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.75rem 2rem;
+  border-bottom: 2px solid #e2e8f0;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+  border-radius: 16px 16px 0 0;
 }
 
-/* === FORM ELEMENTS === */
+.modal-header-custom h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+/* Nút X trắng trên nền tím */
+.btn-close-modal {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+}
+
+.btn-close-modal:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: rotate(90deg);
+}
+
+.btn-close-modal:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.part-form {
+  padding: 1.5rem 2rem;
+  background: #fafafa;
+}
+
 .part-form .form-group {
-  margin-bottom: 14px;
+  margin-bottom: 0.85rem; /* Giảm từ 1.25rem xuống 0.85rem */
 }
 
 .part-form label {
   display: block;
-  font-weight: 500;
-  margin-bottom: 6px;
-  color: #333;
+  font-weight: 600;
+  margin-bottom: 6px; /* Giảm từ 8px xuống 6px */
+  color: #4a5568;
+  font-size: 0.9rem;
 }
 
 .part-form input,
 .part-form select {
   width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  transition: border-color 0.2s;
+  padding: 0.65rem 0.9rem; /* Giảm từ 0.75rem 1rem xuống 0.65rem 0.9rem */
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14.5px;
+  transition: all 0.2s;
+  background: white;
+  color: #2d3748;
+  font-weight: 500;
 }
 
 .part-form input:focus,
 .part-form select:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .input-error {
-  border-color: #e74c3c !important;
-  background-color: #fff6f6;
+  border-color: #f56565 !important;
+  background-color: #fff5f5 !important;
 }
 
 .error-text {
   display: block;
-  font-size: 0.85rem;
-  color: #e74c3c;
+  font-size: 0.8rem;
+  color: #e53e3e;
   margin-top: 4px;
+  font-weight: 500;
 }
 
-/* === BUTTONS INSIDE FORM === */
+.form-error {
+  margin: 0 2rem 0.75rem; /* Giảm margin bottom */
+  padding: 0.65rem 0.9rem; /* Giảm padding */
+  background: #fff5f5;
+  border: 2px solid #fc8181;
+  border-radius: 8px;
+  color: #c53030;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* === BUTTONS - GIỐNG MANAGER - GỌN === */
 .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 18px;
+  padding: 1.25rem 2rem; /* Giảm từ 1.5rem xuống 1.25rem */
+  border-top: 2px solid #e2e8f0;
+  background: white;
 }
 
 .btn-save {
-  background-color: #2ecc71;
-  color: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: 0.65rem 1.5rem; /* Giảm từ 0.75rem 1.75rem xuống 0.65rem 1.5rem */
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .btn-save:hover {
-  background-color: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-save:active {
+  transform: translateY(0);
+}
+
+.btn-save:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-cancel {
-  background-color: #bdc3c7;
-  color: #2c3e50;
+  background: #e2e8f0;
+  color: #4a5568;
   border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: 0.65rem 1.5rem; /* Giảm từ 0.75rem 1.75rem xuống 0.65rem 1.5rem */
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
 }
 
 .btn-cancel:hover {
-  background-color: #95a5a6;
+  background: #cbd5e0;
+  transform: translateY(-2px);
 }
 
 /* === ACTION BUTTONS IN TABLE === */

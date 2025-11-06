@@ -210,10 +210,10 @@ const formatCurrency= (amount) => {
                             <thead>
                                 <tr>
                                     <th>Payment ID</th>
-                                    <th>Booking ID</th>
-                                    <th>Trung t�m</th>
-                                    <th>Ng�y thanh to�n</th>
-                                    <th>Phuong th?c</th>
+                                    <th>Tên khách hàng</th>
+                                    <th>Trung tâm</th>
+                                    <th>Ngày thanh toán</th>
+                                    <th>Phương thức</th>
                                     <th>Chi ph� (Lao d?ng)</th>
                                     <th>Chi ph� (V?t tu)</th>
                                     <th>T?ng c?ng</th>
@@ -231,7 +231,7 @@ const formatCurrency= (amount) => {
                                     filteredPayments.map((payment) => (
                                         <tr key={payment.paymentId}>
                                             <td>#{payment.paymentId}</td>
-                                            <td>#{payment.bookingId}</td>
+                                            <td>{payment.customerName || "N/A"}</td>
                                             <td>{payment.centerName || "N/A"}</td>
                                             <td>{formatDate(payment.paymentDate)}</td>
                                             <td>{payment.paymentMethod || "N/A"}</td>

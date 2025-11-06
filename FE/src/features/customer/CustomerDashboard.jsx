@@ -341,7 +341,7 @@ const executeDeleteVehicle = async (licensePlate) => {
 
   useEffect(() => {
     fetchDashboardData();
-  }, [navigate, API_BASE]);
+  }, [navigate]);
 
 
   const handleViewSchedule = (licensePlate) => {
