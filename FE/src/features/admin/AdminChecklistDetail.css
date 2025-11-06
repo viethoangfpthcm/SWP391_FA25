@@ -1,4 +1,9 @@
+/* ===============================
+   ADMIN CHECKLIST DETAIL PAGE
+   (Hoàn chỉnh, bảng đều đẹp, responsive)
+================================= */
 
+/* --- Layout --- */
 .dashboard-container {
     display: flex;
     min-height: 100vh;
@@ -13,7 +18,7 @@
     min-height: 100vh;
 }
 
-/* --- Header (Giống file cũ) --- */
+/* --- Header --- */
 .page-header {
     background: #fff;
     border-radius: 12px;
@@ -31,6 +36,7 @@
     margin-top: 0;
     margin-bottom: 5px;
 }
+
 .page-header p {
     margin: 0;
     color: #555;
@@ -44,28 +50,32 @@
     margin-bottom: 10px;
 }
 
-/* --- Nút Quay Lại (Mới) --- */
+/* --- Nút Quay Lại --- */
 .action-button.back-button {
+    position: absolute;
+    top: 20px;
+    right: 200px;
+    z-index: 1000;
     background-color: #6c757d;
     color: white;
-    padding: 8px 14px;
+    padding: 10px 18px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 600;
     display: flex;
     align-items: center;
     gap: 6px;
-    transition: background-color 0.2s ease;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
+
 .action-button.back-button:hover {
     background-color: #5a6268;
 }
 
-
-/* --- Card Thông tin (Mới) --- */
-/* (Style này dựa trên .page-header) */
+/* --- Card Thông tin --- */
 .info-card {
     background: #fff;
     border-radius: 12px;
@@ -75,7 +85,6 @@
     border: 1px solid #eef;
 }
 
-/* Tiêu đề cho card */
 .card-title {
     display: flex;
     align-items: center;
@@ -87,12 +96,11 @@
     padding-bottom: 10px;
 }
 
-/* Lưới thông tin (Mới) */
+/* --- Lưới thông tin --- */
 .info-grid {
     display: grid;
-    /* Tự động chia cột, mỗi cột tối thiểu 250px */
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 16px; 
+    gap: 16px;
 }
 
 .info-item {
@@ -113,74 +121,132 @@
     font-size: 1rem;
 }
 
-/* Style riêng cho grid chi phí */
+/* --- Chi phí --- */
 .cost-grid .info-item span {
     font-size: 1.25rem;
     font-weight: 700;
 }
+
 .cost-estimated span {
-    color: #0a4ff0; /* Xanh dương */
+    color: #0a4ff0;
 }
+
 .cost-approved span {
-    color: #15803d; /* Xanh lá */
+    color: #15803d;
 }
+
 .cost-declined span {
-    color: #b91c1c; /* Đỏ */
+    color: #b91c1c;
 }
 
-
-/* --- Table (Giống file cũ) --- */
+/* ===============================
+   BẢNG CHI TIẾT CHECKLIST
+================================= */
 .table-card {
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
     border: 1px solid #eef;
-    overflow-x: auto; /* Thêm để responsive table */
-    margin-top: -25px; /* Nối liền với card tiêu đề ở trên */
+    overflow-x: auto;
+    margin-top: -25px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
 
 .table-wrapper {
-    min-width: 900px; /* Tăng chiều rộng tối thiểu cho bảng chi tiết */
+    min-width: 900px;
 }
 
 .data-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
+    /* Chia đều các cột */
 }
 
+/* --- Header bảng --- */
 .data-table th {
     background-color: #f8f9fa;
-    text-align: left;
+    text-align: center;
     padding: 12px 14px;
     font-weight: 700;
     text-transform: uppercase;
     color: #4b5563;
-    white-space: nowrap; 
     font-size: 0.8rem;
+    border-bottom: 2px solid #e5e7eb;
+    white-space: nowrap;
 }
 
+/* --- Cột và nội dung --- */
 .data-table td {
-    padding: 14px;
+    text-align: center;
+    padding: 12px 10px;
     border-bottom: 1px solid #eef;
-    vertical-align: middle; 
+    vertical-align: middle;
     font-size: 0.9rem;
-    max-width: 150px; /* Giới hạn chiều rộng cell */
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.data-table td:first-child {
-    font-weight: 600;
+/* --- Độ rộng cột hợp lý --- */
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+    width: 18%;
 }
 
+/* Hạng mục */
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+    width: 10%;
+}
+
+/* Hành động */
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+    width: 10%;
+}
+
+/* Trạng thái KTV */
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+    width: 10%;
+}
+
+/* Trạng thái KH */
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+    width: 20%;
+}
+
+/* Linh kiện */
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+    width: 10%;
+}
+
+/* Chi phí LĐ */
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) {
+    width: 10%;
+}
+
+/* Chi phí VT */
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) {
+    width: 12%;
+}
+
+/* Ghi chú */
+
+/* --- Trạng thái hover --- */
 .data-table tbody tr:hover {
     background-color: #f0f4ff;
 }
 
-.empty-state, .loading-state {
+/* --- Ô trống / loading --- */
+.empty-state,
+.loading-state {
     text-align: center;
     color: #9ca3af;
     padding: 30px;
@@ -196,7 +262,9 @@
     color: #4b5563;
 }
 
-/* --- Role badge (Giống file cũ) --- */
+/* ===============================
+   BADGE TRẠNG THÁI (ROLE)
+================================= */
 .role-badge {
     display: inline-block;
     padding: 6px 14px;
@@ -205,75 +273,69 @@
     font-size: 0.85rem;
     white-space: nowrap;
     border: 1px solid transparent;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
-    text-transform: capitalize; /* Tự động viết hoa */
+    text-transform: uppercase;
+    min-width: 90px;
 }
 
-*/
+/* Trạng thái màu sắc */
 .role-in-progress {
     background: #e0e7ff;
     color: #4338ca;
 }
-.role-chưa-có {
-     background: #e5e7eb;
-     color: #374151;
-}
-/* Các class còn lại copy từ file cũ */
+
 .role-pending {
-    background: #fef3c7; /* Vàng nhạt */
-    color: #92400e;
-}
-.role-approved,
-.role-confirmed,
-.role-assigned {
-    background: #dbeafe; /* Xanh dương nhạt */
-    color: #1d4ed8;
-}
-.role-completed {
-    background: #dcfce7; /* Xanh lá nhạt */
-    color: #15803d;
-}
-.role-paid {
-    background: #d1fae5; /* Xanh mint */
-    color: #065f46;
-}
-.role-cancelled {
-    background: #fee2e2; 
-    color: #991b1b;
-}
-.role-declined,
-.role-failed {
-    background: #fee2e2; /* Đỏ nhạt */
-    color: #b91c1c;
-}
-.role-na,
-.role-tốt,
-.role-hiệu-chỉnh {
-    background: #56f068;
-    color: #92400e;
-}
-.role-sửa-chữa {
     background: #fef3c7;
     color: #92400e;
 }
-.role-thay-thế {
+
+.role-approved,
+.role-confirmed,
+.role-assigned {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.role-completed {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.role-paid {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.role-cancelled,
+.role-declined,
+.role-failed {
     background: #fee2e2;
     color: #b91c1c;
 }
 
+.role-na {
+    background: #e5e7eb;
+    color: #374151;
+}
 
-/* --- Spinner (Giống file cũ) --- */
+/* ===============================
+   KHÁC
+================================= */
 .spinner {
     animation: spin 1.5s linear infinite;
     font-size: 2rem;
     color: #0a4ff0;
 }
+
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
-/* --- Error (Giống file cũ) --- */
 .error-message {
     padding: 12px;
     margin-bottom: 15px;
@@ -284,4 +346,55 @@
     align-items: center;
     gap: 8px;
     font-weight: 500;
+}
+
+/* --- Độ rộng và căn chỉnh cột --- */
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+    width: 18%;
+    text-align: left;
+    /* ✅ Căn trái cho cột Hạng mục */
+    padding-left: 16px;
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+    width: 10%;
+    text-align: center;
+}
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+    width: 10%;
+    text-align: center;
+}
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+    width: 10%;
+    text-align: center;
+}
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+    width: 20%;
+    text-align: center;
+}
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+    width: 10%;
+    text-align: center;
+}
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) {
+    width: 10%;
+    text-align: center;
+}
+
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) {
+    width: 12%;
+    text-align: center;
 }

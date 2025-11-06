@@ -9,15 +9,22 @@ function ConfirmationModal({ show, message, onConfirm, onCancel, isLoading }) {
 
   return (
     <div className="modal-overlay confirmation-overlay">
-      <div className="modal confirmation-modal">
-        <div className="confirmation-icon">
-          <FaExclamationTriangle />
-        </div>
-        <div className="confirmation-content">
+      <div className="confirmation-modal">
+        {/* Header với gradient */}
+        <div className="confirmation-header">
+          <div className="confirmation-icon">
+            <FaExclamationTriangle />
+          </div>
           <h3>Xác nhận hành động</h3>
+        </div>
+
+        {/* Body */}
+        <div className="confirmation-body">
           <p>{message}</p>
         </div>
-        <div className="confirmation-actions">
+
+        {/* Footer với các nút */}
+        <div className="confirmation-footer">
           <Button className="btn-cancel" onClick={onCancel} disabled={isLoading}>
             <FaTimes /> Hủy bỏ
           </Button>

@@ -1,206 +1,206 @@
 import React, { useState, useEffect } from "react";
 import {
-    FaCalendarAlt,
-    FaSpinner,
-    FaFilter,
-    FaExclamationTriangle,
-    FaCommentAlt,
-    FaTimes,
-    FaStar,
+  FaCalendarAlt,
+  FaSpinner,
+  FaFilter,
+  FaExclamationTriangle,
+  FaCommentAlt,
+  FaTimes,
+  FaStar,
 } from "react-icons/fa";
 import "./AdminBookingManagement.css";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { useNavigate } from "react-router-dom";
-import Button from '@components/ui/Button.jsx';
-import Loading from '@components/ui/Loading.jsx';
+import Button from "@components/ui/Button.jsx";
+import Loading from "@components/ui/Loading.jsx";
 import { API_BASE_URL } from "@config/api.js";
 
 const BOOKING_STATUS_MAP = {
-    PENDING: { text: 'Ch? x? l˝', className: 'role-pending' },
-    APPROVED: { text: '–„ duy?t', className: 'role-approved' },
-    ASSIGNED: { text: '–„ g·n th?', className: 'role-assigned' },
-    IN_PROGRESS: { text: '–ang x? l˝', className: 'role-in progress' },
-    COMPLETED: { text: 'Ho‡n th‡nh', className: 'role-completed' },
-    PAID: { text: '–„ thanh to·n', className: 'role-paid' },
-    CANCELLED: { text: '–„ h?y', className: 'role-cancelled' },
-    DECLINED: { text: '–„ t? ch?i', className: 'role-declined' },
-    PENDING_APPROVAL: { text: 'Ch? duy?t cu?i', className: 'role-pending' },
-    DEFAULT: { text: 'KhÙng rı', className: 'role-default' }
+  PENDING: { text: "Ch·ªù x·ª≠ l√Ω", className: "role-pending" },
+  APPROVED: { text: "ƒê√£ duy·ªát", className: "role-approved" },
+  ASSIGNED: { text: "ƒê√£ g√°n th·ª£", className: "role-assigned" },
+  IN_PROGRESS: { text: "ƒêang x·ª≠ l√Ω", className: "role-in-progress" },
+  COMPLETED: { text: "Ho√†n th√†nh", className: "role-completed" },
+  PAID: { text: "ƒê√£ thanh to√°n", className: "role-paid" },
+  CANCELLED: { text: "ƒê√£ h·ªßy", className: "role-cancelled" },
+  DECLINED: { text: "ƒê√£ t·ª´ ch·ªëi", className: "role-declined" },
+  PENDING_APPROVAL: { text: "Ch·ªù duy·ªát cu·ªëi", className: "role-pending" },
+  DEFAULT: { text: "Kh√¥ng r√µ", className: "role-default" },
 };
 const getStatusDisplay = (status) => {
-    return BOOKING_STATUS_MAP[status] || { text: status || 'KhÙng rı', className: 'role-default' };
+  return (
+    BOOKING_STATUS_MAP[status] || { text: status || "Kh√¥ng r√µ", className: "role-default" }
+  );
 };
 
 if (import.meta.env.MODE !== "development") {
 }
 
 export default function AdminBookingManagement() {
-    const [bookings, setBookings] = useState([]);
-    const [filterStatus, setFilterStatus] = useState("all");
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [userInfo, setUserInfo] = useState(null);
-    const navigate = useNavigate();
-    const [centers, setCenters] = useState([]);
-    const [selectedCenter, setSelectedCenter] = useState("all");
-    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-    const [selectedFeedback, setSelectedFeedback] = useState(null);
-    const [feedbackLoading, setFeedbackLoading] = useState(false);
-    const [feedbackError, setFeedbackError] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const navigate = useNavigate();
+  const [centers, setCenters] = useState([]);
+  const [selectedCenter, setSelectedCenter] = useState("all");
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [feedbackError, setFeedbackError] = useState(null);
 
-    
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-    // Fetch current user info (Gi? nguyÍn)
-    const fetchUserInfo = async () => {
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (res.status === 401) {
-                localStorage.clear();
-                navigate("/");
-                return;
-            }
-            if (!res.ok) throw new Error("KhÙng th? t?i thÙng tin ngu?i d˘ng");
-            const data = await res.json();
-            localStorage.setItem("fullName", data.fullName || "Admin");
-            localStorage.setItem("role", data.role || "Admin");
-            setUserInfo({ fullName: data.fullName, role: data.role });
-        } catch (err) {
-            console.error(err);
-            setError("KhÙng th? t?i thÙng tin ngu?i d˘ng.");
-        }
-    };
-    const fetchCenters = async () => {
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/admin/service-centers`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (!res.ok) throw new Error("KhÙng th? t?i danh s·ch trung t‚m");
-            const data = await res.json();
-            setCenters(data);
-        } catch (e) {
-            console.error(e);
-        }
-    };
-    const handleViewChecklist = (bookingId) => {
-        navigate(`/admin/checklist/booking/${bookingId}`);
-    };
-    const handleViewFeedback = async (bookingId) => {
-        setShowFeedbackModal(true); // M? modal
-        setFeedbackLoading(true);
-        setSelectedFeedback(null);
-        setFeedbackError(null);
+  // Fetch current user info
+  const fetchUserInfo = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 401) {
+        localStorage.clear();
+        navigate("/");
+        return;
+      }
+      if (!res.ok) throw new Error("Kh√¥ng th·ªÉ t·∫£i th√¥ng tin ng∆∞·ªùi d√πng");
+      const data = await res.json();
+      localStorage.setItem("fullName", data.fullName || "Admin");
+      localStorage.setItem("role", data.role || "Admin");
+      setUserInfo({ fullName: data.fullName, role: data.role });
+    } catch (err) {
+      console.error(err);
+      setError("Kh√¥ng th·ªÉ t·∫£i th√¥ng tin ng∆∞·ªùi d√πng.");
+    }
+  };
 
-        try {
-            // G?i API ADMIN m?i
-            const res = await fetch(`${API_BASE_URL}/api/admin/feedback/${bookingId}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+  const fetchCenters = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/service-centers`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Kh√¥ng th·ªÉ t·∫£i danh s√°ch trung t√¢m");
+      const data = await res.json();
+      setCenters(data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
-            if (res.status === 404) {
-                // S?a l?i 404 t? backend
-                const errorText = await res.text();
-                throw new Error(errorText || "KhÙng tÏm th?y feedback cho l?ch h?n n‡y.");
-            }
-            if (!res.ok) {
-                throw new Error("L?i khi t?i feedback.");
-            }
+  const handleViewChecklist = (bookingId) => {
+    navigate(`/admin/checklist/booking/${bookingId}`);
+  };
 
-            const data = await res.json();
-            setSelectedFeedback(data);
+  const handleViewFeedback = async (bookingId) => {
+    setShowFeedbackModal(true);
+    setFeedbackLoading(true);
+    setSelectedFeedback(null);
+    setFeedbackError(null);
 
-        } catch (err) {
-            setFeedbackError(err.message);
-        } finally {
-            setFeedbackLoading(false);
-        }
-    };
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/feedback/${bookingId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    // Fetch danh s·ch booking 
-    const fetchBookings = async () => {
-        try {
-            setError(null);
-            setLoading(true);
-            const url =
-                selectedCenter === "all"
-                    ? `${API_BASE_URL}/api/admin/bookings`
-                    : `${API_BASE_URL}/api/admin/bookings/by-center/${selectedCenter}`;
+      if (res.status === 404) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Kh√¥ng t√¨m th·∫•y feedback cho l·ªãch h·∫πn n√†y.");
+      }
+      if (!res.ok) {
+        throw new Error("L·ªói khi t·∫£i feedback.");
+      }
 
-            const res = await fetch(url, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+      const data = await res.json();
+      setSelectedFeedback(data);
+    } catch (err) {
+      setFeedbackError(err.message);
+    } finally {
+      setFeedbackLoading(false);
+    }
+  };
 
-            if (res.status === 401) {
-                localStorage.clear();
-                navigate("/");
-                return;
-            }
+  // Fetch danh s√°ch booking
+  const fetchBookings = async () => {
+    try {
+      setError(null);
+      setLoading(true);
+      const url =
+        selectedCenter === "all"
+          ? `${API_BASE_URL}/api/admin/bookings`
+          : `${API_BASE_URL}/api/admin/bookings/by-center/${selectedCenter}`;
 
-            if (!res.ok) throw new Error(`L?i t?i danh s·ch d?t l?ch (${res.status})`);
-            const data = await res.json();
-            setBookings(Array.isArray(data) ? data : []);
-        } catch (err) {
-            console.error(err);
-            setError("KhÙng th? t?i danh s·ch d?t l?ch.");
-        } finally {
-            setLoading(false);
-        }
-    };
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    useEffect(() => {
-        if (!token) {
-            navigate("/");
-            return;
-        }
-        fetchUserInfo();
-        fetchCenters();
-    }, [token, navigate]);
+      if (res.status === 401) {
+        localStorage.clear();
+        navigate("/");
+        return;
+      }
 
-    useEffect(() => {
-        fetchBookings();
-    }, [selectedCenter]);
+      if (!res.ok) throw new Error(`L·ªói t·∫£i danh s√°ch ƒë·∫∑t l·ªãch (${res.status})`);
+      const data = await res.json();
+      setBookings(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error(err);
+      setError("Kh√¥ng th·ªÉ t·∫£i danh s√°ch ƒë·∫∑t l·ªãch.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const filteredBookings =
-        filterStatus === "all"
-            ? bookings
-            : bookings.filter(
-                (b) => b.status === filterStatus
-            );
-    // Helper d?nh d?ng ng‡y (M?i)
-    const formatDate = (dateString) => {
-        if (!dateString) return "N/A";
-        try {
-            const options = {
-                year: "numeric", month: "2-digit", day: "2-digit",
-                hour: "2-digit", minute: "2-digit",
-            };
-            return new Date(dateString).toLocaleString("vi-VN", options);
-        } catch (error) {
-            return dateString;
-        }
-    };
+  useEffect(() => {
+    if (!token) {
+      navigate("/");
+      return;
+    }
+    fetchUserInfo();
+    fetchCenters();
+  }, [token, navigate]);
 
-const statusOrder = [
-    'pending',
-    'approved',
-    'assigned',
-    'in_progress',
-    'paid',
-    'completed',
-    'declined',
-    'cancelled'
+  useEffect(() => {
+    fetchBookings();
+  }, [selectedCenter]);
+
+  const filteredBookings =
+    filterStatus === "all"
+      ? bookings
+      : bookings.filter((b) => b.status === filterStatus);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    try {
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      };
+      return new Date(dateString).toLocaleString("vi-VN", options);
+    } catch (error) {
+      return dateString;
+    }
+  };
+
+  const statusOrder = [
+    "pending",
+    "approved",
+    "assigned",
+    "in_progress",
+    "paid",
+    "completed",
+    "declined",
+    "cancelled",
   ];
 
   const sortedAppointments = [...filteredBookings].sort((a, b) => {
-    const statusA = a.status?.toLowerCase().trim() || '';
-    const statusB = b.status?.toLowerCase().trim() || '';
+    const statusA = a.status?.toLowerCase().trim() || "";
+    const statusB = b.status?.toLowerCase().trim() || "";
 
     const rankA = statusOrder.indexOf(statusA);
     const rankB = statusOrder.indexOf(statusB);
-
-    // D“NG DEBUG: D·n dÚng n‡y v‡o d? xem chÌnh x·c nÛ dang so s·nh gÏ vs '${statusB}' (rank ${rankB})`);
 
     const finalRankA = rankA === -1 ? Infinity : rankA;
     const finalRankB = rankB === -1 ? Infinity : rankB;
@@ -211,225 +211,254 @@ const statusOrder = [
 
     return new Date(a.bookingDate) - new Date(b.bookingDate);
   });
-    if (loading && !userInfo) { // C?p nh?t text loading
-        return (
-            <div className="dashboard-container admin-theme">
-                <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
-                <main className="main-content loading-state">
-                    <Loading inline />
-                    <p>–ang t?i d? li?u d?t l?ch...</p>
-                </main>
-            </div>
-        );
-    }
 
+  if (loading && !userInfo) {
     return (
-        <div className="dashboard-container admin-theme">
-            <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
-
-            <main className="main-content">
-                <header className="page-header">
-                    <h1>
-                        <FaCalendarAlt /> Qu?n l˝ –?t l?ch
-                    </h1>
-                    <p>Xem v‡ theo dıi t?t c? l?ch h?n trong h? th?ng.</p>
-                </header>
-
-                {error && (
-                    <div className="error-message general-error">
-                        <FaExclamationTriangle /> {error}
-                    </div>
-                )}
-
-                {/* B? l?c (Thay d?i) */}
-                <div className="actions-bar">
-                    <div className="filter-group admin-group">
-                        <label htmlFor="statusFilter">
-                            <FaFilter /> L?c tr?ng th·i:
-                        </label>
-                        <select
-                            id="statusFilter"
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                        >
-                            <option value="all">All</option>
-                            <option value="PENDING">Pending</option>
-                            <option value="APPROVED">Approved</option>
-                            <option value="ASSIGNED">Assigned</option>
-                            <option value="IN_PROGRESS">In Progress</option>
-                            <option value="COMPLETED">Completed</option>
-                            <option value="PAID">Paid</option>
-                            <option value="CANCELLED">Cancelled</option>
-                            <option value="DECLINED">Declined</option>
-                        </select>
-                    </div>
-                    <div className="filter-group">
-                        <label htmlFor="centerFilter">
-                            <FaFilter /> Trung t‚m:
-                        </label>
-                        <select
-                            id="centerFilter"
-                            value={selectedCenter}
-                            onChange={(e) => setSelectedCenter(e.target.value)}
-                        >
-                            <option key="all" value="all">
-                                T?t c? trung t‚m
-                            </option>
-                            {centers.map((center) => (
-                                <option key={center.id} value={center.id}>
-                                    {center.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-
-                <div className="table-card">
-                    <div className="table-wrapper">
-                        <table className="data-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Kh·ch h‡ng</th>
-                                    <th>Xe</th>
-                                    <th>Trung t‚m</th>
-                                    <th>Ng‡y h?n</th>
-                                    <th>K? thu?t viÍn</th>
-                                    <th>Tr?ng th·i (Booking)</th>
-                                    <th>Tr?ng th·i (Checklist)</th>
-                                    <th>Thao t·c</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
-                                    <tr>
-                                        <td colSpan="9" className="empty-state">
-                                            <Loading inline /> –ang t?i...
-                                        </td>
-                                    </tr>
-                                ) : sortedAppointments.length > 0 ? (
-                                    sortedAppointments.map((booking) => (
-                                        <tr key={booking.bookingId}>
-                                            <td>#{booking.bookingId}</td>
-                                            <td>
-                                                {booking.customerName}
-                                                <br />
-                                                <small>{booking.customerPhone}</small>
-                                            </td>
-                                            <td>
-                                                {booking.vehiclePlate}
-                                                <br />
-                                                <small>{booking.vehicleModel}</small>
-                                            </td>
-                                            <td>{booking.centerName || "N/A"}</td>
-                                            <td>{formatDate(booking.bookingDate)}</td>
-                                            <td>{booking.technicianName || "Chua g·n"}</td>
-                                            <td>
-                                                <span
-                                                    className={`role-badge ${getStatusDisplay(booking.status).className}`}
-                                                >
-                                                    {getStatusDisplay(booking.status).text}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span
-                                                    className={`role-badge ${getStatusDisplay(booking.checklistStatus).className}`}
-                                                >
-                                                    {getStatusDisplay(booking.checklistStatus).text || "Chua cÛ"}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <Button
-                                                    className="action-button view-checklist"
-                                                    onClick={() => handleViewChecklist(booking.bookingId)}
-                                                    disabled={!booking.checklistStatus}
-                                                    title={!booking.checklistStatus ? "Checklist chua du?c t?o" : "Xem chi ti?t checklist"}
-                                                >
-                                                    Xem Checklist
-                                                </Button>
-                                                <Button
-                                                    className="action-button view-feedback"
-                                                    onClick={() => handleViewFeedback(booking.bookingId)}
-                                                    disabled={!booking.hasFeedback}
-                                                    title={booking.hasFeedback ? "Xem feedback c?a kh·ch h‡ng" : "Chua cÛ feedback"}
-                                                >
-                                                    <FaCommentAlt /> Xem Feedback
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="9" className="empty-state">
-                                            KhÙng cÛ d? li?u d?t l?ch.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                {showFeedbackModal && (
-                    <div className="modal-overlay" >
-                        <div className="modal-content admin-modal feedback-modal">
-                            <div className="modal-header">
-                                <h2>Chi ti?t Feedback</h2>
-                                <Button
-                                    onClick={() => setShowFeedbackModal(false)}
-                                    className="close-modal-btn"
-                                >
-                                    <FaTimes />
-                                </Button>
-                            </div>
-
-                            <div className="modal-body" >
-                                {feedbackLoading && (
-                                    <div className="loading-state" style={{ padding: '40px' }}>
-                                        <Loading inline /> –ang t?i...
-                                    </div>
-                                )}
-
-                                {feedbackError && (
-                                    <div className="error-message general-error" style={{ textAlign: 'center', margin: '20px' }}>
-                                        <FaExclamationTriangle /> {feedbackError}
-                                    </div>
-                                )}
-
-                                {selectedFeedback && (
-                                    <div className="feedback-details">
-                                        <p><strong>Kh·ch h‡ng:</strong> {selectedFeedback.userName}</p>
-                                        <p><strong>Xe:</strong> {selectedFeedback.licensePlate}</p>
-                                        <p><strong>Trung t‚m:</strong> {selectedFeedback.centerName}</p>
-                                        <p><strong>Ng‡y:</strong> {formatDate(selectedFeedback.feedbackDate)}</p>
-
-                                        <div className="feedback-rating">
-                                            <strong>–·nh gi·:</strong>
-                                            <div className="stars">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <FaStar
-                                                        key={i}
-                                                        className={i < selectedFeedback.rating ? "star-filled" : "star-empty"}
-                                                    />
-                                                ))}
-                                                <span className="rating-number">({selectedFeedback.rating}/5)</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="feedback-comment">
-                                            <strong>BÏnh lu?n:</strong>
-                                            <p className="comment-box">
-                                                {selectedFeedback.comment || <em>(KhÙng cÛ bÏnh lu?n)</em>}
-                                            </p>
-                                        </div>
-
-                                        <p><strong>Tr?ng th·i:</strong> {selectedFeedback.isPublished ? "–„ duy?t" : "Chua duy?t"}</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </main>
-        </div>
+      <div className="dashboard-container admin-theme">
+        <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
+        <main className="main-content loading-state">
+          <Loading inline />
+          <p>ƒêang t·∫£i d·ªØ li·ªáu ƒë·∫∑t l·ªãch...</p>
+        </main>
+      </div>
     );
+  }
+
+  return (
+    <div className="dashboard-container admin-theme">
+      <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
+
+      <main className="main-content">
+        <header className="page-header">
+          <h1>
+            <FaCalendarAlt /> Qu·∫£n l√Ω ƒë·∫∑t l·ªãch
+          </h1>
+          <p>Xem v√† theo d√µi t·∫•t c·∫£ l·ªãch h·∫πn trong h·ªá th·ªëng.</p>
+        </header>
+
+        {error && (
+          <div className="error-message general-error">
+            <FaExclamationTriangle /> {error}
+          </div>
+        )}
+
+        <div className="actions-bar">
+          <div className="filter-group admin-group">
+            <label htmlFor="statusFilter">
+              <FaFilter /> L·ªçc tr·∫°ng th√°i:
+            </label>
+            <select
+              id="statusFilter"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
+              <option value="all">T·∫•t c·∫£</option>
+              <option value="PENDING">Pending</option>
+              <option value="APPROVED">Approved</option>
+              <option value="ASSIGNED">Assigned</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="PAID">Paid</option>
+              <option value="CANCELLED">Cancelled</option>
+              <option value="DECLINED">Declined</option>
+            </select>
+          </div>
+          <div className="filter-group">
+            <label htmlFor="centerFilter">
+              <FaFilter /> Trung t√¢m:
+            </label>
+            <select
+              id="centerFilter"
+              value={selectedCenter}
+              onChange={(e) => setSelectedCenter(e.target.value)}
+            >
+              <option key="all" value="all">
+                T·∫•t c·∫£ trung t√¢m
+              </option>
+              {centers.map((center) => (
+                <option key={center.id} value={center.id}>
+                  {center.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="table-card">
+          <div className="table-wrapper">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Kh√°ch h√†ng</th>
+                  <th>Xe</th>
+                  <th>Trung t√¢m</th>
+                  <th>Ng√†y h·∫πn</th>
+                  <th>K·ªπ thu·∫≠t vi√™n</th>
+                  <th>Tr·∫°ng th√°i (Booking)</th>
+                  <th>Tr·∫°ng th√°i (Checklist)</th>
+                  <th>Thao t√°c</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan="9" className="empty-state">
+                      <Loading inline /> ƒêang t·∫£i...
+                    </td>
+                  </tr>
+                ) : sortedAppointments.length > 0 ? (
+                  sortedAppointments.map((booking) => (
+                    <tr key={booking.bookingId}>
+                      <td>#{booking.bookingId}</td>
+                      <td>
+                        {booking.customerName}
+                        <br />
+                        <small>{booking.customerPhone}</small>
+                      </td>
+                      <td>
+                        {booking.vehiclePlate}
+                        <br />
+                        <small>{booking.vehicleModel}</small>
+                      </td>
+                      <td>{booking.centerName || "N/A"}</td>
+                      <td>{formatDate(booking.bookingDate)}</td>
+                      <td>{booking.technicianName || "Ch∆∞a g√°n"}</td>
+                      <td>
+                        <span
+                          className={`role-badge ${getStatusDisplay(booking.status).className}`}
+                        >
+                          {getStatusDisplay(booking.status).text}
+                        </span>
+                      </td>
+                      <td>
+                        <span
+                          className={`role-badge ${getStatusDisplay(booking.checklistStatus).className}`}
+                        >
+                          {getStatusDisplay(booking.checklistStatus).text || "Ch∆∞a c√≥"}
+                        </span>
+                      </td>
+                      <td>
+                        <Button
+                          className="action-button view-checklist"
+                          onClick={() => handleViewChecklist(booking.bookingId)}
+                          disabled={!booking.checklistStatus}
+                          title={
+                            !booking.checklistStatus
+                              ? "Checklist ch∆∞a ƒë∆∞·ª£c t·∫°o"
+                              : "Xem chi ti·∫øt checklist"
+                          }
+                        >
+                          Xem Checklist
+                        </Button>
+                        <Button
+                          className="action-button view-feedback"
+                          onClick={() => handleViewFeedback(booking.bookingId)}
+                          disabled={!booking.hasFeedback}
+                          title={
+                            booking.hasFeedback
+                              ? "Xem feedback c·ªßa kh√°ch h√†ng"
+                              : "Ch∆∞a c√≥ feedback"
+                          }
+                        >
+                          <FaCommentAlt /> Xem Feedback
+                        </Button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="9" className="empty-state">
+                      Kh√¥ng c√≥ d·ªØ li·ªáu ƒë·∫∑t l·ªãch.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {showFeedbackModal && (
+          <div className="modal-overlay">
+            <div className="modal-content admin-modal feedback-modal">
+              <div className="modal-header">
+                <h2>Chi ti·∫øt Feedback</h2>
+                <Button
+                  onClick={() => setShowFeedbackModal(false)}
+                  className="close-modal-btn"
+                >
+                  <FaTimes />
+                </Button>
+              </div>
+
+              <div className="modal-body">
+                {feedbackLoading && (
+                  <div className="loading-state" style={{ padding: "40px" }}>
+                    <Loading inline /> ƒêang t·∫£i...
+                  </div>
+                )}
+
+                {feedbackError && (
+                  <div
+                    className="error-message general-error"
+                    style={{ textAlign: "center", margin: "20px" }}
+                  >
+                    <FaExclamationTriangle /> {feedbackError}
+                  </div>
+                )}
+
+                {selectedFeedback && (
+                  <div className="feedback-details">
+                    <p>
+                      <strong>Kh√°ch h√†ng:</strong> {selectedFeedback.userName}
+                    </p>
+                    <p>
+                      <strong>Xe:</strong> {selectedFeedback.licensePlate}
+                    </p>
+                    <p>
+                      <strong>Trung t√¢m:</strong> {selectedFeedback.centerName}
+                    </p>
+                    <p>
+                      <strong>Ng√†y:</strong> {formatDate(selectedFeedback.feedbackDate)}
+                    </p>
+
+                    <div className="feedback-rating">
+                      <strong>ƒê√°nh gi√°:</strong>
+                      <div className="stars">
+                        {[...Array(5)].map((_, i) => (
+                          <FaStar
+                            key={i}
+                            className={
+                              i < selectedFeedback.rating
+                                ? "star-filled"
+                                : "star-empty"
+                            }
+                          />
+                        ))}
+                        <span className="rating-number">
+                          ({selectedFeedback.rating}/5)
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="feedback-comment">
+                      <strong>B√¨nh lu·∫≠n:</strong>
+                      <p className="comment-box">
+                        {selectedFeedback.comment || <em>(Kh√¥ng c√≥ b√¨nh lu·∫≠n)</em>}
+                      </p>
+                    </div>
+
+                    <p>
+                      <strong>Tr·∫°ng th√°i:</strong>{" "}
+                      {selectedFeedback.isPublished ? "ƒê√£ duy·ªát" : "Ch∆∞a duy·ªát"}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
 }

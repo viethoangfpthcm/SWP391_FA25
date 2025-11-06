@@ -42,9 +42,9 @@ export default function ServiceCenterManagement() {
   const [actionLoading, setActionLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingCenter, setEditingCenter] = useState(null);
-  const [formData, setFormData] = useState({ 
-    name: "", 
-    address: "", 
+  const [formData, setFormData] = useState({
+    name: "",
+    address: "",
     phone: "",
     openingHour: "07:00",
     closingHour: "20:00"
@@ -61,7 +61,7 @@ export default function ServiceCenterManagement() {
   });
 
   const navigate = useNavigate();
-  
+
   const token = localStorage.getItem("token");
 
   const fetchCenters = async () => {
@@ -104,7 +104,7 @@ export default function ServiceCenterManagement() {
     if (error) setError(null);
   };
 
-const openForm = (center = null) => {
+  const openForm = (center = null) => {
     setEditingCenter(center);
     setFormErrors({});
     setError(null);
@@ -119,9 +119,9 @@ const openForm = (center = null) => {
         closingHour: center.closingHour || "20:00",
       });
     } else {
-      setFormData({ 
-        name: "", 
-        address: "", 
+      setFormData({
+        name: "",
+        address: "",
         phone: "",
         openingHour: "08:00",
         closingHour: "18:00"
@@ -147,8 +147,8 @@ const openForm = (center = null) => {
     if (!formData.closingHour || !isValidTime(formData.closingHour)) {
       errors.closingHour = "Giờ đóng cửa không hợp lệ (định dạng HH:MM).";
     }
-    if (formData.openingHour && formData.closingHour && 
-        formData.openingHour >= formData.closingHour) {
+    if (formData.openingHour && formData.closingHour &&
+      formData.openingHour >= formData.closingHour) {
       errors.closingHour = "Giờ đóng cửa phải sau giờ mở cửa.";
     }
     setFormErrors(errors);
@@ -367,7 +367,10 @@ const openForm = (center = null) => {
             onClick={() => !actionLoading && setShowForm(false)}
           >
             <div className="scm-modal" onClick={(e) => e.stopPropagation()}>
-              <h2>{editingCenter ? "Chỉnh sửa trung tâm" : "Thêm trung tâm mới"}</h2>
+              <div className="scm-modal-header">
+                <h2>{editingCenter ? "Chỉnh sửa Trung tâm Dịch vụ" : "Thêm Trung tâm Mới"}</h2>
+                <button type="button" className="scm-btn-close" onClick={() => setShowForm(false)}>&times;</button>
+              </div>
 
               {error && (
                 <div className="scm-error-message">
@@ -462,7 +465,7 @@ const openForm = (center = null) => {
                     onClick={() => setShowForm(false)}
                     disabled={actionLoading}
                   >
-                    H?y
+                    Hủy
                   </Button>
                 </div>
               </form>

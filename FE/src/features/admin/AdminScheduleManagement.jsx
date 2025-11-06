@@ -705,7 +705,7 @@ export default function AdminScheduleManagement() {
                                             <div key={item.id} className="item-card">
                                                 <div className="item-header">
                                                     <span>Công việc #{idx + 1}</span>
-                                                    <button className="btn-icon btn-delete" onClick={() => deleteItem(item.id, item.isNew)}><FaTrash /></button>
+                                                    <button className="btn-icon btn-delete2" onClick={() => deleteItem(item.id, item.isNew)}><FaTrash /></button>
                                                 </div>
                                                 <div className="form-group">
                                                     <label>Tên công việc *</label>
@@ -744,7 +744,7 @@ export default function AdminScheduleManagement() {
                                                 </div>
                                                 <div className="form-group">
                                                     <label>Ghi chú</label>
-                                                    <textarea rows="3" value={item.note || ""} onChange={e => updateItem(item.id, "note", e.target.value)} placeholder="Chi tiết..." />
+                                                        <textarea value={item.note || ""} onChange={e => updateItem(item.id, "note", e.target.value)} placeholder="Chi tiết..." />
                                                 </div>
                                             </div>
                                         ))}
