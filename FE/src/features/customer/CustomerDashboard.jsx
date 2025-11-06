@@ -10,15 +10,15 @@ import './CustomerDashboard.css';
 
 
 const BOOKING_STATUS_MAP = {
-  PENDING:     { text: 'Chờ xử lý',    className: 'pending' },
-  APPROVED:    { text: 'Đã duyệt',     className: 'approved' }, 
-  ASSIGNED:    { text: 'Đã gán thợ',    className: 'assigned' }, 
-  IN_PROGRESS: { text: 'Đang xử lý',   className: 'in_progress' }, 
-  COMPLETED:   { text: 'Hoàn thành',   className: 'completed' },
-  PAID:        { text: 'Đã thanh toán', className: 'paid' },
-  CANCELLED:   { text: 'Đã hủy',       className: 'cancelled' },
-  DECLINED:    { text: 'Đã từ chối',  className: 'declined' },
-  DEFAULT:     { text: 'Không rõ',     className: 'default' }
+  PENDING: { text: 'Chờ xử lý', className: 'pending' },
+  APPROVED: { text: 'Đã duyệt', className: 'approved' },
+  ASSIGNED: { text: 'Đã gán thợ', className: 'assigned' },
+  IN_PROGRESS: { text: 'Đang xử lý', className: 'in_progress' },
+  COMPLETED: { text: 'Hoàn thành', className: 'completed' },
+  PAID: { text: 'Đã thanh toán', className: 'paid' },
+  CANCELLED: { text: 'Đã hủy', className: 'cancelled' },
+  DECLINED: { text: 'Đã từ chối', className: 'declined' },
+  DEFAULT: { text: 'Không rõ', className: 'default' }
 };
 const getStatusDisplay = (status) => {
   return BOOKING_STATUS_MAP[status] || { text: status, className: 'default' };
@@ -66,7 +66,6 @@ function CustomerDashboard() {
   const [vehicleToDelete, setVehicleToDelete] = useState(null);
   const [vehicleModels, setVehicleModels] = useState([]);
   const [loadingModels, setLoadingModels] = useState(true);
-
   // Load danh sách xe từ API khi component mount
   useEffect(() => {
     const fetchVehicleModels = async () => {
@@ -158,49 +157,49 @@ function CustomerDashboard() {
     setShowConfirmModal(true);
   };
   // Hàm mở modal xác nhận xóa xe
-const handleDeleteVehicleClick = (licensePlate) => {
-  setConfirmModalMessage(`Bạn có chắc chắn muốn xóa xe có biển số ${licensePlate}?`);
-  setOnConfirmAction(() => () => executeDeleteVehicle(licensePlate));
-  setShowConfirmModal(true);
-};
+  const handleDeleteVehicleClick = (licensePlate) => {
+    setConfirmModalMessage(`Bạn có chắc chắn muốn xóa xe có biển số ${licensePlate}?`);
+    setOnConfirmAction(() => () => executeDeleteVehicle(licensePlate));
+    setShowConfirmModal(true);
+  };
 
-// Hàm gọi API xóa xe
-const executeDeleteVehicle = async (licensePlate) => {
-  const token = localStorage.getItem("token");
-  setCancelBookingLoading(true); // có thể dùng chung loading state này
+  // Hàm gọi API xóa xe
+  const executeDeleteVehicle = async (licensePlate) => {
+    const token = localStorage.getItem("token");
+    setCancelBookingLoading(true); // có thể dùng chung loading state này
 
-  try {
-    const response = await fetch(
-      API_BASE_URL + "/api/customer/delete-vehicle?licensePlate=" + encodeURIComponent(licensePlate),
-      {
-        method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Accept": "application/json",
-        },
+    try {
+      const response = await fetch(
+        API_BASE_URL + "/api/customer/delete-vehicle?licensePlate=" + encodeURIComponent(licensePlate),
+        {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `Lỗi ${response.status}`);
       }
-    );
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText || `Lỗi ${response.status}`);
+      setShowConfirmModal(false);
+      setSuccessModalMessage("Xóa xe thành công!");
+      setShowSuccessModal(true);
+
+      // Cập nhật lại danh sách xe sau khi xóa
+      fetchDashboardData();
+
+    } catch (err) {
+      console.error("Lỗi khi xóa xe:", err);
+      setError(err.message || "Đã xảy ra lỗi khi xóa xe.");
+      setShowConfirmModal(false);
+    } finally {
+      setCancelBookingLoading(false);
     }
-
-    setShowConfirmModal(false);
-    setSuccessModalMessage("Xóa xe thành công!");
-    setShowSuccessModal(true);
-
-    // Cập nhật lại danh sách xe sau khi xóa
-    fetchDashboardData();
-
-  } catch (err) {
-    console.error("Lỗi khi xóa xe:", err);
-    setError(err.message || "Đã xảy ra lỗi khi xóa xe.");
-    setShowConfirmModal(false);
-  } finally {
-    setCancelBookingLoading(false);
-  }
-};
+  };
 
 
   const executeCancelBookingDashboard = async (bookingId) => {
@@ -831,9 +830,9 @@ const executeDeleteVehicle = async (licensePlate) => {
                   <p><strong>Biển số:</strong> {vehicle.licensePlate}</p>
                   <p><strong>Số KM hiện tại:</strong> {vehicle.currentKm?.toLocaleString() || 'Chưa cập nhật'} km</p>
                   <div className="vehicle-actions">
-  <Button onClick={() => handleViewSchedule(vehicle.licensePlate)}>Xem lịch bảo dưỡng</Button>
-  <Button className="btn-delete" onClick={() => handleDeleteVehicleClick(vehicle.licensePlate)}>Xóa xe</Button>
-</div>
+                    <Button onClick={() => handleViewSchedule(vehicle.licensePlate)}>Xem lịch bảo dưỡng</Button>
+                    <Button className="btn-delete" onClick={() => handleDeleteVehicleClick(vehicle.licensePlate)}>Xóa xe</Button>
+                  </div>
 
                 </div>
               ))}
@@ -930,26 +929,26 @@ const executeDeleteVehicle = async (licensePlate) => {
             ) : bookingHistory.length > 0 ? (
               <div className="booking-list">
                 {bookingHistory.map(booking => (
-                <div key={booking.bookingId} className={`booking-item status-${getStatusDisplay(booking.status).className}`}>
-                  <div className="booking-item-header">
-                    <strong>{booking.vehiclePlate}</strong> ({booking.vehicleModel})
-                    <span className={`booking-status status-label-${getStatusDisplay(booking.status).className}`}>
-                      {getStatusDisplay(booking.status).text}
-                    </span>
+                  <div key={booking.bookingId} className={`booking-item status-${getStatusDisplay(booking.status).className}`}>
+                    <div className="booking-item-header">
+                      <strong>{booking.vehiclePlate}</strong> ({booking.vehicleModel})
+                      <span className={`booking-status status-label-${getStatusDisplay(booking.status).className}`}>
+                        {getStatusDisplay(booking.status).text}
+                      </span>
+                    </div>
+                    <p><strong>Trung tâm:</strong> {booking.centerName}</p>
+                    <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
+                    {(booking.status === 'COMPLETED' || booking.status === 'PAID') && (
+                      <Button
+                        className="btn-feedback"
+                        onClick={() => handleFeedbackClick(booking.bookingId)}
+                        title="Đánh giá dịch vụ"
+                      >
+                        <FaStar /> {booking.hasFeedback ? 'Sửa đánh giá' : 'Đánh giá'}
+                      </Button>
+                    )}
                   </div>
-                  <p><strong>Trung tâm:</strong> {booking.centerName}</p>
-                  <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
-                  {(booking.status === 'COMPLETED' || booking.status === 'PAID') && (
-                    <Button
-                      className="btn-feedback"
-                      onClick={() => handleFeedbackClick(booking.bookingId)}
-                      title="Đánh giá dịch vụ"
-                    >
-                      <FaStar /> {booking.hasFeedback ? 'Sửa đánh giá' : 'Đánh giá'}
-                    </Button>
-                  )}
-                </div>
-              ))}
+                ))}
               </div>
             ) : (
               <p>Chưa có lịch sử hẹn nào.</p>

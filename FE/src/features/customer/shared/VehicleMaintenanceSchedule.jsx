@@ -215,78 +215,114 @@ function VehicleMaintenanceSchedule() {
     setShowBookingForm(true);
   };
 
-  // handleBookingFormChange (Không đổi)
   const handleBookingFormChange = (e) => {
     const { name, value } = e.target;
     setBookingFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // handleConfirmBooking (Không đổi, đã sửa ở lần trước)
   const handleConfirmBooking = async (e) => {
-    e.preventDefault();
-    setBookingLoading(true);
-    setBookingError('');
-    const token = localStorage.getItem("token");
+  e.preventDefault();
+  setBookingLoading(true);
+  setBookingError('');
+  const token = localStorage.getItem("token");
 
-    if (!bookingFormData.centerId || !bookingFormData.bookingDate || !bookingFormData.bookingTime) {
-      setBookingError("Vui lòng chọn trung tâm, ngày và giờ hẹn.");
+  // --- Kiểm tra các trường bắt buộc ---
+  if (!bookingFormData.centerId || !bookingFormData.bookingDate || !bookingFormData.bookingTime) {
+    setBookingError("Vui lòng chọn trung tâm, ngày và giờ hẹn.");
+    setBookingLoading(false);
+    return;
+  }
+
+  // --- Lấy thông tin trung tâm được chọn ---
+  const selectedCenter = serviceCenters.find(
+    (c) => c.id === parseInt(bookingFormData.centerId)
+  );
+
+  if (!selectedCenter) {
+    setBookingError("Không tìm thấy trung tâm dịch vụ đã chọn.");
+    setBookingLoading(false);
+    return;
+  }
+
+  // --- Kiểm tra giờ hẹn hợp lệ so với giờ mở cửa/đóng cửa ---
+  try {
+    const bookingDateTime = new Date(`${bookingFormData.bookingDate}T${bookingFormData.bookingTime}:00`);
+    const [openH, openM] = selectedCenter.openingHour.split(":").map(Number);
+    const [closeH, closeM] = selectedCenter.closingHour.split(":").map(Number);
+
+    const openTime = new Date(bookingDateTime);
+    const closeTime = new Date(bookingDateTime);
+    openTime.setHours(openH, openM, 0);
+    closeTime.setHours(closeH, closeM, 0);
+
+    if (bookingDateTime < openTime || bookingDateTime > closeTime) {
+      setBookingError(
+        `Giờ hẹn phải nằm trong khoảng ${selectedCenter.openingHour} - ${selectedCenter.closingHour} (${selectedCenter.name}).`
+      );
       setBookingLoading(false);
       return;
     }
+  } catch (err) {
+    console.error("Lỗi khi kiểm tra thời gian:", err);
+    setBookingError("Không thể kiểm tra giờ hẹn. Vui lòng thử lại.");
+    setBookingLoading(false);
+    return;
+  }
 
-    try {
-      const bookingDateTime = `${bookingFormData.bookingDate}T${bookingFormData.bookingTime}:00`;
-      const payload = {
-        vehiclePlate: licensePlate,
-        centerId: parseInt(bookingFormData.centerId),
-        bookingDate: bookingDateTime,
-        maintenancePlanId: selectedPlanForBooking.maintenancePlanId,
-        note: bookingFormData.note
-      };
-      const response = await fetch(`${API_BASE_URL}/api/customer/bookings`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+  // --- Nếu hợp lệ, gửi API đặt lịch ---
+  try {
+    const bookingDateTime = `${bookingFormData.bookingDate}T${bookingFormData.bookingTime}:00`;
+    const payload = {
+      vehiclePlate: licensePlate,
+      centerId: parseInt(bookingFormData.centerId),
+      bookingDate: bookingDateTime,
+      maintenancePlanId: selectedPlanForBooking.maintenancePlanId,
+      note: bookingFormData.note,
+    };
 
-      if (!response.ok) {
-        if (response.status === 401 || response.status === 403) {
-          throw new Error("Không thể đặt lịch (Lỗi xác thực)");
-        }
-        const errorText = await response.text();
-        try {
-          const errorJson = JSON.parse(errorText);
-          throw new Error(errorJson.message || errorJson.error || `Lỗi ${response.status}: ${errorText}`);
-        } catch (parseError) {
-          throw new Error(`Lỗi ${response.status}: ${errorText}`);
-        }
+    const response = await fetch(`${API_BASE_URL}/api/customer/bookings`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Không thể đặt lịch (Lỗi xác thực)");
       }
-
-      setShowBookingForm(false);
-      // Mở modal success
-      setSuccessModalMessage("Đặt lịch thành công! Chúng tôi sẽ sớm liên hệ với bạn để xác nhận.");
-      setSuccessModalAction(() => () => navigate('/customer/dashboard'));
-      setShowSuccessModal(true);
-
-    } catch (err) {
-      console.error("Lỗi khi đặt lịch:", err);
-      setBookingError(err.message || "Đã xảy ra lỗi khi đặt lịch.");
-    } finally {
-      setBookingLoading(false);
+      const errorText = await response.text();
+      try {
+        const errorJson = JSON.parse(errorText);
+        throw new Error(
+          errorJson.message || errorJson.error || `Lỗi ${response.status}: ${errorText}`
+        );
+      } catch (parseError) {
+        throw new Error(`Lỗi ${response.status}: ${errorText}`);
+      }
     }
-  };
 
-  // *** SỬA LẠI: TÁCH HÀM HỦY LÀM 2 BƯỚC ***
+    // --- Thành công ---
+    setShowBookingForm(false);
+    setSuccessModalMessage(
+      "Đặt lịch thành công! Chúng tôi sẽ sớm liên hệ với bạn để xác nhận."
+    );
+    setSuccessModalAction(() => () => navigate("/customer/dashboard"));
+    setShowSuccessModal(true);
+  } catch (err) {
+    console.error("Lỗi khi đặt lịch:", err);
+    setBookingError(err.message || "Đã xảy ra lỗi khi đặt lịch.");
+  } finally {
+    setBookingLoading(false);
+  }
+};
 
-  // Bước 1: Hàm này được gọi bởi nút "Hủy lịch hẹn"
   const handleCancelBookingClick = (bookingId) => {
     setConfirmModalMessage("Bạn có chắc chắn muốn hủy lịch hẹn này? Hành động này không thể hoàn tác.");
-    // Gán hàm "executeCancelBooking" cho nút Xác nhận
-    // Dùng () => () => ... để nó không tự chạy
+
     setOnConfirmAction(() => () => executeCancelBooking(bookingId));
     setShowConfirmModal(true); // Mở modal hỏi
   };
