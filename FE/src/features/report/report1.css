@@ -130,6 +130,11 @@
   font-size: 0.9rem;
   margin: 0;
 }
+.report-card-info span {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  margin: 0;
+}
 
 .report-card-action {
   font-size: 1.1rem;

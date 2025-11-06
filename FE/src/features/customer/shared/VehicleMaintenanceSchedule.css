@@ -70,8 +70,23 @@
 .schedule-item-header h3 {
   margin: 0;
   font-size: 1.15rem;
-  color: #fefefe;
+  color: #ffffff;
   font-weight: 600;
+}
+.description {
+  color: #ffffff;
+  /* Màu chữ mô tả nhạt hơn */
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+.schedule-item strong {
+  color: #ffffff !important; /* làm sáng dòng “Mốc KM”, “Ngày dự kiến”, “Hạn chót” */
+  font-weight: 600;
+}
+.schedule-item p {
+  margin: 6px 0;
+  font-size: 0.95rem;
+  color: #ffffff;
 }
 
 /* ========== TRẠNG THÁI ========== */
@@ -87,7 +102,10 @@
 .status-icon {
   font-size: 1.4rem;
 }
-
+.status-label {
+  text-transform: uppercase;
+  color: #ffffff;
+}
 /* --- TÙY CHỈNH MÀU SẮC TRẠNG THÁI (ĐÃ SỬA) --- */
 
 /* NEXT_TIME - Kính pha màu XANH DƯƠNG */
@@ -255,6 +273,11 @@
   /* Giống dashboard */
   margin-bottom: 20px;
   /* Giống dashboard */
+}
+.booking-info {
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+  color: #e0e0e0;
 }
 
 .modal-header h2 {

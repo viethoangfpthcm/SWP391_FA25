@@ -40,6 +40,7 @@
   max-width: 700px;
   margin: 0 auto 40px;
   line-height: 1.7;
+  color:  #ffffff;
 }
 
 .home-btn {
@@ -79,11 +80,13 @@
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 20px;
+  color: #ffffff;
 }
 
 .info-text p {
   font-size: 1rem;
   line-height: 1.7;
+  color: #ffffff;
 }
 
 /* -------------------- Partner Section -------------------- */
@@ -111,6 +114,7 @@
   font-size: 1.8rem;
   margin-bottom: 40px;
   font-weight: 700;
+  color: #ffffff;
 }
 
 /* Partner carousel */
