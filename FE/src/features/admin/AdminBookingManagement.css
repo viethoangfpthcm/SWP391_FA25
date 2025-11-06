@@ -213,42 +213,81 @@
   color: #0a4ff0;
 }
 
+/* --- Nút hành động tổng thể --- */
 .action-button {
-  background-color: #0a4ff0;
-  color: white;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   font-weight: 600;
-  transition: background-color 0.2s ease, opacity 0.2s ease;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transform: translateY(0);
 }
 
-.action-button:hover {
-  background-color: #083dbf;
+/* Khi rê chuột vào */
+.action-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-
-.action-button.view-checklist {
-  background-color: #15803d;
-
+/* Khi nhấn giữ */
+.action-button:active:not(:disabled) {
+  transform: scale(0.98);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.action-button.view-checklist:hover {
-  background-color: #116a32;
-
-}
-
+/* Disabled */
 .action-button:disabled {
-  background-color: #9ca3af;
-  color: #e5e7eb;
+  background-color: #e5e7eb;
+  color: #9ca3af;
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.8;
+  box-shadow: none;
 }
-.data-table th:last-child {
-  text-align: center;
+
+/* --- Nút Xem Checklist --- */
+.action-button.view-checklist {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
 }
+
+.action-button.view-checklist:hover:not(:disabled) {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+/* --- Nút Xem Feedback --- */
+.action-button.view-feedback {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+  margin-left: 10px; /* Tạo khoảng cách nhẹ giữa 2 nút */
+}
+
+.action-button.view-feedback:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+/* --- Icon trong nút --- */
+.action-button svg {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* Căn giữa cell chứa nút và thêm khoảng cách đều */
+.data-table td:last-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Khoảng cách tự nhiên, có thể chỉnh 12px nếu muốn rộng hơn */
+  padding: 10px;
+  white-space: nowrap;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

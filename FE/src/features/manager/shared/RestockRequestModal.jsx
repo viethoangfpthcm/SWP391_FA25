@@ -13,24 +13,7 @@ export default function RestockRequestModal({ part, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    // Giả lập gửi yêu cầu nhập hàng (có thể cần API endpoint riêng)
     try {
-      // TODO: Gọi API để tạo yêu cầu nhập hàng
-      // const response = await fetch("/api/manager/restock-request", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-      //   },
-      //   body: JSON.stringify({
-      //     partId: part.id,
-      //     quantity,
-      //     note,
-      //   }),
-      // });
-
-      // Giả lập delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
       setSuccess(true);
@@ -79,7 +62,7 @@ export default function RestockRequestModal({ part, onClose }) {
           <div className="info-row">
             <span className="info-label">Tồn kho hiện tại:</span>
             <span className={`info-value ${part.quantity === 0 ? "text-danger" : "text-warning"}`}>
-              {part.quantity} (⚠️ {part.quantity === 0 ? "Hết hàng" : "Sắp hết"})
+              {part.quantity} ( {part.quantity === 0 ? "Hết hàng" : "Sắp hết"})
             </span>
           </div>
         </div>

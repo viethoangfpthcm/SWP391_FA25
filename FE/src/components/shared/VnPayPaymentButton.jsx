@@ -5,9 +5,6 @@ import Button from "@components/ui/Button.jsx";
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-/**
- * Nút thanh toán VNPay — bản ổn định, không xổ, giao diện đồng bộ trang Report
- */
 export default function VnPayPaymentButton({ bookingId, totalAmount, className = '', onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -16,7 +13,7 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
   const location = useLocation();
   
 
-  // ✅ Xử lý redirect về từ VNPay
+  //  Xử lý redirect về từ VNPay
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const responseCode = queryParams.get('vnp_ResponseCode');
@@ -29,7 +26,7 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
     }
   }, [location, navigate, onSuccess]);
 
-  // ✅ Xử lý click thanh toán
+  //  Xử lý click thanh toán
   const handlePayment = async () => {
     if (!token) {
       setError('Vui lòng đăng nhập để thanh toán.');
@@ -98,7 +95,7 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
           <span>Thanh toán ngay với VNPay</span>
         </Button>
 
-        {/* ✅ Overlay loading nằm tách riêng, không đẩy layout */}
+        {/*  Overlay loading nằm tách riêng, không đẩy layout */}
         {loading && (
           <div className="fixed-overlay">
             <div className="loading-box">
@@ -109,7 +106,7 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
         )}
       </div>
 
-      {error && <p className="payment-error-message">⚠ {error}</p>}
+      {error && <p className="payment-error-message"> {error}</p>}
 
       <style jsx>{`
       .vnpay-payment-section {
@@ -170,7 +167,7 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
         cursor: not-allowed;
       }
 
-      /* ✅ overlay loading tách khỏi layout, tuyệt đối toàn màn hình */
+      /*  overlay loading tách khỏi layout, tuyệt đối toàn màn hình */
 .fixed-overlay {
   position: fixed;
   inset: 0;
@@ -200,10 +197,10 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
 .spinner-icon {
   font-size: 1.3rem;
   color: #007bff;
-  animation: pulse 1.4s ease-in-out infinite; /* 👈 hiệu ứng mới */
+  animation: pulse 1.4s ease-in-out infinite; /*  hiệu ứng mới */
 }
 
-/* 💫 Hiệu ứng pulse nhẹ nhàng */
+/*  Hiệu ứng pulse nhẹ nhàng */
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
@@ -215,13 +212,13 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
   }
 }
 
-/* ✨ Hiệu ứng xuất hiện mượt */
+/*  Hiệu ứng xuất hiện mượt */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-/* ✨ Loading box nhẹ nhàng nổi lên */
+/*  Loading box nhẹ nhàng nổi lên */
 @keyframes popIn {
   from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
