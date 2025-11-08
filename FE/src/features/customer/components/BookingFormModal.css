@@ -1,0 +1,189 @@
+/* Giữ kích thước modal */
+.booking-form-modal {
+    max-width: 680px;
+}
+
+/* Thông tin xe/gói */
+.booking-form-modal .booking-info {
+    color: #fefefe;
+    margin-bottom: 10px;
+}
+
+/* Khối group: nền kính mờ đồng nhất, khoảng cách đều */
+.booking-form-modal form .form-group {
+    position: relative;
+    margin: 14px 0;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-sizing: border-box;
+}
+
+/* Nhãn */
+.booking-form-modal form .form-group>label {
+    display: block;
+    margin: 0 0 8px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* Control chung: full width, đồng bộ chiều cao */
+.booking-form-modal form .form-group>select,
+.booking-form-modal form .form-group>input[type="text"],
+.booking-form-modal form .form-group>input[type="date"],
+.booking-form-modal form .form-group>input[type="time"],
+.booking-form-modal form .form-group>input[type="email"],
+.booking-form-modal form .form-group>input[type="tel"],
+.booking-form-modal form .form-group>textarea {
+    width: 100%;
+    height: 48px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    transition: all .25s ease;
+    box-sizing: border-box;
+    color-scheme: dark;
+}
+
+/* Textarea cao hơn */
+.booking-form-modal form .form-group>textarea {
+    min-height: 100px;
+    height: auto;
+    resize: vertical;
+}
+
+/* Focus state */
+.booking-form-modal form .form-group>select:focus,
+.booking-form-modal form .form-group>input:focus,
+.booking-form-modal form .form-group>textarea:focus {
+    outline: none;
+    border-color: #0a8bff;
+    box-shadow: 0 0 0 3px rgba(10, 139, 255, 0.25);
+}
+
+/* Nhóm ngày/giờ: dùng khung .form-group sẵn có, chỉ xếp 2 cột */
+.booking-form-modal form .form-group.inline-group {
+    display: flex;
+    gap: 12px;
+    /* không thêm nền/viền/padding riêng để không lệch với các group khác */
+    padding: 12px;
+    /* giữ lại padding của form-group */
+}
+
+.booking-form-modal form .form-group.inline-group>div {
+    flex: 1 1 0%;
+    min-width: 0;
+}
+
+.booking-form-modal form .form-group.inline-group>div>label {
+    display: block;
+    margin: 0 0 8px;
+    font-weight: 600;
+    color: #eaeaea;
+}
+
+.booking-form-modal form .form-group.inline-group>div>input[type="date"],
+.booking-form-modal form .form-group.inline-group>div>input[type="time"] {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Hàng nút: cùng “kính mờ”, canh phải, đồng bộ với group */
+.booking-form-modal form .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin: 16px 0 0;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-sizing: border-box;
+}
+
+.booking-form-modal form .form-actions .btn-cancel,
+.booking-form-modal form .form-actions .btn-save {
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 12px;
+}
+
+/* Thông báo lỗi */
+.booking-form-modal .error-message {
+    color: #ffb3b3;
+    margin-bottom: 12px;
+}
+
+/* Responsive: nhóm ngày/giờ xếp dọc khi màn nhỏ */
+@media (max-width: 640px) {
+    .booking-form-modal form .form-group.inline-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Nền kính mờ + chữ trắng cho tất cả input/select/textarea trong modal */
+.modal-content.booking-form-modal form .form-group input,
+.modal-content.booking-form-modal form .form-group select,
+.modal-content.booking-form-modal form .form-group textarea {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    color: #fff !important;
+    border-radius: 10px !important;
+    padding: 12px 14px !important;
+    outline: none !important;
+    transition: border-color .2s, box-shadow .2s, background .2s !important;
+    color-scheme: dark;
+    /* icon lịch/giờ theo theme tối */
+    -webkit-text-fill-color: #fff;
+    /* WebKit giữ màu chữ trắng */
+}
+
+/* Trạng thái focus */
+.modal-content.booking-form-modal form .form-group input:focus,
+.modal-content.booking-form-modal form .form-group select:focus,
+.modal-content.booking-form-modal form .form-group textarea:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(124, 58, 237, 0.9) !important;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25) !important;
+}
+
+/* Placeholder trắng mờ */
+.modal-content.booking-form-modal ::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Label trắng */
+.modal-content.booking-form-modal label {
+    color: #fff !important;
+}
+
+/* Select: ẩn mũi tên native */
+.modal-content.booking-form-modal select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+}
+
+/* Date/Time padding đồng nhất */
+.modal-content.booking-form-modal input[type="date"],
+.modal-content.booking-form-modal input[type="time"] {
+    padding: 10px 12px !important;
+}
+
+/* Hàng action giống form-group (kính mờ) */
+.modal-content.booking-form-modal .form-actions {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
+}

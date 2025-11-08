@@ -1,0 +1,111 @@
+/* Booking list and booking item styles */
+.booking-list-container {
+  color: #fefefe;
+}
+
+.booking-list-container h3 {
+  color: #fefefe;
+}
+
+.booking-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+@media (min-width: 768px) {
+  .booking-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.booking-item {
+  padding: 15px 20px;
+  border-left-width: 5px;
+  /* glass card to match dashboard sections */
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  color: #fefefe;
+}
+
+.booking-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #eee;
+}
+
+.booking-item-header strong {
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.booking-item p {
+  margin: 8px 0;
+  font-size: 0.95rem;
+  color: #d9dee8;
+  line-height: 1.5;
+}
+
+.booking-item p strong {
+  color: #e9ecf3;
+  margin-right: 5px;
+}
+
+.booking-note {
+  font-style: italic;
+  color: #777;
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.booking-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.booking-item.status-pending { border-left-color: #f0ad4e; }
+.booking-item.status-completed { border-left-color: #28a745; }
+.booking-item.status-declined, .booking-item.status-cancelled { border-left-color: #d9534f; }
+.booking-item.status-in_progress { border-left-color: #0275d8; }
+.booking-item.status-paid { border-left-color: #17a2b8; }
+.booking-item.status-ready_for_payment { border-left-color: #5cb85c; }
+.booking-item.status-approved { border-left-color: #8a4af3; }
+.booking-item.status-assigned { border-left-color: #007bff; }
+
+.status-label-pending { background-color: #f0ad4e; }
+.status-label-completed { background-color: #28a745; }
+.status-label-declined, .status-label-cancelled { background-color: #d9534f; }
+.status-label-in_progress { background-color: #0275d8; }
+.status-label-paid { background-color: #17a2b8; }
+.status-label-ready_for_payment { background-color: #5cb85c; }
+.status-label-approved { background-color: #8a4af3; }
+.status-label-assigned { background-color: #007bff; }
+
+.booking-item.status-pending .booking-item-header { color: #ffe391; }
+.booking-item.status-in_progress .booking-item-header { color: #6dc8ff; }
+.booking-item.status-completed .booking-item-header { color: #7fff9f; }
+.booking-item.status-cancelled .booking-item-header, .booking-item.status-declined .booking-item-header { color: #ff8c8c; }
+.booking-item.status-paid .booking-item-header { color: #63e5db; }
+.booking-item.status-ready_for_payment .booking-item-header { color: #a7ffb3; }
+.booking-item.status-approved .booking-item-header { color: #d0b8ff; }
+.booking-item.status-assigned .booking-item-header { color: #80c7ff; }
+
+.booking-item-header strong { color: #fff; text-shadow: 0 0 4px rgba(255, 255, 255, 0.3); }
+
+.btn-cancel-small { margin-top: 8px; background: rgba(255, 255, 255, 0.15); color: #f07878; border: 1px solid rgba(255, 77, 77, 0.5); border-radius: 6px; font-size: 0.85rem; padding: 5px 12px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s ease; backdrop-filter: blur(6px); }
+.btn-cancel-small:hover { background: rgba(223, 189, 189, 0.15); color: #ff7373; border-color: rgba(255, 77, 77, 0.8); transform: translateY(-2px); box-shadow: 0 0 8px rgba(255, 77, 77, 0.3); }
+
+.btn-feedback { background-color: #fadb14; color: #333; border: 1px solid #eab000; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; margin-top: 10px; }
+.btn-feedback:hover { background-color: #f7d200; border-color: #eab000; color: #000; }

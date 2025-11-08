@@ -7,6 +7,11 @@ import './VehicleMaintenanceSchedule.css';
 import { FaCalendarAlt, FaTools, FaCheckCircle, FaExclamationTriangle, FaCalendarPlus, FaTimes, FaLock, FaSpinner } from 'react-icons/fa';
 import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
+import BookingFormModal from '../components/BookingFormModal.jsx';
+import ScheduleItem from '../components/ScheduleItem.jsx';
+import ActiveBookings from '../components/ActiveBookings.jsx';
+import SuccessModal from '../components/SuccessModal.jsx';
+import ConfirmModal from '../components/ConfirmModal.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
 const BOOKING_STATUS_MAP = {
@@ -395,196 +400,42 @@ function VehicleMaintenanceSchedule() {
         <h1>Lịch trình bảo dưỡng cho xe {licensePlate}</h1>
 
         {/* --- Phần hiển thị booking active --- */}
-        {activeBookings.length > 0 && (
-          <div className="active-bookings-section">
-            <h2>Lịch hẹn đang xử lý</h2>
-            {activeBookings.map(booking => (
-              <div key={booking.bookingId} className={`active-booking-item status-${getStatusDisplay(booking.status).className}`}>
-                <p><strong>Trung tâm:</strong> {booking.centerName}</p>
-                <p><strong>Địa chỉ:</strong> {booking.centerAddress}</p>
-                <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
-                <p><strong>Trạng thái:</strong> {getStatusDisplay(booking.status).text}</p>
-                {booking.status === 'PENDING' && (
-                  <Button
-                    onClick={() => handleCancelBookingClick(booking.bookingId)}
-                    className="btn-cancel"
-                    disabled={bookingLoading}
-                  >
-                    <FaTimes /> Hủy lịch hẹn
-                  </Button>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+        <ActiveBookings bookings={activeBookings} onCancel={handleCancelBookingClick} loading={bookingLoading} />
 
         {error && <p className="error-message centered">{error}</p>}
 
         {/* --- Modal Form Đặt Lịch (Không thay đổi) --- */}
-        {showBookingForm && selectedPlanForBooking && (
-          <div className="modal-overlay">
-            <div className="modal-content booking-form-modal">
-              <div className="modal-header">
-                <h2>Đặt lịch cho: {selectedPlanForBooking.planName}</h2>
-                <Button onClick={() => setShowBookingForm(false)} className="close-modal-btn"> <FaTimes /> </Button>
-              </div>
-              <form onSubmit={handleConfirmBooking}>
-                {bookingError && <p className="error-message">{bookingError}</p>}
-                <p className="booking-info">Xe: <strong>{licensePlate}</strong></p>
-                <p className="booking-info">Gói: <strong>{selectedPlanForBooking.planName}</strong> ({selectedPlanForBooking.intervalKm?.toLocaleString()} km)</p>
-                <div className="form-group">
-                  <label htmlFor="centerId">Chọn trung tâm *</label>
-                  <select id="centerId" name="centerId" value={bookingFormData.centerId} onChange={handleBookingFormChange} required>
-                    <option value="" disabled>-- Chọn trung tâm dịch vụ --</option>
-                    {serviceCenters.map(center => (
-                      <option key={center.id} value={center.id}> {center.name} - {center.address} </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="form-group inline-group">
-                  <div>
-                    <label htmlFor="bookingDate">Chọn ngày *</label>
-                    <input type="date" id="bookingDate" name="bookingDate" value={bookingFormData.bookingDate} onChange={handleBookingFormChange} required min={new Date().toISOString().split('T')[0]} />
-                  </div>
-                  <div>
-                    <label htmlFor="bookingTime">Chọn giờ *</label>
-                    <input type="time" id="bookingTime" name="bookingTime" value={bookingFormData.bookingTime} onChange={handleBookingFormChange} required />
-                  </div>
-                </div>
-                <div className="form-group">
-                  <label htmlFor="note">Ghi chú (Tùy chọn)</label>
-                  <input type="text" id="note" name="note" value={bookingFormData.note} onChange={handleBookingFormChange} placeholder="Yêu cầu thêm (nếu có)..."
-                    style={{ color: "white" }} />
-                </div>
-                <div className="form-actions">
-                  <Button type="button" onClick={() => setShowBookingForm(false)} className="btn-cancel" disabled={bookingLoading}>Hủy</Button>
-                  <Button type="submit" className="btn-save" disabled={bookingLoading}>
-                    {bookingLoading ? 'Đang xử lý...' : 'Xác nhận đặt lịch'}
-                  </Button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+        <BookingFormModal
+          visible={showBookingForm}
+          selectedPlan={selectedPlanForBooking}
+          formData={bookingFormData}
+          onChange={handleBookingFormChange}
+          onConfirm={handleConfirmBooking}
+          centers={serviceCenters}
+          loading={bookingLoading}
+          error={bookingError}
+          onClose={() => setShowBookingForm(false)}
+          licensePlate={licensePlate}
+        />
 
         {/* --- Modal Success (Không thay đổi) --- */}
-        {showSuccessModal && (
-          <div className="modal-overlay">
-            <div className="modal-content success-modal">
-              <div className="success-modal-body">
-                <FaCheckCircle className="success-icon" />
-                <p>{successModalMessage}</p>
-              </div>
-              <div className="form-actions">
-                <Button
-                  onClick={() => {
-                    setShowSuccessModal(false);
-                    if (successModalAction) {
-                      successModalAction();
-                    }
-                  }}
-                  className="btn-save"
-                >
-                  OK
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+        <SuccessModal visible={showSuccessModal} message={successModalMessage} onClose={() => setShowSuccessModal(false)} onAction={successModalAction} />
 
         {/* *** THÊM MỚI: Modal Confirm (Hỏi lại) *** */}
-        {showConfirmModal && (
-          <div className="modal-overlay">
-            <div className="modal-content confirm-modal">
-              <div className="confirm-modal-body">
-                <FaExclamationTriangle className="confirm-icon" />
-                <h3>Xác nhận hành động</h3>
-                <p>{confirmModalMessage}</p>
-              </div>
-              <div className="form-actions">
-                {/* Nút Hủy (dùng class .btn-cancel của form) */}
-                <Button
-                  onClick={() => setShowConfirmModal(false)}
-                  className="btn-cancel"
-                  disabled={bookingLoading}
-                >
-                  Hủy bỏ
-                </Button>
-                {/* Nút Xác nhận (dùng class mới .btn-confirm-danger) */}
-                <Button
-                  onClick={() => {
-                    if (onConfirmAction) {
-                      onConfirmAction(); // Chạy hàm 'executeCancelBooking'
-                    }
-                  }}
-                  className="btn-confirm-danger"
-                  disabled={bookingLoading}
-                >
-                  {bookingLoading ? 'Đang xử lý...' : 'Xác nhận'}
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
+        <ConfirmModal
+          visible={showConfirmModal}
+          message={confirmModalMessage}
+          onClose={() => setShowConfirmModal(false)}
+          onConfirm={() => { if (onConfirmAction) onConfirmAction(); }}
+          loading={bookingLoading}
+        />
         {/* --- Kết thúc Modal Confirm --- */}
 
         {/* --- Danh sách lịch bảo dưỡng (Không thay đổi) --- */}
         {schedule.length > 0 ? (
           <div className="schedule-list">
-            {schedule.map((item) => (
-              <div key={item.maintenancePlanId} className={`schedule-item status-${item.status?.toLowerCase()}`}>
-                <div className="schedule-item-header">
-                  <h3>{item.planName}</h3>
-                  <div className="status-container">
-                    {getStatusIcon(item.status)}
-                    <span className="status-label">{getStatusLabel(item.status)}</span>
-                  </div>
-                </div>
-                <p className="description">{item.description || 'Không có mô tả chi tiết.'}</p>
-                <p><strong>Mốc KM:</strong> {item.intervalKm?.toLocaleString()} km</p>
-                {item.planDate && (
-                  <p><strong>Ngày dự kiến:</strong> {new Date(item.planDate).toLocaleDateString('vi-VN')}</p>
-                )}
-                {item.deadline && (
-                  <p><strong>Hạn chót:</strong> {new Date(item.deadline).toLocaleDateString('vi-VN')}</p>
-                )}
-
-                {item.status === 'EXPIRED' && (
-                  <p className="expired-info">
-                    <FaExclamationTriangle /> Lần bảo dưỡng này đã bị bỏ qua
-                  </p>
-                )}
-                {item.status === 'LOCKED' && (
-                  <p className="locked-message">
-                    <FaLock /> Cần hoàn thành lần bảo dưỡng kế tiếp trước
-                  </p>
-                )}
-                {item.status === 'OVERDUE' && (
-                  <p className="overdue-info">
-                    <FaExclamationTriangle /> Lịch bảo dưỡng này đã quá hạn!
-                  </p>
-                )}
-                {(item.status === 'NEXT_TIME' || item.status === 'OVERDUE') && item.maintenancePlanId === nextTimePlanId && (
-                  hasActiveBooking ? (
-                    <p className="locked-message" style={{ color: '#ff6b6b', fontWeight: 'bold' }}>
-                      <FaCalendarAlt style={{ marginRight: '8px' }} />
-                      Xe này đã có lịch hẹn (Chờ xử lý hoặc chưa thanh toán).
-                    </p>
-                  ) : (
-                    <Button
-                      className="book-now-button"
-                      onClick={() => handleBookAppointmentClick(item)}
-                    >
-                      <FaCalendarPlus /> Đặt lịch ngay
-                    </Button>
-                  )
-                )}
-                {item.status === 'ON_TIME' && (
-                  <div className="completed-badge">
-                    <FaCheckCircle /> Đã hoàn thành
-                  </div>
-                )}
-              </div>
+            {schedule.map(item => (
+              <ScheduleItem key={item.maintenancePlanId} item={item} nextTimePlanId={nextTimePlanId} hasActiveBooking={hasActiveBooking} onBookClick={handleBookAppointmentClick} />
             ))}
           </div>
         ) : (

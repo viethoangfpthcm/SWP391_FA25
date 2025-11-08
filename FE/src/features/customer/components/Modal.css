@@ -1,0 +1,491 @@
+/* Generic modal styles reused by multiple components */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2147483647 !important;
+    /* ensure modal overlay sits above footer and other content */
+    pointer-events: auto;
+    /* allow clicks to reach the overlay */
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+    padding: 35px 45px;
+    width: 90%;
+    max-width: 500px;
+    color: #fefefe;
+    animation: slideIn 0.3s ease;
+    position: relative;
+    z-index: 2147483648 !important;
+    /* keep modal content above overlay children and page elements */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 10px
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffffff !important;
+    text-shadow: 0 0 8px rgba(10, 139, 255, 0.35);
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    color: #ccc;
+    cursor: pointer;
+    transition: all 0.25s ease
+}
+
+.close-modal-btn:hover {
+    color: #fff;
+    transform: scale(1.1)
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #eaeaea;
+    font-size: 0.9rem
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.12);
+    /* kính mờ */
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color-scheme: dark;
+    font-size: 0.95rem;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+    border-color: #0a8bff;
+    box-shadow: 0 0 0 3px rgba(10, 139, 255, 0.25);
+    outline: none
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 18px;
+    margin-top: 25px
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ff7c7c;
+    border: 1px solid rgba(255, 90, 90, 0.5);
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer
+}
+
+.btn-cancel:hover {
+    background: rgba(255, 90, 90, 0.2);
+    color: #fff;
+    border-color: rgba(255, 90, 90, 0.8);
+    transform: translateY(-1px)
+}
+
+.btn-save {
+    background: linear-gradient(90deg, #0a4ff0, #003cd6);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(10, 79, 240, 0.3);
+    cursor: pointer
+}
+
+.btn-save:hover {
+    background: linear-gradient(90deg, #003cd6, #002ea6);
+    transform: translateY(-1px)
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-25px);
+        opacity: 0
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1
+    }
+}
+
+
+/* 
+   Confirm Modal - kính mờ đồng bộ
+    */
+.modal-content.confirm-modal {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+    border-radius: 16px;
+    padding: 32px 36px;
+}
+
+/* Nội dung */
+.modal-content.confirm-modal .confirm-modal-body {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.modal-content.confirm-modal .confirm-modal-body .confirm-icon {
+    font-size: 2.6rem;
+    color: #ffb300;
+    margin-bottom: 10px;
+}
+
+.modal-content.confirm-modal .confirm-modal-body h3 {
+    margin: 0 0 8px;
+    color: #ffd16b;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.modal-content.confirm-modal .confirm-modal-body p {
+    color: #f1f1f1;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Form actions (thanh nút) */
+.modal-content.confirm-modal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 22px;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    /* Kính mờ */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-sizing: border-box;
+}
+
+/* Nút hủy */
+.modal-content.confirm-modal .btn-cancel {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ff7c7c;
+    border: 1px solid rgba(255, 90, 90, 0.5);
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.modal-content.confirm-modal .btn-cancel:hover {
+    background: rgba(255, 90, 90, 0.2);
+    color: #fff;
+    border-color: rgba(255, 90, 90, 0.8);
+    transform: translateY(-1px);
+}
+
+/* Nút xác nhận */
+.modal-content.confirm-modal .btn-confirm-danger {
+    background: linear-gradient(90deg, #e63946, #d62828);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.modal-content.confirm-modal .btn-confirm-danger:hover {
+    background: linear-gradient(90deg, #d62828, #b71c1c);
+    transform: translateY(-1px);
+}
+
+/* thêm xe */
+
+.modal-content.add-vehicle-form.modal-content {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+    color: #fff;
+    width: 80%;
+    max-width: 500px;
+    /* ✨ gọn lại */
+    padding: 28px 28px 32px;
+    /* giảm padding đều các phía */
+    animation: slideIn 0.3s ease;
+    overflow-y: auto;
+    max-height: 90vh;
+    /* tránh tràn màn hình */
+}
+
+/* Form-group cân đều, không tràn */
+.modal-content.add-vehicle-form form {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Giữ group gọn, không thụt padding vào */
+.modal-content.add-vehicle-form form .form-group {
+    position: relative;
+    margin: 14px 0;
+    padding: 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-sizing: border-box;
+}
+
+/* Label đồng bộ full width, không lệch */
+.modal-content.add-vehicle-form form .form-group>label {
+    display: block;
+    margin: 0 0 8px;
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 0.95rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Input/select đồng bộ full width, cân khung group */
+.modal-content.add-vehicle-form form .form-group input,
+.modal-content.add-vehicle-form form .form-group select,
+.modal-content.add-vehicle-form form .form-group textarea {
+    width: 100%;
+    height: 46px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+    color-scheme: dark;
+    box-sizing: border-box;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+}
+
+/* Focus */
+.modal-content.add-vehicle-form form .form-group input:focus,
+.modal-content.add-vehicle-form form .form-group select:focus,
+.modal-content.add-vehicle-form form .form-group textarea:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(124, 58, 237, 0.9);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
+}
+
+/* Placeholder */
+.modal-content.add-vehicle-form ::placeholder {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+/* Hàng nút */
+.modal-content.add-vehicle-form form .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin: 18px 0 0;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-sizing: border-box;
+}
+
+/* Buttons */
+.modal-content.add-vehicle-form .btn-cancel {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ff7c7c;
+    border: 1px solid rgba(255, 90, 90, 0.5);
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.modal-content.add-vehicle-form .btn-cancel:hover {
+    background: rgba(255, 90, 90, 0.2);
+    color: #fff;
+    border-color: rgba(255, 90, 90, 0.8);
+    transform: translateY(-1px);
+}
+
+.modal-content.add-vehicle-form .btn-save {
+    background: linear-gradient(90deg, #0a4ff0, #003cd6);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(10, 79, 240, 0.3);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.modal-content.add-vehicle-form .btn-save:hover {
+    background: linear-gradient(90deg, #003cd6, #002ea6);
+    transform: translateY(-1px);
+}
+
+/* Lỗi */
+.modal-content.add-vehicle-form .error-message {
+    color: #ffb3b3;
+    margin-bottom: 12px;
+}
+
+.modal-content.add-vehicle-form {
+    max-width: 700px !important;
+    padding: 22px 26px !important;
+    max-height: 900px !important;
+}
+
+/* 
+   SUCCESS MODAL
+    */
+.modal-content.success-modal {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+    padding: 32px 36px;
+    width: 90%;
+    max-width: 460px;
+    color: #fff;
+    text-align: center;
+    animation: fadeIn 0.3s ease, popIn 0.25s ease;
+    position: relative;
+}
+
+/* Icon + text */
+.success-modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding-bottom: 16px;
+}
+
+.success-modal-body .success-icon {
+    font-size: 3rem;
+    color: #4ade80;
+    /* xanh lá sáng */
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 10px rgba(74, 222, 128, 0.4));
+}
+
+.success-modal-body p {
+    color: #fff;
+    font-size: 1.05rem;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Footer buttons */
+.success-modal .form-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+}
+
+.success-modal .btn-save {
+    background: linear-gradient(90deg, #0a4ff0, #003cd6);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 24px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(10, 79, 240, 0.3);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.success-modal .btn-save:hover {
+    background: linear-gradient(90deg, #003cd6, #002ea6);
+    transform: translateY(-1px);
+}
+
+/* Animation nhẹ mượt */
+@keyframes popIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-content.success-modal {
+    max-width: 500px !important;
+    padding: 28px 32px !important;
+}

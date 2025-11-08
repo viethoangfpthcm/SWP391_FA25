@@ -10,7 +10,6 @@
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* Overlay đen mờ + fade sáng */
 .dashboard-page::before {
   content: "";
   position: fixed;
@@ -31,7 +30,6 @@
   pointer-events: none;
 }
 
-/* Nội dung chính */
 .dashboard-content {
   flex: 1;
   max-width: 1200px;
@@ -49,65 +47,17 @@
   font-size: 2rem;
 }
 
-/* =========================================================
-   🎨 Nền các box trắng làm dịu + hiệu ứng blur
-   ========================================================= */
-.dashboard-section,
-.vehicle-card,
-.booking-item,
-.modal-content,
-.profile-details,
-.stats-grid .stat-item {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-  border-radius: 12px;
-  transition: all 0.3s ease;
-}
-
-.dashboard-page .modal-content.add-vehicle-form input,
-.dashboard-page .modal-content.add-vehicle-form select,
-.dashboard-page .modal-content.add-vehicle-form textarea {
-  color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-.dashboard-page .modal-content.add-vehicle-form input::placeholder,
-.dashboard-page .modal-content.add-vehicle-form textarea::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.dashboard-section:hover,
-.vehicle-card:hover,
-.booking-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4),
-    0 0 12px rgba(0, 162, 255, 0.15);
-}
-
-/* =========================================================
-   🧾 Phần nội dung
-   ========================================================= */
-
-/* Section */
+/* Keep a lightweight "card" look for small containers that don't have their own css yet */
 .dashboard-section {
   padding: 25px;
   margin-bottom: 30px;
-}
-
-.dashboard-section h2 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #fefefe;
-  font-size: 1.4rem;
-  margin: 0 0 20px;
-  border-bottom: 2px solid #eef;
-  padding-bottom: 10px;
+  border-radius: 12px;
+  /* Re-introduce a subtle glass/card effect so sections stand out over the background image */
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
 }
 
 .section-divider {
@@ -116,397 +66,7 @@
   margin: 40px 0;
 }
 
-/* Profile Section */
-.profile-details p {
-  margin: 8px 0;
-  font-size: 1rem;
-  color: #cdd3df;
-  margin-left: 10px;
-}
-
-.profile-details strong {
-  color: #e9ecf3;
-  min-width: 120px;
-  display: inline-block;
-}
-
-/* Vehicle Section */
-.vehicle-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.vehicle-header h2 {
-  margin: 0;
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.add-vehicle-btn {
-  background-color: #0a4ff0;
-  color: #fefefe;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: background-color 0.2s ease;
-}
-
-.add-vehicle-btn:hover {
-  background-color: #003cd6;
-}
-
-.vehicle-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.vehicle-card {
-  padding: 20px;
-}
-
-.vehicle-card h3 {
-  margin: 0 0 10px;
-  color: #fefefe;
-}
-
-.vehicle-card p {
-  margin: 5px 0;
-  font-size: 0.95rem;
-  color: #d9dee8;
-}
-
-.vehicle-card button {
-  margin-top: 15px;
-  background: rgba(255, 255, 255, 0.15);
-  color: #00a8ff;
-  border: 1.5px solid #00a8ff;
-  padding: 7px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.vehicle-card button:hover {
-  background: #00a8ff;
-  color: #fff;
-}
-
-/* Stats Section */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 20px;
-  text-align: center;
-}
-
-.stat-item {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.stat-value {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #ffffff !important;
-  text-shadow: 0 0 8px rgb(0, 0, 0);
-}
-
-
-.stat-label {
-  font-size: 0.9rem;
-  color: #ffffff !important; 
-  font-weight: 600;
-  text-shadow: 0 0 6px rgb(22, 20, 20);
-}
-
-
-/* =========================================================
-   📅 Booking Section
-   ========================================================= */
-.booking-list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
-}
-
-@media (min-width: 768px) {
-  .booking-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.booking-item {
-  padding: 15px 20px;
-  border-left-width: 5px;
-}
-
-.booking-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-  border-bottom: 1px dashed #eee;
-}
-
-.booking-item-header strong {
-  font-size: 1.1rem;
-  color: #000000;
-}
-
-.booking-item p {
-  margin: 8px 0;
-  font-size: 0.95rem;
-  color: #d9dee8;
-  line-height: 1.5;
-}
-
-.booking-item p strong {
-  color: #e9ecf3;
-  margin-right: 5px;
-}
-
-.booking-item .booking-note {
-  font-style: italic;
-  color: #777;
-  background-color: rgba(255, 255, 255, 0.15);
-  padding: 8px;
-  border-radius: 4px;
-}
-
-/* Booking Status */
-.booking-status {
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 20px;
-  color: #fff;
-  text-transform: uppercase;
-}
-
-.booking-item.status-pending {
-  border-left-color: #f0ad4e;
-}
-
-.booking-item.status-completed {
-  border-left-color: #28a745;
-}
-
-.booking-item.status-declined,
-.booking-item.status-cancelled {
-  border-left-color: #d9534f;
-}
-
-.booking-item.status-in_progress {
-  border-left-color: #0275d8;
-}
-
-.booking-item.status-paid {
-  border-left-color: #17a2b8;
-}
-
-.booking-item.status-ready_for_payment {
-  border-left-color: #5cb85c;
-}
-
-.status-label-pending {
-  background-color: #f0ad4e;
-}
-
-.status-label-completed {
-  background-color: #28a745;
-}
-
-.status-label-declined,
-.status-label-cancelled {
-  background-color: #d9534f;
-}
-
-.status-label-in_progress {
-  background-color: #0275d8;
-}
-
-.status-label-paid {
-  background-color: #17a2b8;
-}
-
-.status-label-ready_for_payment {
-  background-color: #5cb85c;
-}
-
-/* =========================================================
-   🧾 Modal
-   ========================================================= */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
-}
-
-.modal-content {
-  padding: 30px 40px;
-  max-width: 500px;
-  animation: slideIn 0.3s ease;
-  color: #f4f6fb;
-}
-
-/* Nút form */
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 30px;
-}
-
-.form-actions button {
-  padding: 10px 25px;
-  border-radius: 8px;
-  border: none;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #fff;
-}
-
-.btn-save {
-  background-color: #0a4ff0;
-  border: 1px solid #0a4ff0;
-}
-
-.btn-save:hover {
-  background-color: #003cd6;
-  border-color: #003cd6;
-  box-shadow: 0 2px 8px rgba(10, 79, 240, 0.3);
-}
-
-.btn-cancel {
-  background-color: #dc3545;
-  border: 1px solid #dc3545;
-}
-
-.btn-cancel:hover {
-  background-color: #c82333;
-  border-color: #bd2130;
-}
-
-.booking-list-container {
-  color: #fefefe;
-}
-.booking-list-container h3 {
-  color: #fefefe;
-}
-
-/* Pending - sáng vàng */
-.booking-item.status-pending .booking-item-header {
-  color: #ffe391;
-  /* sáng hơn #f0ad4e */
-}
-
-/* In Progress - sáng xanh dương */
-.booking-item.status-in_progress .booking-item-header {
-  color: #6dc8ff;
-  /* sáng hơn #0275d8 */
-}
-
-/* Completed - sáng xanh lá */
-.booking-item.status-completed .booking-item-header {
-  color: #7fff9f;
-  /* sáng hơn #28a745 */
-}
-
-/* Cancelled / Declined - sáng đỏ */
-.booking-item.status-cancelled .booking-item-header,
-.booking-item.status-declined .booking-item-header {
-  color: #ff8c8c;
-  /* sáng hơn #d9534f */
-}
-
-/* Paid - sáng xanh ngọc */
-.booking-item.status-paid .booking-item-header {
-  color: #63e5db;
-  /* sáng hơn #17a2b8 */
-}
-
-/* Ready for Payment - sáng xanh nhạt */
-.booking-item.status-ready_for_payment .booking-item-header {
-  color: #a7ffb3;
-  /* sáng hơn #5cb85c */
-}
-
-/* Giữ biển số xe đậm rõ hơn */
-.booking-item-header strong {
-  color: #fff;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
-}
-
-/* Nút "Tùy chỉnh" (trong profile) */
-.edit-profile-btn {
-  background: linear-gradient(135deg, #0a4ff0, #2c8bff);
-  color: #fff;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0 2px 8px rgba(10, 79, 240, 0.3);
-  transition: all 0.25s ease;
-  margin-bottom: 10px;
-}
-
-.edit-profile-btn:hover {
-  background: linear-gradient(135deg, #2c8bff, #0a4ff0);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(44, 139, 255, 0.45);
-}
-
-/* Nút "Hủy" nhỏ trong lịch hẹn */
-.btn-cancel-small {
-  margin-top: 8px;
-  background: rgba(255, 255, 255, 0.15);
-  color: #f07878;
-  border: 1px solid rgba(255, 77, 77, 0.5);
-  border-radius: 6px;
-  font-size: 0.85rem;
-  padding: 5px 12px;
-  cursor: pointer;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(6px);
-}
-
-.btn-cancel-small:hover {
-  background: rgba(223, 189, 189, 0.15);
-  color: #ff7373;
-  border-color: rgba(255, 77, 77, 0.8);
-  transform: translateY(-2px);
-  box-shadow: 0 0 8px rgba(255, 77, 77, 0.3);
-}
-
+/* A few utility classes used project-wide */
 .loading-container {
   display: flex;
   align-items: center;
@@ -517,27 +77,16 @@
   min-height: 300px;
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
 .loading-container .spinner-icon {
   animation: spin 1s linear infinite;
   margin-right: 10px;
   vertical-align: middle;
-
-
   color: #e9eaea;
   background-color: transparent;
   fill: #f7faf9;
 }
+
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 /* =========================================================
    🪟 Modal nâng cấp (Thêm xe / Chỉnh sửa thông tin)
@@ -549,7 +98,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 99999;
+  pointer-events: auto;
   animation: fadeIn 0.3s ease;
 }
 

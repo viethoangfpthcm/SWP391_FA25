@@ -1,0 +1,39 @@
+/* ProfileSection styles */
+.profile-section .profile-details p {
+  margin: 8px 0;
+  font-size: 1rem;
+  color: #cdd3df;
+  margin-left: 10px;
+}
+
+.profile-section .profile-details strong {
+  color: #e9ecf3;
+  min-width: 120px;
+  display: inline-block;
+}
+
+.edit-profile-btn {
+  background: linear-gradient(135deg, #0a4ff0, #2c8bff);
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(10, 79, 240, 0.3);
+  transition: all 0.25s ease;
+}
+
+.edit-profile-btn:hover {
+  background: linear-gradient(135deg, #2c8bff, #0a4ff0);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(44, 139, 255, 0.45);
+}
+
+.profile-header{
+    color: #fff;
+}
