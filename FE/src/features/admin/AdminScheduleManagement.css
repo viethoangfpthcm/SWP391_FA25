@@ -1,14 +1,4 @@
-/* ===== Stronger selector for textarea height fix ===== */
-.modal-content .form-group textarea,
-.item-card .form-group textarea {
-  height: 44px !important;
-  min-height: 44px !important;
-  max-height: 44px !important;
-  resize: none !important;
-  overflow: hidden !important;
-  line-height: 1.5 !important;
-}
-/* ADMIN SCHEDULE MANAGEMENT - CLEAN & MODERN CSS (REFINED) */
+/* ADMIN SCHEDULE MANAGEMENT - CLEAN & OPTIMIZED CSS */
 
 :root {
   --primary: #0a4ff0;
@@ -97,11 +87,47 @@
   border-radius: 8px;
   padding: 10px 20px;
   color: #fff;
-  background: var(--primary);
-  transition: 0.25s;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  transition: 0.25s ease;
+  cursor: pointer;
 }
+
 .btn-primary:hover {
-  background: var(--primary-dark);
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+}
+
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: #fff;
+  background: var(--secondary);
+  transition: 0.25s;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #4b5563;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.btn-icon:hover {
+  transform: scale(1.1);
 }
 
 /* ===== Table ===== */
@@ -182,6 +208,7 @@
 .data-table tbody tr:nth-child(even) {
   background-color: #fafbfc;
 }
+
 .data-table tbody tr:hover {
   background: #eef4ff;
   transition: 0.25s;
@@ -204,6 +231,7 @@
   font-size: 0.85rem;
   border: 1px solid transparent;
   transition: 0.2s;
+  cursor: pointer;
 }
 
 .btn-view {
@@ -211,6 +239,7 @@
   background: #dbeafe;
   border-color: #93c5fd;
 }
+
 .btn-view:hover {
   background: #bfdbfe;
   color: #1e40af;
@@ -221,6 +250,7 @@
   background: #dcfce7;
   border-color: #86efac;
 }
+
 .btn-edit:hover {
   background: #bbf7d0;
   color: #15803d;
@@ -231,9 +261,27 @@
   background: #fee2e2;
   border-color: #fca5a5;
 }
+
 .btn-delete:hover {
   background: #fecaca;
   color: #991b1b;
+}
+
+.btn-delete2 {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-delete2:hover {
+  background: #fecaca;
+  color: #991b1b;
+  transform: scale(1.05);
 }
 
 /* ===== Badges ===== */
@@ -249,17 +297,19 @@
   background: #dbeafe;
   color: #1d4ed8;
 }
+
 .role-pending {
   background: #fef3c7;
   color: var(--warning);
 }
+
 .role-completed {
   background: #dcfce7;
   color: var(--success);
 }
 
 /* ============================================================= */
-/* 🪟 MODAL POPUP REWORK - LIGHT & MODERN */
+/* 🪟 MODAL POPUP */
 /* ============================================================= */
 .modal-overlay {
   position: fixed;
@@ -283,6 +333,7 @@
   overflow-y: auto;
   box-shadow: var(--shadow-strong);
   animation: fadeInModal 0.25s ease-out;
+
 }
 
 /* Header */
@@ -334,7 +385,7 @@
 }
 
 .modal-body {
-  padding: 30px 32px;
+  padding: 28px 30px;
   background: #ffffff;
 }
 
@@ -343,41 +394,9 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  padding: 18px 32px;
+  padding: 16px 30px;
   border-top: 1px solid #e5e7eb;
-  background: #f8fafb;
-}
-
-.btn-secondary {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  color: #fff;
-  background: var(--secondary);
-  transition: 0.25s;
-  cursor: pointer;
-}
-.btn-secondary:hover {
-  background: #4b5563;
-}
-
-.btn-icon {
-  background: none;
-  border: none;
-  padding: 6px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.2s;
-  cursor: pointer;
-}
-.btn-icon:hover {
-  transform: scale(1.1);
+  background: #f9fafb;
 }
 
 /* ===== Form Sections ===== */
@@ -390,6 +409,7 @@
   margin-bottom: 22px;
   transition: 0.25s;
 }
+
 .form-section:hover {
   background: #f1f5f9;
 }
@@ -410,7 +430,111 @@
   margin-bottom: 15px;
 }
 
-/* Mỗi mốc bảo dưỡng */
+/* ===== Form Grid & Groups ===== */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* ===== LABELS - ĐEN RÕ RÀI ===== */
+.modal-content label,
+.form-section label,
+.plan-card label,
+.item-card label {
+  display: block;
+  font-weight: 700;
+  color: #000000;
+  font-size: 0.92rem;
+  margin-bottom: 4px;
+  letter-spacing: 0.01em;
+}
+
+/* ===== INPUTS, TEXTAREA, SELECT - ĐEN & THỐNG NHẤT ===== */
+.modal-content input,
+.modal-content select,
+.modal-content textarea,
+.form-section input,
+.form-section select,
+.form-section textarea,
+.plan-card input,
+.plan-card select,
+.plan-card textarea,
+.item-card input,
+.item-card select,
+.item-card textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: 2px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #000000 !important;
+  font-size: 0.95rem;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* Textarea height - Cố định cho dễ nhìn */
+.modal-content textarea,
+.form-section textarea,
+.plan-card textarea,
+.item-card textarea {
+  height: 44px;
+  min-height: 44px;
+  max-height: 44px;
+  resize: none;
+  overflow: hidden;
+}
+
+/* Focus state */
+.modal-content input:focus,
+.modal-content select:focus,
+.modal-content textarea:focus,
+.form-section input:focus,
+.form-section select:focus,
+.form-section textarea:focus,
+.plan-card input:focus,
+.plan-card select:focus,
+.plan-card textarea:focus,
+.item-card input:focus,
+.item-card select:focus,
+.item-card textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+  background-color: #f0f9ff;
+  outline: none;
+}
+
+/* Disabled state */
+.modal-content input:disabled,
+.modal-content select:disabled,
+.modal-content textarea:disabled,
+.form-section input:disabled,
+.form-section select:disabled,
+.form-section textarea:disabled,
+.plan-card input:disabled,
+.plan-card select:disabled,
+.plan-card textarea:disabled,
+.item-card input:disabled,
+.item-card select:disabled,
+.item-card textarea:disabled {
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 2px solid #d1d5db;
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+/* ===== Maintenance Plans ===== */
 .plans-list {
   display: flex;
   flex-direction: column;
@@ -424,6 +548,7 @@
   padding: 20px 22px;
   transition: all 0.25s;
 }
+
 .plan-card:hover {
   border-color: var(--primary);
   box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
@@ -451,7 +576,6 @@
   padding-left: 12px;
 }
 
-/* Form grid trong plan card */
 .plan-card .form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -459,131 +583,7 @@
   margin-bottom: 18px;
 }
 
-.plan-card .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-}
-
-.plan-card .form-group label {
-  font-weight: 700;
-  color: #000;
-  font-size: 0.92rem;
-  margin-bottom: 4px;
-}
-
-.plan-card .form-group input,
-.plan-card .form-group textarea {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Empty state */
-.empty-state {
-  text-align: center;
-  color: #9ca3af;
-  padding: 30px 20px;
-  font-style: italic;
-  font-size: 0.95rem;
-}
-
-/* ===== Form Fields ===== */
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.modal-content .form-section .form-group label,
-.modal-content .form-group label {
-  font-weight: 700 !important;
-  color: #000 !important;
-  font-size: 0.92rem !important;
-  letter-spacing: 0.01em;
-}
-
-.modal-content .form-section .form-group input,
-.modal-content .form-section .form-group textarea,
-.modal-content .form-section .form-group select,
-.modal-content .form-group input,
-.modal-content .form-group textarea,
-.modal-content .form-group select {
-  border: 2px solid #cbd5e1 !important;
-  border-radius: 8px !important;
-  padding: 11px 14px !important;
-  font-size: 0.95rem !important;
-  color: #000 !important;
-  background: #fff !important;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-
-.modal-content .form-section .form-group textarea,
-.modal-content .form-group textarea {
-  resize: vertical;
-  min-height: 80px;
-  max-height: 180px;
-  line-height: 1.5;
-}
-
-/* Focus */
-.modal-content .form-section .form-group input:focus,
-.modal-content .form-section .form-group textarea:focus,
-.modal-content .form-section .form-group select:focus,
-.modal-content .form-group input:focus,
-.modal-content .form-group textarea:focus,
-.modal-content .form-group select:focus {
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
-  background: #f0f9ff !important;
-  outline: none;
-}
-
-/* Disabled fields (chỉ đọc, dễ nhìn hơn) */
-.modal-content .form-section .form-group input:disabled,
-.modal-content .form-section .form-group textarea:disabled,
-.modal-content .form-section .form-group select:disabled,
-.modal-content .form-group input:disabled,
-.modal-content .form-group textarea:disabled,
-.modal-content .form-group select:disabled {
-  background-color: #f3f4f6 !important;
-  color: #374151 !important;
-  border: 2px solid #d1d5db !important;
-  opacity: 0.8 !important;
-  cursor: not-allowed;
-}
-
-/* ===== Animation & Scrollbar ===== */
-@keyframes fadeInModal {
-  from {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.modal-content::-webkit-scrollbar {
-  width: 8px;
-}
-.modal-content::-webkit-scrollbar-thumb {
-  background: #9ca3af;
-  border-radius: 6px;
-}
-.modal-content::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
-}
-
-/* ===== Items Modal (Công việc) ===== */
+/* ===== Items List (Tasks) ===== */
 .items-list {
   display: flex;
   flex-direction: column;
@@ -618,21 +618,39 @@
   font-size: 1rem;
 }
 
-.btn-delete2 {
-  background: #fee2e2;
-  color: #dc2626;
-  border: 1px solid #fca5a5;
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: 0.2s;
+/* Empty state */
+.empty-state {
+  text-align: center;
+  color: #9ca3af;
+  padding: 30px 20px;
+  font-style: italic;
+  font-size: 0.95rem;
 }
 
-.btn-delete2:hover {
-  background: #fecaca;
-  color: #991b1b;
-  transform: scale(1.05);
+/* ===== Animation ===== */
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== Scrollbar ===== */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 6px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
 }
 
 /* ===== Responsive ===== */
@@ -641,12 +659,121 @@
     margin-left: 0;
     width: 100%;
   }
+  
   .form-grid,
   .plan-card .form-grid {
     grid-template-columns: 1fr;
   }
+  
   .modal-body {
     padding: 20px;
   }
 }
 
+
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+  color: #000 !important;
+  background-color: #fff !important;
+  -webkit-text-fill-color: #000 !important; /* Chrome fix */
+  opacity: 1 !important;
+}
+
+/* Label color */
+.modal-content label {
+  color: #000 !important;
+}
+
+/* Disabled input fix */
+.modal-content input:disabled,
+.modal-content select:disabled,
+.modal-content textarea:disabled {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background-color: #f3f4f6 !important;
+  border-color: #d1d5db !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+}
+
+
+.modal-content label,
+.form-section label,
+.plan-card label,
+.item-card label {
+  color: #000 !important;
+  font-weight: 700;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+
+/* --- Force all input/textarea text to black --- */
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important; /* fix Chrome */
+  opacity: 1 !important;
+  background-color: #fff !important;
+  font-weight: 500;
+}
+
+/* --- Even when disabled --- */
+.modal-content input:disabled,
+.modal-content select:disabled,
+.modal-content textarea:disabled {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background-color: #f3f4f6 !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+  font-weight: 500;
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea,
+.form-section input,
+.form-section select,
+.form-section textarea,
+.plan-card input,
+.plan-card select,
+.plan-card textarea,
+.item-card input,
+.item-card select,
+.item-card textarea {
+  border: 1.8px solid #464749 !important;   /* viền đen xám đậm dễ nhìn */
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #000;
+  transition: all 0.25s ease;
+}
+
+/* Hiệu ứng hover cho trực quan */
+.modal-content input:hover,
+.modal-content select:hover,
+.modal-content textarea:hover {
+  border-color: #2563eb !important;        /* xanh dương nhạt khi hover */
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* Khi focus vào thì border nổi bật hơn */
+.modal-content input:focus,
+.modal-content select:focus,
+.modal-content textarea:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+  background-color: #f0f9ff;
+}
+
+/* Trạng thái disabled vẫn có viền để người dùng thấy rõ */
+.modal-content input:disabled,
+.modal-content select:disabled,
+.modal-content textarea:disabled {
+  border: 1.8px solid #9ca3af !important;
+  background-color: #f3f4f6 !important;
+  color: #000;
+  opacity: 1 !important;
+}

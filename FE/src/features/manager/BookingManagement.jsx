@@ -328,10 +328,10 @@ export default function BookingManagement() {
         {/* Feedback Modal */}
         {showFeedbackModal && (
           <div className="modal-overlay" onClick={() => setShowFeedbackModal(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content admin-modal feedback-modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header">
-                <h2><FaComments /> Đánh giá của khách hàng</h2>
-                <button className="modal-close" onClick={() => setShowFeedbackModal(false)}>
+                <h2>Đánh giá của khách hàng</h2>
+                <button className="close-modal-btn" onClick={() => setShowFeedbackModal(false)}>
                   <FaTimes />
                 </button>
               </div>

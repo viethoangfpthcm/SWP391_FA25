@@ -507,3 +507,111 @@
     transform: translateY(0);
   }
 }
+
+/* --- Admin-like feedback modal overrides --- */
+/* Use these when manager wants the same look as admin feedback modal */
+.modal-content.feedback-modal.admin-modal {
+  max-width: 600px;
+  overflow-x: hidden;
+}
+
+
+.admin-modal.feedback-modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: #ffffff;
+  border-radius: 12px 12px 0 0;
+}
+
+.admin-modal.feedback-modal .modal-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: rgba(255,255,255,0.9);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.close-modal-btn:hover {
+  color: rgba(255,255,255,1);
+}
+
+.admin-modal.feedback-modal .modal-body {
+  padding: 20px;
+}
+
+.admin-modal.feedback-modal .feedback-details {
+  padding: 10px;
+}
+
+.admin-modal.feedback-modal .feedback-details p {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.admin-modal.feedback-modal .feedback-details p strong {
+  color: #333;
+  margin-right: 8px;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.admin-modal.feedback-modal .feedback-rating {
+  align-items: center;
+  margin: 15px 0;
+}
+
+.admin-modal.feedback-modal .feedback-rating strong {
+  color: #333;
+  margin-right: 8px;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.admin-modal.feedback-modal .stars {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.star-filled {
+  color: #f59e0b;
+  /* vàng */
+  font-size: 1.2rem;
+}
+
+.star-empty {
+  color: #ccc;
+  font-size: 1.2rem;
+}
+
+.rating-number {
+  font-weight: 600;
+  margin-left: 10px;
+  font-size: 15px;
+}
+
+.admin-modal.feedback-modal .comment-box {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #1f2937;
+  min-height: 80px;
+  margin: 0;
+}

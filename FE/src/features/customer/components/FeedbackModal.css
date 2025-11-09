@@ -76,9 +76,13 @@
   cursor: pointer;
   transition: transform 0.2s, color 0.2s;
 }
-.feedback-modal .stars .star-empty { color: rgba(255, 255, 255, 0.25); }
-.feedback-modal .stars .star-selected { color: #ffd43b; }
-.feedback-modal .stars svg:hover { transform: scale(1.1); color: #ffea70; }
+.feedback-modal .stars .star-empty { color: rgba(255, 255, 255, 0.25); fill: rgba(255,255,255,0.25) !important; }
+.feedback-modal .stars .star-selected { color: #ffd43b; fill: #ffd43b !important; }
+.feedback-modal .stars svg:hover { transform: scale(1.1); color: #ffea70; fill: #ffea70 !important; }
+
+/* Ensure svg children also inherit fill when a class is applied (covers nested elements) */
+.feedback-modal .stars .star-selected * { fill: #ffd43b !important; }
+.feedback-modal .stars .star-empty * { fill: rgba(255,255,255,0.25) !important; }
 
 /* Buttons */
 .feedback-modal .form-actions {

@@ -22,7 +22,7 @@ export default function FeedbackModal({
   return (
     <ModalPortal>
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content feedback-modal" onClick={stop}>
+        <div className="modal-content feedback-modal customer-modal" onClick={stop}>
           <div className="modal-header">
             <h2>Đánh giá dịch vụ</h2>
             <Button
@@ -55,6 +55,7 @@ export default function FeedbackModal({
               <textarea
                 id="comment"
                 name="comment"
+                className="customer-input"
                 rows="4"
                 value={data.comment}
                 onChange={onChange}

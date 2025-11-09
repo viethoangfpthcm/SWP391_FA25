@@ -14,6 +14,7 @@ import "./AdminScheduleManagement.css";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 import Loading from '@components/ui/Loading.jsx';
+import ConfirmationModal from '@components/ui/ConfirmationModal.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
 export default function AdminScheduleManagement() {
@@ -26,6 +27,11 @@ export default function AdminScheduleManagement() {
     const [modalMode, setModalMode] = useState("view");
     const [userInfo, setUserInfo] = useState(null);
     const [filterVehicle, setFilterVehicle] = useState("all");
+
+    // Confirmation modal state for deleting schedule (AdminDashboard style)
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [scheduleToDeleteId, setScheduleToDeleteId] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     // Modal quản lý items
     const [itemsModal, setItemsModal] = useState({
@@ -156,20 +162,44 @@ export default function AdminScheduleManagement() {
         setShowModal(true);
     };
 
-    const handleDeleteSchedule = async (scheduleId) => {
-        if (!window.confirm("Bạn có chắc muốn xóa lịch trình này?")) return;
+    // Open confirmation modal (non-blocking) — same pattern as AdminDashboard
+    const handleDeleteSchedule = (scheduleId) => {
+        setScheduleToDeleteId(scheduleId);
+        setShowConfirmModal(true);
+        setError(null);
+    };
+
+    const confirmDelete = async () => {
+        if (!scheduleToDeleteId) return;
+        setIsDeleting(true);
+        setError(null);
         try {
-            const res = await fetch(`${API_BASE_URL}/api/admin/schedules/${scheduleId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/admin/schedules/${scheduleToDeleteId}`, {
                 method: 'DELETE',
                 headers: { Authorization: `Bearer ${getToken()}` },
             });
-            if (!res.ok) throw new Error("Không thể xóa lịch trình");
-            alert("Đã xóa lịch trình thành công");
-            fetchSchedules();
+            if (res.status === 401) { localStorage.clear(); navigate('/'); return; }
+            if (!res.ok) {
+                let message = 'Không thể xóa lịch trình.';
+                try { const data = await res.json(); message = data.message || data.error || message; } catch(e){}
+                throw new Error(message);
+            }
+            // success
+            setShowConfirmModal(false);
+            setScheduleToDeleteId(null);
+            await fetchSchedules();
         } catch (err) {
-            alert("Không thể xóa lịch trình");
-            console.error(err);
+            console.error('Delete schedule error:', err);
+            setError(err.message || 'Không thể xóa lịch trình');
+        } finally {
+            setIsDeleting(false);
         }
+    };
+
+    const cancelDelete = () => {
+        setShowConfirmModal(false);
+        setScheduleToDeleteId(null);
+        setError(null);
     };
 
     // Lưu schedule – GIỮ ?query
@@ -758,6 +788,14 @@ export default function AdminScheduleManagement() {
                         </div>
                     </div>
                 )}
+                {/* Confirmation modal for deleting a schedule (same pattern as AdminDashboard) */}
+                <ConfirmationModal
+                    show={showConfirmModal}
+                    message={`Bạn có chắc chắn muốn xóa lịch trình ID: ${scheduleToDeleteId}? Hành động này không thể hoàn tác.`}
+                    onConfirm={confirmDelete}
+                    onCancel={cancelDelete}
+                    isLoading={isDeleting}
+                />
             </main>
         </div>
     );

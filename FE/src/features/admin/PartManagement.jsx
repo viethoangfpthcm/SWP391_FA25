@@ -307,7 +307,7 @@ export default function PartManagement() {
         </div>
         {showForm && (
           <div className="modal-overlay" onClick={() => !actionLoading && setShowForm(false)}>
-            <div className="modal part-edit-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal part-edit-modal glass-modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header-custom">
                 <h2>{editingPart ? "Chỉnh sửa phụ tùng" : "Thêm phụ tùng mới"}</h2>
                 <button 

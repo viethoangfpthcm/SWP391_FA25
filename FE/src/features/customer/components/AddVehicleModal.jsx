@@ -22,7 +22,7 @@ export default function AddVehicleModal({
   return (
     <ModalPortal>
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content booking-form-modal add-vehicle-form" onClick={(e) => e.stopPropagation()}>
+  <div className="modal-content booking-form-modal add-vehicle-form customer-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Thêm xe mới</h2>
           <Button onClick={onClose} className="close-modal-btn">
@@ -33,11 +33,11 @@ export default function AddVehicleModal({
           {error && <p className="error-message">{error}</p>}
           <div className="form-group">
             <label htmlFor="licensePlate">Biển số xe *</label>
-            <input type="text" id="licensePlate" name="licensePlate" value={newVehicleData.licensePlate} onChange={onChange} required />
+            <input className="customer-input" type="text" id="licensePlate" name="licensePlate" value={newVehicleData.licensePlate} onChange={onChange} required />
           </div>
           <div className="form-group">
             <label htmlFor="model">Dòng xe (Model) *</label>
-            <select id="model" name="model" value={newVehicleData.model} onChange={onChange} required disabled={loadingModels}>
+            <select className="customer-input" id="model" name="model" value={newVehicleData.model} onChange={onChange} required disabled={loadingModels}>
               <option value="" disabled>
                 {loadingModels ? "Đang tải..." : `-- Chọn dòng xe (${vehicleModels.length} xe) --`}
               </option>
@@ -48,15 +48,15 @@ export default function AddVehicleModal({
           </div>
           <div className="form-group">
             <label htmlFor="year">Năm sản xuất *</label>
-            <input type="number" id="year" name="year" value={newVehicleData.year} onChange={onChange} required min="1900" max={new Date().getFullYear() + 1} />
+            <input className="customer-input" type="number" id="year" name="year" value={newVehicleData.year} onChange={onChange} required min="1900" max={new Date().getFullYear() + 1} />
           </div>
           <div className="form-group">
             <label htmlFor="purchaseDate">Ngày mua *</label>
-            <input type="date" id="purchaseDate" name="purchaseDate" value={newVehicleData.purchaseDate} onChange={onChange} required max={new Date().toISOString().split('T')[0]} />
+            <input className="customer-input" type="date" id="purchaseDate" name="purchaseDate" value={newVehicleData.purchaseDate} onChange={onChange} required max={new Date().toISOString().split('T')[0]} />
           </div>
           <div className="form-group">
             <label htmlFor="currentKm">Số KM hiện tại</label>
-            <input type="number" id="currentKm" name="currentKm" value={newVehicleData.currentKm} onChange={onChange} min="0" />
+            <input className="customer-input" type="number" id="currentKm" name="currentKm" value={newVehicleData.currentKm} onChange={onChange} min="0" />
           </div>
 
           <div className="form-actions">

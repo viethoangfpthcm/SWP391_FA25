@@ -9,6 +9,10 @@
     margin-bottom: 10px;
 }
 
+.booking-form-modal .booking-info-value {
+    color: #ffffff !important;
+}
+
 /* Khối group: nền kính mờ đồng nhất, khoảng cách đều */
 .booking-form-modal form .form-group {
     position: relative;
@@ -132,7 +136,10 @@
 /* Nền kính mờ + chữ trắng cho tất cả input/select/textarea trong modal */
 .modal-content.booking-form-modal form .form-group input,
 .modal-content.booking-form-modal form .form-group select,
-.modal-content.booking-form-modal form .form-group textarea {
+.modal-content.booking-form-modal form .form-group textarea,
+.modal-content.customer-modal .booking-form-modal form .form-group input,
+.modal-content.customer-modal .booking-form-modal form .form-group select,
+.modal-content.customer-modal .booking-form-modal form .form-group textarea {
     background: rgba(255, 255, 255, 0.08) !important;
     border: 1px solid rgba(255, 255, 255, 0.22) !important;
     color: #fff !important;
@@ -186,4 +193,16 @@
     -webkit-backdrop-filter: blur(8px) !important;
     border-radius: 12px !important;
     padding: 12px !important;
+}
+
+/* explicit class for inputs */
+.customer-input {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.18) !important;
+}
+
+.customer-input::placeholder {
+    color: rgba(255,255,255,0.7) !important;
 }

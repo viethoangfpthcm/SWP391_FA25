@@ -10,7 +10,7 @@ export default function ConfirmModal({ visible, message, onClose, onConfirm, loa
   return (
     <ModalPortal>
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content confirm-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-content confirm-modal customer-modal" onClick={(e) => e.stopPropagation()}>
         <div className="confirm-modal-body">
           <FaExclamationTriangle className="confirm-icon" />
           <h3>Xác nhận hành động</h3>

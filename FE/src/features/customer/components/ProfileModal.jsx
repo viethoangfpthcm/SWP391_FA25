@@ -22,7 +22,7 @@ export default function ProfileModal({
       <div className="modal-overlay" onClick={onClose}>
         {/* dùng booking-form-modal để kế thừa toàn bộ style kính mờ */}
         <div
-          className="modal-content booking-form-modal"
+          className="modal-content booking-form-modal customer-modal"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="modal-header">
@@ -41,6 +41,7 @@ export default function ProfileModal({
                 id="fullName"
                 name="fullName"
                 type="text"
+                className="customer-input"
                 value={profileData.fullName}
                 onChange={onChange}
                 required
@@ -53,6 +54,7 @@ export default function ProfileModal({
                 id="email"
                 name="email"
                 type="email"
+                className="customer-input"
                 value={profileData.email}
                 onChange={onChange}
                 required
@@ -65,6 +67,7 @@ export default function ProfileModal({
                 id="phone"
                 name="phone"
                 type="tel"
+                className="customer-input"
                 value={profileData.phone}
                 onChange={onChange}
                 required
@@ -77,6 +80,7 @@ export default function ProfileModal({
                 id="password"
                 name="password"
                 type="password"
+                className="customer-input"
                 value={profileData.password}
                 onChange={onChange}
                 placeholder="Để trống nếu không muốn đổi"

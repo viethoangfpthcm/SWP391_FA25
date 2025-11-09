@@ -408,8 +408,8 @@
 
 /* --- Style cho Modal Feedback (Riêng) --- */
 .feedback-modal {
-  max-width: 500px;
-  /* Nhỏ gọn */
+  max-width: 600px;
+  overflow-x: hidden;
 }
 
 .feedback-details {
@@ -432,7 +432,6 @@
 
 /* --- Rating Stars --- */
 .feedback-rating {
-  display: flex;
   align-items: center;
   margin: 15px 0;
 }
@@ -486,7 +485,6 @@
   line-height: 1.7;
   color: #1f2937;
   min-height: 80px;
-  width: 100%;
   margin: 0;
   /* Ghi đè <p> */
 }

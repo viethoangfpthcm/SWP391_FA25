@@ -9,7 +9,7 @@ export default function SuccessModal({ visible, message, onClose, onAction }) {
   return (
     <ModalPortal>
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content success-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-content success-modal customer-modal" onClick={(e) => e.stopPropagation()}>
         <div className="success-modal-body">
           <FaCheckCircle className="success-icon" />
           <p>{message}</p>

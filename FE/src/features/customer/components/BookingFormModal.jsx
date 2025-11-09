@@ -10,18 +10,18 @@ export default function BookingFormModal({ visible, selectedPlan, formData, onCh
   return (
     <ModalPortal>
       <div className="modal-overlay" onClick={onClose}>
-        <div className="modal-content booking-form-modal" onClick={(e) => e.stopPropagation()}>
+  <div className="modal-content booking-form-modal customer-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Đặt lịch cho: {selectedPlan.planName}</h2>
           <Button onClick={onClose} className="close-modal-btn"> <FaTimes /> </Button>
         </div>
         <form onSubmit={onConfirm}>
           {error && <p className="error-message">{error}</p>}
-          <p className="booking-info">Xe: <strong>{licensePlate}</strong></p>
-          <p className="booking-info">Gói: <strong>{selectedPlan.planName}</strong> ({selectedPlan.intervalKm?.toLocaleString()} km)</p>
+          <p className="booking-info">Xe: <strong className="booking-info-value">{licensePlate}</strong></p>
+          <p className="booking-info">Gói: <strong className="booking-info-value">{selectedPlan.planName}</strong> ({selectedPlan.intervalKm?.toLocaleString()} km)</p>
           <div className="form-group">
-            <label htmlFor="centerId">Chọn trung tâm *</label>
-            <select id="centerId" name="centerId" value={formData.centerId} onChange={onChange} required>
+            <label  htmlFor="centerId">Chọn trung tâm *</label>
+            <select className="customer-input" id="centerId" name="centerId" value={formData.centerId} onChange={onChange} required>
               <option value="" disabled>-- Chọn trung tâm dịch vụ --</option>
               {centers.map(center => (
                 <option key={center.id} value={center.id}>{center.name} - {center.address}</option>
@@ -31,16 +31,16 @@ export default function BookingFormModal({ visible, selectedPlan, formData, onCh
           <div className="form-group inline-group">
             <div>
               <label htmlFor="bookingDate">Chọn ngày *</label>
-              <input type="date" id="bookingDate" name="bookingDate" value={formData.bookingDate} onChange={onChange} required min={new Date().toISOString().split('T')[0]} />
+              <input className="customer-input" type="date" id="bookingDate" name="bookingDate" value={formData.bookingDate} onChange={onChange} required min={new Date().toISOString().split('T')[0]} />
             </div>
             <div>
               <label htmlFor="bookingTime">Chọn giờ *</label>
-              <input type="time" id="bookingTime" name="bookingTime" value={formData.bookingTime} onChange={onChange} required />
+              <input className="customer-input" type="time" id="bookingTime" name="bookingTime" value={formData.bookingTime} onChange={onChange} required />
             </div>
           </div>
           <div className="form-group">
             <label htmlFor="note">Ghi chú (Tùy chọn)</label>
-            <input type="text" id="note" name="note" value={formData.note} onChange={onChange} placeholder="Yêu cầu thêm (nếu có)..." style={{ color: 'white' }} />
+            <input className="customer-input" type="text" id="note" name="note" value={formData.note} onChange={onChange} placeholder="Yêu cầu thêm (nếu có)..." />
           </div>
           <div className="form-actions">
             <Button type="button" onClick={onClose} className="btn-cancel" disabled={loading}>Hủy</Button>
