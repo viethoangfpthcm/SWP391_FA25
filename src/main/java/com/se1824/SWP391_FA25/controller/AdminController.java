@@ -142,10 +142,10 @@ public class AdminController {
      */
     @PutMapping("/service-centers/{id}")
     public ResponseEntity<ServiceCenter> updateServiceCenter(
-            @PathVariable Integer centerId,
+            @PathVariable Integer id,
             @Valid @RequestBody ServiceCenterRequest requestDTO
     ) {
-        ServiceCenter updatedCenter = serviceCenterService.updateServiceCenter(centerId, requestDTO);
+        ServiceCenter updatedCenter = serviceCenterService.updateServiceCenter(id, requestDTO);
         return ResponseEntity.ok(updatedCenter);
     }
 
