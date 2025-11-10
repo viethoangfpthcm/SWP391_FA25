@@ -178,8 +178,8 @@ export default function ServiceCenterManagement() {
         name: formData.name.trim(),
         address: formData.address.trim(),
         phone: formData.phone.trim(),
-        openingHour: formData.openingHour.trim() + ":00",
-        closingHour: formData.closingHour.trim() + ":00",
+        openingHour: formData.openingHour.trim(),
+        closingHour: formData.closingHour.trim(),
       };
 
       const res = await fetch(endpoint, {
