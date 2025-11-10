@@ -873,9 +873,6 @@ export default function AdminScheduleManagement() {
                                                     <select value={item.actionType || "INSPECT"} onChange={e => updateItem(item.id, "actionType", e.target.value)}>
                                                         <option value="INSPECT">Kiểm tra</option>
                                                         <option value="REPLACE">Thay thế</option>
-                                                        <option value="CLEAN">Vệ sinh</option>
-                                                        <option value="ADJUST">Điều chỉnh</option>
-                                                        <option value="REPAIR">Sửa chữa</option>
                                                     </select>
                                                 </div>
                                                 <div className="form-group">
