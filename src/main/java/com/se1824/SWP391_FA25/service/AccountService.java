@@ -160,8 +160,8 @@ public class AccountService {
             user.setRole(request.getRole());
         }
 
-        // Cập nhật Center (nếu có và user là STAFF/TECHNICIAN)
-        if (request.getCenterId() != null && (user.getRole() == UserRole.STAFF || user.getRole() == UserRole.TECHNICIAN)) {
+        // Cập nhật Center (nếu có và user là STAFF/TECHNICIAN/MANAGER)
+        if (request.getCenterId() != null && (user.getRole() == UserRole.STAFF || user.getRole() == UserRole.TECHNICIAN || user.getRole() == UserRole.MANAGER)) {
             ServiceCenter center = serviceCenterRepo.findById(request.getCenterId())
                     .orElseThrow(() -> new ResourceNotFoundException("Service center not found with ID: " + request.getCenterId()));
             user.setCenter(center);
