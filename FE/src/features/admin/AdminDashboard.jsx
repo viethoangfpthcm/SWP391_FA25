@@ -512,11 +512,11 @@ export default function AdminDashboard() {
 
         {/* --- Confirmation Modal for Deletion --- */}
         <ConfirmationModal
-          show={showConfirmModal}
+          visible={showConfirmModal}
           message={`Bạn có chắc chắn muốn xóa người dùng ID: ${userToDeleteId}? Hành động này không thể hoàn tác.`}
           onConfirm={confirmDelete}
-          onCancel={cancelDelete}
-          isLoading={isDeleting} // Pass the delete loading state
+          onClose={cancelDelete}
+          loading={isDeleting} // Pass the delete loading state
         />
 
       </main>

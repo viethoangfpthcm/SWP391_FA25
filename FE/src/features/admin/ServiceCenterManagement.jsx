@@ -30,6 +30,12 @@ const isValidName = (name) => {
   const nameRegex = /^[\p{L}0-9\s]{2,}$/u;
   return nameRegex.test(name.trim());
 };
+
+const isValidTime = (time) => {
+  if (!time) return false;
+  const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+  return timeRegex.test(time.trim());
+};
 // --- End Helpers ---
 
 if (import.meta.env.MODE !== "development") {
@@ -474,11 +480,11 @@ export default function ServiceCenterManagement() {
         )}
 
         <ConfirmationModal
-          show={showConfirmModal}
+          visible={showConfirmModal}
           message={`Bạn chắc chắn muốn xóa Trung tâm ID: ${centerToDeleteId}?`}
           onConfirm={confirmDelete}
-          onCancel={cancelDelete}
-          isLoading={isDeleting}
+          onClose={cancelDelete}
+          loading={isDeleting}
         />
       </main>
     </div>

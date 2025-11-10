@@ -182,10 +182,13 @@ export default function AdminScheduleManagement() {
         setIsDeleting(true);
         setError(null);
         try {
-            const res = await fetch(`${API_BASE_URL}/api/admin/schedules/${scheduleToDeleteId}`, {
-                method: 'DELETE',
-                headers: { Authorization: `Bearer ${getToken()}` },
-            });
+                const token = getToken();
+                console.log('confirmDelete: scheduleId=', scheduleToDeleteId, 'tokenPresent=', !!token, 'tokenLen=', token ? token.length : 0);
+                const res = await fetch(`${API_BASE_URL}/api/admin/schedules/${scheduleToDeleteId}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+                });
+                console.log('confirmDelete: response status=', res.status);
             if (res.status === 401) { localStorage.clear(); navigate('/'); return; }
             if (!res.ok) {
                 let message = 'Không thể xóa lịch trình.';
@@ -925,11 +928,11 @@ export default function AdminScheduleManagement() {
                 )}
                 {/* Confirmation modal for deleting a schedule (same pattern as AdminDashboard) */}
                 <ConfirmationModal
-                    show={showConfirmModal}
+                    visible={showConfirmModal}
                     message={`Bạn có chắc chắn muốn xóa lịch trình ID: ${scheduleToDeleteId}? Hành động này không thể hoàn tác.`}
                     onConfirm={confirmDelete}
-                    onCancel={cancelDelete}
-                    isLoading={isDeleting}
+                    onClose={cancelDelete}
+                    loading={isDeleting}
                 />
             </main>
         </div>

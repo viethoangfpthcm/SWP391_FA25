@@ -375,11 +375,11 @@ export default function PartManagement() {
           </div>
         )}
         <ConfirmationModal
-          show={showConfirmModal}
+          visible={showConfirmModal}
           message={`Bạn chắc chắn muốn xóa Phụ tùng ID: ${partToDeleteId}?`}
           onConfirm={confirmDelete}
-          onCancel={cancelDelete}
-          isLoading={isDeleting}
+          onClose={cancelDelete}
+          loading={isDeleting}
         />
       </main>
     </div>
