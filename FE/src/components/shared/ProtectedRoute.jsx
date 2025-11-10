@@ -10,8 +10,32 @@ const ProtectedRoute = ({ children, requiredRole }) => {
   }
 
   if (requiredRole && role !== requiredRole.toUpperCase()) {
-    // Role không đúng → về home
-    return <Navigate to="/home" replace />;
+    // Role không đúng → chuyển đến trang chính theo role (nếu có),
+    // tránh đẩy người dùng về /home chung chung.
+    const lowerRole = (localStorage.getItem("role") || "").toLowerCase();
+    let defaultPath = "/home";
+    switch (lowerRole) {
+      case "admin":
+        defaultPath = "/admin";
+        break;
+      case "manager":
+        defaultPath = "/manager";
+        break;
+      case "staff":
+        defaultPath = "/staff";
+        break;
+      case "technician":
+        defaultPath = "/technicantask";
+        break;
+      case "customer":
+        defaultPath = "/customer/dashboard";
+        break;
+      default:
+        defaultPath = "/home";
+        break;
+    }
+
+    return <Navigate to={defaultPath} replace />;
   }
   return children;
 };
