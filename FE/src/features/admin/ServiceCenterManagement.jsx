@@ -162,13 +162,6 @@ export default function ServiceCenterManagement() {
         ? `${API_BASE_URL}/api/admin/service-centers/${formData.id}`
         : `${API_BASE_URL}/api/admin/service-centers`;
 
-        console.log("=== SUBMIT DEBUG ===");
-      console.log("Method:", method);
-      console.log("Endpoint:", endpoint);
-      console.log("FormData.id:", formData.id);
-      console.log("EditingCenter:", editingCenter);
-      console.log("Token exists:", !!token);
-      console.log("Token value:", token?.substring(0, 20) + "...");
       const body = {
         name: formData.name.trim(),
         address: formData.address.trim(),
