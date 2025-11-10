@@ -44,15 +44,6 @@ export default function Report1() {
 
   const token = localStorage.getItem("token");
   const customerId = localStorage.getItem("userId");
-  useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  const restoredToken = params.get("clientToken");
-  if (restoredToken) {
-    localStorage.setItem("token", restoredToken);
-    // Xóa token khỏi URL để sạch sẽ
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-}, []);
   
 
   // === Hàm xử lý ===

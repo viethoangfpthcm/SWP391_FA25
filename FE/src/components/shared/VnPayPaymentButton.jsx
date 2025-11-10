@@ -64,8 +64,7 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
 
       const data = await response.json();
       if (data.paymentUrl) {
-        const paymentUrlWithToken = `${data.paymentUrl}&clientToken=${encodeURIComponent(token)}`;
-        window.location.href = paymentUrlWithToken;
+        window.location.href = data.paymentUrl;
       } else {
         throw new Error('Không nhận được URL thanh toán từ máy chủ.');
       }
