@@ -36,7 +36,6 @@
 
         @ManyToOne
         @JoinColumn(name = "part_type_id", nullable = false)
-        @JsonIgnore
         PartType partType;
 
         @Column(name = "note", length = 500)
