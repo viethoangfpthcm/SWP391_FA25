@@ -201,9 +201,9 @@ export default function ServiceCenterManagement() {
         let errorMsg = "Có lỗi xảy ra.";
         try {
           const errorData = await res.json();
-          errorMsg = errorData.message || errorData.error || `L?i ${res.status}`;
+          errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
         } catch {
-          errorMsg = `L?i ${res.status}`;
+          errorMsg = `Lỗi ${res.status}`;
         }
         throw new Error(errorMsg);
       }
