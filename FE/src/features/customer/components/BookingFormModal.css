@@ -123,6 +123,7 @@
 .booking-form-modal .error-message {
     color: #ffb3b3;
     margin-bottom: 12px;
+    background-color: orangered;
 }
 
 /* Responsive: nhóm ngày/giờ xếp dọc khi màn nhỏ */

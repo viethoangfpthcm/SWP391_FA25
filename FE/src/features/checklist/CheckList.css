@@ -668,6 +668,21 @@ button.task-btn.view:hover {
   cursor: not-allowed;
 }
 
+.customer-note {
+  background-color: #f9fafb;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: #374151;
+  line-height: 1.4;
+  display: block;
+  word-wrap: break-word;
+}
+
+.customer-note:empty::after {
+  content: "—";
+  color: #9ca3af;
+  font-style: normal;
+}
 /* 5. Định nghĩa Keyframes (thêm ở cuối file) */
 @keyframes spin {
   from {

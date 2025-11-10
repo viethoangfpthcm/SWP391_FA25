@@ -39,12 +39,12 @@ export default function CheckList({ user }) {
   const [completeConfirmLoading, setCompleteConfirmLoading] = useState(false);
 
   const hasDeclinedItems = () => {
-  if (!checklist || !checklist.details) return false;
-  return checklist.details.some(detail =>
-    detail.approvalStatus?.toUpperCase() === 'DECLINED'
-  );
-};
-const hasPendingApprovalItems = () => {
+    if (!checklist || !checklist.details) return false;
+    return checklist.details.some(detail =>
+      detail.approvalStatus?.toUpperCase() === 'DECLINED'
+    );
+  };
+  const hasPendingApprovalItems = () => {
     if (!checklist || !checklist.details) return false;
     return checklist.details.some(detail =>
       detail.approvalStatus?.toUpperCase() === 'PENDING'
@@ -559,12 +559,12 @@ const hasPendingApprovalItems = () => {
             </small>
           )}
           {hasPendingApprovalItems() && !isCompleted && (
-             <small style={{color: '#ff4d4f', marginTop: '8px', display: 'block', fontWeight: 'bold'}}>
+            <small style={{ color: '#ff4d4f', marginTop: '8px', display: 'block', fontWeight: 'bold' }}>
               Không thể hoàn thành. Vẫn còn hạng mục đang chờ khách hàng phê duyệt.
             </small>
           )}
 
-         {checklist.status === 'PENDING_APPROVAL' && !isCompleted && !hasPendingApprovalItems() && (
+          {checklist.status === 'PENDING_APPROVAL' && !isCompleted && !hasPendingApprovalItems() && (
             <small className="text-green-500 mt-2 block">
               Khách hàng đã phê duyệt. Bạn có thể hoàn thành checklist!
             </small>
@@ -578,6 +578,7 @@ const hasPendingApprovalItems = () => {
               <th>Mục kiểm tra (ActionType)</th>
               <th>Trạng thái KV</th>
               <th>Ghi chú</th>
+              <th>Ghi chú KH</th>
               <th>Chọn Part</th>
               <th>Phê duyệt KH</th>
               <th>Chi phí nhân công </th>
@@ -639,6 +640,11 @@ const hasPendingApprovalItems = () => {
                     />
                   </td>
                   <td>
+                    <span className="customer-note">
+                      {detail.customerNote || "-"}
+                    </span>
+                  </td>
+                  <td>
                     {isReplace ? (
                       // Logic "REPLACE" (chọn Part) giữ nguyên
                       <select
@@ -695,25 +701,25 @@ const hasPendingApprovalItems = () => {
                   </td>
                   {/* CỘT 7: CHI PHÍ VẬT TƯ */}
                   <td className="cost-cell">
-                   {(currentStatus === "REPAIR") ? (
-                        <input
-                          type="number"
-                          className="cost-input"
-                          value={currentUpdates.materialCost || 0}
-                          onChange={(e) => {
-                            const value = e.target.valueAsNumber || 0;
-                            if (value >= 0) {
-                              handleDetailChange(detail.id, 'materialCost', value);
-                            }
-                          }}
-                          min="0"
-                          disabled={isCompleted || detail.approvalStatus?.toUpperCase() === 'APPROVED'}
-                          placeholder="Nhập vật tư"
-                          style={{ width: '120px', textAlign: 'right', fontSize: '14px' }}
-                        />
-                      ) : (
-                        currentMaterialCost.toLocaleString('vi-VN')
-                      )}
+                    {(currentStatus === "REPAIR") ? (
+                      <input
+                        type="number"
+                        className="cost-input"
+                        value={currentUpdates.materialCost || 0}
+                        onChange={(e) => {
+                          const value = e.target.valueAsNumber || 0;
+                          if (value >= 0) {
+                            handleDetailChange(detail.id, 'materialCost', value);
+                          }
+                        }}
+                        min="0"
+                        disabled={isCompleted || detail.approvalStatus?.toUpperCase() === 'APPROVED'}
+                        placeholder="Nhập vật tư"
+                        style={{ width: '120px', textAlign: 'right', fontSize: '14px' }}
+                      />
+                    ) : (
+                      currentMaterialCost.toLocaleString('vi-VN')
+                    )}
                   </td>
                   <td className="cost-cell">
                     {totalCost.toLocaleString('vi-VN')}

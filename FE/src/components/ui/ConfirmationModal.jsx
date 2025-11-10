@@ -1,40 +1,64 @@
-// ConfirmationModal.jsx
-import React from 'react';
-import { FaExclamationTriangle, FaTimes, FaCheck, FaSpinner } from 'react-icons/fa';
-import Button from './Button.jsx';
-import './ConfirmationModal.css'; // Optional extra styles — global styles handle most
+import React, { useState } from 'react';
+import { FaExclamationTriangle } from 'react-icons/fa';
+import Button from '@components/ui/Button.jsx';
+import ModalPortal from '@components/ui/ModalPortal.jsx';
+import './ConfirmationModal.css';
 
-function ConfirmationModal({ show, message, onConfirm, onCancel, isLoading }) {
-  if (!show) return null;
+export default function ConfirmModal({
+  visible,
+  message,
+  onClose,
+  onConfirm,
+  loading,
+  requireReason = false,
+  onReasonChange
+}) {
+  const [reason, setReason] = useState("");
+
+  if (!visible) return null;
+
+  const handleConfirmClick = () => {
+    if (requireReason && !reason.trim()) {
+      alert("Vui lòng nhập lý do trước khi xác nhận.");
+      return;
+    }
+    onConfirm(reason);
+  };
+
+  const handleReasonChange = (e) => {
+    setReason(e.target.value);
+    if (onReasonChange) onReasonChange(e.target.value);
+  };
 
   return (
-    <div className="modal-overlay confirmation-overlay">
-      <div className="confirmation-modal">
-        {/* Header với gradient */}
-        <div className="confirmation-header">
-          <div className="confirmation-icon">
-            <FaExclamationTriangle />
+    <ModalPortal>
+      <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-content confirm-modal customer-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="confirm-modal-body">
+            <FaExclamationTriangle className="confirm-icon" />
+            <h3>Xác nhận hành động</h3>
+            <p>{message}</p>
+
+            {requireReason && (
+              <textarea
+                className="reason-input"
+                placeholder="Nhập lý do từ chối..."
+                value={reason}
+                onChange={handleReasonChange}
+                disabled={loading}
+                rows={3}
+              />
+            )}
           </div>
-          <h3>Xác nhận hành động</h3>
-        </div>
 
-        {/* Body */}
-        <div className="confirmation-body">
-          <p>{message}</p>
-        </div>
-
-        {/* Footer với các nút */}
-        <div className="confirmation-footer">
-          <Button className="btn-cancel" onClick={onCancel} disabled={isLoading}>
-            <FaTimes /> Hủy bỏ
-          </Button>
-          <Button className="btn-confirm btn-danger" onClick={onConfirm} loading={isLoading}>
-            {isLoading ? 'Đang xử lý...' : (<><FaCheck /> Xác nhận</>)}
-          </Button>
+          <div className="form-actions">
+            <Button onClick={onClose} className="btn-cancel" disabled={loading}>Hủy bỏ</Button>
+            <Button onClick={handleConfirmClick} className="btn-confirm-danger" disabled={loading}>
+              {loading ? 'Đang xử lý...' : 'Xác nhận'}
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </ModalPortal>
   );
 }
-
-export default ConfirmationModal;

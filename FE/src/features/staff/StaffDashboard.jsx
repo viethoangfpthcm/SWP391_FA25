@@ -10,6 +10,8 @@ import BookingTable from "./shared/BookingTable";
 import ViewFeedbackModal from "./shared/ViewFeedbackModal";
 import ViewPaymentModal from "./shared/ViewPaymentModal";
 import { API_BASE_URL } from "@config/api.js";
+import ConfirmModal from "@components/ui/ConfirmationModal.jsx";
+
 
 export default function StaffDashboard({ user, userRole }) {
   const [appointments, setAppointments] = useState([]);
@@ -21,6 +23,10 @@ export default function StaffDashboard({ user, userRole }) {
   const [statusFilter, setStatusFilter] = useState("all");
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const [requireReason, setRequireReason] = useState(false);
 
   // Modal states
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
@@ -290,75 +296,52 @@ export default function StaffDashboard({ user, userRole }) {
   };
 
   // Từ chối
-  const handleDecline = async (bookingId) => {
-    const reason = prompt("Nhập lý do từ chối (bắt buộc):");
-    if (!reason) {
-      return;
-    }
+  const openDeclineModal = (bookingId) => {
+    setRequireReason(true);
+    setConfirmMessage("Nhập lý do từ chối lịch hẹn này:");
+    setConfirmAction(() => async (reason) => {
+      setActionLoading(bookingId);
+      try {
+        const url = `${API_BASE_URL}/api/staff/bookings/${bookingId}/decline?reason=${encodeURIComponent(reason)}`;
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-    setActionLoading(bookingId);
-    setError(null);
-
-    try {
-      const url = `${API_BASE_URL}/api/staff/bookings/${bookingId}/decline?reason=${encodeURIComponent(reason)}`;
-
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Decline API failed:", res.status, errorText);
-        throw new Error(errorText || "Từ chối thất bại.");
+        if (!res.ok) throw new Error(await res.text() || "Từ chối thất bại.");
+        await fetchAppointments();
+      } catch (err) {
+        setError(`Lỗi khi từ chối: ${err.message}`);
+      } finally {
+        setActionLoading(null);
+        setShowConfirmModal(false);
       }
-      await fetchAppointments();
-
-    } catch (err) {
-      console.error("❓ Error declining appointment:", err);
-      setError(`Lỗi khi từ chối: ${err.message}`);
-    } finally {
-      setActionLoading(null);
-    }
+    });
+    setShowConfirmModal(true);
   };
 
   // *** BÀN GIAO XE ***
-  const handleHandover = async (bookingId) => {
-    if (!window.confirm("Bạn có chắc chắn muốn BÀN GIAO XE và hoàn tất booking này?")) {
-      return;
-    }
-
-    setActionLoading(bookingId);
-    setError(null);
-
-    try {
-      const url = `${API_BASE_URL}/api/staff/bookings/${bookingId}/handover`;
-
-      const res = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Handover API failed:", res.status, errorText);
-        // Hiển thị lỗi nghiệp vụ từ backend
-        throw new Error(errorText || "Bàn giao thất bại.");
+  const openHandoverModal = (bookingId) => {
+    setRequireReason(false);
+    setConfirmMessage("Xác nhận BÀN GIAO XE và hoàn tất booking này?");
+    setConfirmAction(() => async () => {
+      setActionLoading(bookingId);
+      try {
+        const url = `${API_BASE_URL}/api/staff/bookings/${bookingId}/handover`;
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error(await res.text() || "Bàn giao thất bại.");
+        await fetchAppointments();
+      } catch (err) {
+        setError(`Lỗi khi bàn giao: ${err.message}`);
+      } finally {
+        setActionLoading(null);
+        setShowConfirmModal(false);
       }
-      await fetchAppointments(); // Tải lại danh sách để thấy status 'Completed'
-
-    } catch (err) {
-      console.error("❓ Error handing over vehicle:", err);
-      setError(`Lỗi khi bàn giao: ${err.message}`);
-    } finally {
-      setActionLoading(null);
-    }
+    });
+    setShowConfirmModal(true);
   };
 
   // Staff có thể xem checklist ngay khi đã phân công
@@ -475,9 +458,9 @@ export default function StaffDashboard({ user, userRole }) {
           actionLoading={actionLoading}
           onTechnicianChange={handleTechnicianChange}
           onApprove={handleApprove}
-          onDecline={handleDecline}
+          onDecline={openDeclineModal}
           onAssign={handleAssign}
-          onHandover={handleHandover}
+          onHandover={openHandoverModal}
           onViewChecklist={handleViewChecklist}
           onViewFeedback={handleViewFeedback}
           onViewPayment={handleViewPayment}
@@ -495,6 +478,16 @@ export default function StaffDashboard({ user, userRole }) {
         <ViewPaymentModal
           bookingId={selectedBookingId}
           onClose={() => setShowPaymentModal(false)}
+        />
+      )}
+      {showConfirmModal && (
+        <ConfirmModal
+          visible={showConfirmModal}
+          message={confirmMessage}
+          requireReason={requireReason}
+          onClose={() => setShowConfirmModal(false)}
+          onConfirm={(reason) => confirmAction && confirmAction(reason)}
+          loading={!!actionLoading}
         />
       )}
     </div>

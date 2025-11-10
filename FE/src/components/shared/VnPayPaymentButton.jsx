@@ -11,7 +11,7 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const location = useLocation();
-  
+
 
   //  Xử lý redirect về từ VNPay
   useEffect(() => {
@@ -64,7 +64,8 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
 
       const data = await response.json();
       if (data.paymentUrl) {
-        window.location.href = data.paymentUrl; // chuyển hướng đến VNPay
+        const paymentUrlWithToken = `${data.paymentUrl}&clientToken=${encodeURIComponent(token)}`;
+        window.location.href = paymentUrlWithToken;
       } else {
         throw new Error('Không nhận được URL thanh toán từ máy chủ.');
       }

@@ -232,7 +232,7 @@ const StaffAnalytics = () => {
             <div className="analytics-card">
               <h2>Đánh giá feedback</h2>
               {feedbackData ? (
-                <FeedbackGaugeChart chartData={feedbackData} />
+                <FeedbackGaugeChart feedback={feedbackData} />
               ) : (
                 <p className="no-data">Không có dữ liệu feedback</p>
               )}

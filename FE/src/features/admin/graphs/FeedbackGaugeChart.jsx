@@ -5,10 +5,10 @@ import "./FeedbackGaugeChart.css";
 
 ChartJS.register(ArcElement);
 
-export default function FeedbackGaugeChart({ feedback }) { // 🟡 Kiểm tra dữ liệu ở đây
+export default function FeedbackGaugeChart({ feedback }) { 
 
     const avg = Number(feedback?.averageRating ?? 0);
-    const total = Number(feedback?.totalRatings ?? feedback?.feedbacks?.length ?? 0); // ✅ fallback nếu totalRatings không có
+    const total = Number(feedback?.totalRatings ?? feedback?.feedbacks?.length ?? 0); 
     const pct = Math.max(0, Math.min(100, (avg / 5) * 100));
     const remaining = 100 - pct;
 
