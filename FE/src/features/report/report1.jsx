@@ -384,7 +384,10 @@ export default function Report1() {
                                   onChange={(e) => handleCheckboxChange(d.id, e.target.checked)}
                                   disabled={isDisabled}
                                 />
-                                <label htmlFor={`approve-${d.id}`}>
+                                <label htmlFor={`approve-${d.id}`} style={{ color: '#ffffff' }}>
+                                  <span className={`approval-box ${isApproved ? 'approved' : 'declined'}`} aria-hidden="true">
+                                    {isApproved ? '✓' : 'X'}
+                                  </span>
                                   {d.approvalStatus !== 'DECLINED' ? 'Đồng ý' : 'Không đồng ý'}
                                 </label>
                               </div>

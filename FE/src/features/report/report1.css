@@ -529,9 +529,18 @@
 
 .customer-note-input label {
   font-size: 0.9rem;
-  color: #eaeaea;
+  color: #ffffff !important;
   font-weight: 500;
   display: block;
+}
+
+/* Ensure any <strong> inside the note label or detail-note is white (nested strong was inherited darker) */
+html body .modal-content.report-modal-content .customer-note-input label strong,
+.modal-content.report-modal-content .customer-note-input label strong,
+.modal-content.report-modal-content .detail-note strong,
+.detail-note strong {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .detail-approval-toggle {
@@ -549,16 +558,15 @@
   cursor: pointer;
   margin-left: 10px;
   transition: all 0.2s;
-  color: #fff;
-
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(220, 53, 69, 0.15);
-  color: #ff8c8c;
+  /* default visual: subtle transparent bg, white text */
+  background: rgba(255, 255, 255, 0.02);
+  color: #ffffff;
 }
 
 .detail-approval-toggle label::before {
@@ -573,7 +581,7 @@
   justify-content: center;
   border: 2px solid #dc3545;
   border-radius: 4px;
-  color: #dc3545;
+  color: #ffffff; /* tick/mark default white */
   background: transparent;
   transition: all 0.3s ease;
 }
@@ -589,20 +597,25 @@
 .detail-approval-toggle input[type="checkbox"]:checked+label {
   background: rgba(40, 167, 69, 0.15);
   border-color: #28a745;
-  color: #7fff9f;
+  color: #ffffff !important; /* approved: white text */
 }
 
 /* Thêm nút tròn bên trong switch */
+.detail-approval-toggle input[type="checkbox"]:not(:checked)+label {
+  color: #ffffff !important;
+  border-color: #dc3545 !important;
+  background: rgba(220, 53, 69, 0.06) !important;
+}
+
+.detail-approval-toggle input[type="checkbox"]:not(:checked)+label::before {
+  border-color: #dc3545 !important;
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+/* hide the earlier pseudo used for switch knob */
 .detail-approval-toggle input[type="checkbox"]::before {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background-color: white;
-  transition: all 0.3s ease;
+  display: none !important;
 }
 
 .detail-approval-toggle input[type="checkbox"]:checked::before {
@@ -612,7 +625,7 @@
 .detail-approval-toggle input[type="checkbox"]:checked+label::before {
   content: '✓';
   border-color: #28a745;
-  color: #fff;
+  color: #ffffff;
   background: #28a745;
 }
 
@@ -627,6 +640,51 @@
   border-color: #ccc;
   color: #ccc;
   background: transparent;
+}
+
+/* Very high-specificity enforcement: ensure the approve/decline label text is white
+   regardless of other bundled rules that may set a dark/pink color. */
+html body .modal-content.report-modal-content .detail-approval-toggle label,
+html body .modal-content.report-modal-content .detail-approval-toggle input[type="checkbox"]+label,
+html body .modal-content.report-modal-content .detail-approval-toggle input[type="checkbox"]:not(:checked)+label,
+html body .modal-content.report-modal-content .detail-approval-toggle input[type="checkbox"]:checked+label {
+  color: #ffffff !important;
+}
+
+/* Ensure the pseudo box (✗ / ✓) also uses white glyph color when displayed */
+html body .modal-content.report-modal-content .detail-approval-toggle label::before,
+html body .modal-content.report-modal-content .detail-approval-toggle input[type="checkbox"]:not(:checked)+label::before,
+html body .modal-content.report-modal-content .detail-approval-toggle input[type="checkbox"]:checked+label::before {
+  color: #ffffff !important;
+}
+
+/* Hide pseudo ::before inside modal and use a real element for glyphs to guarantee styles */
+html body .modal-content.report-modal-content .detail-approval-toggle label::before {
+  display: none !important;
+}
+
+/* Approval glyph box (used inside label as real element) */
+.approval-box {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  margin-right: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.approval-box.approved {
+  background: #28a745;
+  border-color: #28a745;
+  color: #ffffff;
+}
+.approval-box.declined {
+  background: transparent;
+  border-color: #dc3545;
+  color: #ffffff;
 }
 
 /* Thêm vào phần chi tiết hạng mục trong modal */
