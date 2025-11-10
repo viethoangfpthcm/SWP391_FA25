@@ -135,9 +135,9 @@ export default function useCustomerDashboard() {
             setAddVehicleLoading(false);
             return;
         }
-        const hcmPlateRegex = /^(41|5[0-9])[A-Z0-9][- ]?\d{3}[.]?\d{2}$/i;
+        const hcmPlateRegex = /^(1[1-9]|[2-9][0-9])[A-Z0-9][- ]?\d{3}[.]?\d{2}$/i;
         if (!hcmPlateRegex.test(newVehicleData.licensePlate)) {
-            setAddVehicleError('Định dạng biển số xe TP.HCM không hợp lệ. Ví dụ: 51A-123.45.');
+            setAddVehicleError('Định dạng biển số xe không hợp lệ. Ví dụ: 51A-123.45.');
             setAddVehicleLoading(false);
             return;
         }
