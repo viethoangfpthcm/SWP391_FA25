@@ -478,7 +478,7 @@ export default function StaffDashboard({ user, userRole }) {
           onDecline={handleDecline}
           onAssign={handleAssign}
           onHandover={handleHandover}
-          onViewChecklist={hasChecklist}
+          onViewChecklist={handleViewChecklist}
           onViewFeedback={handleViewFeedback}
           onViewPayment={handleViewPayment}
         />
