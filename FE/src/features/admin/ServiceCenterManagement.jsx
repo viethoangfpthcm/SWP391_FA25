@@ -31,12 +31,6 @@ const isValidName = (name) => {
   return nameRegex.test(name.trim());
 };
 
-const isValidTime = (time) => {
-  if (!time) return false;
-  const normalized = time.replace(/\s+/g, "");
-  const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-  return timeRegex.test(normalized);
-};
 // --- End Helpers ---
 
 if (import.meta.env.MODE !== "development") {
@@ -122,16 +116,16 @@ export default function ServiceCenterManagement() {
         name: center.name || "",
         address: center.address || "",
         phone: center.phone || "",
-        openingHour: center.openingHour || "07:00",
-        closingHour: center.closingHour || "20:00",
+        openingHour: center.openingHour || "",
+        closingHour: center.closingHour || "",
       });
     } else {
       setFormData({
         name: "",
         address: "",
         phone: "",
-        openingHour: "08:00",
-        closingHour: "18:00"
+        openingHour: "",
+        closingHour: ""
       });
     }
   };
@@ -148,12 +142,6 @@ export default function ServiceCenterManagement() {
     if (!formData.phone || !isValidPhone(formData.phone)) {
       errors.phone = "Số điện thoại không đúng định dạng VN (10 số).";
     }
-    if (!formData.openingHour || !isValidTime(formData.openingHour)) {
-      errors.openingHour = "Giờ mở cửa không hợp lệ (định dạng HH:MM).";
-    }
-    if (!formData.closingHour || !isValidTime(formData.closingHour)) {
-      errors.closingHour = "Giờ đóng cửa không hợp lệ (định dạng HH:MM).";
-    }
     if (formData.openingHour && formData.closingHour &&
       formData.openingHour >= formData.closingHour) {
       errors.closingHour = "Giờ đóng cửa phải sau giờ mở cửa.";
@@ -169,11 +157,18 @@ export default function ServiceCenterManagement() {
     setActionLoading(true);
 
     try {
-      const method = editingCenter ? "PUT" : "POST";
-      const endpoint = editingCenter
-        ? `${API_BASE_URL}/api/admin/service-centers/${editingCenter.id}`
+      const method = formData.id ? "PUT" : "POST";
+      const endpoint = formData.id
+        ? `${API_BASE_URL}/api/admin/service-centers/${formData.id}`
         : `${API_BASE_URL}/api/admin/service-centers`;
 
+        console.log("=== SUBMIT DEBUG ===");
+      console.log("Method:", method);
+      console.log("Endpoint:", endpoint);
+      console.log("FormData.id:", formData.id);
+      console.log("EditingCenter:", editingCenter);
+      console.log("Token exists:", !!token);
+      console.log("Token value:", token?.substring(0, 20) + "...");
       const body = {
         name: formData.name.trim(),
         address: formData.address.trim(),
