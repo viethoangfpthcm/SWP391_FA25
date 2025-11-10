@@ -157,9 +157,9 @@ export default function ServiceCenterManagement() {
     setActionLoading(true);
 
     try {
-      const method = formData.id ? "PUT" : "POST";
-      const endpoint = formData.id
-        ? `${API_BASE_URL}/api/admin/service-centers/${formData.id}`
+      const method = formData.centerId ? "PUT" : "POST";
+      const endpoint = formData.centerId
+        ? `${API_BASE_URL}/api/admin/service-centers/${formData.centerId}`
         : `${API_BASE_URL}/api/admin/service-centers`;
 
       const body = {
