@@ -206,3 +206,66 @@
 .customer-input::placeholder {
     color: rgba(255,255,255,0.7) !important;
 }
+
+/* ----- Fix: force labels white and make select dropdown items readable ----- */
+/* Ensure labels inside form-group are white even if other styles try to override */
+.booking-form-modal form .form-group > label,
+.modal-content.booking-form-modal form .form-group > label,
+.modal-content.customer-modal .booking-form-modal form .form-group > label {
+    color: #ffffff !important;
+}
+
+/* Style native <option> elements so text is visible on the dark modal background */
+.modal-content.booking-form-modal select option,
+.booking-form-modal select option,
+.modal-content.customer-modal .booking-form-modal select option {
+    background-color: rgba(17,24,39,0.98); /* dark background */
+    color: #ffffff !important;
+}
+
+/* Hover / selected option appearance */
+.modal-content.booking-form-modal select option:hover,
+.modal-content.booking-form-modal select option:checked,
+.booking-form-modal select option:hover,
+.booking-form-modal select option:checked {
+    background-color: rgba(99,102,241,0.14) !important;
+    color: #ffffff !important;
+}
+
+/* Common custom dropdowns (bootstrap, react-select, rc-select etc.) - make their menus dark with white text */
+.booking-form-modal .dropdown-menu,
+.booking-form-modal .rc-select-dropdown,
+.booking-form-modal .react-select__menu {
+    background: rgba(17,24,39,0.98) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+.booking-form-modal .dropdown-menu .dropdown-item,
+.booking-form-modal .rc-select-dropdown .rc-virtual-list-holder .rc-virtual-list-item,
+.booking-form-modal .react-select__option {
+    color: #ffffff !important;
+    background: transparent !important;
+}
+
+.booking-form-modal .dropdown-menu .dropdown-item:hover,
+.booking-form-modal .react-select__option--is-focused,
+.booking-form-modal .react-select__option:hover {
+    background: rgba(255,255,255,0.06) !important;
+    color: #ffffff !important;
+}
+
+/* End fix block */
+
+/* Extra-high-specificity fallback for any remaining label overrides */
+html body .modal-content.customer-modal.booking-form-modal .form-group > label,
+html body .modal-content.customer-modal.booking-form-modal label,
+html body .modal-content.customer-modal .booking-form-modal .form-group > label,
+html body .booking-form-modal .form-group > label {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    filter: none !important;
+    text-shadow: 0 0 6px rgba(255,255,255,0.08) !important;
+    opacity: 1 !important;
+}
+

@@ -170,3 +170,15 @@ div.modal-content.feedback-modal form .form-group textarea#comment:focus {
   border-color: rgba(124, 58, 237, 0.9) !important;
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25) !important;
 }
+
+/* Extra-high-specificity fallback: force any label inside feedback modal to white */
+html body .modal-content.feedback-modal.customer-modal .form-group > label,
+html body .modal-content.feedback-modal.customer-modal label,
+.modal-content.feedback-modal.customer-modal .form-group > label,
+div.modal-content.feedback-modal form .form-group.rating-group > label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  filter: none !important;
+  text-shadow: 0 0 6px rgba(255,255,255,0.06) !important;
+  opacity: 1 !important;
+}

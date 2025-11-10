@@ -7,6 +7,32 @@ import { FaCalendarAlt, FaEye, FaClipboardList, FaComments, FaTimes } from "reac
 import "./BookingManagement.css";
 
 export default function BookingManagement() {
+  // Helper: parse server datetime strings (handles excessive fractional seconds like .0086813)
+  const parseServerDate = (s) => {
+    if (!s) return null;
+    try {
+      // If string contains timezone (Z or +hh:mm), rely on Date parser
+      if (/[zZ]|[+\-]\d{2}:?\d{2}$/.test(s)) {
+        const d = new Date(s);
+        return isNaN(d) ? null : d;
+      }
+
+      // Match ISO-like without timezone: YYYY-MM-DDTHH:mm:ss(.fractional)
+      const m = String(s).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?$/);
+      if (!m) {
+        const d = new Date(s);
+        return isNaN(d) ? null : d;
+      }
+      const [, Y, Mo, D, hh, mm, ss, frac] = m;
+      const ms = frac ? Number((frac + '000').slice(0, 3)) : 0; // take first 3 digits as milliseconds
+      // Construct Date in local timezone
+      return new Date(Number(Y), Number(Mo) - 1, Number(D), Number(hh), Number(mm), Number(ss), ms);
+    } catch (e) {
+      console.warn('parseServerDate failed for', s, e);
+      const d = new Date(s);
+      return isNaN(d) ? null : d;
+    }
+  };
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("all");
@@ -361,8 +387,14 @@ export default function BookingManagement() {
                     </div>
                     <div className="feedback-info">
                       <p><strong>Booking ID:</strong> {selectedFeedback.bookingId}</p>
-                      <p><strong>Khách hàng:</strong> {selectedFeedback.customerName || "N/A"}</p>
-                      <p><strong>Ngày đánh giá:</strong> {selectedFeedback.createdAt ? new Date(selectedFeedback.createdAt).toLocaleString('vi-VN') : "N/A"}</p>
+                      <p><strong>Khách hàng:</strong> {selectedFeedback.userName || "N/A"}</p>
+                      <p><strong>Ngày đánh giá:</strong> {(() => {
+                        const dateStr = selectedFeedback.feedbackDate ?? selectedFeedback.createdAt;
+                        const d = parseServerDate(dateStr);
+                        return d ? d.toLocaleString('vi-VN', {
+                          year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+                        }) : 'N/A';
+                      })()}</p>
                     </div>
                     <div className="feedback-comment">
                       <p><strong>Nhận xét:</strong></p>

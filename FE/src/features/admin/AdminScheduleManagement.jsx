@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import Loading from '@components/ui/Loading.jsx';
 import ConfirmationModal from '@components/ui/ConfirmationModal.jsx';
 import { API_BASE_URL } from "@config/api.js";
+import apiRequest from '@services/api.js';
 
 export default function AdminScheduleManagement() {
     const [schedules, setSchedules] = useState([]);
@@ -48,6 +49,8 @@ export default function AdminScheduleManagement() {
     
 
     const getToken = () => localStorage.getItem("token");
+    // Toggle this to true while debugging auth issues so the app does not auto-logout on 401/403
+    const AUTH_DEBUG_NO_LOGOUT = true;
 
     // --- Lấy thông tin user ---
     const fetchUserInfo = async () => {
@@ -121,15 +124,20 @@ export default function AdminScheduleManagement() {
     // LẤY PART TYPES TỪ API
     const fetchPartTypes = async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/api/admin/part-types`, {
-                headers: { Authorization: `Bearer ${getToken()}` }
-            });
-            if (!res.ok) throw new Error("Không thể tải loại linh kiện");
-            const data = await res.json();
-            setPartTypes(Array.isArray(data) ? data : []);
+            // Use central apiRequest so headers/credentials and error handling match other calls
+            const data = await apiRequest('/api/admin/part-types');
+            // Normalize part types to a consistent shape: { id: number, name, description }
+            const normalized = Array.isArray(data) ? data.map(pt => ({
+                id: pt.id != null ? Number(pt.id) : null,
+                name: pt.name || pt.type_name || pt.typeName || `ID: ${pt.id}`,
+                description: pt.description || pt.desc || ''
+            })) : [];
+            setPartTypes(normalized);
+            return normalized;
         } catch (err) {
             console.error("Lỗi tải part types:", err);
             setPartTypes([]);
+            return [];
         }
     };
 
@@ -297,32 +305,90 @@ export default function AdminScheduleManagement() {
 
     // MỞ MODAL ITEMS + LOAD PART TYPES TRƯỚC
     const handleEditItems = async (plan) => {
-        if (!plan?.id) return alert("Không có ID mốc bảo dưỡng!");
-
-        setItemsModal({ open: true, plan, items: [], loading: true });
-
         try {
-            // ĐẢM BẢO PART TYPES LOAD TRƯỚC
-            await fetchPartTypes();
+            // Nếu plan không có id (temp), tự động lưu plan trước
+            let planToUse = plan;
+            if (!plan?.id || plan.isNew || plan.id.toString().startsWith('temp_')) {
+                // Ensure schedule exists
+                if (!selectedSchedule?.id) {
+                    alert('Vui lòng lưu lịch trình trước khi thêm mốc và công việc.');
+                    return;
+                }
 
-            const res = await fetch(`${API_BASE_URL}/api/admin/plans/${plan.id}/items`, {
-                headers: { Authorization: `Bearer ${getToken()}` }
+                // create plan on server
+                const created = await createPlan({ ...plan, scheduleId: selectedSchedule.id });
+
+                // Replace temp plan in state
+                setPlans(prev => prev.map(p => p.id === plan.id ? { ...created, isNew: false } : p));
+                planToUse = created;
+            }
+
+            setItemsModal({ open: true, plan: planToUse, items: [], loading: true });
+
+            // ĐẢM BẢO PART TYPES LOAD TRƯỚC và lấy danh sách đã chuẩn hóa
+            const loadedPartTypes = await fetchPartTypes();
+
+            const res = await fetch(`${API_BASE_URL}/api/admin/plans/${planToUse.id}/items`, {
+                headers: { Authorization: `Bearer ${getToken()}` },
+                credentials: 'include'
             });
+
+            if (res.status === 401) {
+                if (AUTH_DEBUG_NO_LOGOUT) {
+                    const txt = await res.text().catch(() => '');
+                    alert(`Auth error ${res.status}: ${txt || 'no body'} (debug mode - not logging out)`);
+                    setItemsModal({ open: false, plan: null, items: [], loading: false });
+                    return;
+                }
+                localStorage.clear();
+                navigate('/');
+                return;
+            }
 
             if (!res.ok) throw new Error(`Lỗi ${res.status}`);
 
             const data = await res.json();
-            const sanitized = Array.isArray(data) ? data.map(item => ({
-                id: item.id,
-                planId: plan.id,
-                itemName: item.itemName || "",
-                actionType: item.actionType || "INSPECT",
-                part_type_id: item.part_type_id || null,
-                note: item.note || "",
-                isNew: false
-            })) : [];
+            const sanitized = Array.isArray(data) ? data.map(item => {
+                // Try to extract a part_type id from many possible shapes (primitive id, nested object, different keys)
+                let rawPt = item.part_type_id ?? item.part_type ?? item.partType ?? item.partTypeId ?? item.part_type?.id ?? null;
+                let partTypeName = null;
 
-            setItemsModal({ open: true, plan, items: sanitized, loading: false });
+                // If rawPt is an object, try to read its id and name
+                if (rawPt && typeof rawPt === 'object') {
+                    partTypeName = rawPt.name ?? rawPt.type_name ?? rawPt.typeName ?? null;
+                    rawPt = rawPt.id ?? rawPt.part_type_id ?? rawPt.partTypeId ?? null;
+                }
+
+                // Normalize to a finite number or null
+                const num = rawPt != null && rawPt !== '' ? Number(rawPt) : null;
+                const parsedPt = Number.isFinite(num) ? num : null;
+
+                return {
+                    id: item.id,
+                    planId: planToUse.id,
+                    // accept different naming conventions from backend
+                    itemName: item.itemName ?? item.item_name ?? "",
+                    actionType: item.actionType ?? item.action_type ?? "INSPECT",
+                    // normalized numeric id or null
+                    part_type_id: parsedPt,
+                    // keep a fallback name if server returned a nested object with name
+                    part_type_name: partTypeName ?? null,
+                    note: item.note ?? item.notes ?? "",
+                    isNew: false
+                };
+            }) : [];
+
+            // Merge any part types referenced by items into the partTypes list if missing
+            const mergedPartTypes = Array.isArray(loadedPartTypes) ? [...loadedPartTypes] : [];
+            sanitized.forEach(it => {
+                if (it.part_type_id != null && !mergedPartTypes.find(pt => Number(pt.id) === Number(it.part_type_id))) {
+                    mergedPartTypes.push({ id: it.part_type_id, name: it.part_type_name || `ID: ${it.part_type_id}`, description: '' });
+                }
+            });
+            // update the state so selects can show saved names
+            setPartTypes(mergedPartTypes);
+
+            setItemsModal({ open: true, plan: planToUse, items: sanitized, loading: false });
         } catch (err) {
             alert("Lỗi: " + err.message);
             setItemsModal({ open: false, plan: null, items: [], loading: false });
@@ -375,66 +441,92 @@ export default function AdminScheduleManagement() {
         if (!token) return alert("Phiên hết hạn!");
 
         try {
+            // Debug: log token presence (don't log full token in prod)
+            console.log("saveAllItems: token present?", !!token, "tokenLen=", token ? token.length : 0);
+
+            // Quick validation: check token validity before attempting multiple POSTs.
+            // This avoids partial writes and gives a clearer error message early.
+            try {
+                const chk = await fetch(`${API_BASE_URL}/api/users/account/current`, {
+                    headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+                    credentials: 'include'
+                });
+                if (chk.status === 401 || chk.status === 403) {
+                    const txt = await chk.text().catch(() => '');
+                    console.error('token validation failed', { status: chk.status, body: txt });
+                    if (AUTH_DEBUG_NO_LOGOUT) {
+                        alert(`Auth error ${chk.status}: ${txt || 'no body'} (debug mode - not logging out)`);
+                        return;
+                    }
+                    alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                    localStorage.clear();
+                    navigate('/');
+                    return;
+                }
+            } catch (e) {
+                console.warn('token validation request failed', e);
+                // proceed — the later requests will surface the exact error
+            }
             for (const item of itemsModal.items) {
                 if (!item.itemName?.trim()) {
                     alert("Tên công việc không được để trống!");
                     return;
                 }
 
+                // Build payload matching backend schema (use snake_case keys expected by backend)
                 const itemData = {
-                    planId: itemsModal.plan.id,
-                    itemName: item.itemName.trim(),
-                    actionType: item.actionType || "INSPECT",
-                    part_type_id: item.part_type_id || null,
+                    plan_id: itemsModal.plan.id,
+                    item_name: item.itemName.trim(),
+                    action_type: item.actionType || "INSPECT",
+                    part_type_id: Number.isFinite(item.part_type_id) ? item.part_type_id : null,
                     note: item.note?.trim() || ""
                 };
 
                 if (item.isNew || item.id.toString().startsWith('temp_')) {
                     // Thêm item mới
-                    const res = await fetch(`${API_BASE_URL}/api/admin/plan-items`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: JSON.stringify(itemData),
-                    });
-
-                    if (res.status === 401 || res.status === 403) {
-                        alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-                        localStorage.clear();
-                        navigate("/");
-                        return;
-                    }
-
-                    if (!res.ok) {
-                        const error = await res.text();
-                        throw new Error(`Không thể thêm công việc: ${error}`);
-                    }
+                        try {
+                            const created = await apiRequest('/api/admin/plan-items', {
+                                method: 'POST',
+                                body: JSON.stringify(itemData),
+                            });
+                            // created returned but not currently used - continue
+                        } catch (err) {
+                            console.error('plan-items POST error via apiRequest', err);
+                            // apiRequest throws error with status and data when non-ok
+                            if (err.status === 401 || err.status === 403) {
+                                console.error('plan-items POST 401/403', { status: err.status, body: err.data });
+                                if (AUTH_DEBUG_NO_LOGOUT) {
+                                    alert(`Auth error ${err.status}: ${err.data || 'no body'} (debug mode - not logging out)`);
+                                    return;
+                                }
+                                alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                                localStorage.clear();
+                                navigate('/');
+                                return;
+                            }
+                            throw err;
+                        }
                 } else if (item.modified) {
                     // Cập nhật item đã tồn tại
-                    const res = await fetch(
-                        `${API_BASE_URL}/api/admin/plan-items/${item.id}`,
-                        {
+                    try {
+                        const updated = await apiRequest(`/api/admin/plan-items/${item.id}`, {
                             method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`,
-                            },
                             body: JSON.stringify(itemData),
+                        });
+                    } catch (err) {
+                        console.error('plan-items PUT error via apiRequest', err);
+                        if (err.status === 401 || err.status === 403) {
+                            console.error('plan-items PUT 401/403', { status: err.status, body: err.data });
+                            if (AUTH_DEBUG_NO_LOGOUT) {
+                                alert(`Auth error ${err.status}: ${err.data || 'no body'} (debug mode - not logging out)`);
+                                return;
+                            }
+                            alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+                            localStorage.clear();
+                            navigate('/');
+                            return;
                         }
-                    );
-
-                    if (res.status === 401 || res.status === 403) {
-                        alert("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-                        localStorage.clear();
-                        navigate("/");
-                        return;
-                    }
-
-                    if (!res.ok) {
-                        const error = await res.text();
-                        throw new Error(`Không thể cập nhật công việc: ${error}`);
+                        throw err;
                     }
                 }
             }
@@ -449,6 +541,40 @@ export default function AdminScheduleManagement() {
         } catch (err) {
             console.error("Lỗi khi lưu items:", err);
             alert("Lỗi: " + err.message);
+        }
+    };
+
+    // TẠO 1 PLAN RIÊNG LẺ (dùng khi plan là temp và user bấm Sửa công việc)
+    const createPlan = async (plan) => {
+        const token = getToken();
+        if (!token) throw new Error('Phiên hết hạn!');
+
+        const planData = {
+            scheduleId: plan.scheduleId || selectedSchedule?.id,
+            maintenanceNo: parseInt(plan.maintenanceNo) || 0,
+            intervalKm: parseInt(plan.intervalKm) || 0,
+            intervalMonth: parseInt(plan.intervalMonth) || 0,
+            name: plan.name || "",
+            description: plan.description || "",
+        };
+
+        try {
+            const created = await apiRequest('/api/admin/plans', {
+                method: 'POST',
+                body: JSON.stringify(planData),
+            });
+            return created;
+        } catch (err) {
+            console.error('createPlan error via apiRequest', err);
+            if (err.status === 401 || err.status === 403) {
+                if (AUTH_DEBUG_NO_LOGOUT) {
+                    throw new Error(`Auth error ${err.status}: ${err.data || 'no body'}`);
+                }
+                localStorage.clear();
+                navigate('/');
+                throw new Error('Phiên đăng nhập đã hết hạn.');
+            }
+            throw err;
         }
     };
 
@@ -529,7 +655,8 @@ export default function AdminScheduleManagement() {
         try {
             const savedSchedule = await handleSaveSchedule();
             if (!savedSchedule?.id) throw new Error("Không lấy được ID lịch trình");
-            if (modalMode !== "add" && plans.some(p => p.modified || p.isNew)) {
+            // Always save plans that are new/modified after schedule is created
+            if (plans.some(p => p.modified || p.isNew)) {
                 await savePlans(savedSchedule.id);
             }
             alert("Đã lưu thành công!");
@@ -754,21 +881,32 @@ export default function AdminScheduleManagement() {
                                                 <div className="form-group">
                                                     <label>Loại linh kiện</label>
                                                     <select
-                                                        value={item.part_type_id || ""}
+                                                        value={item.part_type_id != null ? String(item.part_type_id) : ""}
                                                         onChange={e => updateItem(item.id, "part_type_id", e.target.value ? Number(e.target.value) : null)}
                                                     >
                                                         <option value="">-- Chọn loại linh kiện --</option>
-                                                        {partTypes.map(pt => (
-                                                            <option key={pt.id} value={pt.id}>
-                                                                {pt.name || pt.type_name || `ID: ${pt.id}`}
+                                                        {/* If the saved part_type_id is not present in loaded partTypes, inject it as an option so the select can show the saved name */}
+                                                        {item.part_type_id != null && !partTypes.find(pt => String(pt.id) === String(item.part_type_id)) && (
+                                                            <option key={`saved-${item.part_type_id}`} value={String(item.part_type_id)}>
+                                                                {item.part_type_name ?? `ID: ${item.part_type_id}`}
                                                             </option>
-                                                        ))}
+                                                        )}
+                                                        {partTypes.map(pt => {
+                                                            const optId = pt.id;
+                                                            const optIdStr = optId != null ? String(optId) : "";
+                                                            const label = pt.name || `ID: ${optIdStr}`;
+                                                            return (
+                                                                <option key={optIdStr} value={optIdStr}>
+                                                                    {label}
+                                                                </option>
+                                                            );
+                                                        })}
                                                     </select>
 
                                                     {/* HIỂN THỊ TÊN CŨ NẾU CHƯA LOAD */}
-                                                    {item.part_type_id && !partTypes.find(pt => pt.id === item.part_type_id) && (
+                                                    {item.part_type_id != null && !partTypes.find(pt => String(pt.id) === String(item.part_type_id)) && (
                                                         <small className="text-muted d-block mt-1">
-                                                            Đã chọn: ID {item.part_type_id} (đang tải tên...)
+                                                            Đã chọn: {item.part_type_name ? item.part_type_name : `ID ${item.part_type_id}`} (đang tải tên...)
                                                         </small>
                                                     )}
                                                 </div>
