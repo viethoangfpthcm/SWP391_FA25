@@ -33,8 +33,9 @@ const isValidName = (name) => {
 
 const isValidTime = (time) => {
   if (!time) return false;
+  const normalized = time.replace(/\s+/g, "");
   const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-  return timeRegex.test(time.trim());
+  return timeRegex.test(normalized);
 };
 // --- End Helpers ---
 
