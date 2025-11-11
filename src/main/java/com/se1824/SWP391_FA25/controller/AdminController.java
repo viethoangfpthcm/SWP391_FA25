@@ -14,11 +14,12 @@ import com.se1824.SWP391_FA25.service.ServiceCenterService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -41,7 +42,7 @@ public class AdminController {
     public ResponseEntity<UserManagementDTO> createUser(@Valid
                                                         @RequestBody CreateUserRequest request) {
         Integer adminId = authenticationService.getCurrentAccount().getUserId();
-        UserManagementDTO user = adminService.createUser(request, adminId);
+        UserManagementDTO user = adminService.createUserByAdmin(request, adminId);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
@@ -141,10 +142,10 @@ public class AdminController {
      */
     @PutMapping("/service-centers/{id}")
     public ResponseEntity<ServiceCenter> updateServiceCenter(
-            @PathVariable Integer centerId,
+            @PathVariable Integer id,
             @Valid @RequestBody ServiceCenterRequest requestDTO
     ) {
-        ServiceCenter updatedCenter = serviceCenterService.updateServiceCenter(centerId, requestDTO);
+        ServiceCenter updatedCenter = serviceCenterService.updateServiceCenter(id, requestDTO);
         return ResponseEntity.ok(updatedCenter);
     }
 
@@ -257,7 +258,16 @@ public class AdminController {
         StaffBookingDTO bookingDTO = adminService.getBookingById(bookingId, adminId);
         return ResponseEntity.ok(bookingDTO);
     }
-
+    /**
+     * Admin xóa một booking
+     * DELETE /api/admin/bookings/{bookingId}
+     */
+    @DeleteMapping("/bookings/{bookingId}")
+    public ResponseEntity<Void> deleteBooking(@PathVariable Integer bookingId) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        adminService.deleteBooking(bookingId, adminId);
+        return ResponseEntity.noContent().build();
+    }
     /**
      * Admin xem chi tiết payment theo bookingId (trả về DTO)
      * GET /api/admin/payments/booking/{bookingId}
@@ -332,11 +342,6 @@ public class AdminController {
 
         return ResponseEntity.ok(checklistResponse);
     }
-
-    /**
-     * CHART 1: Lấy doanh thu TẤT CẢ center
-     * GET /api/admin/analytics/revenue
-     */
     @GetMapping("/analytics/revenue")
     public ResponseEntity<RevenueAnalyticsResponse> getRevenueAnalytics(
             @RequestParam Integer month,
@@ -348,7 +353,6 @@ public class AdminController {
         }
         return ResponseEntity.ok(data);
     }
-
     /**
      * CHART 1: Lấy doanh thu MỘT center
      * GET /api/admin/analytics/revenue/center/{centerId}
@@ -366,6 +370,7 @@ public class AdminController {
         return ResponseEntity.ok(data);
     }
 
+
     /**
      * CHART 2: Lấy thống kê booking TẤT CẢ center
      * GET /api/admin/analytics/bookings
@@ -373,24 +378,8 @@ public class AdminController {
     @GetMapping("/analytics/bookings")
     public ResponseEntity<BookingAnalyticsResponse> getBookingAnalytics(
             @RequestParam Integer month,
-            @RequestParam Integer year) {
-        BookingAnalyticsResponse data = adminService.getBookingAnalytics(month, year, null);
-
-        if (data.getLabels() == null || data.getLabels().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
-        }
-        return ResponseEntity.ok(data);
-    }
-
-    /**
-     * CHART 2: Lấy thống kê booking MỘT center
-     * GET /api/admin/analytics/bookings/center/{centerId}
-     */
-    @GetMapping("/analytics/bookings/center/{centerId}")
-    public ResponseEntity<BookingAnalyticsResponse> getBookingAnalyticsByCenter(
-            @PathVariable Integer centerId,
-            @RequestParam Integer month,
-            @RequestParam Integer year) {
+            @RequestParam Integer year,
+            @RequestParam(required = false) Integer centerId) {
         BookingAnalyticsResponse data = adminService.getBookingAnalytics(month, year, centerId);
 
         if (data.getLabels() == null || data.getLabels().isEmpty()) {
@@ -398,21 +387,17 @@ public class AdminController {
         }
         return ResponseEntity.ok(data);
     }
-
     /**
-     * CHART 3: Lấy thống kê linh kiện (Bắt buộc theo center)
+     * CHART 3: Lấy thống kê linh kiện
      * GET /api/admin/analytics/parts
      */
     @GetMapping("/analytics/parts")
     public ResponseEntity<PartAnalyticsResponse> getPartAnalytics(
-            @RequestParam Integer centerId,
-            @RequestParam Integer month,
-            @RequestParam Integer year) {
-        PartAnalyticsResponse data = adminService.getPartAnalytics(centerId, month, year);
+            @RequestParam(required = false) Integer centerId,
+            @RequestParam(required = false) Integer month,
+            @RequestParam int year) {
 
-        if (data.getLabels() == null || data.getLabels().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
-        }
+        PartAnalyticsResponse data = adminService.getPartAnalytics(centerId, month, year);
         return ResponseEntity.ok(data);
     }
 
@@ -442,11 +427,12 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/analytics/feedbacks/{centerId}")
-    public ResponseEntity<?> getPublishedFeedbacksByCenter(@PathVariable Integer centerId) {
+    @GetMapping("/analytics/feedbacks")
+    public ResponseEntity<?> getPublishedFeedbacks(
+            @RequestParam(required = false) Integer centerId) {
         try {
-            FeedbackStatsDTO stats = feedbackService.getFeedbackStatsByCenter(centerId);
-            return ResponseEntity.ok(stats); // Trả về DTO này
+            FeedbackStatsDTO stats = feedbackService.getFeedbackStats(centerId);
+            return ResponseEntity.ok(stats);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -460,5 +446,179 @@ public class AdminController {
         adminService.activateUserAccount(userId, adminId, isActive);
         String status = isActive ? "activated" : "deactivated";
         return ResponseEntity.ok("User with ID " + userId + " has been " + status + " successfully.");
+    }
+    /**
+     * ADMIN Tạo MaintenanceSchedule mới (Mẫu xe)
+     * POST /api/admin/schedules
+     */
+    @PostMapping("/schedules")
+    public ResponseEntity<MaintenanceSchedule> createMaintenanceSchedule(
+            @RequestParam String name,
+            @RequestParam String description,
+            @RequestParam String vehicleModel) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        MaintenanceSchedule newSchedule = adminService.createMaintenanceSchedule(
+                name, description, vehicleModel, adminId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newSchedule);
+    }
+
+    /**
+     * ADMIN Cập nhật MaintenanceSchedule
+     * PUT /api/admin/schedules/{id}
+     */
+    @PutMapping("/schedules/{id}")
+    public ResponseEntity<MaintenanceSchedule> updateMaintenanceSchedule(
+            @PathVariable Integer id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        MaintenanceSchedule updatedSchedule = adminService.updateMaintenanceSchedule(
+                id, name, description, adminId);
+        return ResponseEntity.ok(updatedSchedule);
+    }
+
+    /**
+     * ADMIN Xóa MaintenanceSchedule
+     * DELETE /api/admin/schedules/{id}
+     */
+    @DeleteMapping("/schedules/{id}")
+    public ResponseEntity<Void> deleteMaintenanceSchedule(@PathVariable Integer id) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        adminService.deleteMaintenanceSchedule(id, adminId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * ADMIN Lấy tất cả MaintenanceSchedule
+     * GET /api/admin/schedules
+     */
+    @GetMapping("/schedules")
+    public ResponseEntity<List<MaintenanceSchedule>> getAllSchedules() {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        List<MaintenanceSchedule> schedules = adminService.getAllSchedules(adminId);
+        return ResponseEntity.ok(schedules);
+    }
+
+    /**
+     * ADMIN Lấy chi tiết 1 MaintenanceSchedule
+     * GET /api/admin/schedules/{id}
+     */
+    @GetMapping("/schedules/{id}")
+    public ResponseEntity<MaintenanceSchedule> getScheduleById(@PathVariable Integer id) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        MaintenanceSchedule schedule = adminService.getScheduleById(id, adminId);
+        return ResponseEntity.ok(schedule);
+    }
+    /**
+     * ADMIN Tạo MaintenancePlan mới
+     * POST /api/admin/plans
+     */
+    @PostMapping("/plans")
+    public ResponseEntity<MaintenancePlan> createMaintenancePlan(@Valid @RequestBody MaintenancePlanRequest request) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        MaintenancePlan newPlan = adminService.createMaintenancePlan(request, adminId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newPlan);
+    }
+
+    /**
+     * ADMIN Cập nhật MaintenancePlan
+     * PUT /api/admin/plans/{id}
+     */
+    @PutMapping("/plans/{id}")
+    public ResponseEntity<MaintenancePlan> updateMaintenancePlan(
+            @PathVariable Integer id,
+            @Valid @RequestBody MaintenancePlanRequest request) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        MaintenancePlan updatedPlan = adminService.updateMaintenancePlan(id, request, adminId);
+        return ResponseEntity.ok(updatedPlan);
+    }
+
+    /**
+     * ADMIN Xóa MaintenancePlan
+     * DELETE /api/admin/plans/{id}
+     */
+    @DeleteMapping("/plans/{id}")
+    public ResponseEntity<Void> deleteMaintenancePlan(@PathVariable Integer id) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        adminService.deleteMaintenancePlan(id, adminId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * ADMIN Lấy chi tiết 1 MaintenancePlan
+     * GET /api/admin/plans/{id}
+     */
+    @GetMapping("/plans/{id}")
+    public ResponseEntity<MaintenancePlan> getPlanById(@PathVariable Integer id) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        MaintenancePlan plan = adminService.getPlanById(id, adminId);
+        return ResponseEntity.ok(plan);
+    }
+
+    /**
+     * ADMIN Lấy tất cả MaintenancePlan của 1 Schedule
+     * GET /api/admin/schedules/{id}/plans
+     */
+    @GetMapping("/schedules/{id}/plans")
+    public ResponseEntity<List<MaintenancePlan>> getPlansBySchedule(@PathVariable Integer id) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        List<MaintenancePlan> plans = adminService.getPlansBySchedule(id, adminId);
+        return ResponseEntity.ok(plans);
+    }
+    /**
+     * ADMIN Tạo MaintenancePlanItem mới
+     * POST /api/admin/plan-items
+     */
+    @PostMapping("/plan-items")
+    public ResponseEntity<MaintenancePlanItem> createMaintenancePlanItem(@Valid @RequestBody MaintenancePlanItemRequest request) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        MaintenancePlanItem newItem = adminService.createMaintenancePlanItem(request, adminId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newItem);
+    }
+
+    /**
+     * ADMIN Cập nhật MaintenancePlanItem
+     * PUT /api/admin/plan-items/{id}
+     */
+    @PutMapping("/plan-items/{id}")
+    public ResponseEntity<MaintenancePlanItem> updateMaintenancePlanItem(
+            @PathVariable Integer id,
+            @Valid @RequestBody MaintenancePlanItemRequest request) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        MaintenancePlanItem updatedItem = adminService.updateMaintenancePlanItem(id, request, adminId);
+        return ResponseEntity.ok(updatedItem);
+    }
+
+    /**
+     * ADMIN Xóa MaintenancePlanItem
+     * DELETE /api/admin/plan-items/{id}
+     */
+    @DeleteMapping("/plan-items/{id}")
+    public ResponseEntity<Void> deleteMaintenancePlanItem(@PathVariable Integer id) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        adminService.deleteMaintenancePlanItem(id, adminId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * ADMIN Lấy chi tiết 1 MaintenancePlanItem
+     * GET /api/admin/plan-items/{id}
+     */
+    @GetMapping("/plan-items/{id}")
+    public ResponseEntity<MaintenancePlanItem> getPlanItemById(@PathVariable Integer id) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        MaintenancePlanItem item = adminService.getPlanItemById(id, adminId);
+        return ResponseEntity.ok(item);
+    }
+
+    /**
+     * ADMIN Lấy tất cả MaintenancePlanItem của 1 Plan
+     * GET /api/admin/plans/{planId}/items
+     */
+    @GetMapping("/plans/{planId}/items")
+    public ResponseEntity<List<MaintenancePlanItem>> getPlanItemsByPlan(@PathVariable Integer planId) {
+        Integer adminId = authenticationService.getCurrentAccount().getUserId();
+        List<MaintenancePlanItem> items = adminService.getPlanItemsByPlan(planId, adminId);
+        return ResponseEntity.ok(items);
     }
 }

@@ -1,25 +1,31 @@
 package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.entity.*;
+import com.se1824.SWP391_FA25.enums.ApprovalStatus;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.model.request.PartCreateRequest;
 import com.se1824.SWP391_FA25.model.request.ServiceCenterRequest;
+import com.se1824.SWP391_FA25.model.response.PartAnalyticsResponse;
 import com.se1824.SWP391_FA25.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class ServiceCenterService {
-    @Autowired
-    private ServiceCenterRepository serviceCenterRepository;
-    @Autowired
-    private PartRepository partRepository;
-    @Autowired
-    private PartTypeRepository partTypeRepository;
+
+    private final ServiceCenterRepository serviceCenterRepository;
+    private final PartRepository partRepository;
+    private final PartTypeRepository partTypeRepository;
+    private final MaintenanceChecklistDetailRepository checklistDetailRepo;
+
     /**
      * CREATE: Thêm một ServiceCenter mới
      */
@@ -39,7 +45,8 @@ public class ServiceCenterService {
         serviceCenter.setName(trimmedName);
         serviceCenter.setPhone(trimmedPhone);
         serviceCenter.setAddress(requestDTO.getAddress().trim());
-
+        serviceCenter.setOpeningHour(requestDTO.getOpeningHour());
+        serviceCenter.setClosingHour(requestDTO.getClosingHour());
         return serviceCenterRepository.save(serviceCenter);
     }
 
@@ -81,6 +88,8 @@ public class ServiceCenterService {
             existingCenter.setPhone(trimmedPhone);
         }
         existingCenter.setAddress(requestDTO.getAddress().trim());
+        existingCenter.setOpeningHour(requestDTO.getOpeningHour());
+        existingCenter.setClosingHour(requestDTO.getClosingHour());
 
         return serviceCenterRepository.save(existingCenter);
     }
@@ -163,9 +172,22 @@ public class ServiceCenterService {
         existingPart.setUnitPrice(dto.getUnitPrice());
         existingPart.setLaborCost(dto.getLaborCost());
         existingPart.setMaterialCost(dto.getMaterialCost());
+        return partRepository.save(existingPart);
+    }
+    /**
+     * UPDATE (Manager): Cập nhật thông tin Part (Chỉ Quantity)
+     * Manager chỉ được cập nhật số lượng.
+     */
+    public Part updatePartQuantity(Integer partId, PartCreateRequest dto) {
 
-        // 5. Không cần set lại ServiceCenter (vì Part không thể di chuyển giữa các trung tâm)
+        // 1. Tìm Part có sẵn
+        Part existingPart = partRepository.findById(partId)
+                .orElseThrow(() -> new ResourceNotFoundException("Part are not exist ID: " + partId));
 
+        // 2. Chỉ cập nhật số lượng (quantity)
+        existingPart.setQuantity(dto.getQuantity());
+
+        // 3. Lưu lại thay đổi (chỉ lưu số lượng mới)
         return partRepository.save(existingPart);
     }
 
@@ -195,8 +217,6 @@ public class ServiceCenterService {
     }
 
 
-
-
     /**
      * READ (All): Lấy tất cả PartType (Dùng cho dropdown của Front-end)
      */
@@ -220,6 +240,42 @@ public class ServiceCenterService {
         existingType.setName(partTypeDetails.getName());
         existingType.setDescription(partTypeDetails.getDescription());
         return partTypeRepository.save(existingType);
+    }
+
+    /**
+     * Lấy dữ liệu thống kê linh kiện cho Chart 3 (bắt buộc theo center)
+     */
+    public PartAnalyticsResponse getPartAnalytics(Integer centerId, Integer month, Integer year) {
+        log.info("Fetching part analytics for center: {}, month: {}, year: {}",
+                (centerId != null ? centerId : "ALL"), month, year);
+
+        List<Object[]> results;
+
+        if (centerId != null) {
+            // Logic cho 1 center (Manager, Staff, hoặc Admin xem 1 center)
+            results = checklistDetailRepo.findPartUsageStatsByCenterAndMonthAndYear(
+                    centerId, month, year, ApprovalStatus.APPROVED
+            );
+        } else {
+            // Logic cho Admin xem TẤT CẢ center
+            results = checklistDetailRepo.findAllPartUsageStatsByMonthAndYear(
+                    month, year, ApprovalStatus.APPROVED
+            );
+        }
+
+        List<String> labels = new ArrayList<>();
+        List<Long> counts = new ArrayList<>();
+
+        for (Object[] result : results) {
+            labels.add((String) result[0]); // Tên linh kiện
+            counts.add((Long) result[1]); // Số lượng
+        }
+
+        if (labels.isEmpty()) {
+            log.warn("No part stats data found");
+        }
+
+        return new PartAnalyticsResponse(labels, counts);
     }
 
 }

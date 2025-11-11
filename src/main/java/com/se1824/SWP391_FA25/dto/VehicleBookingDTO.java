@@ -13,8 +13,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class VehicleBookingDTO {
     @Pattern(
-            regexp = "^(41|5[0-9])[A-Z\\d][- ]?\\d{3}[.]?\\d{2}$",
-            message = "Biển số xe không hợp lệ hoặc không phải của TP.HCM."
+            regexp = "^[1-9]\\d[A-Z\\d][- ]?\\d{3}[.]?\\d{2}$",
+            message = "Biển số xe không hợp lệ hoặc không phải của VN."
     )
     String licensePlate;
     String model;

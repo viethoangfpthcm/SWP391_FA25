@@ -11,6 +11,7 @@ import java.util.List;
 @Table(name = "maintenance_schedule")
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter

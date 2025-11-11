@@ -9,4 +9,5 @@ public interface VehicleScheduleRepository extends JpaRepository<VehicleSchedule
     List<VehicleSchedule> findBySchedule_vehicleModel(String vehicleModel);
 
     List<VehicleSchedule> findByVehicle_LicensePlate(String licensePlate);
+    boolean existsBySchedule_Id(Integer scheduleId);
 }

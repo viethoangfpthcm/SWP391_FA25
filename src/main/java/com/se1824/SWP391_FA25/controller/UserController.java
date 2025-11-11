@@ -28,7 +28,7 @@ public class UserController {
      */
     @PutMapping("/update-profile")
     public ResponseEntity<UserManagementDTO> updateOwnProfile(
-           @Valid @RequestBody UpdateUserRequest request) {
+            @Valid @RequestBody UpdateUserRequest request) {
         UserManagementDTO user = accountService.updateOwnProfile(request);
         return ResponseEntity.ok(user);
     }
