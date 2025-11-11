@@ -17,12 +17,14 @@ import Loading from '@components/ui/Loading.jsx';
 import ConfirmationModal from '@components/ui/ConfirmationModal.jsx';
 import { API_BASE_URL } from "@config/api.js";
 import apiRequest from '@services/api.js';
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 export default function AdminScheduleManagement() {
     const [schedules, setSchedules] = useState([]);
     const [selectedSchedule, setSelectedSchedule] = useState(null);
     const [plans, setPlans] = useState([]);
     const [loading, setLoading] = useState(true);
+    const showLoading = useMinimumDelay(loading, 1000);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [modalMode, setModalMode] = useState("view");
@@ -689,17 +691,11 @@ export default function AdminScheduleManagement() {
     const filteredSchedules = filterVehicle === "all" ? schedules : schedules.filter(s => s.vehicleModel === filterVehicle);
     const vehicleModels = [...new Set(schedules.map(s => s.vehicleModel))];
 
-    if (loading && !userInfo) {
-        return (
-            <div className="dashboard-container">
-                <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
-                <main className="main-content loading-state">
-                    <Loading inline />
-                    <p>Đang tải dữ liệu lịch trình...</p>
-                </main>
-            </div>
-        );
-    }
+     if (showLoading) {
+    return (
+      <Loading text="Đang tải dữ liệu hệ thống..." />
+    );
+  }
 
     return (
         <div className="dashboard-container">

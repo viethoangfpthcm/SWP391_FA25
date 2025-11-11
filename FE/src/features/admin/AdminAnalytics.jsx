@@ -14,6 +14,7 @@ import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 import { API_BASE_URL } from "@config/api.js";
 import "./AdminAnalytics.css";
 
+
 import RevenueChart from "./graphs/RevenueChart.jsx";
 import BookingStatsChart from "./graphs/BookingStatsChart.jsx";
 import PartsUsageChart from "./graphs/PartsUsageChart.jsx";
@@ -24,6 +25,7 @@ export default function AdminAnalytics() {
     const [userInfo, setUserInfo] = useState(null);
     const [centers, setCenters] = useState([]);
     const [loading, setLoading] = useState(true);
+    
     const [error, setError] = useState(null);
 
     const [selectedCenter, setSelectedCenter] = useState("all");
@@ -182,16 +184,11 @@ export default function AdminAnalytics() {
     };
 
     // ===== Render =====
-    if (!userInfo && showLoading) {
-        return (
-            <div className="dashboard-container">
-                <Sidebar />
-                <main className="main-content loading-state">
-                    <Loading text="Đang tải dữ liệu người dùng..." />
-                </main>
-            </div>
-        );
-    }
+   if (showLoading) {
+    return (
+      <Loading text="Đang tải thống kê..." />
+    );
+  }
 
     return (
         <div className="dashboard-container">

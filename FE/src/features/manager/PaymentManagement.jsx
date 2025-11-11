@@ -4,12 +4,13 @@ import Loading from "@components/ui/Loading.jsx";
 import Sidebar from "@components/layout/Sidebar.jsx";
 import { FaMoneyBillWave, FaCheck, FaTimes } from "react-icons/fa";
 import "./PaymentManagement.css";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 export default function PaymentManagement() {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("all");
-
+  const showLoading = useMinimumDelay(loading, 1000);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -54,13 +55,11 @@ export default function PaymentManagement() {
       return sum + total;
     }, 0);
 
-  if (loading) {
-    return (
-      <div className="payment-management-loading">
-        <Loading inline />
-      </div>
-    );
-  }
+  if (showLoading) {
+  return (
+    <Loading text="Đang tải hóa đơn..." />
+  );
+}
 
   return (
     <div className="admin-dashboard-container">
@@ -84,8 +83,8 @@ export default function PaymentManagement() {
                 <FaMoneyBillWave />
               </div>
               <div className="stat-info">
-                <p className="stat-label">Tổng doanh thu</p>
-                <h3 className="stat-value">
+                <p className="stat-label-payment">Tổng doanh thu</p>
+                <h3 className="stat-value-payment">
                   {new Intl.NumberFormat("vi-VN", {
                     style: "currency",
                     currency: "VND",
@@ -99,8 +98,8 @@ export default function PaymentManagement() {
                 <FaCheck />
               </div>
               <div className="stat-info">
-                <p className="stat-label">Đã thanh toán</p>
-                <h3 className="stat-value">
+                <p className="stat-label-payment">Đã thanh toán</p>
+                <h3 className="stat-value-payment">
                   {payments.filter((p) => p.status === "PAID").length}
                 </h3>
               </div>
@@ -111,8 +110,8 @@ export default function PaymentManagement() {
                 <FaTimes />
               </div>
               <div className="stat-info">
-                <p className="stat-label">Chờ thanh toán</p>
-                <h3 className="stat-value">
+                <p className="stat-label-payment">Chờ thanh toán</p>
+                <h3 className="stat-value-payment">
                   {payments.filter((p) => p.status === "PENDING").length}
                 </h3>
               </div>
@@ -125,7 +124,7 @@ export default function PaymentManagement() {
               <option value="all">Tất cả</option>
               <option value="PENDING">Chờ thanh toán</option>
               <option value="PAID">Đã thanh toán</option>
-              <option value="REFUNDED">Đã hoàn tiền</option>
+              <option value="FAILED">Thất bại</option>
             </select>
           </div>
 

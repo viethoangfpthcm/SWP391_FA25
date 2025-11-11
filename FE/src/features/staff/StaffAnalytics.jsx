@@ -27,7 +27,7 @@ const StaffAnalytics = () => {
   // Use minimum delay hook for better UX (show loading for at least 1 second)
   const showLoading = useMinimumDelay(loading, 1000);
 
-  
+
   const token = localStorage.getItem("token");
 
   // Fetch user info on mount ONLY
@@ -42,7 +42,7 @@ const StaffAnalytics = () => {
       }
     }
   }, []); // EMPTY dependency - chỉ chạy 1 lần khi mount
-  
+
   // Fetch analytics when filters change (bao gồm cả lần đầu mount)
   useEffect(() => {
     fetchAllAnalytics();
@@ -52,13 +52,13 @@ const StaffAnalytics = () => {
   const fetchAllAnalytics = async () => {
     setLoading(true);
     setError(null);
-    
+
     // Safety timeout: force stop loading sau 5 giây
     const timeout = setTimeout(() => {
       console.warn("Analytics loading timeout - forcing stop");
       setLoading(false);
     }, 5000);
-    
+
     try {
       await Promise.allSettled([
         fetchRevenueData(),
@@ -166,8 +166,8 @@ const StaffAnalytics = () => {
             <label>
               <FaFilter /> Tháng:
             </label>
-            <select 
-              value={selectedMonth} 
+            <select
+              value={selectedMonth}
               onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
               className="filter-select"
             >
@@ -179,8 +179,8 @@ const StaffAnalytics = () => {
             <label>
               <FaCalendarAlt /> Năm:
             </label>
-            <select 
-              value={selectedYear} 
+            <select
+              value={selectedYear}
               onChange={(e) => setSelectedYear(parseInt(e.target.value))}
               className="filter-select"
             >
@@ -197,8 +197,7 @@ const StaffAnalytics = () => {
 
         {showLoading ? (
           <div className="loading-container">
-            <Loading />
-            <p>Đang tải dữ liệu thống kê...</p>
+            <Loading text="Đang tải thống kê..." />
           </div>
         ) : (
           <div className="analytics-grid">

@@ -3,16 +3,18 @@ import { API_BASE_URL } from "@config/api.js";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
 import Sidebar from "@components/layout/Sidebar.jsx";
-import { FaPlus, FaEdit, FaBox, FaExclamationTriangle } from "react-icons/fa";
+import { FaPlus, FaEdit, FaBox, FaExclamationTriangle, FaSearch} from "react-icons/fa";
 import FiltersBar from "./shared/PartFiltersBar";
 import PartTable from "./shared/PartTable";
 import PartForm from "./shared/PartForm";
 import RestockRequestModal from "./shared/RestockRequestModal";
 import "./PartManagement.css";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 export default function PartManagement() {
   const [parts, setParts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const showLoading = useMinimumDelay(loading, 1000);
   const [actionLoading, setActionLoading] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [showRestockModal, setShowRestockModal] = useState(false);
@@ -20,6 +22,7 @@ export default function PartManagement() {
   const [selectedPart, setSelectedPart] = useState(null);
   const [error, setError] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -168,21 +171,27 @@ export default function PartManagement() {
   };
 
   const filteredParts = parts.filter((part) => {
-    if (filterStatus === "all") return true;
-    if (filterStatus === "in-stock") return part.quantity > 10;
-    if (filterStatus === "low-stock") return part.quantity > 0 && part.quantity <= 10;
-    if (filterStatus === "out-of-stock") return part.quantity === 0;
-    return true;
+    const search = searchTerm.toLowerCase();
+    const matchesSearch =
+      part.name?.toLowerCase().includes(search) ||
+      part.id?.toString().includes(search) ||
+      part.description?.toLowerCase().includes(search) ||
+      part.manufacturer?.toLowerCase().includes(search) ||
+      part.partType?.name?.toLowerCase().includes(search);
+
+    if (filterStatus === "all") return matchesSearch;
+    if (filterStatus === "in-stock") return matchesSearch && part.quantity > 10;
+    if (filterStatus === "low-stock") return matchesSearch && part.quantity > 0 && part.quantity <= 10;
+    if (filterStatus === "out-of-stock") return matchesSearch && part.quantity === 0;
+    return matchesSearch;
   });
 
   const lowStockCount = parts.filter((p) => p.quantity > 0 && p.quantity <= 10).length;
   const outOfStockCount = parts.filter((p) => p.quantity === 0).length;
 
-  if (loading) {
+  if (showLoading) {
     return (
-      <div className="part-management-loading">
-        <Loading inline />
-      </div>
+      <Loading text="Đang tải phụ tùng..." />
     );
   }
 
@@ -227,6 +236,21 @@ export default function PartManagement() {
           )}
 
           <FiltersBar filterStatus={filterStatus} setFilterStatus={setFilterStatus} />
+
+          <div className="parts-toolbar">
+            <div className="search-box">
+              <FaSearch />
+              <input
+                type="text"
+                placeholder="Tìm kiếm phụ tùng (tên, ID, hãng)..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <div className="parts-count">
+              Tổng: <strong>{filteredParts.length}</strong> phụ tùng
+            </div>
+          </div>
 
           <PartTable
             parts={filteredParts}

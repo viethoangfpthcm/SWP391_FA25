@@ -621,4 +621,13 @@ public class AdminController {
         List<MaintenancePlanItem> items = adminService.getPlanItemsByPlan(planId, adminId);
         return ResponseEntity.ok(items);
     }
+    /**
+     * Lấy danh sách các Model xe (ví dụ: "VinFast VF 3",....)
+     * GET /api/admin/vehicle-models
+     */
+    @GetMapping("/vehicle-models")
+    public ResponseEntity<List<String>> getAvailableVehicleModels() {
+        List<String> models = adminService.getAvailableVehicleModels();
+        return ResponseEntity.ok(models);
+    }
 }

@@ -3,7 +3,7 @@ import {
   FaWrench,
   FaPlus,
   FaEdit,
-  FaSpinner,
+  FaSearch,
   FaExclamationTriangle,
   FaSave,
   FaArrowLeft,
@@ -19,12 +19,12 @@ import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
 const isValidPartName = (name) => {
-    return name && name.trim().length >= 2;
+  return name && name.trim().length >= 2;
 };
 const isPositiveNumberOrZero = (value) => {
-    if (value === '' || value === null || value === undefined) return false;
-    const num = Number(value);
-    return !isNaN(num) && num >= 0;
+  if (value === '' || value === null || value === undefined) return false;
+  const num = Number(value);
+  return !isNaN(num) && num >= 0;
 };
 
 if (import.meta.env.MODE !== "development") {
@@ -50,13 +50,13 @@ export default function PartManagement() {
     fullName: localStorage.getItem("fullName") || "Admin",
     role: localStorage.getItem("role") || "ADMIN",
   });
-
+  const [searchTerm, setSearchTerm] = useState("");
   const { centerId } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   const fetchData = async () => {
-     try {
+    try {
       setError(null);
       setLoading(true);
       const centerRes = await fetch(`${API_BASE_URL}/api/admin/service-centers/${centerId}`, { headers: { Authorization: `Bearer ${token}` } });
@@ -82,8 +82,17 @@ export default function PartManagement() {
       setLoading(false);
     }
   };
-
-   const handleDeleteClick = (partId) => {
+  const filteredParts = parts.filter((part) => {
+    const s = (searchTerm || "").toString().trim().toLowerCase();
+    if (!s) return true;
+    return (
+      part.name?.toString().toLowerCase().includes(s) ||
+      part.id?.toString().includes(s) ||
+      part.partType?.name?.toString().toLowerCase().includes(s) ||
+      part.description?.toString().toLowerCase().includes(s)
+    );
+  });
+  const handleDeleteClick = (partId) => {
     setPartToDeleteId(partId);
     setShowConfirmModal(true);
     setError(null);
@@ -101,8 +110,8 @@ export default function PartManagement() {
       if (res.status === 401) { localStorage.clear(); navigate("/"); return; }
       if (!res.ok) {
         let errorMsg = "Không thể xóa phụ tùng.";
-         try { const errorData = await res.json(); errorMsg = errorData.message || `Lỗi ${res.status}`; } catch(e){}
-         throw new Error(errorMsg);
+        try { const errorData = await res.json(); errorMsg = errorData.message || `Lỗi ${res.status}`; } catch (e) { }
+        throw new Error(errorMsg);
       }
       setShowConfirmModal(false);
       setPartToDeleteId(null);
@@ -157,22 +166,22 @@ export default function PartManagement() {
   const validateForm = () => {
     const errors = {};
     if (!isValidPartName(formData.name)) {
-        errors.name = "Tên phụ tùng không hợp lệ (ít nhất 2 ký tự).";
+      errors.name = "Tên phụ tùng không hợp lệ (ít nhất 2 ký tự).";
     }
     if (!formData.partTypeId) {
-        errors.partTypeId = "Vui lòng chọn loại phụ tùng.";
+      errors.partTypeId = "Vui lòng chọn loại phụ tùng.";
     }
     if (!isPositiveNumberOrZero(formData.quantity)) {
-        errors.quantity = "Số lượng không hợp lệ (phải là số >= 0).";
+      errors.quantity = "Số lượng không hợp lệ (phải là số >= 0).";
     }
     if (!isPositiveNumberOrZero(formData.unitPrice)) {
-        errors.unitPrice = "Đơn giá không hợp lệ (phải là số >= 0).";
+      errors.unitPrice = "Đơn giá không hợp lệ (phải là số >= 0).";
     }
-     if (!isPositiveNumberOrZero(formData.laborCost)) {
-        errors.laborCost = "Phí nhân công không hợp lệ (phải là số >= 0).";
+    if (!isPositiveNumberOrZero(formData.laborCost)) {
+      errors.laborCost = "Phí nhân công không hợp lệ (phải là số >= 0).";
     }
-     if (!isPositiveNumberOrZero(formData.materialCost)) {
-        errors.materialCost = "Phí vật tư không hợp lệ (phải là số >= 0).";
+    if (!isPositiveNumberOrZero(formData.materialCost)) {
+      errors.materialCost = "Phí vật tư không hợp lệ (phải là số >= 0).";
     }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -207,13 +216,13 @@ export default function PartManagement() {
       if (!res.ok) {
         let errorMsg = "Đã có lỗi xảy ra.";
         let fieldErrors = {};
-         try {
+        try {
           const errorData = await res.json();
           errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
-           if (errorData.fieldErrors && typeof errorData.fieldErrors === 'object') {
-             fieldErrors = errorData.fieldErrors;
-             setFormErrors(prev => ({ ...prev, ...fieldErrors }));
-             errorMsg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
+          if (errorData.fieldErrors && typeof errorData.fieldErrors === 'object') {
+            fieldErrors = errorData.fieldErrors;
+            setFormErrors(prev => ({ ...prev, ...fieldErrors }));
+            errorMsg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
           }
         } catch (parseError) { errorMsg = `Lỗi ${res.status}. Không thể đọc chi tiết.`; }
         throw new Error(errorMsg);
@@ -223,14 +232,14 @@ export default function PartManagement() {
       setEditingPart(null);
     } catch (err) {
       console.error("Submit Part Error:", err);
-       if (err.message === "Unauthorized") { localStorage.clear(); navigate("/"); }
-       else { setError(err.message || "Không thể lưu thông tin phụ tùng."); }
+      if (err.message === "Unauthorized") { localStorage.clear(); navigate("/"); }
+      else { setError(err.message || "Không thể lưu thông tin phụ tùng."); }
     } finally {
       setActionLoading(false);
     }
   };
 
- if (loading) {
+  if (loading) {
     return (
       <div className="dashboard-container">
         <Sidebar userName={userInfo.fullName} userRole={userInfo.role} />
@@ -257,6 +266,18 @@ export default function PartManagement() {
           <Button className="btn-add" onClick={() => openForm()} disabled={actionLoading || isDeleting}>
             <FaPlus /> Thêm phụ tùng
           </Button>
+          <div className="parts-search" style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
+            <FaSearch />
+            <input
+              type="search"
+              placeholder="Tìm kiếm phụ tùng (tên, ID, loại, mô tả)..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Tìm kiếm phụ tùng"
+              className="search-input"
+            />
+            <div className="parts-count">Kết quả: <strong>{filteredParts.length}</strong></div>
+          </div>
         </div>
         {error && !showForm && !showConfirmModal && (
           <div className="error-message general-error">
@@ -278,28 +299,48 @@ export default function PartManagement() {
                 </tr>
               </thead>
               <tbody>
-                {parts.length > 0 ? (
-                  parts.map((part) => (
+                {filteredParts.length > 0 ? (
+                  filteredParts.map((part) => (
                     <tr key={part.id}>
                       <td>#{part.id}</td>
                       <td>{part.name}</td>
                       <td>{part.partType?.name || "N/A"}</td>
                       <td className="numeric-cell">{part.quantity}</td>
-                      <td className="numeric-cell">{part.unitPrice != null ? part.unitPrice.toLocaleString('vi-VN') : 'N/A'}</td>
-                      <td className="numeric-cell">{part.laborCost != null ? part.laborCost.toLocaleString('vi-VN') : 'N/A'}</td>
-                      <td className="numeric-cell">{part.materialCost != null ? part.materialCost.toLocaleString('vi-VN') : 'N/A'}</td>
+                      <td className="numeric-cell">
+                        {part.unitPrice != null ? part.unitPrice.toLocaleString('vi-VN') : 'N/A'}
+                      </td>
+                      <td className="numeric-cell">
+                        {part.laborCost != null ? part.laborCost.toLocaleString('vi-VN') : 'N/A'}
+                      </td>
+                      <td className="numeric-cell">
+                        {part.materialCost != null ? part.materialCost.toLocaleString('vi-VN') : 'N/A'}
+                      </td>
                       <td className="action-buttons-cell">
-                        <Button className="btn-action btn-edit" onClick={() => openForm(part)} disabled={actionLoading || isDeleting}>
+                        <Button
+                          className="btn-action btn-edit"
+                          onClick={() => openForm(part)}
+                          disabled={actionLoading || isDeleting}
+                        >
                           <FaEdit /> Sửa
                         </Button>
-                         <Button className="btn-action btn-delete" onClick={() => handleDeleteClick(part.id)} disabled={actionLoading || isDeleting}>
+                        <Button
+                          className="btn-action btn-delete"
+                          onClick={() => handleDeleteClick(part.id)}
+                          disabled={actionLoading || isDeleting}
+                        >
                           <FaTrash /> Xóa
                         </Button>
                       </td>
                     </tr>
                   ))
                 ) : (
-                  <tr><td colSpan="8" className="empty-state-row">{loading ? "Đang tải..." : "Trung tâm này chưa có phụ tùng nào."}</td></tr>
+                  <tr>
+                    <td colSpan="8" className="empty-state-row">
+                      {loading
+                        ? "Đang tải..."
+                        : `Không tìm thấy phụ tùng${searchTerm ? ` với "${searchTerm}"` : "."}`}
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>
@@ -310,9 +351,9 @@ export default function PartManagement() {
             <div className="modal part-edit-modal glass-modal" onClick={(e) => e.stopPropagation()}>
               <div className="modal-header-custom">
                 <h2>{editingPart ? "Chỉnh sửa phụ tùng" : "Thêm phụ tùng mới"}</h2>
-                <button 
+                <button
                   type="button"
-                  className="btn-close-modal" 
+                  className="btn-close-modal"
                   onClick={() => !actionLoading && setShowForm(false)}
                   disabled={actionLoading}
                   title="Đóng"
@@ -326,41 +367,41 @@ export default function PartManagement() {
                 </div>
               )}
               <form onSubmit={handleSubmit} className="user-form part-form" noValidate>
-                 <div className="form-group">
-                   <label htmlFor="name">Tên Phụ tùng:</label>
-                   <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className={formErrors.name ? 'input-error' : ''} aria-describedby="nameError" aria-invalid={!!formErrors.name} />
-                   {formErrors.name && <span id="nameError" className="error-text">{formErrors.name}</span>}
-                 </div>
                 <div className="form-group">
-                   <label htmlFor="partTypeId">Loại Phụ tùng:</label>
-                   <select id="partTypeId" name="partTypeId" value={formData.partTypeId} onChange={handleChange} className={formErrors.partTypeId ? 'input-error' : ''} aria-describedby="partTypeIdError" aria-invalid={!!formErrors.partTypeId} disabled={!!editingPart}>
-                     <option value="">-- Chọn loại --</option>
-                     {partTypes.map((type) => (
-                       <option key={type.id} value={type.id}>{type.name}</option>
-                     ))}
-                   </select>
-                   {formErrors.partTypeId && <span id="partTypeIdError" className="error-text">{formErrors.partTypeId}</span>}
-                 </div>
-                 <div className="form-group">
-                   <label htmlFor="quantity">Số lượng:</label>
-                   <input type="number" id="quantity" name="quantity" value={formData.quantity} onChange={handleChange} min="0" step="1" className={formErrors.quantity ? 'input-error' : ''} aria-describedby="quantityError" aria-invalid={!!formErrors.quantity} />
-                   {formErrors.quantity && <span id="quantityError" className="error-text">{formErrors.quantity}</span>}
-                 </div>
-                 <div className="form-group">
-                   <label htmlFor="unitPrice">Đơn giá (VND):</label>
-                   <input type="number" id="unitPrice" name="unitPrice" value={formData.unitPrice} onChange={handleChange} min="0" step="any" className={formErrors.unitPrice ? 'input-error' : ''} aria-describedby="unitPriceError" aria-invalid={!!formErrors.unitPrice} />
-                    {formErrors.unitPrice && <span id="unitPriceError" className="error-text">{formErrors.unitPrice}</span>}
-                 </div>
-                 <div className="form-group">
-                   <label htmlFor="laborCost">Phí nhân công (VND):</label>
-                   <input type="number" id="laborCost" name="laborCost" value={formData.laborCost} onChange={handleChange} min="0" step="any" className={formErrors.laborCost ? 'input-error' : ''} aria-describedby="laborCostError" aria-invalid={!!formErrors.laborCost} />
-                   {formErrors.laborCost && <span id="laborCostError" className="error-text">{formErrors.laborCost}</span>}
-                 </div>
-                 <div className="form-group">
-                   <label htmlFor="materialCost">Phí vật tư (VND):</label>
-                   <input type="number" id="materialCost" name="materialCost" value={formData.materialCost} onChange={handleChange} min="0" step="any" className={formErrors.materialCost ? 'input-error' : ''} aria-describedby="materialCostError" aria-invalid={!!formErrors.materialCost} />
-                   {formErrors.materialCost && <span id="materialCostError" className="error-text">{formErrors.materialCost}</span>}
-                 </div>
+                  <label htmlFor="name">Tên Phụ tùng:</label>
+                  <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className={formErrors.name ? 'input-error' : ''} aria-describedby="nameError" aria-invalid={!!formErrors.name} />
+                  {formErrors.name && <span id="nameError" className="error-text">{formErrors.name}</span>}
+                </div>
+                <div className="form-group">
+                  <label htmlFor="partTypeId">Loại Phụ tùng:</label>
+                  <select id="partTypeId" name="partTypeId" value={formData.partTypeId} onChange={handleChange} className={formErrors.partTypeId ? 'input-error' : ''} aria-describedby="partTypeIdError" aria-invalid={!!formErrors.partTypeId} disabled={!!editingPart}>
+                    <option value="">-- Chọn loại --</option>
+                    {partTypes.map((type) => (
+                      <option key={type.id} value={type.id}>{type.name}</option>
+                    ))}
+                  </select>
+                  {formErrors.partTypeId && <span id="partTypeIdError" className="error-text">{formErrors.partTypeId}</span>}
+                </div>
+                <div className="form-group">
+                  <label htmlFor="quantity">Số lượng:</label>
+                  <input type="number" id="quantity" name="quantity" value={formData.quantity} onChange={handleChange} min="0" step="1" className={formErrors.quantity ? 'input-error' : ''} aria-describedby="quantityError" aria-invalid={!!formErrors.quantity} />
+                  {formErrors.quantity && <span id="quantityError" className="error-text">{formErrors.quantity}</span>}
+                </div>
+                <div className="form-group">
+                  <label htmlFor="unitPrice">Đơn giá (VND):</label>
+                  <input type="number" id="unitPrice" name="unitPrice" value={formData.unitPrice} onChange={handleChange} min="0" step="any" className={formErrors.unitPrice ? 'input-error' : ''} aria-describedby="unitPriceError" aria-invalid={!!formErrors.unitPrice} />
+                  {formErrors.unitPrice && <span id="unitPriceError" className="error-text">{formErrors.unitPrice}</span>}
+                </div>
+                <div className="form-group">
+                  <label htmlFor="laborCost">Phí nhân công (VND):</label>
+                  <input type="number" id="laborCost" name="laborCost" value={formData.laborCost} onChange={handleChange} min="0" step="any" className={formErrors.laborCost ? 'input-error' : ''} aria-describedby="laborCostError" aria-invalid={!!formErrors.laborCost} />
+                  {formErrors.laborCost && <span id="laborCostError" className="error-text">{formErrors.laborCost}</span>}
+                </div>
+                <div className="form-group">
+                  <label htmlFor="materialCost">Phí vật tư (VND):</label>
+                  <input type="number" id="materialCost" name="materialCost" value={formData.materialCost} onChange={handleChange} min="0" step="any" className={formErrors.materialCost ? 'input-error' : ''} aria-describedby="materialCostError" aria-invalid={!!formErrors.materialCost} />
+                  {formErrors.materialCost && <span id="materialCostError" className="error-text">{formErrors.materialCost}</span>}
+                </div>
                 <div className="form-actions">
                   <Button type="submit" className="btn-save" disabled={actionLoading}>
                     {actionLoading ? <Loading inline /> : <FaSave />}{" "}

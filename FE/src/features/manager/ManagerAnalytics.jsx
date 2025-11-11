@@ -10,6 +10,7 @@ import Sidebar from "@components/layout/Sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 import Loading from '@components/ui/Loading.jsx';
 import "./ManagerAnalytics.css";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 // Import graph components (reuse từ admin)
 import RevenueChart from "../admin/graphs/RevenueChart.jsx";
@@ -21,6 +22,7 @@ import { API_BASE_URL } from "@config/api.js";
 export default function ManagerAnalytics() {
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
+    const showLoading = useMinimumDelay(loading, 1000);
     const [error, setError] = useState(null);
 
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
@@ -32,7 +34,7 @@ export default function ManagerAnalytics() {
     const [feedbackData, setFeedbackData] = useState(null);
 
     const navigate = useNavigate();
-    
+
     const token = localStorage.getItem("token");
 
     // --- Fetch User Info ---
@@ -46,8 +48,8 @@ export default function ManagerAnalytics() {
                 return;
             }
             const data = await res.json();
-            setUserInfo({ 
-                fullName: data.fullName || "Manager", 
+            setUserInfo({
+                fullName: data.fullName || "Manager",
                 role: data.role || "MANAGER",
                 centerId: data.centerId || null,
                 centerName: data.centerName || "Trung tâm"
@@ -64,8 +66,8 @@ export default function ManagerAnalytics() {
         try {
             const url = `${API_BASE_URL}/api/manager/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
             console.log("Fetching revenue from:", url);
-            const res = await fetch(url, { 
-                headers: { Authorization: `Bearer ${token}` } 
+            const res = await fetch(url, {
+                headers: { Authorization: `Bearer ${token}` }
             });
             if (!res.ok) {
                 console.warn("Revenue API not available:", res.status);
@@ -146,10 +148,10 @@ export default function ManagerAnalytics() {
 
     useEffect(() => {
         if (!userInfo) return;
-        
+
         setLoading(true);
         setError(null);
-        
+
         // Promise.allSettled để các API fail độc lập không ảnh hưởng nhau
         Promise.allSettled([
             fetchRevenueData(),
@@ -172,22 +174,16 @@ export default function ManagerAnalytics() {
         });
     };
 
-    if (!userInfo && loading) {
+    if (showLoading) {
         return (
-            <div className="admin-dashboard-container">
-                <Sidebar />
-                <main className="admin-main-content">
-                    <Loading inline />
-                    <p>Đang tải dữ liệu...</p>
-                </main>
-            </div>
+            <Loading text="Đang tải thống kê..." />
         );
     }
 
     return (
         <div className="admin-dashboard-container">
-            <Sidebar 
-                userName={userInfo?.fullName} 
+            <Sidebar
+                userName={userInfo?.fullName}
                 userRole={userInfo?.role}
             />
             <main className="admin-main-content">
@@ -206,10 +202,10 @@ export default function ManagerAnalytics() {
                         <label htmlFor="monthFilter">
                             <FaFilter /> Tháng:
                         </label>
-                        <select 
-                            id="monthFilter" 
-                            value={selectedMonth} 
-                            onChange={e => setSelectedMonth(Number(e.target.value))} 
+                        <select
+                            id="monthFilter"
+                            value={selectedMonth}
+                            onChange={e => setSelectedMonth(Number(e.target.value))}
                             disabled={loading}
                         >
                             {renderMonthOptions()}
@@ -219,10 +215,10 @@ export default function ManagerAnalytics() {
                         <label htmlFor="yearFilter">
                             <FaFilter /> Năm:
                         </label>
-                        <select 
-                            id="yearFilter" 
-                            value={selectedYear} 
-                            onChange={e => setSelectedYear(Number(e.target.value))} 
+                        <select
+                            id="yearFilter"
+                            value={selectedYear}
+                            onChange={e => setSelectedYear(Number(e.target.value))}
                             disabled={loading}
                         >
                             {renderYearOptions()}

@@ -552,6 +552,19 @@ public class AdminService {
         return planItemRepo.findById(planItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Maintenance Plan Item not found with ID: " + planItemId));
     }
+
+    /**
+     * Lấy danh sách tất cả các Model xe đã có lịch bảo dưỡng trên hệ thống
+     */
+    public List<String> getAvailableVehicleModels() {
+        List<MaintenanceSchedule> schedules = maintenanceScheduleRepo.findAll();
+
+        return schedules.stream()
+                .map(MaintenanceSchedule::getVehicleModel)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+    }
     // ==================== Private Helper Methods ====================
     private void validateAdminRole(Integer userId) {
         Users user = userRepo.findById(userId)

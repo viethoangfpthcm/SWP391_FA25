@@ -11,6 +11,7 @@ import FilterButtons from "./FilterButtons.jsx";
 import TaskTable from "./TaskTable.jsx";
 import KmModal from "./KmModal.jsx";
 import { API_BASE_URL } from "@config/api.js";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 const BOOKING_STATUS_MAP = {
   ASSIGNED: { text: "Chờ xử lý", className: "pending" },
@@ -28,6 +29,7 @@ export default function TechnicianTask() {
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [summary, setSummary] = useState({ pending: 0, inProgress: 0, completed: 0, total: 0 });
   const [loading, setLoading] = useState(true);
+  const showLoading = useMinimumDelay(loading, 1000);
   const [filterStatus, setFilterStatus] = useState("all");
   const [error, setError] = useState(null);
   const [showKmModal, setShowKmModal] = useState(false);
@@ -36,7 +38,7 @@ export default function TechnicianTask() {
 
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  
+
 
   // Fetch thông tin user
   const fetchUserInfo = async () => {
@@ -116,12 +118,11 @@ export default function TechnicianTask() {
 
   const handleViewTask = (bookingId) => navigate(`/checklist?bookingId=${bookingId}`);
 
-  if (loading)
+  if (showLoading) {
     return (
-      <p className="loading">
-        <Loading inline /> Đang tải dữ liệu...
-      </p>
+      <Loading text="Đang tải công việc..." />
     );
+  }
 
   return (
     <div className="technician-page">
