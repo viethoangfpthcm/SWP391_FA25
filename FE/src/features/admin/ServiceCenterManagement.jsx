@@ -157,17 +157,17 @@ export default function ServiceCenterManagement() {
     setActionLoading(true);
 
     try {
-      const method = formData.centerId ? "PUT" : "POST";
-      const endpoint = formData.centerId
-        ? `${API_BASE_URL}/api/admin/service-centers/${formData.centerId}`
+      const method = formData.id ? "PUT" : "POST";
+      const endpoint = formData.id
+        ? `${API_BASE_URL}/api/admin/service-centers/${formData.id}`
         : `${API_BASE_URL}/api/admin/service-centers`;
 
       const body = {
         name: formData.name.trim(),
         address: formData.address.trim(),
         phone: formData.phone.trim(),
-        openingHour: formData.openingHour.trim() + ":00",
-        closingHour: formData.closingHour.trim() + ":00",
+        openingHour: formData.openingHour.trim() ,
+        closingHour: formData.closingHour.trim() ,
       };
 
       const res = await fetch(endpoint, {
