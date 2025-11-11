@@ -120,8 +120,8 @@ public class AdminService {
         Users user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
 
-        if (user.getRole() != UserRole.STAFF && user.getRole() != UserRole.TECHNICIAN && user.getRole() != UserRole.CUSTOMER) {
-            throw new InvalidDataException("Can only delete STAFF or TECHNICIAN accounts or CUSTOMER accounts");
+        if (user.getRole() != UserRole.STAFF && user.getRole() != UserRole.TECHNICIAN && user.getRole() != UserRole.CUSTOMER && user.getRole() != UserRole.MANAGER) {
+            throw new InvalidDataException("Can only delete STAFF or TECHNICIAN accounts or CUSTOMER accounts and MANAGER accounts.");
         }
         userRepo.delete(user);
         log.info("User {} deleted successfully", userId);

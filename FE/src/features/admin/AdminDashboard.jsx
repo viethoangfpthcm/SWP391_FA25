@@ -312,7 +312,7 @@ export default function AdminDashboard() {
         let fieldErrors = {};
         try {
           const errorData = await res.json();
-          errorMsg = errorData.message || errorData.error || `L?i ${res.status}`;
+          errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
           // Check if backend returned field-specific errors
           if (errorData.fieldErrors && typeof errorData.fieldErrors === 'object') {
             fieldErrors = errorData.fieldErrors;
@@ -320,7 +320,7 @@ export default function AdminDashboard() {
             errorMsg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin."; // More generic message
           }
         } catch (parseError) {
-          errorMsg = `L?i ${res.status}. Không thể đọc chi tiết lỗi.`;
+          errorMsg = `Lỗi ${res.status}. Không thể đọc chi tiết lỗi.`;
         }
         throw new Error(errorMsg); // Throw error to be caught below
       }
@@ -334,7 +334,7 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error("Submit error:", err);
       // Display general submit error inside the modal
-      setError(err.message || "Kh�ng th? th?c hi?n y�u c?u.");
+      setError(err.message || "Không thể thực hiện yêu cầu.");
     } finally {
       setActionLoading(false); // Stop loading spinner on save button
     }
@@ -365,10 +365,10 @@ export default function AdminDashboard() {
       }
 
       if (!res.ok) {
-        let errorMsg = "Kh�ng th? x�a ngu?i d�ng.";
+        let errorMsg = "Không thể xóa người dùng.";
         try {
           const errorData = await res.json();
-          errorMsg = errorData.message || errorData.error || `L?i ${res.status}`;
+          errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
         } catch (e) { }
         throw new Error(errorMsg);
       }
@@ -412,7 +412,7 @@ export default function AdminDashboard() {
       }
 
       if (!res.ok) {
-        let errorMsg = `Không thể cập nhật trạng thái. (L?i ${res.status})`;
+        let errorMsg = `Không thể cập nhật trạng thái. (Lỗi ${res.status})`;
         try {
           const errorData = await res.json();
           errorMsg = errorData.message || errorData.error || errorMsg;
