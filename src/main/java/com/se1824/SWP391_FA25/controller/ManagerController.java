@@ -22,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/manager")
@@ -169,5 +171,15 @@ public class ManagerController {
     public ResponseEntity<FeedbackStatsDTO> getFeedbackAnalyticsForManager() {
         FeedbackStatsDTO data = managerService.getFeedbackAnalyticsForManager();
         return ResponseEntity.ok(data);
+    }
+
+    /**
+     * Lấy danh sách các Model xe (ví dụ: "VinFast VF 3",....)
+     * GET /api/manager/vehicle-models
+     */
+    @GetMapping("/vehicle-models")
+    public ResponseEntity<List<String>> getAvailableVehicleModels() {
+        List<String> models = managerService.getAvailableVehicleModels();
+        return ResponseEntity.ok(models);
     }
 }
