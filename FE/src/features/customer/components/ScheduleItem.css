@@ -1,0 +1,44 @@
+/* ScheduleItem styles */
+.schedule-list { display:flex; flex-direction:column; gap:20px; }
+
+.schedule-item {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  padding: 20px;
+  border-left: 5px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.25s ease;
+  color: #fefefe;
+}
+
+.schedule-item:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(0,0,0,0.4); }
+
+.schedule-item-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px }
+.schedule-item-header h3 { margin:0; font-size:1.15rem; color:#ffffff; font-weight:600 }
+.description { color:#ffffff; margin-bottom:12px; line-height:1.4 }
+.schedule-item strong { color:#ffffff !important; font-weight:600 }
+.schedule-item p { margin:6px 0; font-size:0.95rem; color:#ffffff }
+
+.status-container { display:flex; align-items:center; gap:8px; font-size:0.9rem; font-weight:600; color:#e9ecf3 }
+.status-icon { font-size:1.4rem }
+.status-label { text-transform:uppercase; color:#ffffff }
+
+/* status variations */
+.schedule-item.status-next_time { border-left-color:#0a4ff0; background:rgba(10,79,240,0.15); border-color:rgba(10,79,240,0.25); box-shadow:0 8px 25px rgba(10,79,240,0.25) }
+.status-icon.next-time { color:#0a4ff0 }
+.schedule-item.status-on_time { border-left-color:#28a745; background:rgba(40,167,69,0.15); border-color:rgba(40,167,69,0.25) }
+.status-icon.on-time { color:#28a745 }
+.schedule-item.status-overdue { border-left-color:#ff3b3b; background:rgba(255,59,59,0.15); border-color:rgba(255,59,59,0.25); box-shadow:0 8px 25px rgba(255,59,59,0.2) }
+.status-icon.overdue { color:#ff3b3b }
+.schedule-item.status-expired { border-left-color:#dc3545; background:rgba(220,53,69,0.15); border-color:rgba(220,53,69,0.25) }
+.status-icon.expired { color:#dc3545 }
+.schedule-item.status-locked { border-left-color:#adb5bd; background:rgba(173,181,189,0.1); border-color:rgba(173,181,189,0.2); opacity:0.8 }
+.status-icon.locked { color:#adb5bd }
+
+.book-now-button { display:inline-flex; align-items:center; gap:8px; margin-top:12px; padding:10px 20px; background:linear-gradient(90deg,#0a4ff0,#003cd6); color:#fff; border:none; border-radius:10px; font-weight:600; font-size:1rem; cursor:pointer; box-shadow:0 4px 12px rgba(10,79,240,0.25); transition:all 0.25s ease }
+.book-now-button:hover { background:linear-gradient(90deg,#003cd6,#002ea6); transform:translateY(-2px); box-shadow:0 6px 16px rgba(10,79,240,0.35) }
+
+.completed-badge { margin-top:12px; display:inline-flex; align-items:center; gap:8px; color:#9ff2b0 }

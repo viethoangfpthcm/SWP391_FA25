@@ -1,0 +1,134 @@
+/* ==== Sidebar tổng thể ==== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background: #ffffff;
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #e5e7eb;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  z-index: 100;
+  font-family: "Inter", sans-serif;
+}
+
+.sidebar.closed {
+  width: 100px;
+}
+
+/* ==== Thông tin người dùng ==== */
+.user-info {
+  text-align: center;
+  padding: 24px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(180deg, #f9fafb 0%, #f1f5f9 100%);
+  border-radius: 0 0 12px 12px;
+}
+
+.user-info h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 4px 0;
+  color: #007aff;
+}
+
+.user-info p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* ==== Danh sách menu ==== */
+.menu {
+  flex-grow: 1;
+  padding: 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  color: #1e293b;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  border-left: 4px solid transparent;
+  border-radius: 10px;
+  margin: 0 10px;
+  transition: all 0.25s ease;
+}
+
+/* Hiệu ứng hover */
+.menu-item:hover {
+  background: rgba(0, 122, 255, 0.08);
+  color: #007aff;
+  border-left: 4px solid #007aff;
+  transform: translateX(3px);
+}
+
+/* Mục đang active */
+.menu-item.active {
+  background: rgba(0, 122, 255, 0.12);
+  color: #007aff;
+  font-weight: 600;
+  border-left: 4px solid #007aff;
+}
+
+/* ==== Nút Đăng xuất ==== */
+.menu-footer {
+  margin-top: auto;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 10px;
+}
+
+.logout-btn {
+  width: 90%;
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 10px;
+  margin: 0 10px 14px 10px;
+  transition: all 0.25s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  transform: translateX(3px);
+}
+
+/* ==== Ẩn chữ khi sidebar thu nhỏ ==== */
+.sidebar.closed .user-info h3,
+.sidebar.closed .user-info p,
+.sidebar.closed .menu-item span,
+.sidebar.closed .logout-btn span {
+  display: none;
+}
+
+.sidebar.closed .menu-item,
+.sidebar.closed .logout-btn {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+/* ==== Hiệu ứng chuyển động tổng thể ==== */
+.sidebar,
+.menu-item,
+.logout-btn {
+  transition: all 0.3s ease;
+}

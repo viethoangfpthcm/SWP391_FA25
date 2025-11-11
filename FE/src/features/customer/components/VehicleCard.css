@@ -1,0 +1,50 @@
+/* VehicleCard styles */
+.vehicle-card {
+  padding: 20px;
+  /* glass card styling to match dashboard */
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  color: #fefefe;
+}
+
+.vehicle-card h3 {
+  margin: 0 0 10px;
+  color: #fefefe;
+}
+
+.vehicle-card p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+  color: #d9dee8;
+}
+
+.vehicle-actions {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: red;
+  gap: 5px;
+  margin-top: 15px;
+}
+
+.vehicle-actions button {
+  flex: none;
+}
+
+.btn-delete {
+  background: rgba(255, 0, 0, 0.15);
+  color: #ff4d4d;
+  border: 1.5px solid #ff4d4d;
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background: #ff4d4d;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+}

@@ -1,37 +1,48 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ProtectedRoute from "@components/shared/ProtectedRoute.jsx";
 
-import LoginForm from "./page/login/LoginForm.jsx";
-import Homepage from "./page/home/Homepage.jsx";
-import About from "./page/home/AboutUs.jsx";
-import ResetPassword from "./page/login/ResetPassword.jsx";
-import ProfilePage from "./page/ProfilePage/ProfilePage.jsx";
+import LoginForm from "@features/auth/LoginForm.jsx";
+import Homepage from "@pages/HomePage.jsx";
+import About from "@components/shared/AboutUs.jsx";
+import ResetPassword from "@features/auth/ResetPassword.jsx";
+import ProfilePage from "@pages/ProfilePage.jsx";
 
 // Staff
-import StaffDashboard from "./page/staff/StaffDashboard.jsx";
-import StaffCheckList from "./page/checkList/StaffCheckList.jsx";
+import StaffDashboard from "@features/staff/StaffDashboard.jsx";
+import StaffCheckList from "@features/checklist/StaffCheckList.jsx";
+import StaffAnalytics from "@features/staff/StaffAnalytics.jsx";
+import StaffPartsView from "@features/staff/StaffPartsView.jsx";
 
 // Technician
-import TechnicianTask from "./page/technican/technicantask.jsx";
-import CheckList from "./page/checkList/CheckList.jsx";
+import TechnicianTask from "@features/technician/TechnicianTask.jsx";
+import CheckList from "@features/checklist/CheckList.jsx";
 
 // Admin
-import AdminDashboard from "./page/admin/AdminDashboard.jsx";
-import ServiceCenterManagement from "./page/admin/ServiceCenterManagement.jsx";
-import PartManagement from "./page/admin/PartManagement.jsx";
-import AdminBookingManagement from "./page/admin/AdminBookingManagement.jsx";
-import AdminPaymentManagement from "./page/admin/AdminPaymentManagement.jsx";
-import AdminChecklistDetail from "./page/admin/AdminChecklistDetail.jsx";
-import AdminAnalytics from "./page/admin/AdminAnalytics.jsx";
+import AdminDashboard from "@features/admin/AdminDashboard.jsx";
+import ServiceCenterManagement from "@features/admin/ServiceCenterManagement.jsx";
+import PartManagement from "@features/admin/PartManagement.jsx";
+import AdminBookingManagement from "@features/admin/AdminBookingManagement.jsx";
+import AdminPaymentManagement from "@features/admin/AdminPaymentManagement.jsx";
+import AdminChecklistDetail from "@features/admin/AdminChecklistDetail.jsx";
+import AdminAnalytics from "@features/admin/AdminAnalytics.jsx";
+import AdminUpdate from "@features/admin/AdminScheduleManagement.jsx";
+
+// Manager
+import ManagerDashboard from "@features/manager/ManagerDashboard.jsx";
+import ManagerPartManagement from "@features/manager/PartManagement.jsx";
+import ManagerBookingManagement from "@features/manager/BookingManagement.jsx";
+import ManagerPaymentManagement from "@features/manager/PaymentManagement.jsx";
+import ManagerAnalytics from "@features/manager/ManagerAnalytics.jsx";
 
 // Customer
-import CustomerDashboard from "./page/customer/CustomerDashboard.jsx";
-import VehicleMaintenanceSchedule from "./page/customer/VehicleMaintenanceSchedule.jsx";
-import Appoint from "./page/home/Appoint.jsx";
-import Report1 from "./page/report/report1.jsx";
+import CustomerDashboard from "@features/customer/CustomerDashboard.jsx";
+import VehicleMaintenanceSchedule from "@features/customer/shared/VehicleMaintenanceSchedule.jsx";
+import Appoint from "@components/shared/Appoint.jsx";
+import Report1 from "@features/report/report1.jsx";
 
 // Payment
-import PaymentResult from "./page/payment/PaymentResult.jsx";
+import PaymentResult from "@features/payment/PaymentResult.jsx";
+import AdminScheduleManagement from "./features/admin/AdminScheduleManagement";
 
 function App() {
   return (
@@ -66,6 +77,22 @@ function App() {
         element={
           <ProtectedRoute requiredRole="STAFF">
             <StaffCheckList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/staff/analytics"
+        element={
+          <ProtectedRoute requiredRole="STAFF">
+            <StaffAnalytics />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/staff/parts"
+        element={
+          <ProtectedRoute requiredRole="STAFF">
+            <StaffPartsView />
           </ProtectedRoute>
         }
       />
@@ -145,7 +172,55 @@ function App() {
           </ProtectedRoute>
         }
       />
-
+ <Route
+        path="/admin/update"
+        element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <AdminScheduleManagement />
+          </ProtectedRoute>
+        }
+      />
+      {/* Manager */}
+      <Route
+        path="/manager"
+        element={
+          <ProtectedRoute requiredRole="MANAGER">
+            <ManagerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manager/parts"
+        element={
+          <ProtectedRoute requiredRole="MANAGER">
+            <ManagerPartManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manager/bookings"
+        element={
+          <ProtectedRoute requiredRole="MANAGER">
+            <ManagerBookingManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manager/payments"
+        element={
+          <ProtectedRoute requiredRole="MANAGER">
+            <ManagerPaymentManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/manager/analytics"
+        element={
+          <ProtectedRoute requiredRole="MANAGER">
+            <ManagerAnalytics />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Customer */}
       <Route

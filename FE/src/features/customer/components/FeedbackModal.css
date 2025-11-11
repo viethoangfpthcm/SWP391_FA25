@@ -1,0 +1,184 @@
+/* =========================
+   FIX TRIỆT ĐỂ FEEDBACK MODAL
+   ========================= */
+.modal-content.feedback-modal {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5) !important;
+  color: #fff !important;
+  padding: 28px 30px !important;
+  width: 90%;
+  max-width: 440px !important;
+  animation: fadeIn 0.3s ease, popIn 0.25s ease;
+}
+
+/* Tiêu đề */
+.feedback-modal .modal-header h2 {
+  color: #fff !important;
+  text-shadow: 0 0 8px rgba(124, 58, 237, 0.3);
+}
+
+/* Nhãn */
+.feedback-modal form .form-group > label {
+  color: #fff !important;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Khung form-group kính mờ */
+.feedback-modal form .form-group {
+  position: relative;
+  margin: 14px 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Textarea và input trong suốt, chữ trắng */
+.feedback-modal textarea,
+.feedback-modal input,
+.feedback-modal select {
+  width: 100%;
+  border-radius: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  color-scheme: dark;
+  padding: 12px 14px !important;
+  outline: none !important;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+
+.feedback-modal textarea::placeholder,
+.feedback-modal input::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Focus */
+.feedback-modal textarea:focus,
+.feedback-modal input:focus {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(124, 58, 237, 0.9) !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25) !important;
+}
+
+/* Rating */
+.feedback-modal .stars svg {
+  font-size: 2.4rem;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+}
+.feedback-modal .stars .star-empty { color: rgba(255, 255, 255, 0.25); fill: rgba(255,255,255,0.25) !important; }
+.feedback-modal .stars .star-selected { color: #ffd43b; fill: #ffd43b !important; }
+.feedback-modal .stars svg:hover { transform: scale(1.1); color: #ffea70; fill: #ffea70 !important; }
+
+/* Ensure svg children also inherit fill when a class is applied (covers nested elements) */
+.feedback-modal .stars .star-selected * { fill: #ffd43b !important; }
+.feedback-modal .stars .star-empty * { fill: rgba(255,255,255,0.25) !important; }
+
+/* Buttons */
+.feedback-modal .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.feedback-modal .btn-cancel {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ff7c7c;
+  border: 1px solid rgba(255, 90, 90, 0.5);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.feedback-modal .btn-cancel:hover {
+  background: rgba(255, 90, 90, 0.2);
+  color: #fff;
+  border-color: rgba(255, 90, 90, 0.8);
+  transform: translateY(-1px);
+}
+
+.feedback-modal .btn-save {
+  background: linear-gradient(90deg, #0a4ff0, #003cd6);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(10, 79, 240, 0.3);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.feedback-modal .btn-save:hover {
+  background: linear-gradient(90deg, #003cd6, #002ea6);
+  transform: translateY(-1px);
+}
+
+/* Animation */
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ============================================
+important nha   ============================================ */
+
+div.modal-content.feedback-modal form .form-group textarea#comment {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 10px !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  color-scheme: dark !important;
+  font-family: inherit !important;
+  font-size: 1rem !important;
+  line-height: 1.4 !important;
+  padding: 12px 14px !important;
+  width: 100% !important;
+  box-shadow: none !important;
+  outline: none !important;
+  resize: vertical !important;
+}
+
+/* Placeholder */
+div.modal-content.feedback-modal form .form-group textarea#comment::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Focus */
+div.modal-content.feedback-modal form .form-group textarea#comment:focus {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(124, 58, 237, 0.9) !important;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25) !important;
+}
+
+/* Extra-high-specificity fallback: force any label inside feedback modal to white */
+html body .modal-content.feedback-modal.customer-modal .form-group > label,
+html body .modal-content.feedback-modal.customer-modal label,
+.modal-content.feedback-modal.customer-modal .form-group > label,
+div.modal-content.feedback-modal form .form-group.rating-group > label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  filter: none !important;
+  text-shadow: 0 0 6px rgba(255,255,255,0.06) !important;
+  opacity: 1 !important;
+}

@@ -1,0 +1,135 @@
+/* BookingTable.css */
+.table-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.data-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.data-table th {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.data-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s;
+}
+
+.data-table tbody tr:hover {
+  background: #f8f9ff;
+}
+
+.data-table td {
+  padding: 14px 12px;
+  vertical-align: middle;
+}
+
+.cell-main {
+  display: block;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 2px;
+}
+
+.cell-sub {
+  display: block;
+  font-size: 13px;
+  color: #718096;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px !important;
+  color: #a0aec0;
+  font-size: 15px;
+}
+
+.empty-state svg {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.empty-state.error-in-table {
+  color: #f56565;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-approved {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-assigned {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.status-inprogress {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-paid {
+  background: #ddd6fe;
+  color: #5b21b6;
+}
+
+.status-declined {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-cancelled {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.status-default {
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: 600;
+}
+
+.action-buttons-cell {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}

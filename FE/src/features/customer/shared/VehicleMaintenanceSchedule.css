@@ -1,0 +1,50 @@
+/* Page layout for vehicle schedule (kept minimal) */
+.schedule-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url("/background.png") no-repeat center center fixed;
+  background-size: cover;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #f0f0f0;
+}
+
+.schedule-content {
+  flex: 1;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  width: 90%;
+  position: relative;
+  z-index: 1;
+}
+
+.schedule-content h1 {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+/* keep small utility for back-button */
+.back-button {
+  display: block;
+  margin: 40px auto 20px auto;
+  width: fit-content;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #f0f0f0;
+  border-radius: 10px;
+  padding: 12px 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+}
+
+.back-button:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2) }

@@ -1,0 +1,142 @@
+/* StaffAnalytics.css */
+.read-only-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 8px;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+}
+
+.read-only-badge svg {
+  font-size: 14px;
+}
+
+.filters-container {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-group label {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-select,
+.filter-group select {
+  padding: 8px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #2d3748;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 120px;
+}
+
+.filter-select:hover,
+.filter-group select:hover {
+  border-color: #cbd5e0;
+}
+
+.filter-select:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.analytics-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  min-height: 400px;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.analytics-card.full-width {
+  grid-column: 1 / -1;
+  min-height: 450px;
+  max-height: 550px;
+}
+
+.analytics-card h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f0f0f0;
+  flex-shrink: 0;
+}
+
+.analytics-card > div:last-child,
+.analytics-card > canvas {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  color: #a0aec0;
+}
+
+.loading-container p {
+  margin-top: 16px;
+  font-size: 15px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px 20px;
+  color: #a0aec0;
+  font-size: 15px;
+}

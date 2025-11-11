@@ -1,0 +1,173 @@
+/* ConfirmationModal.css - Modern Style */
+
+.confirmation-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999; /* must be above footer and other content */
+  pointer-events: auto;
+}
+
+.confirmation-modal {
+  background: #fff !important;
+  border-radius: 16px !important;
+  border: none !important;
+  outline: none !important;
+  max-width: 450px !important;
+  width: 90% !important;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5) !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modal-fade-in 0.25s ease-out;
+}
+
+/* Override cho modal nếu có class khác */
+.modal.confirmation-modal {
+  border: none !important;
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header với gradient đẹp */
+.confirmation-header {
+  background: linear-gradient(135deg, #4f46e5, #6366f1, #8b5cf6);
+  padding: 24px 30px;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.confirmation-icon {
+  font-size: 3rem;
+  color: #fff;
+  margin-bottom: 12px;
+  animation: pulse-warning 2s ease-in-out infinite;
+}
+
+@keyframes pulse-warning {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.confirmation-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Body */
+.confirmation-body {
+  padding: 30px 32px;
+  background: #ffffff;
+}
+
+.confirmation-body p {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* Footer với các nút */
+.confirmation-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 18px 32px;
+  border-top: 1px solid #e5e7eb;
+  background: #f8fafb;
+}
+
+.confirmation-footer button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirmation-footer .btn-cancel {
+  background-color: #6b7280;
+  color: white;
+}
+
+.confirmation-footer .btn-cancel:hover {
+  background-color: #4b5563;
+  transform: translateY(-1px);
+}
+
+.confirmation-footer .btn-confirm {
+  background-color: #10b981;
+  color: white;
+}
+
+.confirmation-footer .btn-confirm:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Nút xóa (đỏ) */
+.confirmation-footer .btn-confirm.btn-danger {
+  background-color: #ef4444;
+}
+
+.confirmation-footer .btn-confirm.btn-danger:hover {
+  background-color: #dc2626;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.confirmation-footer button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.reason-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.1);
+  color: #f0f0f0;
+  resize: none;
+  margin-top: 10px;
+  font-family: inherit;
+}
+
+.reason-input:focus {
+  outline: none;
+  border-color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.15);
+}
+
+/* Spinner animation */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

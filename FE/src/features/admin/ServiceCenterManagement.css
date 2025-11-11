@@ -1,0 +1,343 @@
+/* ============================================================= */
+/* 🏢 SERVICE CENTER MANAGEMENT - Modern & Balanced Layout (Final) */
+/* ============================================================= */
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1e40af;
+  --secondary: #6b7280;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --danger-dark: #b91c1c;
+  --gray-light: #f3f4f6;
+  --border: #e5e7eb;
+  --text-dark: #111827;
+  --bg-light: #f9fafb;
+  --radius: 12px;
+}
+
+/* ===== Layout ===== */
+.scm-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-light);
+  font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+.scm-content {
+  flex: 1;
+  margin-left: 250px;
+  padding: 24px 32px;
+  overflow-x: auto;
+}
+
+/* ===== Header ===== */
+.scm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #e0e7ff, #f3f4ff);
+  border: 1px solid #dbeafe;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  box-shadow: 0 3px 12px rgba(37, 99, 235, 0.08);
+  margin-bottom: 24px;
+}
+
+.scm-header-left h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.55rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin: 0;
+}
+
+.scm-header-left p {
+  font-size: 0.95rem;
+  color: #475569;
+  margin: 0;
+}
+
+/* ===== Add Button ===== */
+.scm-btn-add {
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.3);
+}
+
+.scm-btn-add:hover {
+  background-color: var(--primary-dark);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+/* ===== Table ===== */
+.scm-table-card {
+  background-color: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 16px;
+}
+
+.scm-data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.scm-data-table th,
+.scm-data-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  font-size: 15px;
+}
+
+.scm-data-table th {
+  background-color: var(--gray-light);
+  font-weight: 600;
+  color: var(--text-dark);
+  text-transform: uppercase;
+}
+
+.scm-data-table tr:hover {
+  background-color: #f9fafb;
+}
+
+/* ===== Action Buttons ===== */
+.scm-action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.scm-btn-action {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.scm-btn-edit {
+  background-color: var(--primary);
+  color: white;
+}
+.scm-btn-edit:hover {
+  background-color: var(--primary-dark);
+}
+
+.scm-btn-delete {
+  background-color: var(--danger);
+  color: white;
+}
+.scm-btn-delete:hover {
+  background-color: var(--danger-dark);
+}
+
+/* ============================================================= */
+/* 🟦 MODAL (Popup chỉnh sửa trung tâm) */
+/* ============================================================= */
+
+.scm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.scm-modal {
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  width: 100%;
+  max-width: 750px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.35);
+  animation: fadeInModal 0.25s ease-out;
+}
+
+/* ===== Header ===== */
+.scm-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 26px;
+  border-bottom: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #4f46e5, #6366f1, #8b5cf6);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.scm-modal-header h2 {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.scm-btn-close {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.scm-btn-close:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
+}
+
+/* ===== Body Form ===== */
+.scm-modal form {
+  padding: 28px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  background: #fff;
+}
+
+.scm-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.scm-form-group label {
+  font-weight: 600;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.scm-form-group input {
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.95rem;
+  color: #111827;
+  background: #fff;
+  transition: all 0.2s;
+}
+
+.scm-form-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+  outline: none;
+  background: #f0f9ff;
+}
+
+/* Đều chiều rộng các input */
+.scm-modal .scm-form-group input[type="text"],
+.scm-modal .scm-form-group input[type="time"],
+.scm-modal .scm-form-group input[type="tel"] {
+  width: 100%;
+  height: 45px;
+  box-sizing: border-box;
+}
+
+/* ===== Footer ===== */
+.scm-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 32px;
+  border-top: 1px solid #e5e7eb;
+  background: #f8fafb;
+}
+
+.scm-btn-save {
+  background-color: var(--primary);
+  color: #fff;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.scm-btn-save:hover {
+  background-color: var(--primary-dark);
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
+}
+
+.scm-btn-cancel {
+  background-color: #e5e7eb;
+  color: #111827;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.scm-btn-cancel:hover {
+  background-color: #d1d5db;
+}
+
+/* ===== Animation & Scrollbar ===== */
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.scm-modal::-webkit-scrollbar {
+  width: 8px;
+}
+.scm-modal::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 6px;
+}
+.scm-modal::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .scm-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .scm-modal {
+    margin: 0 10px;
+  }
+
+  .scm-modal form {
+    padding: 20px;
+  }
+}

@@ -1,0 +1,94 @@
+/* StaffPartsView.css */
+.parts-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  flex: 1;
+  max-width: 500px;
+  transition: border-color 0.2s;
+}
+
+.search-box:focus-within {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-box svg {
+  color: #a0aec0;
+  font-size: 16px;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  color: #2d3748;
+}
+
+.search-box input::placeholder {
+  color: #a0aec0;
+}
+
+.parts-count {
+  background: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #718096;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.parts-count strong {
+  color: #667eea;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.stock-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 50px;
+  text-align: center;
+}
+
+.stock-high {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.stock-low {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.stock-out {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-available {
+  background: #d1fae5;
+  color: #065f46 !important;
+}
+
+.status-out {
+  background: #f3f4f6;
+  color: #6b7280;
+}

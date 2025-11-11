@@ -1,0 +1,52 @@
+.user-management {
+  animation: fadeIn 0.3s ease;
+}
+
+.user-management-header {
+  margin-bottom: 2rem;
+}
+
+.user-management-header h2 {
+  color: #2d3748;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: #718096;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.user-management-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.no-users {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: #a0aec0;
+}
+
+.no-users svg {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
