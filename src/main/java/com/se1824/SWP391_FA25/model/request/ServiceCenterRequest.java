@@ -29,10 +29,10 @@ public class ServiceCenterRequest {
     private String address;
 
     @NotNull(message = "Opening hour cannot be null.")
-    @JsonFormat(pattern = "HH:mm:ss", shape = JsonFormat.Shape.STRING) // Định dạng HH:mm:ss, "08:00:00"
+    @JsonFormat(pattern = "HH:mm[:ss]", shape = JsonFormat.Shape.STRING)
     private LocalTime openingHour;
 
     @NotNull(message = "Closing hour cannot be null.")
-    @JsonFormat(pattern = "HH:mm:ss", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "HH:mm[:ss]", shape = JsonFormat.Shape.STRING)
     private LocalTime closingHour;
 }
