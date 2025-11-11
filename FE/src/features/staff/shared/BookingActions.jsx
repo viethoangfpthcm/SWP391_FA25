@@ -1,5 +1,5 @@
 import React from "react";
-import { FaCheck, FaTimes, FaEye, FaComments, FaDollarSign } from "react-icons/fa";
+import { FaClipboardList, FaComments, FaDollarSign, FaCheck, FaTimes } from "react-icons/fa";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
 import "./BookingActions.css";
@@ -72,35 +72,35 @@ export default function BookingActions({
       </Button>
     );
   }
-
   if (isAssigned || isInProgress || isPaid || isCompleted) {
     return (
       <div className="action-buttons-cell">
         <Button
-          className="btn-action btn-view"
+          className="btn-action btn-checklist"
           onClick={() => onViewChecklist(bookingId)}
           disabled={actionLoading === bookingId}
           title="Xem chi tiết checklist"
         >
-          <FaEye /> Xem
+          <FaClipboardList /> Checklist
         </Button>
+
+        <Button
+          className="btn-action btn-feedback"
+          onClick={() => onViewFeedback(bookingId)}
+          disabled={actionLoading === bookingId}
+          title="Xem đánh giá của khách hàng"
+        >
+          <FaComments /> Feedback
+        </Button>
+
         {(isPaid || isCompleted) && (
-          <>
-            <Button
-              className="btn-action btn-payment"
-              onClick={() => onViewPayment(bookingId)}
-              title="Xem thông tin thanh toán"
-            >
-              <FaDollarSign /> Payment
-            </Button>
-            <Button
-              className="btn-action btn-feedback"
-              onClick={() => onViewFeedback(bookingId)}
-              title="Xem feedback khách hàng"
-            >
-              <FaComments /> Feedback
-            </Button>
-          </>
+          <Button
+            className="btn-action btn-payment"
+            onClick={() => onViewPayment(bookingId)}
+            title="Xem thông tin thanh toán"
+          >
+            <FaDollarSign /> Payment
+          </Button>
         )}
       </div>
     );

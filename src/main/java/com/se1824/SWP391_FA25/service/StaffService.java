@@ -35,6 +35,8 @@ public class StaffService {
     private final AnalyticService analyticService;
     private final ServiceCenterService serviceCenterService;
     private final FeedbackService feedbackService;
+    private final MaintenanceScheduleRepository maintenanceScheduleRepo;
+
     /**
      * Lấy danh sách booking Pending của Service Center mà staff đang quản lý
      */
@@ -48,6 +50,7 @@ public class StaffService {
         List<Booking> bookings = bookingRepo.findByServiceCenter_IdAndStatus(centerId, BookingStatus.PENDING);
         return bookings.stream().map(this::mapToStaffBookingDTO).collect(Collectors.toList());
     }
+
     public List<StaffBookingDTO> getAllBookings() {
         Users currentStaff = authService.getCurrentAccount();
         validateStaffRole(currentStaff.getUserId());
@@ -134,6 +137,7 @@ public class StaffService {
         bookingRepo.save(booking);
         log.info("Technician {} assigned to booking {} by staff {}", request.getTechnicianId(), request.getBookingId(), staffId);
     }
+
     /**
      * Staff bàn giao xe và hoàn tất booking
      * Yêu cầu: Booking status = "Paid" VÀ Checklist status = "Completed"
@@ -228,6 +232,7 @@ public class StaffService {
 
         return mapToPaymentDTO(payment);
     }
+
     /**
      * Lấy dữ liệu doanh thu cho Staff (chỉ center của Staff)
      */
@@ -267,6 +272,7 @@ public class StaffService {
         // Gọi service chung với centerId cố định
         return serviceCenterService.getPartAnalytics(centerId, month, year);
     }
+
     /**
      * Lấy dữ liệu feedback cho Staff (chỉ center của Staff)
      */
@@ -289,6 +295,7 @@ public class StaffService {
             throw new InvalidDataException("Only STAFF or ADMIN can perform this action");
         }
     }
+
     private StaffBookingDTO mapToStaffBookingDTO(Booking booking) {
         StaffBookingDTO dto = new StaffBookingDTO();
         dto.setBookingId(booking.getBookingId());
@@ -323,6 +330,7 @@ public class StaffService {
                 });
         return dto;
     }
+
     private TechnicianDTO mapToTechnicianDTO(Users technician) {
         TechnicianDTO dto = new TechnicianDTO();
         dto.setUserId(technician.getUserId());
@@ -335,6 +343,7 @@ public class StaffService {
         dto.setActiveBookings(activeBookings);
         return dto;
     }
+
     private PaymentDTO mapToPaymentDTO(Payment payment) {
         PaymentDTO dto = new PaymentDTO();
         dto.setPaymentId(payment.getPaymentId());
@@ -362,6 +371,7 @@ public class StaffService {
         dto.setTotalAmount(laborCost.add(materialCost));
         return dto;
     }
+
     public FeedbackDTO getFeedbackByBookingIdForStaff(Integer bookingId) {
         Users currentStaff = authService.getCurrentAccount();
         validateStaffRole(currentStaff.getUserId());
@@ -377,5 +387,14 @@ public class StaffService {
             throw new InvalidDataException("You do not have permission to view this feedback.");
         }
         return feedbackService.convertToDto(feedback);
+    }
+    public List<String> getAvailableVehicleModels() {
+        List<MaintenanceSchedule> schedules = maintenanceScheduleRepo.findAll();
+
+        return schedules.stream()
+                .map(MaintenanceSchedule::getVehicleModel)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 }

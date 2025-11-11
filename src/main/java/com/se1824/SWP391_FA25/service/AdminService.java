@@ -358,18 +358,6 @@ public class AdminService {
 
         return maintenanceScheduleRepo.findAll();
     }
-    public List<String> getAvailableVehicleModels(Integer adminId) {
-        log.info("Admin {} fetching all available vehicle models", adminId);
-        validateAdminRole(adminId);
-
-        List<MaintenanceSchedule> schedules = maintenanceScheduleRepo.findAll();
-
-        return schedules.stream()
-                .map(MaintenanceSchedule::getVehicleModel)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
-    }
 
     /**
      * Admin tạo một Maintenance Plan mới (Cấp bảo dưỡng) cho một Schedule cụ thể.
@@ -551,6 +539,19 @@ public class AdminService {
         log.info("Fetching plan item details for ID: {}", planItemId);
         return planItemRepo.findById(planItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Maintenance Plan Item not found with ID: " + planItemId));
+    }
+
+    /**
+     * Lấy danh sách tất cả các Model xe đã có lịch bảo dưỡng trên hệ thống
+     */
+    public List<String> getAvailableVehicleModels() {
+        List<MaintenanceSchedule> schedules = maintenanceScheduleRepo.findAll();
+
+        return schedules.stream()
+                .map(MaintenanceSchedule::getVehicleModel)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
     // ==================== Private Helper Methods ====================
     private void validateAdminRole(Integer userId) {

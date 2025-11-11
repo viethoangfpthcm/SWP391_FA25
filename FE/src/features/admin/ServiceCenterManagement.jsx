@@ -16,6 +16,7 @@ import ConfirmationModal from "@components/ui/ConfirmationModal.jsx";
 import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 // --- Helper Functions ---
 const isValidPhone = (phone) => {
@@ -39,6 +40,7 @@ if (import.meta.env.MODE !== "development") {
 export default function ServiceCenterManagement() {
   const [centers, setCenters] = useState([]);
   const [loading, setLoading] = useState(true);
+  const showLoading = useMinimumDelay(loading, 1000);
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -251,17 +253,9 @@ export default function ServiceCenterManagement() {
     navigate(`/admin/parts/${centerId}`);
   };
 
-  if (loading) {
+ if (showLoading) {
     return (
-      <div className="scm-container">
-        <Sidebar userName={userInfo.fullName} userRole={userInfo.role} />
-        <main className="scm-content">
-          <div className="scm-loading">
-            <Loading inline />
-            <p>Đang tải dữ liệu trung tâm...</p>
-          </div>
-        </main>
-      </div>
+      <Loading text="Đang tải dữ liệu trung tâm..." />
     );
   }
 

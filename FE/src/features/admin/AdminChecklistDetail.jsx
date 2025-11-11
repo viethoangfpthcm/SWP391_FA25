@@ -15,6 +15,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
 import { API_BASE_URL } from "@config/api.js";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 if (import.meta.env.MODE !== "development") {
 }
@@ -22,6 +23,7 @@ if (import.meta.env.MODE !== "development") {
 export default function AdminChecklistDetail() {
   const [checklistData, setChecklistData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const showLoading = useMinimumDelay(loading, 1000);
   const [error, setError] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
 
@@ -145,15 +147,9 @@ export default function AdminChecklistDetail() {
   };
 
   // 5. Loading
-  if (loading) {
+  if (showLoading) {
     return (
-      <div className="dashboard-container">
-        <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
-        <main className="main-content loading-state">
-          <Loading inline />
-          <p>Đang tải chi tiết checklist...</p>
-        </main>
-      </div>
+      <Loading text="Đang tải báo cáo kỹ thuật  ..." />
     );
   }
 

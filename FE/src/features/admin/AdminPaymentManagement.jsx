@@ -10,6 +10,7 @@ import Sidebar from "@components/layout/Sidebar.jsx";
 import { useNavigate } from "react-router-dom";
 import Loading from "@components/ui/Loading.jsx";
 import { API_BASE_URL } from "@config/api.js";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 if (import.meta.env.MODE !== "development") {
 }
@@ -18,6 +19,7 @@ export default function AdminPaymentManagement() {
   const [payments, setPayments] = useState([]);
   const [filterStatus, setFilterStatus] = useState("all");
   const [loading, setLoading] = useState(true);
+  const showLoading = useMinimumDelay(loading, 1000);
   const [error, setError] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [centers, setCenters] = useState([]);
@@ -139,15 +141,9 @@ export default function AdminPaymentManagement() {
         );
 
   // --- Loading UI ---
-  if (loading && !userInfo) {
+  if (showLoading) {
     return (
-      <div className="dashboard-container">
-        <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
-        <main className="main-content loading-state">
-          <Loading inline />
-          <p>Đang tải dữ liệu thanh toán...</p>
-        </main>
-      </div>
+      <Loading text="Đang tải hóa đơn..." />
     );
   }
 

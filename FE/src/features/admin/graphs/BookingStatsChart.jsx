@@ -11,13 +11,13 @@ export default function BookingStatsChart({ chartData }) {
     }
 
     const statusColors = {
-        "Completed": ["#22c55e", "#16a34a"],
-        "Cancelled": ["#ef4444", "#dc2626"],
-        "Pending": ["#facc15", "#eab308"],
-        "Approved": ["#3b82f6", "#2563eb"],
-        "In Progress": ["#a855f7", "#9333ea"],
-        "Declined": ["#94a3b8", "#64748b"],
-        "Paid": ["#10b981", "#059669"],
+        "Assigned": ["#a855f7", "#9333ea"],     // tím
+        "In_Progress": ["#facc15", "#eab308"],  // vàng
+        "Pending": ["#fb923c", "#f97316"],      // cam
+        "Completed": ["#22c55e", "#16a34a"],    // xanh lá
+        "Paid": ["#0ea5e9", "#0284c7"],         // xanh cyan
+        "Cancelled": ["#ef4444", "#dc2626"],    // đỏ
+        "Declined": ["#ef4444", "#dc2626"],     // xám
     };
 
     const defaultColor = ["#6b7280", "#4b5563"];
@@ -53,8 +53,13 @@ export default function BookingStatsChart({ chartData }) {
             legend: {
                 position: "bottom",
                 labels: {
-                    color: "#1e293b",
+                    color: "#0f172a", 
                     font: { size: 14, weight: "600" },
+                    boxWidth: 20,     
+                    boxHeight: 14,    
+                    padding: 16,      
+                    usePointStyle: true, 
+                    pointStyle: "rectRounded", 
                 },
             },
         },

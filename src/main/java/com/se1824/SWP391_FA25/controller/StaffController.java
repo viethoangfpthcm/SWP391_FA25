@@ -213,4 +213,13 @@ public class StaffController {
         FeedbackStatsDTO data = staffService.getFeedbackAnalyticsForStaff();
         return ResponseEntity.ok(data);
     }
+    /**
+     * Lấy danh sách các Model xe (ví dụ: "VinFast VF 3",....)
+     * GET /api/staff/vehicle-models
+     */
+    @GetMapping("/vehicle-models")
+    public ResponseEntity<List<String>> getAvailableVehicleModels() {
+        List<String> models = staffService.getAvailableVehicleModels();
+        return ResponseEntity.ok(models);
+    }
 }

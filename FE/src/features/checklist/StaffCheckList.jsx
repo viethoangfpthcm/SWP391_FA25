@@ -4,14 +4,17 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./CheckList.css";
 import Button from '@components/ui/Button.jsx';
 import { API_BASE_URL } from "@config/api.js";
+import Loading from '@components/ui/Loading.jsx';
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 export default function StaffCheckList() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
   const [checklist, setChecklist] = useState(null);
   const [loading, setLoading] = useState(true);
+  const showLoading = useMinimumDelay(loading, 1000);
   const [error, setError] = useState(null);
-  
+
   const token = localStorage.getItem("token");
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -65,7 +68,11 @@ export default function StaffCheckList() {
     if (bookingId) fetchChecklist();
   }, [bookingId, token]);
 
-  if (loading) return <p>Đang tải dữ liệu...</p>;
+   if (showLoading) {
+    return (
+      <Loading text="Đang tải báo cáo kỹ thuật..." />
+    );
+  }
   if (error) return <p>{error}</p>;
   if (!checklist) return <p>Không tìm thấy checklist cho booking #{bookingId}</p>;
 

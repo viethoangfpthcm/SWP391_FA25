@@ -47,6 +47,8 @@ public class ManagerService {
     FeedbackService feedbackService;
     @Autowired
     MaintenanceChecklistService checklistService;
+    @Autowired
+    MaintenanceScheduleRepository maintenanceScheduleRepo;
 
     /*
      * Lấy part theo centerId mà Manager đang làm việc
@@ -220,6 +222,15 @@ public class ManagerService {
         }
         // Yêu cầu hàm convertToDto trong FeedbackService phải là public
         return feedbackService.convertToDto(feedback);
+    }
+    public List<String> getAvailableVehicleModels() {
+        List<MaintenanceSchedule> schedules = maintenanceScheduleRepo.findAll();
+
+        return schedules.stream()
+                .map(MaintenanceSchedule::getVehicleModel)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     //=====================================================================

@@ -8,8 +8,9 @@ import {
   FaFilter,
   FaExclamationTriangle,
   FaSave,
-  FaTimes, // Import FaTimes for cancel button
-  FaCheck, // Import FaCheck for confirm button
+  FaTimes,
+  FaCheck,
+  FaSearch
 } from "react-icons/fa";
 import "./AdminDashboard.css";
 import Sidebar from "@components/layout/Sidebar.jsx";
@@ -21,6 +22,8 @@ import FiltersBar from './shared/FiltersBar.jsx';
 import UserTable from './shared/UserTable.jsx';
 import UserForm from './shared/UserForm.jsx';
 import { API_BASE_URL } from "@config/api.js";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
+
 
 // --- Helper Functions for Validation ---
 const isValidEmail = (email) => {
@@ -46,7 +49,9 @@ export default function AdminDashboard() {
   const [centers, setCenters] = useState([]);
   const [filterCenter, setFilterCenter] = useState("all");
   const [filterActive, setFilterActive] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true); // Loading for initial user list
+  const showLoading = useMinimumDelay(loading, 1000);
   const [error, setError] = useState(null); // General error (fetch, delete, submit API failure)
   const [actionLoading, setActionLoading] = useState(false); // Loading for SAVE action in form
   const [showForm, setShowForm] = useState(false);
@@ -184,12 +189,10 @@ export default function AdminDashboard() {
 
   const filteredUsers = users
     .filter(user => {
-
       if (filterRole === "all") return true;
       return user.role && user.role.toLowerCase() === filterRole.toLowerCase();
     })
     .filter(user => {
-
       if (filterCenter === "all") return true;
       if (filterCenter === "none") return !user.centerName;
       return user.centerName === filterCenter;
@@ -199,6 +202,15 @@ export default function AdminDashboard() {
       if (filterActive === "true") return !!user.isActive;
       if (filterActive === "false") return !user.isActive;
       return true;
+    })
+    .filter(user => {
+      const keyword = searchTerm.toLowerCase().trim();
+      if (!keyword) return true;
+      return (
+        user.fullName?.toLowerCase().includes(keyword) ||
+        user.email?.toLowerCase().includes(keyword) ||
+        user.phone?.toLowerCase().includes(keyword)
+      );
     });
 
   // Handle input changes in the form
@@ -444,15 +456,9 @@ export default function AdminDashboard() {
   };
 
   // Initial loading state screen
-  if (loading && !userInfo) {
+  if (showLoading) {
     return (
-      <div className="dashboard-container">
-        <Sidebar userName={"Đang tải..."} userRole={"Admin"} />
-        <main className="main-content loading-state">
-          <Loading inline />
-          <p>Đang tải dữ liệu...</p>
-        </main>
-      </div>
+      <Loading text="Đang tải dữ liệu người dùng..." />
     );
   }
 
@@ -474,16 +480,26 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* Filter and Add Button Bar (extracted) */}
-        <FiltersBar
-          filterRole={filterRole} setFilterRole={setFilterRole}
-          filterCenter={filterCenter} setFilterCenter={setFilterCenter}
-          filterActive={filterActive} setFilterActive={setFilterActive}
-          centerList={centerList}
-          onAddClick={() => openForm()}
-          disabled={actionLoading || isDeleting || isToggling}
-        />
+        <div className="filters-wrapper">
+          <div className="search-box-admin">
+            <FaSearch />
+            <input
+              type="text"
+              placeholder="Tìm kiếm theo tên, email hoặc số điện thoại..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
 
+          <FiltersBar
+            filterRole={filterRole} setFilterRole={setFilterRole}
+            filterCenter={filterCenter} setFilterCenter={setFilterCenter}
+            filterActive={filterActive} setFilterActive={setFilterActive}
+            centerList={centerList}
+            onAddClick={() => openForm()}
+            disabled={actionLoading || isDeleting || isToggling}
+          />
+        </div>
         {/* User List Table (extracted) */}
         <UserTable
           filteredUsers={filteredUsers}

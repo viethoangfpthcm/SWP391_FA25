@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
 import { API_BASE_URL } from "@config/api.js";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 const BOOKING_STATUS_MAP = {
   PENDING: { text: "Chờ xử lý", className: "role-pending" },
@@ -40,6 +41,7 @@ export default function AdminBookingManagement() {
   const [bookings, setBookings] = useState([]);
   const [filterStatus, setFilterStatus] = useState("all");
   const [loading, setLoading] = useState(true);
+  const showLoading = useMinimumDelay(loading, 1000);
   const [error, setError] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
@@ -212,15 +214,9 @@ export default function AdminBookingManagement() {
     return new Date(a.bookingDate) - new Date(b.bookingDate);
   });
 
-  if (loading && !userInfo) {
+ if (showLoading) {
     return (
-      <div className="dashboard-container admin-theme">
-        <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
-        <main className="main-content loading-state">
-          <Loading inline />
-          <p>Đang tải dữ liệu đặt lịch...</p>
-        </main>
-      </div>
+      <Loading text="Đang tải dữ liệu đặt lịch..." />
     );
   }
 
