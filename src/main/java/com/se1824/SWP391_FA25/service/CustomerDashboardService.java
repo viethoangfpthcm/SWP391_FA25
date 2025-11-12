@@ -109,7 +109,7 @@ public class CustomerDashboardService {
                 boolean overdueByKm = false;
                 Integer intervalKm = plan.getIntervalKm();
                 if (currentKm != null && intervalKm != null) {
-                    if (currentKm > intervalKm) {
+                    if (currentKm >= intervalKm) {
                         overdueByKm = true;
                     }
                 }

@@ -146,7 +146,7 @@ public class BookingService {
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             response.setLaborCost(totalLabor);
-            response.setMaterialCost(totalMaterial);
+            response.setMaterialCost(totalMaterial.add(BigDecimal.valueOf(100000)));
 
             response.setChecklistDetails(approvedDetails); // Chi tiết hạng mục đã được phê duyệt
         }
