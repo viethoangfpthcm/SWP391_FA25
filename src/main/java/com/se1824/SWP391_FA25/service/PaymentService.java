@@ -58,7 +58,7 @@ public class PaymentService {
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalAmount = totalLabor.add(totalMaterial);
+        BigDecimal totalAmount = totalLabor.add(totalMaterial.add(BigDecimal.valueOf(100000)));
 
         if (checklist.getStatus() != ChecklistStatus.COMPLETED) {
             throw new InvalidDataException("Cannot create payment for an incomplete checklist. Current status: " + checklist.getStatus());

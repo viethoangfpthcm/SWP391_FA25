@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -379,7 +380,10 @@ public class MaintenanceChecklistService {
         // 3. ÁP DỤNG LOGIC ƯU TIÊN: Chọn gói bảo dưỡng có mốc cao hơn (IntervalKm lớn hơn) trong 2 gói.
 
         // So sánh 2 gói: Chọn gói có mốc KM lớn hơn.
-        if (planByKm.getIntervalKm() >= planByMonth.getIntervalKm()) {
+        if (Objects.equals(planByKm.getIntervalKm(), planByMonth.getIntervalKm())){
+            return planByMonth;
+        }
+        if (planByKm.getIntervalKm() > planByMonth.getIntervalKm()) {
             return planByKm;
         } else {
             return planByMonth;
