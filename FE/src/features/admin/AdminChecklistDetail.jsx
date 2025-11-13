@@ -158,7 +158,7 @@ export default function AdminChecklistDetail() {
     <div className="dashboard-container">
       <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
 
-      <main className="main-content">
+      <main className="main-content checklist">
         <header className="page-header">
           <div className="page-header-top">
             <h1>

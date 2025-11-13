@@ -15,6 +15,7 @@ public class PaymentDTO {
     LocalDateTime paymentDate;
     BigDecimal laborCost;
     BigDecimal materialCost;
+    BigDecimal bookingFee;
     BigDecimal totalAmount;
     String paymentMethod;
     String status;

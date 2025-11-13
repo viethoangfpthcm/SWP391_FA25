@@ -111,13 +111,12 @@ export default function AdminPaymentManagement() {
   }, [selectedCenter]);
 
   // --- Helper format ---
-  const formatCurrency = (amount) => {
-    if (!amount) return "0 VNĐ";
-    if (amount >= 1_000_000_000) return (amount / 1_000_000_000).toFixed(1) + " Tỷ";
-    if (amount >= 1_000_000) return (amount / 1_000_000).toFixed(1) + " Triệu";
-    if (amount >= 1_000) return (amount / 1_000).toFixed(0) + "K";
-    return amount + " VNĐ";
-  };
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat('vi-VN', { 
+    style: 'currency', 
+    currency: 'VND' 
+  }).format(amount);
+};
 
   const formatDate = (dateString) =>
     dateString
@@ -150,7 +149,7 @@ export default function AdminPaymentManagement() {
   return (
     <div className="dashboard-container">
       <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
-      <main className="main-content">
+      <main className="main-content payment-page">
         <header className="page-header">
           <h1>
             <FaCreditCard /> Quản lý Thanh toán
@@ -212,8 +211,9 @@ export default function AdminPaymentManagement() {
                   <th>Trung tâm</th>
                   <th>Ngày thanh toán</th>
                   <th>Phương thức</th>
-                  <th>Chi phí (Lao động)</th>
-                  <th>Chi phí (Vật tư)</th>
+                  <th>Chi phí nhân công</th>
+                  <th>Chi phí phụ tùng</th>
+                  <th>Phí đặt chỗ</th>
                   <th>Tổng cộng</th>
                   <th>Trạng thái</th>
                 </tr>
@@ -221,7 +221,7 @@ export default function AdminPaymentManagement() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="9" className="empty-state">
+                    <td colSpan="10" className="empty-state">
                       <Loading inline /> Đang tải...
                     </td>
                   </tr>
@@ -235,6 +235,7 @@ export default function AdminPaymentManagement() {
                       <td>{payment.paymentMethod || "N/A"}</td>
                       <td>{formatCurrency(payment.laborCost)}</td>
                       <td>{formatCurrency(payment.materialCost)}</td>
+                      <td>{formatCurrency(payment.bookingFee)}</td>
                       <td>
                         <strong>{formatCurrency(payment.totalAmount)}</strong>
                       </td>
@@ -251,7 +252,7 @@ export default function AdminPaymentManagement() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="9" className="empty-state">
+                    <td colSpan="10" className="empty-state">
                       Không có dữ liệu thanh toán.
                     </td>
                   </tr>

@@ -1,40 +1,162 @@
-/* Lưới chứa biểu đồ */
 .analytics-charts {
     display: grid;
-    gap: 24px;
-    grid-template-columns: 1fr; /* mobile 1 cột */
+    grid-template-columns: repeat(2, 1fr);  /* 2 cột */
+    gap: 20px;
+    margin-top: 20px;
+    grid-auto-rows: minmax(380px, 500px);
+    max-width: 100%;
+}
+.label{
+    color: #0f172a;
+}
+@media (max-width: 768px) {
+    .analytics-charts {
+        grid-template-columns: 1fr;  /* Mobile: 1 cột */
+        gap: 16px;
+    }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1400px) and (max-width: 1920px) {
     .analytics-charts {
-        grid-template-columns: repeat(2, 1fr); /* desktop 2 cột */
+        gap: 18px;
+        grid-auto-rows: minmax(360px, auto);
+    }
+}
+
+@media (min-width: 1921px) {
+    .analytics-charts {
+        gap: 24px;
+        grid-auto-rows: minmax(420px, auto);
     }
 }
 
 /* Card biểu đồ */
 .chart-box {
     background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
-    border: 1px solid #eef;
-    height: 420px;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid #e5e7eb;
+    min-height: 360px;
+    max-height: 460px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transition: 0.3s;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .chart-box:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(10,79,240,0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(10,79,240,0.12);
 }
 
+/* Đảm bảo nội dung biểu đồ chiếm toàn bộ không gian */
 .chart-box > canvas,
 .chart-box > div {
     flex-grow: 1;
     height: 100% !important;
+    max-height: 100%;
 }
+
+@media (min-width: 1400px) and (max-width: 1920px) {
+    .chart-box {
+        padding: 16px;
+        min-height: 340px;
+        max-height: 440px;
+        
+    }
+}
+
+/* Styling cho action bar */
 .actions-bar {
-    background-color: rgb(253, 253, 253);
+    background-color: #fafafa;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    border: 1px solid #e5e7eb;
+}
+
+.analytics-filters {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filter-group select {
+    padding: 7px 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    min-width: 140px;
+}
+
+.filter-group select:hover:not(:disabled) {
+    border-color: #3b82f6;
+}
+
+.filter-group select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Error message styling */
+.error-message.general-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-left: 4px solid #dc2626;
+}
+
+/* Page header */
+.page-header {
+    margin-bottom: 20px;
+}
+
+.page-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.page-header p {
+    color: #64748b;
+    font-size: 14px;
+}
+
+@media (min-width: 1400px) and (max-width: 1920px) {
+    .page-header h1 {
+        font-size: 24px;
+    }
+    
+    .page-header p {
+        font-size: 13.5px;
+    }
 }

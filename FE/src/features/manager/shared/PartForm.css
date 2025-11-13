@@ -13,7 +13,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: rgb(255, 255, 255);
   border-radius: 12px;
   max-width: 600px;
   width: 90%;
@@ -53,6 +53,7 @@
 
 .part-form {
   padding: 1.5rem;
+background-color:#ffffff;
 }
 
 .form-error {

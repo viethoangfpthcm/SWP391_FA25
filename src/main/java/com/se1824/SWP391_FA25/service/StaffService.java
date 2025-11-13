@@ -365,10 +365,12 @@ public class StaffService {
         dto.setNote(payment.getNote());
         BigDecimal laborCost = (payment.getLaborCost() == null) ? BigDecimal.ZERO : payment.getLaborCost();
         BigDecimal materialCost = (payment.getMaterialCost() == null) ? BigDecimal.ZERO : payment.getMaterialCost();
-
+        BigDecimal bookingFee = (payment.getBookingFee() == null) ? BigDecimal.ZERO : payment.getBookingFee();
         dto.setLaborCost(laborCost);
         dto.setMaterialCost(materialCost);
+        dto.setBookingFee(bookingFee);
         dto.setTotalAmount(laborCost.add(materialCost));
+        dto.setTotalAmount(laborCost.add(materialCost).add(bookingFee));
         return dto;
     }
 

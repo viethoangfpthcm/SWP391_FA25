@@ -467,7 +467,7 @@ export default function AdminDashboard() {
     <div className="dashboard-container">
       <Sidebar userName={userInfo?.fullName || "Admin"} userRole={userInfo?.role || "ADMIN"} />
 
-      <main className="main-content">
+      <main className="main-content user-manager">
         <header className="page-header">
           <h1> <FaUserCog /> Quản lí người dùng </h1>
           <p>Thêm, chỉnh sửa và quản lý người dùng trong hệ thống.</p>

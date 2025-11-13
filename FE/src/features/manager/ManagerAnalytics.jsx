@@ -241,6 +241,8 @@ export default function ManagerAnalytics() {
                         <div className="chart-box">
                             <BookingStatsChart chartData={bookingStatsData} />
                         </div>
+                    </div>
+                    <div className="analytics-charts">
                         <div className="chart-box">
                             <PartsUsageChart chartData={partsData} />
                         </div>
@@ -248,6 +250,7 @@ export default function ManagerAnalytics() {
                             <FeedbackGaugeChart feedback={feedbackData} />
                         </div>
                     </div>
+
                 </div>
             </main>
         </div>

@@ -686,7 +686,7 @@ export default function AdminScheduleManagement() {
     return (
         <div className="dashboard-container">
             <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
-            <main className="main-content">
+            <main className="main-content schedule">
                 <header className="page-header">
                     <h1><FaCalendarAlt /> Quản lý Lịch trình Bảo dưỡng</h1>
                     <p>Quản lý lịch trình và mốc bảo dưỡng cho từng dòng xe.</p>

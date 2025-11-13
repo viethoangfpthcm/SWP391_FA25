@@ -1,11 +1,14 @@
 /* ---------------------- */
 /* Tổng thể trang chính   */
 /* ---------------------- */
+.payment-page {
+
+
+
 .dashboard-container {
   display: flex;
   min-height: 100vh;
   background-color: #f7f9fc;
-  font-family: "Inter", "Poppins", sans-serif;
   color: #1e293b;
   letter-spacing: 0.2px;
   -webkit-font-smoothing: antialiased;
@@ -99,56 +102,112 @@
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
   border: 1px solid #e2e8f0;
-  overflow-x: auto;
+  overflow: hidden;
 }
 
 .table-wrapper {
-  min-width: 950px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
+/* BỎ table-layout: fixed → cho phép tự động co giãn */
 .data-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.93rem;
+  table-layout: auto;
+  /* TỰ ĐỘNG THEO NỘI DUNG */
 }
 
+/* Header cố định, đẹp */
 .data-table th {
   background-color: #f8fafc;
   text-align: left;
-  padding: 14px 12px;
+  padding: 16px 14px;
   font-weight: 700;
   text-transform: uppercase;
   color: #475569;
   letter-spacing: 0.4px;
   white-space: nowrap;
   border-bottom: 2px solid #e2e8f0;
+  font-size: 0.85rem;
 }
 
+/* Body cell */
 .data-table td {
-  padding: 15px 12px;
+  padding: 16px 14px;
   border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
   color: #1e293b;
   font-weight: 500;
 }
 
-.data-table tbody tr:nth-child(even) {
-  background-color: #f9fafb;
-}
-
+/* Hover row */
 .data-table tbody tr:hover {
   background-color: #eef4ff;
-  transition: background-color 0.25s ease;
+  transition: background-color 0.2s ease;
 }
 
-.data-table td strong {
-  color: #0a4ff0;
+/* Căn chỉnh theo loại dữ liệu */
+.data-table td:nth-child(1),
+.data-table th:nth-child(1) {
+  width: 5%;
+  text-align: center;
   font-weight: 600;
 }
 
-.data-table td:last-child {
+.data-table td:nth-child(2),
+.data-table th:nth-child(2) {
+width: 18%;
+ text-align: center;
+}
+
+.data-table td:nth-child(3),
+.data-table th:nth-child(3) {
+ width: 1%;
+ text-align: center;
+}
+
+.data-table td:nth-child(4),
+.data-table th:nth-child(4) {
+  width: 2%;
+  white-space: nowrap;
+}
+
+.data-table td:nth-child(5),
+.data-table th:nth-child(5) {
+  width: 1%;
   text-align: center;
 }
+
+/* Cột tiền: căn phải, min-width đủ */
+.data-table td:nth-child(6),
+.data-table td:nth-child(7),
+.data-table td:nth-child(8),
+.data-table td:nth-child(9),
+.data-table th:nth-child(6),
+.data-table th:nth-child(7),
+.data-table th:nth-child(8),
+.data-table th:nth-child(9) {
+  width: 25%;
+  text-align: center;
+  font-feature-settings: 'tnum';
+  /* Số đều hàng */
+}
+
+/* Tổng cộng: nổi bật */
+.data-table td:nth-child(9) {
+  font-weight: 600;
+  color: #0a4ff0;
+}
+
+/* Trạng thái: căn giữa */
+.data-table td:nth-child(10),
+.data-table th:nth-child(10) {
+  width: 10%;
+  text-align: center;
+}
+
 
 /* ---------------------- */
 /* Empty / Loading state  */
@@ -229,8 +288,13 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ---------------------- */
@@ -246,4 +310,5 @@
   align-items: center;
   gap: 8px;
   font-weight: 500;
+}
 }

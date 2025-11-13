@@ -38,8 +38,7 @@ public class AdminService {
     private final AuthenticationService authService;
     private final BookingRepository bookingRepo;
     private final PaymentRepository paymentRepo;
-    @Autowired
-    MaintenanceChecklistRepository checklistRepo;
+    private final MaintenanceChecklistRepository checklistRepo;
     private final MaintenanceChecklistService checklistService;
     private final MaintenanceChecklistDetailRepository checklistDetailRepo;
     private final FeedbackRepository feedbackRepository;
@@ -576,10 +575,11 @@ public class AdminService {
         dto.setNote(payment.getNote());
         BigDecimal laborCost = (payment.getLaborCost() == null) ? BigDecimal.ZERO : payment.getLaborCost();
         BigDecimal materialCost = (payment.getMaterialCost() == null) ? BigDecimal.ZERO : payment.getMaterialCost();
-
+        BigDecimal bookingFee = (payment.getBookingFee() == null) ? BigDecimal.ZERO : payment.getBookingFee();
+        dto.setBookingFee(bookingFee);
         dto.setLaborCost(laborCost);
         dto.setMaterialCost(materialCost);
-        dto.setTotalAmount(laborCost.add(materialCost));
+        dto.setTotalAmount(laborCost.add(materialCost).add(bookingFee));
         return dto;
     }
     private UserManagementDTO mapToUserManagementDTO(Users user) {

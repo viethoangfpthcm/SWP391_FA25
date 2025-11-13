@@ -110,6 +110,10 @@ const ViewPaymentModal = ({ bookingId, onClose }) => {
                   <span className="label">Chi phí phụ tùng:</span>
                   <span className="amount">{formatCurrency(payment.materialCost)}</span>
                 </div>
+                <div className="amount-row booking-fee">
+                  <span className="label">Phí đặt chỗ:</span>
+                  <span className="amount">{formatCurrency(payment.bookingFee)}</span>
+                </div>
                 <div className="amount-row total">
                   <span className="label">Tổng cộng:</span>
                   <span className="amount total-amount">

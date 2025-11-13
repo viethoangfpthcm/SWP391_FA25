@@ -25,7 +25,7 @@ export default function AdminAnalytics() {
     const [userInfo, setUserInfo] = useState(null);
     const [centers, setCenters] = useState([]);
     const [loading, setLoading] = useState(true);
-    
+
     const [error, setError] = useState(null);
 
     const [selectedCenter, setSelectedCenter] = useState("all");
@@ -184,11 +184,11 @@ export default function AdminAnalytics() {
     };
 
     // ===== Render =====
-   if (showLoading) {
-    return (
-      <Loading text="Đang tải thống kê..." />
-    );
-  }
+    if (showLoading) {
+        return (
+            <Loading text="Đang tải thống kê..." />
+        );
+    }
 
     return (
         <div className="dashboard-container">
@@ -228,7 +228,9 @@ export default function AdminAnalytics() {
                 <div className="analytics-charts">
                     <div className="chart-box"><RevenueChart chartData={revenueData} /></div>
                     <div className="chart-box"><BookingStatsChart chartData={bookingStatsData} /></div>
-                    <div className="chart-box"><PartsUsageChart chartData={partsData} /></div>
+                </div>
+                <div className="analytics-charts">
+                    {selectedCenter !== "all" && <div className="chart-box"><PartsUsageChart chartData={partsData} /></div>}
                     {selectedCenter !== "all" && <div className="chart-box"><FeedbackGaugeChart feedback={feedbackData} /></div>}
                 </div>
             </main>
