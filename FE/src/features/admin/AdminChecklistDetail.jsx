@@ -55,6 +55,28 @@ export default function AdminChecklistDetail() {
     }
   };
 
+  const getVietnameseStatus = (status) => {
+  if (!status) return "Chưa áp dụng";
+
+  const statusMap = {
+    // Trạng thái kỹ thuật viên (item.status)
+    GOOD: "Tốt",
+    REPAIR: "Sửa chữa",
+    ADJUSTMENT: "Điều chỉnh",
+    REPLACE: "Thay thế",
+    PENDING: "Đang chờ",
+    APPROVED: "Đã duyệt",
+    DECLINED: "Từ chối",
+    PENDING_APPROVAL: "Chờ duyệt",
+    INSPECT : "Kiểm tra",
+    SERVICE : "Bảo dưỡng",
+    IN_PROGRESS: "Đang tiến hành",
+    COMPLETED: "Hoàn thành",
+  };
+
+  const formattedStatus = status.toUpperCase().replace(/ /g, "_");
+  return statusMap[formattedStatus] || status.replace(/_/g, " "); // Fallback
+};
   // 2. Fetch chi tiết checklist
   const fetchChecklistDetail = async () => {
     if (!bookingId) {
@@ -158,7 +180,7 @@ export default function AdminChecklistDetail() {
     <div className="dashboard-container">
       <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
 
-      <main className="main-content">
+      <main className="main-content checklist">
         <header className="page-header">
           <div className="page-header-top">
             <h1>
@@ -201,7 +223,7 @@ export default function AdminChecklistDetail() {
                         checklistData.status
                       )}`}
                     >
-                      {checklistData.status || "N/A"}
+                      {getVietnameseStatus(checklistData.status)}
                     </span>
                   </span>
                 </div>
@@ -275,14 +297,12 @@ export default function AdminChecklistDetail() {
                       checklistData.details.map((item) => (
                         <tr key={item.id}>
                           <td>{item.itemName || "N/A"}</td>
-                          <td>{item.actionType || "N/A"}</td>
+                          <td>{getVietnameseStatus(item.actionType)}</td>
                           <td>
                             <span
                               className={`role-badge ${getStatusClass(item.status)}`}
                             >
-                              {item.status
-                                ? item.status.replace(/_/g, " ")
-                                : "N/A"}
+                              {getVietnameseStatus(item.status)}
                             </span>
                           </td>
                           <td>
@@ -291,7 +311,7 @@ export default function AdminChecklistDetail() {
                                 item.approvalStatus
                               )}`}
                             >
-                              {item.approvalStatus || "Pending"}
+                              {getVietnameseStatus(item.approvalStatus)}
                             </span>
                           </td>
                           <td>{item.partName || "N/A"}</td>

@@ -23,6 +23,7 @@ public class PaymentResponse {
     List<MaintenanceChecklistDetailResponse> checklistDetails;
     BigDecimal laborCost;
     BigDecimal materialCost;
+    BigDecimal bookingFee;
     BigDecimal totalAmount;
 
 }

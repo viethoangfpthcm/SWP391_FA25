@@ -44,7 +44,7 @@ export default function Report1() {
 
   const token = localStorage.getItem("token");
   const customerId = localStorage.getItem("userId");
-  
+
 
   // === Hàm xử lý ===
   const showToast = (message, type = "success") => {
@@ -121,7 +121,7 @@ export default function Report1() {
       const response = await fetch(detailUrl, { headers: { Authorization: `Bearer ${token}` } });
       if (!response.ok) { throw new Error("Không thể tải chi tiết."); }
       const detailData = await response.json();
-
+      const BOOKING_FEE = detailData.bookingFee || 100000;
       let updatedApprovedCost = detailData.totalCostApproved || 0;
       let updatedDeclinedCost = detailData.totalCostDeclined || 0;
 
@@ -141,7 +141,8 @@ export default function Report1() {
         ...detailData,
         details: processedDetails,
         totalCostApproved: updatedApprovedCost,
-        totalCostDeclined: updatedDeclinedCost
+        totalCostDeclined: updatedDeclinedCost,
+        bookingFee: BOOKING_FEE
       };
       setCurrentReport(processedReport);
       setOriginalReport(JSON.parse(JSON.stringify(detailData)));
@@ -325,10 +326,25 @@ export default function Report1() {
                       </div>
                       <div className="panel cost-panel">
                         <h4>Chi phí</h4>
-                        <div className="cost-row">
-                          <div><div className="cost-label">Dự kiến</div><div className="cost-value">{(currentReport.estimatedCost || 0).toLocaleString()} đ</div></div>
-                          <div><div className="cost-label">Đã duyệt</div><div className="cost-value approved">{(currentReport.totalCostApproved || 0).toLocaleString()} đ</div></div>
-                          <div><div className="cost-label">Từ chối</div><div className="cost-value declined">{(currentReport.totalCostDeclined || 0).toLocaleString()} đ</div></div>
+                        <div className="cost-row-group">
+                          <div className="cost-row detail-cost-row">
+                            <div><div className="cost-label">Phí đặt chỗ</div><div className="cost-value">{(currentReport.bookingFee || 0).toLocaleString()} đ</div></div>
+                          </div>
+                          <div className="cost-row detail-cost-row">
+                            <div><div className="cost-label">Dự kiến</div><div className="cost-value">{(currentReport.estimatedCost || 0).toLocaleString()} đ</div></div>
+                          </div>
+                          <div className="cost-row detail-cost-row">
+                            <div><div className="cost-label">Đã duyệt </div><div className="cost-value approved">{(currentReport.totalCostApproved || 0).toLocaleString()} đ</div></div>
+                            <div><div className="cost-label">Từ chối </div><div className="cost-value declined">{(currentReport.totalCostDeclined || 0).toLocaleString()} đ</div></div>
+                          </div>
+                        </div>
+                        <div className="cost-row total-cost-row">
+                          <div>
+                            <div className="cost-label total-label">TỔNG CỘNG</div>
+                            <div className="cost-value total-value">
+                              {((currentReport.totalCostApproved || 0) + (currentReport.bookingFee || 0)).toLocaleString()} đ
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -487,7 +503,8 @@ export default function Report1() {
                     const isCompleted = report.status === "COMPLETED";
                     const isPaid = report.bookingStatus === "PAID";
                     const isBookingCompleted = report.bookingStatus === "COMPLETED";
-                    const totalAmount = report.totalCostApproved || 0;
+                    const BOOKING_FEE = report.bookingFee || 100000;
+                    const totalAmount = (report.totalCostApproved || 0) + BOOKING_FEE;
 
                     const showPayButton =
                       !isBookingCompleted &&
@@ -517,9 +534,9 @@ export default function Report1() {
                             <p>
                               Mã BB: #{report.id} • Trạng thái:{" "}
                               {report.status === "IN_PROGRESS" ? "Đang xử lý"
-                                : report.status === "PENDING_APPROVAL" ? "Chờ duyệt cuối"            
+                                : report.status === "PENDING_APPROVAL" ? "Chờ duyệt cuối"
                                   : report.status === "COMPLETED" ? (isPaid || isBookingCompleted ? "Đã hoàn thành" : "Chờ thanh toán")
-                                    : report.status || "?"} 
+                                    : report.status || "?"}
                             </p>
                           </div>
                           <div className="report-card-action">

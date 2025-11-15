@@ -224,7 +224,7 @@ export default function AdminBookingManagement() {
     <div className="dashboard-container admin-theme">
       <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
 
-      <main className="main-content">
+      <main className="main-content booking">
         <header className="page-header">
           <h1>
             <FaCalendarAlt /> Quản lý đặt lịch

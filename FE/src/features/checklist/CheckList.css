@@ -1,7 +1,6 @@
-/* Import Font (NÊN ĐỂ Ở ĐẦU FILE) */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* Cấu trúc trang chính - Nâng cấp Font & Nền */
 .checklist-page {
   display: flex;
   min-height: 100vh;
@@ -220,6 +219,7 @@
 }
 .status-badge.in-progress { background-color: #cfcc19; color: #333; }
 .status-badge.COMPLETED { background-color: #10b981; }
+.status-badge.approval-pending { background-color: #1846eb; }
 .cost-approved { 
   color: #0284c7; 
   font-weight: bold; 
@@ -276,9 +276,7 @@
   cursor: not-allowed;
 }
 
-/* ================================================= */
-/* ========== 🌟 ĐÂY LÀ PHẦN NÂNG CẤP CỦA BẠN 🌟 ========== */
-/* ================================================= */
+
 
 /* Nâng cấp Lưới Thẻ */
 .checklist-list {
@@ -378,7 +376,7 @@ button.task-btn.view:hover {
   display: inline-flex;
   align-items: center;
   padding: 8px 15px;
-  background-color: #3b82f6; /* <-- Màu Xanh dương (Blue 500) hiện đại hơn */
+  background-color: #3b82f6; 
   color: white;
   border: none;
   border-radius: 8px; /* Bo tròn hơn 1 chút */

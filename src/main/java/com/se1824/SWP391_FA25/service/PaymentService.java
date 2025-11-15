@@ -58,7 +58,9 @@ public class PaymentService {
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalAmount = totalLabor.add(totalMaterial.add(BigDecimal.valueOf(100000)));
+        final BigDecimal BOOKING_FEE = BigDecimal.valueOf(100000);
+
+        BigDecimal totalAmount = totalLabor.add(totalMaterial).add(BOOKING_FEE);
 
         if (checklist.getStatus() != ChecklistStatus.COMPLETED) {
             throw new InvalidDataException("Cannot create payment for an incomplete checklist. Current status: " + checklist.getStatus());
@@ -87,10 +89,12 @@ public class PaymentService {
                 paymentToProcess.setPaymentDate(LocalDateTime.now());
                 paymentToProcess.setLaborCost(totalLabor);
                 paymentToProcess.setMaterialCost(totalMaterial);
+                paymentToProcess.setBookingFee(BOOKING_FEE);
             }
 
             paymentToProcess.setLaborCost(totalLabor);
             paymentToProcess.setMaterialCost(totalMaterial);
+            paymentToProcess.setBookingFee(BOOKING_FEE);
             paymentToProcess.setStatus(PaymentStatus.PENDING);
             paymentToProcess.setPaymentDate(LocalDateTime.now());
         } else {
@@ -99,6 +103,7 @@ public class PaymentService {
             paymentToProcess.setBooking(booking);
             paymentToProcess.setLaborCost(totalLabor);
             paymentToProcess.setMaterialCost(totalMaterial);
+            paymentToProcess.setBookingFee(BOOKING_FEE);
             paymentToProcess.setStatus(PaymentStatus.PENDING);
             paymentToProcess.setPaymentDate(LocalDateTime.now());
         }

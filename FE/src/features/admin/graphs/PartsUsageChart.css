@@ -27,3 +27,6 @@
 .parts-filter {
     margin-bottom: 10px;
 }
+.parts-filter label {
+    color: black;
+}

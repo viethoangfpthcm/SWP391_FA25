@@ -14,7 +14,7 @@ export default function UserFiltersBar({
         <select value={filterRole} onChange={(e) => setFilterRole(e.target.value)}>
           <option value="all">Tất cả</option>
           <option value="STAFF">Nhân viên</option>
-          <option value="TECHNICIAN">Thợ kỹ thuật</option>
+          <option value="TECHNICIAN">Kỹ thuật viên</option>
 
         </select>
       </div>

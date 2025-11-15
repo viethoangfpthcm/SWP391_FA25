@@ -39,7 +39,7 @@ export default function PartTable({
             
             <th>Giá</th>
             <th>Số lượng</th>
-            <th>Nhà sản xuất</th>
+            <th>Tình trạng</th>
             
             <th>Thao tác</th>
           </tr>

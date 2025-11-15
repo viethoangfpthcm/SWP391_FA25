@@ -89,17 +89,7 @@ export default function PartForm({
             </div>
           </div>
 
-          <div className="form-group">
-            <label>Nhà sản xuất</label>
-            <input
-              type="text"
-              name="manufacturer"
-              value={formData.manufacturer}
-              onChange={handleChange}
-              placeholder="Ví dụ: Bosch, Denso, NGK..."
-              disabled={!!editingPart}
-            />
-          </div>
+    
 
           <div className="form-actions">
             <Button type="button" className="btn-cancel" onClick={onClose}>

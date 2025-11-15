@@ -17,9 +17,7 @@ const getStatusIcon = (status) => {
 const getStatusLabel = (status) => {
   switch (status) {
     case 'ON_TIME': return 'Đã hoàn thành';
-    case 'EXPIRED': return 'Đã bỏ qua';
     case 'NEXT_TIME': return 'Có thể đặt lịch';
-    case 'LOCKED': return 'Chưa thể đặt lịch';
     case 'OVERDUE': return 'Đã quá hạn';
     default: return 'Không xác định';
   }
@@ -40,15 +38,13 @@ export default function ScheduleItem({ item, nextTimePlanId, hasActiveBooking, o
       {item.planDate && <p><strong>Ngày dự kiến:</strong> {new Date(item.planDate).toLocaleDateString('vi-VN')}</p>}
       {item.deadline && <p><strong>Hạn chót:</strong> {new Date(item.deadline).toLocaleDateString('vi-VN')}</p>}
 
-      {item.status === 'EXPIRED' && <p className="expired-info"><FaExclamationTriangle /> Lần bảo dưỡng này đã bị bỏ qua</p>}
-      {item.status === 'LOCKED' && <p className="locked-message"><FaLock /> Cần hoàn thành lần bảo dưỡng kế tiếp trước</p>}
       {item.status === 'OVERDUE' && <p className="overdue-info"><FaExclamationTriangle /> Lịch bảo dưỡng này đã quá hạn!</p>}
 
       {(item.status === 'NEXT_TIME' || item.status === 'OVERDUE') && item.maintenancePlanId === nextTimePlanId && (
         hasActiveBooking ? (
           <p className="locked-message" style={{ color: '#ff6b6b', fontWeight: 'bold' }}>
             <FaCalendarAlt style={{ marginRight: '8px' }} />
-            Xe này đã có lịch hẹn (Chờ xử lý hoặc chưa thanh toán).
+            Xe này hiện không thể đặt lịch
           </p>
         ) : (
           <Button className="book-now-button" onClick={() => onBookClick(item)}>

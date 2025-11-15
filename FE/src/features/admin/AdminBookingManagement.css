@@ -1,6 +1,4 @@
-/* ---------------------- */
-/* Tổng thể trang chính   */
-/* ---------------------- */
+.booking {
 .dashboard-container {
   display: flex;
   min-height: 100vh;
@@ -292,14 +290,7 @@
 }
 
 /* Căn giữa cell chứa nút và thêm khoảng cách đều */
-.data-table td:last-child {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px; /* Khoảng cách tự nhiên, có thể chỉnh 12px nếu muốn rộng hơn */
-  padding: 10px;
-  white-space: nowrap;
-}
+
 
 @keyframes spin {
   from {
@@ -493,6 +484,67 @@
   min-width: 280px; 
   white-space: nowrap; 
   text-align: center; 
+  table-layout: fixed;
+}
+
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+  width: 6%;   /* ID */
+  text-align: center;
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+  width: 15%;  /* Khách hàng */
+  text-align: center;
+}
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+  width: 5%;  /* Xe */
+  text-align: center;
+}
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+  width: 7%;  /* Trung tâm */
+  text-align: center;
+}
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+  width: 7%;  /* Ngày hẹn */
+  text-align: center;
+}
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+  width: 15%;  /* Kỹ thuật viên */
+ text-align: center;
+}
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) {
+  width: 12%;  /* Trạng thái booking */
+  text-align: center;
+}
+
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) {
+  width: 12%;  /* Trạng thái checklist */
+  text-align: center;
+}
+
+.data-table th:nth-child(9),
+.data-table td:nth-child(9) {
+  width: 17%;  /* Thao tác */
+}
+.data-table td:nth-child(9) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
 }
 
 .modal-content.feedback-modal.admin-modal {
@@ -541,8 +593,13 @@
   background: #cffafe; /* Màu xanh cyan nhạt */
   color: #0e7490;
 }
+.role-in-progress {
+  background: #f8fecf; /* Màu xanh cyan nhạt */
+  color: #87900e;
+}
 
 .role-cancelled {
   background: #fee2e2; /* Đỏ nhạt (giống declined) */
   color: #b91c1c;
+}
 }

@@ -38,7 +38,7 @@ export default function PaymentManagement() {
     const badges = {
       PENDING: { text: "Chờ thanh toán", className: "payment-pending", icon: <FaTimes /> },
       PAID: { text: "Đã thanh toán", className: "payment-paid", icon: <FaCheck /> },
-      REFUNDED: { text: "Đã hoàn tiền", className: "payment-refunded", icon: <FaCheck /> },
+      FAILED: { text: "Thất bại", className: "payment-failed", icon: <FaCheck /> },
     };
     return badges[status] || { text: status, className: "payment-default", icon: null };
   };
@@ -51,15 +51,15 @@ export default function PaymentManagement() {
   const totalRevenue = payments
     .filter((p) => p.status === "PAID")
     .reduce((sum, p) => {
-      const total = (p.laborCost || 0) + (p.materialCost || 0);
+      const total = (p.laborCost || 0) + (p.materialCost || 0) + (p.bookingFee || 0);
       return sum + total;
     }, 0);
 
   if (showLoading) {
-  return (
-    <Loading text="Đang tải hóa đơn..." />
-  );
-}
+    return (
+      <Loading text="Đang tải hóa đơn..." />
+    );
+  }
 
   return (
     <div className="admin-dashboard-container">
@@ -150,7 +150,7 @@ export default function PaymentManagement() {
                 <tbody>
                   {filteredPayments.map((payment) => {
                     const badge = getStatusBadge(payment.status);
-                    const totalAmount = (payment.laborCost || 0) + (payment.materialCost || 0);
+                    const totalAmount = payment.totalAmount;
                     return (
                       <tr key={payment.paymentId}>
                         <td>{payment.paymentId}</td>

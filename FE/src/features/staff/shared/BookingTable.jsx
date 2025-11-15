@@ -105,13 +105,13 @@ export default function BookingTable({
               <th className="col-id">ID</th>
               <th className="col-date">Ngày hẹn</th>
               <th className="col-customer">Khách hàng</th>
-              <th style={{ width: '5%' }}>Điện thoại</th>
-              <th style={{ width: '7%' }}>Biển số</th>
-              <th style={{ width: '12%' }}>Dòng xe</th>
-              <th style={{ width: '6%' }}>Số KM</th>
-              <th style={{ width: '13%' }}>Kỹ thuật viên</th>
-              <th style={{ width: '6%' }}>Trạng thái</th>
-              <th style={{ width: '13%' }}>Thao tác</th>
+              <th>Điện thoại</th>
+              <th >Biển số</th>
+              <th>Dòng xe</th>
+              <th >Số KM</th>
+              <th >Kỹ thuật viên</th>
+              <th>Trạng thái</th>
+              <th >Thao tác</th>
             </tr>
           </thead>
           <tbody>

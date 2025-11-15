@@ -3,34 +3,29 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  /* allow visible so inner action buttons or tooltips aren't clipped */
-  overflow: visible;
+  overflow: hidden;
 }
 
 .table-wrapper {
-  /* allow horizontal scrolling if content really can't fit, but prefer to fit columns */
   overflow-x: auto;
-  padding-bottom: 6px; /* small breathing room for scrollbars/buttons */
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px; /* slightly smaller to fit more content */
-  table-layout: fixed; /* enforce column widths to avoid long intrinsic sizing */
+  font-size: 14px;
+  table-layout: fixed;
 }
 
 .data-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }
 
 .data-table th {
-  padding: 8px 6px;
+  padding: 16px 12px;
   text-align: left;
   font-weight: 600;
   white-space: nowrap;
-  font-size: 12px;
 }
 
 .data-table tbody tr {
@@ -43,47 +38,9 @@
 }
 
 .data-table td {
-  padding: 8px 6px;
+  padding: 14px 12px;
   vertical-align: middle;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
-
-/* Force a compact ID column (first column) so it stays narrow */
-.data-table th.col-id,
-.data-table td:first-child {
-  width: 56px;
-  min-width: 56px;
-  max-width: 56px;
-  padding-left: 12px;
-}
-.data-table td:first-child .cell-main {
-  font-weight: 600;
-  font-size: 13px;
-}
-
-/* Compact fixed width for date and customer columns */
-.data-table th.col-date,
-.data-table td.col-date {
-  width: 80px;
-  min-width: 80px;
-  max-width: 80px;
-  padding-left: 8px;
-  box-sizing: border-box;
-}
-.data-table th.col-customer,
-.data-table td.col-customer {
-  width: 140px;
-  min-width: 140px;
-  max-width: 140px;
-  padding-left: 8px;
-  box-sizing: border-box;
-}
-
-/* ensure the date stacked time uses smaller font to fit */
-.data-table td:nth-child(2) .cell-main { font-size: 13px; }
-.data-table td:nth-child(2) .cell-sub { font-size: 12px; }
 
 .cell-main {
   display: block;
@@ -124,9 +81,6 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
-/* make status badge compact so it doesn't force the actions column wider */
-.data-table td .status-badge { max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .status-pending {
   background: #fef3c7;
@@ -176,20 +130,6 @@
 
 .action-buttons-cell {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-/* Column width hints to keep table within viewport. Tweak percentages as needed. */
-/* column widths are applied via inline styles in BookingTable.jsx to avoid cascade conflicts */
-
-/* Responsive tweaks: on narrower screens reduce paddings and hide button labels */
-@media (max-width: 1400px) {
-  .data-table th, .data-table td { padding: 8px 6px; font-size: 12px; }
-}
-
-@media (max-width: 1024px) {
-  /* For small screens, allow actions to shrink to icons only */
-  .action-buttons-cell { justify-content: flex-start; }
 }

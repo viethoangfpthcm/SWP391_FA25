@@ -14,21 +14,7 @@ import SuccessModal from '../components/SuccessModal.jsx';
 import ConfirmModal from '../components/ConfirmModal.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-const BOOKING_STATUS_MAP = {
-  PENDING: { text: 'Chờ xử lý', className: 'pending' },
-  APPROVED: { text: 'Đã duyệt', className: 'approved' },
-  ASSIGNED: { text: 'Đã gán thợ', className: 'assigned' },
-  IN_PROGRESS: { text: 'Đang xử lý', className: 'in-progress' },
-  COMPLETED: { text: 'Hoàn thành', className: 'completed' },
-  PAID: { text: 'Đã thanh toán', className: 'paid' },
-  CANCELLED: { text: 'Đã hủy', className: 'cancelled' },
-  DECLINED: { text: 'Đã từ chối', className: 'declined' },
-  DEFAULT: { text: 'Không rõ', className: 'default' }
-};
 
-const getStatusDisplay = (status) => {
-  return BOOKING_STATUS_MAP[status] || { text: status || 'Không rõ', className: 'default' };
-};
 function VehicleMaintenanceSchedule() {
   const { licensePlate } = useParams();
   const [schedule, setSchedule] = useState([]);
@@ -41,7 +27,6 @@ function VehicleMaintenanceSchedule() {
   const [hasActiveBooking, setHasActiveBooking] = useState(false);
   const [activeBookings, setActiveBookings] = useState([]);
 
-  // State cho Booking Pop-up
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [selectedPlanForBooking, setSelectedPlanForBooking] = useState(null);
   const [bookingFormData, setBookingFormData] = useState({
@@ -53,12 +38,10 @@ function VehicleMaintenanceSchedule() {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingError, setBookingError] = useState('');
 
-  // State cho Modal Success (Giữ nguyên)
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successModalMessage, setSuccessModalMessage] = useState('');
   const [successModalAction, setSuccessModalAction] = useState(null);
 
-  // *** THÊM MỚI: State cho Modal Confirm (Hỏi lại) ***
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmModalMessage, setConfirmModalMessage] = useState('');
   const [onConfirmAction, setOnConfirmAction] = useState(null); // Hàm sẽ chạy khi bấm "Xác nhận"
@@ -143,7 +126,6 @@ function VehicleMaintenanceSchedule() {
           setNextTimePlanId(bookableItem ? bookableItem.maintenancePlanId : null);
         }
 
-        // --- 2. Fetch Thông tin Booking hiện tại của xe ---
         const bookingsResponse = await fetch(`${API_BASE_URL}/api/customer/bookings/vehicle/${encodeURIComponent(licensePlate)}`, {
           headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
         });
@@ -177,7 +159,6 @@ function VehicleMaintenanceSchedule() {
     fetchScheduleAndBookings();
   }, [licensePlate, navigate]);
 
-  // getStatusIcon (Không đổi)
   const getStatusIcon = (status) => {
     switch (status) {
       case 'ON_TIME':
@@ -195,7 +176,6 @@ function VehicleMaintenanceSchedule() {
     }
   };
 
-  // getStatusLabel (Không đổi)
   const getStatusLabel = (status) => {
     switch (status) {
       case 'ON_TIME': return 'Đã hoàn thành';
@@ -207,7 +187,6 @@ function VehicleMaintenanceSchedule() {
     }
   };
 
-  // handleBookAppointmentClick (Không đổi)
   const handleBookAppointmentClick = (plan) => {
     setError('');
     if (hasActiveBooking) {
@@ -249,7 +228,6 @@ function VehicleMaintenanceSchedule() {
     return;
   }
 
-  // --- Kiểm tra giờ hẹn hợp lệ so với giờ mở cửa/đóng cửa ---
   try {
     const bookingDateTime = new Date(`${bookingFormData.bookingDate}T${bookingFormData.bookingTime}:00`);
     const [openH, openM] = selectedCenter.openingHour.split(":").map(Number);
@@ -378,7 +356,6 @@ function VehicleMaintenanceSchedule() {
       setShowConfirmModal(false);
     }
   };
-  // *** KẾT THÚC SỬA ***
 
   if (loading) {
     return (
@@ -399,12 +376,10 @@ function VehicleMaintenanceSchedule() {
       <main className="schedule-content">
         <h1>Lịch trình bảo dưỡng cho xe {licensePlate}</h1>
 
-        {/* --- Phần hiển thị booking active --- */}
         <ActiveBookings bookings={activeBookings} onCancel={handleCancelBookingClick} loading={bookingLoading} />
 
         {error && <p className="error-message centered">{error}</p>}
 
-        {/* --- Modal Form Đặt Lịch (Không thay đổi) --- */}
         <BookingFormModal
           visible={showBookingForm}
           selectedPlan={selectedPlanForBooking}
@@ -418,10 +393,8 @@ function VehicleMaintenanceSchedule() {
           licensePlate={licensePlate}
         />
 
-        {/* --- Modal Success (Không thay đổi) --- */}
         <SuccessModal visible={showSuccessModal} message={successModalMessage} onClose={() => setShowSuccessModal(false)} onAction={successModalAction} />
 
-        {/* *** THÊM MỚI: Modal Confirm (Hỏi lại) *** */}
         <ConfirmModal
           visible={showConfirmModal}
           message={confirmModalMessage}
@@ -429,9 +402,7 @@ function VehicleMaintenanceSchedule() {
           onConfirm={() => { if (onConfirmAction) onConfirmAction(); }}
           loading={bookingLoading}
         />
-        {/* --- Kết thúc Modal Confirm --- */}
-
-        {/* --- Danh sách lịch bảo dưỡng (Không thay đổi) --- */}
+  
         {schedule.length > 0 ? (
           <div className="schedule-list">
             {schedule.map(item => (

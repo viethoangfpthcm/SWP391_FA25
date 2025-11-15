@@ -1,11 +1,12 @@
 /* --- Layout tổng --- */
+
 .dashboard-container {
   display: flex;
   min-height: 100vh;
   background-color: #f5f7fb;
   overflow-x: hidden;
 }
-
+.user-manager{
 .main-content {
   flex: 1;
   padding: 24px;
@@ -155,7 +156,9 @@ input:disabled + .slider:before {
   table-layout: fixed !important;
   min-width: 1000px;
 }
-
+.data-table thead {
+  color: white;
+}
 .data-table th,
 .data-table td {
   padding: 12px 10px;
@@ -181,49 +184,54 @@ input:disabled + .slider:before {
 /* --- Căn chỉnh từng cột (8 cột) --- */
 .data-table th:nth-child(1),
 .data-table td:nth-child(1) {
-  width: 70px !important;
+  width: 3%;
   text-align: center; /* ID */
 }
 
 .data-table th:nth-child(2),
 .data-table td:nth-child(2) {
-  width: 160px !important;
+  width: 15%;
   text-align: left; /* HỌ TÊN */
 }
 
 .data-table th:nth-child(3),
 .data-table td:nth-child(3) {
-  width: 200px !important;
+  width: 15%;
   text-align: left; /* EMAIL */
 }
 
 .data-table th:nth-child(4),
 .data-table td:nth-child(4) {
-  width: 120px !important;
+  width: 15%;
   text-align: center; /* SĐT */
 }
 
 .data-table th:nth-child(5),
 .data-table td:nth-child(5) {
-  width: 110px !important;
+  width: 10%;
   text-align: center; /* VAI TRÒ */
 }
 
 .data-table th:nth-child(6),
 .data-table td:nth-child(6) {
-  width: 140px !important;
+  width: 15%;
   text-align: center; /* TRUNG TÂM */
 }
 
 .data-table th:nth-child(7),
 .data-table td:nth-child(7) {
-  width: 100px !important;
+  width: 8%;
   text-align: center; /* TRẠNG THÁI */
 }
 
 .data-table th:nth-child(8),
 .data-table td:nth-child(8) {
-  width: 180px !important;
+  width: 80%;
+   display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
   text-align: center; /* THAO TÁC */
 }
 
@@ -244,7 +252,7 @@ input:disabled + .slider:before {
 }
 
 .role-staff {
-  background-color: #399093;
+  background-color: #8ff0f4;
   color: #1e40af;
 }
 .role-manager {
@@ -503,12 +511,6 @@ input:disabled + .slider:before {
   white-space: nowrap; /* Riêng cột thao tác giữ nút trên một dòng */
 }
 
-
-/* ============================================================= */
-/* ============================================================= */
-/* 🪟 MODAL POPUP - LIGHT & MODERN (giống AdminScheduleManagement) */
-/* ============================================================= */
-/* .modal-overlay đã được định nghĩa ở trên (dòng 332) */
 
 .user-edit-modal {
   background: #fff;
@@ -802,26 +804,45 @@ input:disabled + .slider:before {
 .search-box-admin {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgb(250, 250, 250);
+  gap: 10px;
+
+  padding: 10px 14px;
   width: 320px;
-  transition: border-color 0.2s ease;
-  color: #000;
+
+  background: #f3f4f6;
+  border: 1.8px solid #d1d5db;
+  border-radius: 10px;
+
+  transition: all 0.2s ease;
+  color: #030406;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.search-box-admin:hover {
+ background: #e5e7eb;    
+  border-color: #b6c0cc;
 }
 
 .search-box-admin:focus-within {
-  border-color: #000000;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+  background: #ffffff;
 }
 
 .search-box-admin input {
   border: none;
   outline: none;
+  
   width: 100%;
   font-size: 0.95rem;
-  color: #000000;
   background: transparent;
+  color: #111827;
+}
+
+.search-box-admin svg {
+  font-size: 1.1rem;
+  color: #6b7280;
+  flex-shrink: 0;
 }
 .filters-wrapper {
   display: flex;
@@ -830,4 +851,9 @@ input:disabled + .slider:before {
   flex-wrap: wrap; /* Cho phép xuống hàng nếu nhỏ */
   gap: 1rem;
   margin-bottom: 1rem;
+}
+.search-box-admin input::placeholder {
+  color: #6b7280;     /* XÁM ĐẬM - dễ nhìn */
+  opacity: 1;         /* Không bị mờ */
+}
 }

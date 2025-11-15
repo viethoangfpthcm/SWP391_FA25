@@ -7,6 +7,7 @@ export default function FiltersBar({
   filterCenter, setFilterCenter,
   filterActive, setFilterActive,
   centerList = [],
+  rolesList = [],
   onAddClick,
   disabled = false,
 }) {
@@ -14,12 +15,19 @@ export default function FiltersBar({
     <div className="actions-bar">
       <div className="filter-group">
         <label htmlFor="roleFilter"><FaFilter /> Lọc vai trò:</label>
-        <select id="roleFilter" value={filterRole} onChange={(e) => setFilterRole(e.target.value)}>
+        <select
+          id="roleFilter"
+          value={filterRole}
+          onChange={(e) => setFilterRole(e.target.value)}
+          disabled={disabled} 
+        >
           <option value="all">Tất cả</option>
-          <option value="staff">Staff</option>
-          <option value="technician">Technician</option>
-          <option value="customer">Customer</option>
-          <option value="manager">Manager</option>
+          {rolesList
+            .map(role => (
+              <option key={role.value} value={role.value}>
+                {role.label}
+              </option>
+            ))}
         </select>
       </div>
 

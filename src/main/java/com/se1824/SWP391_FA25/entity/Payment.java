@@ -36,6 +36,9 @@ public class Payment {
     @Column(name = "material_cost", precision = 18, scale = 2)
     BigDecimal materialCost = BigDecimal.ZERO;
 
+    @Column(name = "booking_fee", precision = 10, scale = 2)
+    BigDecimal bookingFee = new BigDecimal("100000.00");
+
     @Transient
     BigDecimal totalAmount;
 
