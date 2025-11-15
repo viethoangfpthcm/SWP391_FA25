@@ -767,4 +767,62 @@
     color: #000;
     opacity: 1 !important;
   }
-  
+  .plan-quick-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    position: sticky; /* Dính lên đầu khi cuộn danh sách dài */
+    top: 0;
+    z-index: 10;
+}
+
+.plan-quick-nav span {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #6c757d;
+    white-space: nowrap;
+}
+
+.nav-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.btn-nav-jump {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ced4da;
+    background-color: white;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #495057;
+    transition: all 0.2s;
+}
+
+.btn-nav-jump:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+@keyframes flashHighlight {
+    0% { box-shadow: 0 0 0 0 rgba(0, 123, 255, 0); border-color: #ddd; }
+    20% { box-shadow: 0 0 15px rgba(0, 123, 255, 0.5); border-color: #007bff; transform: scale(1.02); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 123, 255, 0); border-color: #ddd; transform: scale(1); }
+}
+
+.highlight-plan {
+    animation: flashHighlight 1.5s ease-out;
+    border: 1px solid #007bff !important; /* Tạm thời đổi màu viền */
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
     FaCalendarAlt,
     FaFilter,
@@ -72,6 +72,27 @@ export default function AdminScheduleManagement() {
             setError("Không thể tải thông tin người dùng.");
         }
     };
+    const planRefs = useRef({});
+    const scrollToPlan = (planId) => {
+        const element = planRefs.current[planId];
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "center" });
+
+            element.classList.add("highlight-plan");
+            setTimeout(() => element.classList.remove("highlight-plan"), 1500);
+        }
+    };
+    const itemRefs = useRef({});
+    const scrollToItem = (itemId) => {
+        const element = itemRefs.current[itemId];
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "center" });
+            // Hiệu ứng nháy sáng (dùng lại class highlight-plan hoặc tạo mới)
+            element.classList.add("highlight-plan");
+            setTimeout(() => element.classList.remove("highlight-plan"), 1500);
+        }
+    };
+
 
     // Fetch schedules
     const fetchSchedules = async () => {
@@ -440,7 +461,7 @@ export default function AdminScheduleManagement() {
     };
 
     // LƯU ITEMS 
-   const saveAllItems = async () => {
+    const saveAllItems = async () => {
         const token = getToken();
         if (!token) {
             alert("Phiên hết hạn!");
@@ -464,18 +485,18 @@ export default function AdminScheduleManagement() {
 
                 // 3. Chuẩn bị dữ liệu payload
                 const itemData = {
-                    planId: itemsModal.plan.id,     
-                    plan_id: itemsModal.plan.id,       
-                    
+                    planId: itemsModal.plan.id,
+                    plan_id: itemsModal.plan.id,
+
                     itemName: item.itemName.trim(),
-                    item_name: item.itemName.trim(),   
-                    
-                    actionType: item.actionType || "INSPECT",  
-                    action_type: item.actionType || "INSPECT", 
-                    
-                    partTypeId: Number(item.part_type_id),  
-                    part_type_id: Number(item.part_type_id),  
-                    
+                    item_name: item.itemName.trim(),
+
+                    actionType: item.actionType || "INSPECT",
+                    action_type: item.actionType || "INSPECT",
+
+                    partTypeId: Number(item.part_type_id),
+                    part_type_id: Number(item.part_type_id),
+
                     note: item.note?.trim() || ""
                 };
 
@@ -546,7 +567,7 @@ export default function AdminScheduleManagement() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`, 
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(planData),
             });
@@ -773,12 +794,29 @@ export default function AdminScheduleManagement() {
                                             <h3>Các mốc bảo dưỡng</h3>
                                             {modalMode !== "view" && <button className="btn-secondary" onClick={handleAddPlan}><FaPlus /> Thêm mốc</button>}
                                         </div>
+                                        {plans.length > 0 && (
+                                            <div className="plan-quick-nav">
+                                                <span>Đi đến: </span>
+                                                <div className="nav-buttons">
+                                                    {plans.map((p, idx) => (
+                                                        <button
+                                                            key={p.id}
+                                                            className="btn-nav-jump"
+                                                            onClick={() => scrollToPlan(p.id)}
+                                                            title={`Cuộn đến ${p.name}`}
+                                                        >
+                                                            {p.maintenanceNo || idx + 1}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                         <div className="plans-list">
                                             {plans.length === 0 ? (
                                                 <p className="empty-state">Chưa có mốc bảo dưỡng nào.</p>
                                             ) : (
                                                 plans.map((plan, idx) => (
-                                                    <div key={plan.id} className="plan-card">
+                                                    <div key={plan.id} className="plan-card" ref={(el) => (planRefs.current[plan.id] = el)}>
                                                         <div className="plan-header">
                                                             <span className="plan-number">Mốc #{plan.maintenanceNo || idx + 1}</span>
                                                             {modalMode !== "view" && (
@@ -837,6 +875,22 @@ export default function AdminScheduleManagement() {
                                 <div className="d-flex gap-2 mb-3">
                                     <button className="btn-secondary" onClick={addItem}><FaPlus /> Thêm công việc</button>
                                 </div>
+                                {!itemsModal.loading && itemsModal.items.length > 0 && (
+                                    <div className="plan-quick-nav mb-3">
+                                        <span>Đi đến công việc: </span>
+                                        <div className="nav-buttons">
+                                            {itemsModal.items.map((item, idx) => (
+                                                <button
+                                                    key={item.id}
+                                                    className="btn-nav-jump"
+                                                    onClick={() => scrollToItem(item.id)}
+                                                >
+                                                    {idx + 1}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                                 {itemsModal.loading ? (
                                     <div className="text-center"><Loading inline /> Đang tải...</div>
                                 ) : itemsModal.items.length === 0 ? (
@@ -844,7 +898,7 @@ export default function AdminScheduleManagement() {
                                 ) : (
                                     <div className="items-list">
                                         {itemsModal.items.map((item, idx) => (
-                                            <div key={item.id} className="item-card">
+                                            <div key={item.id} className="item-card" ref={el => itemRefs.current[item.id] = el}>
                                                 <div className="item-header">
                                                     <span>Công việc #{idx + 1}</span>
                                                     <button className="btn-icon btn-delete2" onClick={() => deleteItem(item.id, item.isNew)}><FaTrash /></button>
@@ -885,8 +939,6 @@ export default function AdminScheduleManagement() {
                                                             );
                                                         })}
                                                     </select>
-
-                                                    {/* HIỂN THỊ TÊN CŨ NẾU CHƯA LOAD */}
                                                     {item.part_type_id != null && !partTypes.find(pt => String(pt.id) === String(item.part_type_id)) && (
                                                         <small className="text-muted d-block mt-1">
                                                             Đã chọn: {item.part_type_name ? item.part_type_name : `ID ${item.part_type_id}`} (đang tải tên...)
@@ -909,7 +961,6 @@ export default function AdminScheduleManagement() {
                         </div>
                     </div>
                 )}
-                {/* Confirmation modal for deleting a schedule (same pattern as AdminDashboard) */}
                 <ConfirmationModal
                     visible={showConfirmModal}
                     message={`Bạn có chắc chắn muốn xóa lịch trình ID: ${scheduleToDeleteId}? Hành động này không thể hoàn tác.`}
