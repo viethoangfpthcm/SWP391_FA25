@@ -88,14 +88,7 @@ export default function BookingActions({
           <FaClipboardList /> Checklist
         </Button>
 
-        <Button
-          className="btn-action btn-feedback"
-          onClick={() => onViewFeedback(bookingId)}
-          disabled={actionLoading === bookingId}
-          title="Xem đánh giá của khách hàng"
-        >
-          <FaComments /> Feedback
-        </Button>
+   
 
         {(isPaid || isCompleted) && (
           <>
