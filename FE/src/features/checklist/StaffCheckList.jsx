@@ -91,8 +91,6 @@ export default function StaffCheckList() {
             ← Quay lại
           </Button>
         </div>
-
-        {/* THÔNG TIN TỔNG QUAN */}
         <div className="overview-section">
           <h3>THÔNG TIN TỔNG QUAN</h3>
           <div className="overview-grid">
@@ -107,8 +105,6 @@ export default function StaffCheckList() {
             <p><strong>Từ chối:</strong> {checklist.totalCostDeclined?.toLocaleString()} VND</p>
           </div>
         </div>
-
-        {/* BẢNG CHI TIẾT CHECKLIST */}
         <table className="checklist-table">
           <thead>
             <tr>

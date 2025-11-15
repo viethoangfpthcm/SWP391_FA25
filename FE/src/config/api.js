@@ -8,15 +8,12 @@ export const getApiBaseUrl = () => _API_BASE_URL;
 export const API_BASE_URL = _API_BASE_URL;
 
 export const API_BASE = _API_BASE_URL;
-
-// Các endpoints thường dùng
 export const API_ENDPOINTS = {
   // Auth
   LOGIN: "/api/users/login",
   REGISTER: "/api/users/register",
   FORGOT_PASSWORD: "/api/users/forgot-password",
   RESET_PASSWORD: "/api/users/reset-password",
-  
   // Admin
   ADMIN_SERVICE_CENTERS: "/api/admin/service-centers",
   ADMIN_PARTS: "/api/admin/parts",

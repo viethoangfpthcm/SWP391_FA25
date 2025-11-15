@@ -30,18 +30,13 @@ export default function Navbar() {
       </div>
 
       <nav className="navbar-center">
-        {/* Trang chủ luôn hiển thị */}
         <Link to="/home">Trang Chủ</Link>
-
-        {/* Các trang public khi chưa đăng nhập */}
         {!isLoggedIn && (
           <>
             <Link to="/about">Về Chúng Tôi</Link>
             
           </>
         )}
-
-        {/* Các trang riêng khi khách đã đăng nhập */}
         {isLoggedIn && (
           <>
             <Link to="/customer/dashboard">Bảng điều khiển</Link>

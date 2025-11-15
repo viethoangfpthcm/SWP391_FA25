@@ -9,7 +9,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.35rem 0.6rem; /* compact by default */
+  padding: 0.35rem 0.6rem; 
   border: none;
   border-radius: 6px;
   font-size: 0.82rem;
@@ -19,13 +19,11 @@
   white-space: nowrap;
 }
 
-/* hide labels by default to keep actions column very compact (icons-only) */
 .btn-action .btn-label {
   display: none;
   margin-left: 0.25rem;
 }
 
-/* Compact action buttons and hide labels on smaller screens to save width */
 @media (max-width: 1400px) {
   .btn-action {
     padding: 0.3rem 0.45rem;

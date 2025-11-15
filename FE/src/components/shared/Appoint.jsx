@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // Thêm useNavigate
+import { useNavigate } from "react-router-dom"; 
 import Footer from "@components/layout/Footer.jsx";
 import Navbar from "@components/layout/Navbar.jsx";
 import {
@@ -15,9 +15,7 @@ import Button from "@components/ui/Button.jsx";
 
 
 export default function Appoint() {
-  const navigate = useNavigate(); // Sử dụng hook navigate
-
-  // Hàm xử lý mới cho nút "Đặt lịch ngay"
+  const navigate = useNavigate(); 
   const handleNavigateToDashboard = () => {
     
     navigate("/customer/dashboard");
@@ -36,8 +34,6 @@ export default function Appoint() {
   return (
     <div className="appoint-page">
       <Navbar />
-
-      {/* Section 1: Giới thiệu (Giữ nguyên) */}
       <section className="appoint-intro">
         <h1>Dịch vụ bảo dưỡng xe điện chuyên nghiệp</h1>
         <p>

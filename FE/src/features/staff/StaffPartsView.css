@@ -1,7 +1,4 @@
-/* StaffPartsView.css */
 .staff-part {
-
-
 .parts-toolbar {
   display: flex;
   justify-content: space-between;
@@ -69,7 +66,7 @@
 
 .data-table {
   width: 100%;
-  table-layout: fixed; /* quan trọng */
+  table-layout: fixed; 
   border-collapse: collapse;
 }
 
@@ -82,7 +79,6 @@
   text-align: center;
 }
 
-/* ======== Định kích thước cột ======== */
 
 /* Cột ID */
 .data-table th:nth-child(1),
@@ -90,7 +86,7 @@
   width: 70px;
 }
 
-/* Tên phụ tùng (cột lớn nhất) */
+/* Tên phụ tùng */
 .data-table th:nth-child(2),
 .data-table td:nth-child(2) {
   width: 20%;
@@ -134,7 +130,7 @@
   width: 10%;
 }
 
-/* Badge số lượng thẳng hàng */
+
 .stock-badge {
   display: inline-block;
   min-width: 55px;
@@ -142,7 +138,7 @@
   text-align: center;
 }
 
-/* Badge trạng thái thống nhất style với bảng trước */
+
 .status-badge {
   display: inline-block;
   padding: 6px 12px;

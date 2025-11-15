@@ -1,13 +1,5 @@
-/**
- * API Service
- * Wrapper cho fetch với error handling và logging
- */
-
 const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 
-/**
- * Generic fetch wrapper
- */
 export const apiRequest = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   
@@ -20,7 +12,6 @@ export const apiRequest = async (endpoint, options = {}) => {
     ...options,
   };
 
-  // Add auth token if available
   const token = localStorage.getItem("token");
   if (token) {
     defaultOptions.headers["Authorization"] = `Bearer ${token}`;
@@ -28,7 +19,6 @@ export const apiRequest = async (endpoint, options = {}) => {
 
   try {
     const response = await fetch(url, defaultOptions);
-    // Handle non-JSON responses
     const contentType = response.headers.get("content-type");
     let data;
     
@@ -49,14 +39,12 @@ export const apiRequest = async (endpoint, options = {}) => {
 
     return data;
   } catch (error) {
-    console.error(`❌ API Error: ${url}`, error);
+    console.error(` API Error: ${url}`, error);
     
-    // Network error
     if (error.message === 'Failed to fetch') {
       throw new Error('Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.');
     }
-    
-    // CORS error
+
     if (error.message.includes('CORS')) {
       throw new Error('Lỗi CORS. Backend chưa cho phép truy cập từ domain này.');
     }
@@ -65,9 +53,6 @@ export const apiRequest = async (endpoint, options = {}) => {
   }
 };
 
-/**
- * Auth API
- */
 export const authAPI = {
   login: (email, password) => 
     apiRequest("/api/users/login", {
@@ -94,9 +79,6 @@ export const authAPI = {
     }),
 };
 
-/**
- * User API
- */
 export const userAPI = {
   getCurrentUser: () => apiRequest("/api/users/account/current"),
   

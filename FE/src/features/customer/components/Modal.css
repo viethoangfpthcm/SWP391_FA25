@@ -1,4 +1,3 @@
-/* Generic modal styles reused by multiple components */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -7,9 +6,7 @@
     align-items: center;
     justify-content: center;
     z-index: 2147483647 !important;
-    /* ensure modal overlay sits above footer and other content */
     pointer-events: auto;
-    /* allow clicks to reach the overlay */
     animation: fadeIn 0.3s ease;
 }
 
@@ -27,7 +24,6 @@
     animation: slideIn 0.3s ease;
     position: relative;
     z-index: 2147483648 !important;
-    /* keep modal content above overlay children and page elements */
 }
 
 .modal-header {
@@ -78,7 +74,6 @@
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.25);
     background: rgba(255, 255, 255, 0.12);
-    /* kính mờ */
     color: #fff;
     -webkit-text-fill-color: #fff;
     backdrop-filter: blur(8px);
@@ -158,10 +153,6 @@
     }
 }
 
-
-/* 
-   Confirm Modal - kính mờ đồng bộ
-    */
 .modal-content.confirm-modal {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(18px);
@@ -173,7 +164,6 @@
     padding: 32px 36px;
 }
 
-/* Nội dung */
 .modal-content.confirm-modal .confirm-modal-body {
     text-align: center;
     padding-bottom: 20px;
@@ -198,7 +188,6 @@
     margin: 0;
 }
 
-/* Form actions (thanh nút) */
 .modal-content.confirm-modal .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -208,13 +197,11 @@
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.15);
     background: rgba(255, 255, 255, 0.06);
-    /* Kính mờ */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-sizing: border-box;
 }
 
-/* Nút hủy */
 .modal-content.confirm-modal .btn-cancel {
     background: rgba(255, 255, 255, 0.15);
     color: #ff7c7c;
@@ -233,7 +220,6 @@
     transform: translateY(-1px);
 }
 
-/* Nút xác nhận */
 .modal-content.confirm-modal .btn-confirm-danger {
     background: linear-gradient(90deg, #e63946, #d62828);
     color: #fff;
@@ -251,8 +237,6 @@
     transform: translateY(-1px);
 }
 
-/* thêm xe */
-
 .modal-content.add-vehicle-form.modal-content {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(18px);
@@ -263,22 +247,17 @@
     color: #fff;
     width: 80%;
     max-width: 500px;
-    /* ✨ gọn lại */
     padding: 28px 28px 32px;
-    /* giảm padding đều các phía */
     animation: slideIn 0.3s ease;
     overflow-y: auto;
     max-height: 90vh;
-    /* tránh tràn màn hình */
 }
 
-/* Form-group cân đều, không tràn */
 .modal-content.add-vehicle-form form {
     width: 100%;
     box-sizing: border-box;
 }
 
-/* Giữ group gọn, không thụt padding vào */
 .modal-content.add-vehicle-form form .form-group {
     position: relative;
     margin: 14px 0;
@@ -291,7 +270,6 @@
     box-sizing: border-box;
 }
 
-/* Label đồng bộ full width, không lệch */
 .modal-content.add-vehicle-form form .form-group>label {
     display: block;
     margin: 0 0 8px;
@@ -302,7 +280,6 @@
     box-sizing: border-box;
 }
 
-/* Input/select đồng bộ full width, cân khung group */
 .modal-content.add-vehicle-form form .form-group input,
 .modal-content.add-vehicle-form form .form-group select,
 .modal-content.add-vehicle-form form .form-group textarea {
@@ -319,7 +296,6 @@
     transition: border-color .2s, box-shadow .2s, background .2s;
 }
 
-/* Focus */
 .modal-content.add-vehicle-form form .form-group input:focus,
 .modal-content.add-vehicle-form form .form-group select:focus,
 .modal-content.add-vehicle-form form .form-group textarea:focus {
@@ -329,12 +305,10 @@
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
 }
 
-/* Placeholder */
 .modal-content.add-vehicle-form ::placeholder {
     color: rgba(255, 255, 255, 0.72);
 }
 
-/* Hàng nút */
 .modal-content.add-vehicle-form form .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -349,7 +323,6 @@
     box-sizing: border-box;
 }
 
-/* Buttons */
 .modal-content.add-vehicle-form .btn-cancel {
     background: rgba(255, 255, 255, 0.15);
     color: #ff7c7c;
@@ -385,7 +358,6 @@
     transform: translateY(-1px);
 }
 
-/* Lỗi */
 .modal-content.add-vehicle-form .error-message {
     color: #ffb3b3;
     margin-bottom: 12px;
@@ -397,9 +369,6 @@
     max-height: 900px !important;
 }
 
-/* 
-   SUCCESS MODAL
-    */
 .modal-content.success-modal {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(18px);
@@ -416,7 +385,6 @@
     position: relative;
 }
 
-/* Icon + text */
 .success-modal-body {
     display: flex;
     flex-direction: column;
@@ -429,7 +397,6 @@
 .success-modal-body .success-icon {
     font-size: 3rem;
     color: #4ade80;
-    /* xanh lá sáng */
     margin-bottom: 8px;
     filter: drop-shadow(0 0 10px rgba(74, 222, 128, 0.4));
 }
@@ -441,7 +408,6 @@
     font-weight: 500;
 }
 
-/* Footer buttons */
 .success-modal .form-actions {
     display: flex;
     justify-content: center;
@@ -472,7 +438,6 @@
     transform: translateY(-1px);
 }
 
-/* Animation nhẹ mượt */
 @keyframes popIn {
     from {
         transform: scale(0.9);
@@ -490,8 +455,7 @@
     padding: 28px 32px !important;
 }
 
-/* Customer- overrides */
-  .dashboard-page .modal-content,
+.dashboard-page .modal-content,
 .dashboard-page .modal-content * {
     color: #ffffff !important;
 }
@@ -511,7 +475,6 @@
     color: #ffffff !important;
 }
 
-/* Even higher-specificity fallbacks to beat other global rules loaded later */
 html body .dashboard-page .modal-content,
 html body .dashboard-page .modal-content *,
 html body .dashboard-page .modal-content .modal-header h2,
@@ -519,23 +482,20 @@ html body .dashboard-page .modal-content .close-modal-btn {
     color: #ffffff !important;
 }
 
-/* Inputs, selects, textareas should retain light text on dark translucent bg */
 html body .dashboard-page .modal-content input,
 html body .dashboard-page .modal-content select,
 html body .dashboard-page .modal-content textarea {
     color: #ffffff !important;
-    background: rgba(255,255,255,0.06) !important;
-    border-color: rgba(255,255,255,0.18) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
     -webkit-text-fill-color: #ffffff !important;
 }
 
-/* Placeholder color */
 html body .dashboard-page .modal-content input::placeholder,
 html body .dashboard-page .modal-content textarea::placeholder {
-    color: rgba(255,255,255,0.6) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
 }
 
-/* Specific modal variants used in customer components */
 html body .dashboard-page .modal-content.booking-form-modal,
 html body .dashboard-page .modal-content.add-vehicle-form,
 html body .dashboard-page .modal-content.confirm-modal,
@@ -544,8 +504,6 @@ html body .dashboard-page .modal-content.feedback-modal {
     color: #ffffff !important;
 }
 
-/* Also target modal elements that carry the `customer-modal` class (these are portaled to body)
-   This is the preferred, explicit way: customer modal components now include `customer-modal`. */
 .modal-content.customer-modal,
 .modal-content.customer-modal * {
     color: #ffffff !important;
@@ -555,12 +513,11 @@ html body .dashboard-page .modal-content.feedback-modal {
 .modal-content.customer-modal select,
 .modal-content.customer-modal textarea {
     color: #ffffff !important;
-    background: rgba(255,255,255,0.06) !important;
-    border-color: rgba(255,255,255,0.18) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
     -webkit-text-fill-color: #ffffff !important;
 }
 
-/* Chrome / WebKit autofill fix: keep text visible on dark translucent backgrounds */
 .modal-content.customer-modal input:-webkit-autofill,
 .modal-content.customer-modal input:-webkit-autofill:hover,
 .modal-content.customer-modal input:-webkit-autofill:focus,
@@ -570,16 +527,16 @@ html body .dashboard-page .modal-content.feedback-modal {
 .modal-content.customer-modal select:-webkit-autofill,
 .modal-content.customer-modal select:-webkit-autofill:hover,
 .modal-content.customer-modal select:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0px 1000px rgba(255,255,255,0.06) inset !important;
-    box-shadow: 0 0 0px 1000px rgba(255,255,255,0.06) inset !important;
+    -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.06) inset !important;
+    box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.06) inset !important;
     -webkit-text-fill-color: #ffffff !important;
     color: #ffffff !important;
 }
 
-/* For date inputs some browsers show internal text via pseudo element */
 .modal-content.customer-modal input[type="date"] {
     color: #ffffff !important;
 }
+
 .modal-content.customer-modal input[type="date"]::-webkit-datetime-edit-text,
 .modal-content.customer-modal input[type="date"]::-webkit-datetime-edit-month-field,
 .modal-content.customer-modal input[type="date"]::-webkit-datetime-edit-day-field,
@@ -592,42 +549,36 @@ html body .dashboard-page .modal-content.feedback-modal {
     color: #ffffff !important;
 }
 
-/* extra specificity fallback */
 html body .modal-content.customer-modal,
 html body .modal-content.customer-modal * {
     color: #ffffff !important;
 }
 
-/* Ensure any text inside form-groups in customer modals is white */
 .modal-content.customer-modal .form-group,
 .modal-content.customer-modal .form-group * {
     color: #ffffff !important;
 }
 
-/* Select option text when dropdown is opened (some browsers use separate UI) */
 .modal-content.customer-modal select option {
-    color: #000000; /* keep options readable on light native dropdown backgrounds */
+    color: #000000;
 }
 
-/* But for the select displayed (closed), ensure selected text is white */
 .modal-content.customer-modal select {
     color: #ffffff !important;
 }
 
-/* Extra: force labels in customer modals to white (highest specificity) */
 html body .modal-content.customer-modal label,
-html body .modal-content.customer-modal .form-group > label,
-.modal-content.customer-modal .form-group > label {
+html body .modal-content.customer-modal .form-group>label,
+.modal-content.customer-modal .form-group>label {
     color: #ffffff !important;
 }
 
-/*  */
 html body .dashboard-page .modal-content.add-vehicle-form label,
-html body .dashboard-page .modal-content.add-vehicle-form .form-group > label,
+html body .dashboard-page .modal-content.add-vehicle-form .form-group>label,
 html body .dashboard-page .modal-content.customer-modal label,
-html body .dashboard-page .modal-content.customer-modal .form-group > label,
+html body .dashboard-page .modal-content.customer-modal .form-group>label,
 html body .modal-content.add-vehicle-form label,
-html body .modal-content.add-vehicle-form .form-group > label {
+html body .modal-content.add-vehicle-form .form-group>label {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     filter: brightness(1.8) !important;
@@ -635,7 +586,6 @@ html body .modal-content.add-vehicle-form .form-group > label {
     opacity: 1 !important;
 }
 
-/* ép cả placeholder và text trong input về trắng */
 html body .dashboard-page .modal-content.add-vehicle-form input,
 html body .dashboard-page .modal-content.add-vehicle-form select,
 html body .dashboard-page .modal-content.add-vehicle-form textarea {
@@ -650,13 +600,11 @@ html body .dashboard-page .modal-content.add-vehicle-form textarea::placeholder 
     color: rgba(255, 255, 255, 0.65) !important;
 }
 
-/* đảm bảo dropdown option vẫn đọc được */
 html body .dashboard-page .modal-content.add-vehicle-form select option {
     color: #000000 !important;
     background-color: #ffffff !important;
 }
 
-/* tăng chiều ngang modal */
 html body .dashboard-page .modal-content.add-vehicle-form {
     max-width: 720px !important;
 }

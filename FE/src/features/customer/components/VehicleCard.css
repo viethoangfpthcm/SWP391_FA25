@@ -1,7 +1,5 @@
-/* VehicleCard styles */
 .vehicle-card {
   padding: 20px;
-  /* glass card styling to match dashboard */
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);

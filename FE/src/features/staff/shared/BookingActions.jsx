@@ -1,5 +1,5 @@
 import React from "react";
-import { FaClipboardList, FaComments, FaDollarSign, FaCheck, FaTimes } from "react-icons/fa";
+import { FaClipboardList, FaComments, FaDollarSign, FaCheck, FaTimes, FaTruck } from "react-icons/fa";
 import Button from "@components/ui/Button.jsx";
 import Loading from "@components/ui/Loading.jsx";
 import "./BookingActions.css";
@@ -35,7 +35,7 @@ export default function BookingActions({
           disabled={actionLoading === bookingId}
           title="Duyệt"
         >
-          {actionLoading === bookingId ? <Loading inline /> : <FaCheck />} <span className="btn-label">Duyệt</span>
+          {actionLoading === bookingId ? <Loading inline /> : <FaCheck />} Duyệt
         </Button>
         <Button
           className="btn-action btn-decline"
@@ -43,7 +43,7 @@ export default function BookingActions({
           disabled={actionLoading === bookingId}
           title="Từ chối"
         >
-          {actionLoading === bookingId ? <Loading inline /> : <FaTimes />} <span className="btn-label">Từ chối</span>
+          {actionLoading === bookingId ? <Loading inline /> : <FaTimes />} Từ chối
         </Button>
       </div>
     );
@@ -58,7 +58,7 @@ export default function BookingActions({
           disabled={!selectedTechnicians[bookingId] || actionLoading === bookingId}
           title="Phân công"
         >
-         {actionLoading === bookingId ? <Loading inline /> : <FaCheck />} <span className="btn-label">Phân công</span>
+         {actionLoading === bookingId ? <Loading inline /> : <FaCheck />} Phân công
         </Button>
       </div>
     );
@@ -72,7 +72,7 @@ export default function BookingActions({
         disabled={actionLoading === bookingId}
         title="Bàn giao"
       >
-        {actionLoading === bookingId ? <Loading inline /> : <FaCheck />} <span className="btn-label">Bàn giao</span>
+        {actionLoading === bookingId ? <Loading inline /> : <FaTruck />} Bàn giao
       </Button>
     );
   }

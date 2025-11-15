@@ -7,12 +7,8 @@ import "./LoginForm.css";
 const LoginForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  // --- Tab mặc định (login hoặc register từ Home) ---
   const defaultTab = location.state?.defaultTab || "login";
   const [activeTab, setActiveTab] = useState(defaultTab);
-
-  // --- State chung ---
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loginEmail, setLoginEmail] = useState("");
@@ -36,7 +32,6 @@ const LoginForm = () => {
     }
   }, [location, navigate]);
 
-  // --- Chuyển hướng sau đăng nhập theo role ---
   const redirectToDashboard = (role) => {
     const upperCaseRole = role?.toUpperCase() || "";
 
@@ -62,7 +57,6 @@ const LoginForm = () => {
     }
   };
 
-  // --- Đăng nhập ---
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -79,8 +73,6 @@ const LoginForm = () => {
       if (data.fullName) {
         localStorage.setItem("fullName", data.fullName);
       }
-
-      // Điều hướng theo role
       redirectToDashboard(data.role);
     } catch (err) {
       setError(err.message);
@@ -88,8 +80,6 @@ const LoginForm = () => {
       setLoading(false);
     }
   };
-
-  // --- Đăng ký ---
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
@@ -139,9 +129,6 @@ const LoginForm = () => {
       setLoading(false);
     }
   };
-
-
-  // --- Chuyển tab ---
   const switchTab = (tab) => {
     setActiveTab(tab);
     setError("");
@@ -155,7 +142,6 @@ const LoginForm = () => {
       <p>Vui lòng đăng nhập để tiếp tục</p>
     </div>
     <div className="login-container">
-      {/* === Tabs trên đầu Email === */}
       <div className="tabs-top">
         <Button
           className={`tab-btn ${activeTab === "login" ? "active" : ""}`}
@@ -170,8 +156,6 @@ const LoginForm = () => {
           Đăng ký
         </Button>
       </div>
-
-      {/* === Form hiển thị tương ứng === */}
       {activeTab === "login" && (
         <form onSubmit={handleLogin} className="form-box">
           <label>Email</label>

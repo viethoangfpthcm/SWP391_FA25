@@ -19,7 +19,7 @@ export default function TechnicianSelect({
         onChange={(e) => onTechnicianChange(bookingId, e.target.value)}
         disabled={disabled}
       >
-        <option value="">-- Chọn KTV --</option>
+        <option value="">Chọn kỹ thuật viên</option>
         {technicians.length > 0 ? (
           technicians.map((tech) => (
             <option key={tech.userId} value={tech.userId}>

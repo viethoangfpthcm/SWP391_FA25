@@ -1,9 +1,7 @@
-/* Giữ kích thước modal */
 .booking-form-modal {
     max-width: 680px;
 }
 
-/* Thông tin xe/gói */
 .booking-form-modal .booking-info {
     color: #fefefe;
     margin-bottom: 10px;
@@ -13,7 +11,6 @@
     color: #ffffff !important;
 }
 
-/* Khối group: nền kính mờ đồng nhất, khoảng cách đều */
 .booking-form-modal form .form-group {
     position: relative;
     margin: 14px 0;
@@ -26,7 +23,6 @@
     box-sizing: border-box;
 }
 
-/* Nhãn */
 .booking-form-modal form .form-group>label {
     display: block;
     margin: 0 0 8px;
@@ -34,7 +30,6 @@
     color: #ffffff;
 }
 
-/* Control chung: full width, đồng bộ chiều cao */
 .booking-form-modal form .form-group>select,
 .booking-form-modal form .form-group>input[type="text"],
 .booking-form-modal form .form-group>input[type="date"],
@@ -54,14 +49,12 @@
     color-scheme: dark;
 }
 
-/* Textarea cao hơn */
 .booking-form-modal form .form-group>textarea {
     min-height: 100px;
     height: auto;
     resize: vertical;
 }
 
-/* Focus state */
 .booking-form-modal form .form-group>select:focus,
 .booking-form-modal form .form-group>input:focus,
 .booking-form-modal form .form-group>textarea:focus {
@@ -70,13 +63,10 @@
     box-shadow: 0 0 0 3px rgba(10, 139, 255, 0.25);
 }
 
-/* Nhóm ngày/giờ: dùng khung .form-group sẵn có, chỉ xếp 2 cột */
 .booking-form-modal form .form-group.inline-group {
     display: flex;
     gap: 12px;
-    /* không thêm nền/viền/padding riêng để không lệch với các group khác */
     padding: 12px;
-    /* giữ lại padding của form-group */
 }
 
 .booking-form-modal form .form-group.inline-group>div {
@@ -97,7 +87,6 @@
     box-sizing: border-box;
 }
 
-/* Hàng nút: cùng “kính mờ”, canh phải, đồng bộ với group */
 .booking-form-modal form .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -119,14 +108,12 @@
     border-radius: 12px;
 }
 
-/* Thông báo lỗi */
 .booking-form-modal .error-message {
     color: #ffb3b3;
     margin-bottom: 12px;
     background-color: orangered;
 }
 
-/* Responsive: nhóm ngày/giờ xếp dọc khi màn nhỏ */
 @media (max-width: 640px) {
     .booking-form-modal form .form-group.inline-group {
         flex-direction: column;
@@ -134,7 +121,6 @@
     }
 }
 
-/* Nền kính mờ + chữ trắng cho tất cả input/select/textarea trong modal */
 .modal-content.booking-form-modal form .form-group input,
 .modal-content.booking-form-modal form .form-group select,
 .modal-content.booking-form-modal form .form-group textarea,
@@ -149,12 +135,9 @@
     outline: none !important;
     transition: border-color .2s, box-shadow .2s, background .2s !important;
     color-scheme: dark;
-    /* icon lịch/giờ theo theme tối */
     -webkit-text-fill-color: #fff;
-    /* WebKit giữ màu chữ trắng */
 }
 
-/* Trạng thái focus */
 .modal-content.booking-form-modal form .form-group input:focus,
 .modal-content.booking-form-modal form .form-group select:focus,
 .modal-content.booking-form-modal form .form-group textarea:focus {
@@ -163,30 +146,25 @@
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25) !important;
 }
 
-/* Placeholder trắng mờ */
 .modal-content.booking-form-modal ::placeholder {
     color: rgba(255, 255, 255, 0.7) !important;
 }
 
-/* Label trắng */
 .modal-content.booking-form-modal label {
     color: #fff !important;
 }
 
-/* Select: ẩn mũi tên native */
 .modal-content.booking-form-modal select {
     appearance: none !important;
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
 }
 
-/* Date/Time padding đồng nhất */
 .modal-content.booking-form-modal input[type="date"],
 .modal-content.booking-form-modal input[type="time"] {
     padding: 10px 12px !important;
 }
 
-/* Hàng action giống form-group (kính mờ) */
 .modal-content.booking-form-modal .form-actions {
     background: rgba(255, 255, 255, 0.06) !important;
     border: 1px solid rgba(255, 255, 255, 0.16) !important;
@@ -196,7 +174,6 @@
     padding: 12px !important;
 }
 
-/* explicit class for inputs */
 .customer-input {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
@@ -208,23 +185,19 @@
     color: rgba(255,255,255,0.7) !important;
 }
 
-/* ----- Fix: force labels white and make select dropdown items readable ----- */
-/* Ensure labels inside form-group are white even if other styles try to override */
 .booking-form-modal form .form-group > label,
 .modal-content.booking-form-modal form .form-group > label,
 .modal-content.customer-modal .booking-form-modal form .form-group > label {
     color: #ffffff !important;
 }
 
-/* Style native <option> elements so text is visible on the dark modal background */
 .modal-content.booking-form-modal select option,
 .booking-form-modal select option,
 .modal-content.customer-modal .booking-form-modal select option {
-    background-color: rgba(17,24,39,0.98); /* dark background */
+    background-color: rgba(17,24,39,0.98); 
     color: #ffffff !important;
 }
 
-/* Hover / selected option appearance */
 .modal-content.booking-form-modal select option:hover,
 .modal-content.booking-form-modal select option:checked,
 .booking-form-modal select option:hover,
@@ -233,7 +206,6 @@
     color: #ffffff !important;
 }
 
-/* Common custom dropdowns (bootstrap, react-select, rc-select etc.) - make their menus dark with white text */
 .booking-form-modal .dropdown-menu,
 .booking-form-modal .rc-select-dropdown,
 .booking-form-modal .react-select__menu {
@@ -256,9 +228,6 @@
     color: #ffffff !important;
 }
 
-/* End fix block */
-
-/* Extra-high-specificity fallback for any remaining label overrides */
 html body .modal-content.customer-modal.booking-form-modal .form-group > label,
 html body .modal-content.customer-modal.booking-form-modal label,
 html body .modal-content.customer-modal .booking-form-modal .form-group > label,

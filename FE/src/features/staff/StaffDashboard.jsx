@@ -30,7 +30,6 @@ export default function StaffDashboard({ user, userRole }) {
   const [confirmMessage, setConfirmMessage] = useState("");
   const [requireReason, setRequireReason] = useState(false);
 
-  // Modal states
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState(null);
@@ -42,7 +41,6 @@ export default function StaffDashboard({ user, userRole }) {
 
   const fetchUserInfo = async () => {
     const token = localStorage.getItem("token");
-    // Kiểm tra token và tránh lỗi
     if (!token) {
       setLoading(false);
       navigate("/");
@@ -73,11 +71,9 @@ export default function StaffDashboard({ user, userRole }) {
       const fetchedFullName = data.fullName || data.name || "N/A";
       const fetchedRole = data.role || "N/A";
 
-      // LƯU VÀO LOCAL STORAGE
+      // Lưu local storage
       localStorage.setItem('fullName', fetchedFullName);
       localStorage.setItem('role', fetchedRole);
-
-      // CẬP NHẬT STATE
       setUserInfo({
         fullName: fetchedFullName,
         role: fetchedRole
@@ -204,13 +200,11 @@ export default function StaffDashboard({ user, userRole }) {
   };
 
 
-  // Load data khi component được mount
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       setError(null);
       await fetchUserInfo();
-      // Chạy song song
       await Promise.allSettled([fetchAppointments(), fetchTechnicians()]);
       setLoading(false);
     };
@@ -224,7 +218,7 @@ export default function StaffDashboard({ user, userRole }) {
     loadData();
   }, [token, navigate]);
 
-  // Xử lý khi chọn kỹ thuật viên
+  // chọn kỹ thuật viên
   const handleTechnicianChange = (bookingId, technicianId) => {
     setSelectedTechnicians((prev) => ({
       ...prev,
@@ -232,7 +226,7 @@ export default function StaffDashboard({ user, userRole }) {
     }));
   };
 
-  // Lấy tên kỹ thuật viên từ danh sách bằng userId
+  // Lấy tên kỹ thuật viên bằng userId
   const getTechnicianName = (technicianId) => {
     if (!technicianId) return "—";
     const tech = technicians.find(t => String(t.userId) === String(technicianId));
@@ -275,10 +269,10 @@ export default function StaffDashboard({ user, userRole }) {
       });
 
       await fetchAppointments();
-      await fetchTechnicians(); // Tải lại KTV để cập nhật số việc
+      await fetchTechnicians(); // Tải lại tech
 
     } catch (err) {
-      console.error("❓ Error assigning technician:", err);
+      console.error(" Error assigning technician:", err);
       setError(`Lỗi khi phân công: ${err.message}`);
     } finally {
       setActionLoading(null);
@@ -313,7 +307,7 @@ export default function StaffDashboard({ user, userRole }) {
         }
         return;
       }
-      await fetchAppointments(); // Tải lại danh sách để cập nhật trạng thái
+      await fetchAppointments(); // Tải lại danh sách 
 
     } catch (err) {
       console.error(" Error approving booking:", err);
@@ -348,7 +342,7 @@ export default function StaffDashboard({ user, userRole }) {
     setShowConfirmModal(true);
   };
 
-  // *** BÀN GIAO XE ***
+  // BÀN GIAO XE 
   const openHandoverModal = (bookingId) => {
     setRequireReason(false);
     setConfirmMessage("Xác nhận BÀN GIAO XE và hoàn tất booking này?");
@@ -372,7 +366,6 @@ export default function StaffDashboard({ user, userRole }) {
     setShowConfirmModal(true);
   };
 
-  // Staff có thể xem checklist ngay khi đã phân công
   const hasChecklist = (status) => {
     const statusText = status ? status.toLowerCase() : '';
     return ['assigned', 'in_progress', 'completed', 'paid'].includes(statusText);
@@ -420,7 +413,7 @@ export default function StaffDashboard({ user, userRole }) {
     return new Date(a.bookingDate) - new Date(b.bookingDate);
   });
 
-  // --- Auto refresh danh sách lịch hẹn mỗi 30 giây ---
+  // refresh lịch hẹn mỗi 30 giây
   useEffect(() => {
     const interval = setInterval(() => {
       fetchAppointments();
@@ -429,7 +422,6 @@ export default function StaffDashboard({ user, userRole }) {
     return () => clearInterval(interval);
   }, []);
 
-  // --- Render ---
   if (showLoading) {
     return (
       <Loading text="Đang tải dữ liệu..." />

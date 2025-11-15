@@ -1,4 +1,3 @@
-/* -------------------- Home Page -------------------- */
 .home-page {
   width: 100%;
   min-height: 100vh;
@@ -9,7 +8,6 @@
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* -------------------- Hero Section -------------------- */
 .home-hero {
   padding: 180px 20px 160px;
   color: white;
@@ -60,7 +58,6 @@
   transform: translateY(-3px);
 }
 
-/* -------------------- Info Section -------------------- */
 .home-info {
   display: flex;
   align-items: center;
@@ -89,7 +86,6 @@
   color: #ffffff;
 }
 
-/* -------------------- Partner Section -------------------- */
 .home-partners {
   text-align: center;
   padding: 80px 20px;
@@ -117,7 +113,6 @@
   color: #ffffff;
 }
 
-/* Partner carousel */
 .partner-carousel {
   position: relative;
   width: 100%;
@@ -164,7 +159,6 @@
   animation-play-state: paused;
 }
 
-/* -------------------- Responsive -------------------- */
 @media (max-width: 768px) {
   .home-hero h1 {
     font-size: 2.2rem;
