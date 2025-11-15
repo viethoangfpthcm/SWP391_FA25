@@ -1,11 +1,13 @@
-/* Stats grid */
+/* Stats grid: always 4 columns × 2 rows on desktop */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(4, 1fr); /* FIXED 4 COLUMNS */
   gap: 20px;
   text-align: center;
+  width: 100%;
 }
 
+/* Normal stat item */
 .stat-item {
   padding: 20px;
   display: flex;
@@ -14,6 +16,7 @@
   justify-content: center;
 }
 
+/* Big number */
 .stat-value {
   font-size: 1.8rem;
   font-weight: 700;
@@ -21,6 +24,7 @@
   text-shadow: 0 0 8px rgb(0, 0, 0);
 }
 
+/* Label */
 .stat-label {
   font-size: 0.9rem;
   color: #ffffff !important;
@@ -28,6 +32,18 @@
   text-shadow: 0 0 6px rgb(22, 20, 20);
 }
 
+/* “Lịch hẹn gần nhất” occupies only ONE cell */
+.stat-item.wide {
+  grid-column: span 1; /* not wide anymore, make consistent */
+}
+
 .stat-item.wide .stat-value.small {
   font-size: 0.9rem;
+}
+
+/* 📱 Mobile: 2 columns */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

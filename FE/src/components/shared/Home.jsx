@@ -76,7 +76,7 @@ const Home = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1 }}
         >
-          <img src="/VFbrand.jpg" alt="Authorized Service Center" />
+          <img className="VFbrand" src="/VFbrand.png" alt="Authorized Service Center" />
         </motion.div>
       </section>
 
