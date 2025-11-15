@@ -254,23 +254,26 @@ export default function PartManagement() {
   return (
     <div className="dashboard-container">
       <Sidebar userName={userInfo.fullName} userRole={userInfo.role} />
-      <main className="main-content">
+      <main className="main-content part-manager">
         <header className="page-header">
           <h1><FaWrench /> Quản lý Phụ tùng</h1>
           <p>Danh sách phụ tùng tại: <strong>{centerInfo?.name || `Trung tâm ID #${centerId}`}</strong></p>
         </header>
         <div className="actions-bar">
-          <Button className="btn-back" onClick={() => navigate("/admin/service-centers")} disabled={actionLoading || isDeleting}>
-            <FaArrowLeft /> Quay lại QL Trung tâm
-          </Button>
-          <Button className="btn-add" onClick={() => openForm()} disabled={actionLoading || isDeleting}>
-            <FaPlus /> Thêm phụ tùng
-          </Button>
-          <div className="parts-search" style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
+          <div className="action-left">
+            <Button className="btn-back" onClick={() => navigate("/admin/service-centers")} disabled={actionLoading || isDeleting}>
+              <FaArrowLeft /> Quay lại QL Trung tâm
+            </Button>
+            <Button className="btn-add" onClick={() => openForm()} disabled={actionLoading || isDeleting}>
+              <FaPlus /> Thêm phụ tùng
+            </Button>
+          </div>
+
+          <div className="action-right parts-search">
             <FaSearch />
             <input
               type="search"
-              placeholder="Tìm kiếm phụ tùng (tên, ID, loại, mô tả)..."
+              placeholder="Tìm kiếm phụ tùng..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               aria-label="Tìm kiếm phụ tùng"

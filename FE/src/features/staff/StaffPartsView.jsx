@@ -77,7 +77,7 @@ const StaffPartsView = () => {
         userName={userInfo?.fullName}
         userRole={userInfo?.role}
       />
-      <main className="main-content">
+      <main className="main-content staff-part">
         <header className="page-header">
           <h1>
             <FaCog /> Danh sách phụ tùng

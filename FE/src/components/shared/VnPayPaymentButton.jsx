@@ -79,7 +79,7 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
   return (
     <div className={`vnpay-payment-section ${className}`}>
       <div className="payment-summary">
-        <h4>Tổng chi phí đã duyệt : &nbsp;&nbsp;</h4 >
+        <h4>Tổng số tiền cần thanh toán : &nbsp;&nbsp;</h4>
         <span className="total-amount">
           {(totalAmount || 0).toLocaleString('vi-VN')} đ
         </span>

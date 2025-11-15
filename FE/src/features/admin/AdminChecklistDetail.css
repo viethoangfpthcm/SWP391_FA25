@@ -1,8 +1,5 @@
-/* ===============================
-   ADMIN CHECKLIST DETAIL PAGE
-   (Hoàn chỉnh, bảng đều đẹp, responsive)
-================================= */
 
+.checklist{
 /* --- Layout --- */
 .dashboard-container {
     display: flex;
@@ -316,7 +313,22 @@
     background: #e5e7eb;
     color: #374151;
 }
-
+.role-replace {
+     background: #fee2e2;
+    color: #b91c1c;
+}
+.role-adjustment {
+     background: #e4f0bf;
+    color: #776a07;
+}
+.role-repair {
+     background: #cce1ef;
+    color: #1f1cb9;
+}
+.role-good {
+     background: #e3fee2;
+    color: #1cb94b;
+}
 /* ===============================
    KHÁC
 ================================= */
@@ -397,4 +409,5 @@
 .data-table td:nth-child(8) {
     width: 12%;
     text-align: center;
+}
 }

@@ -443,7 +443,7 @@ export default function StaffDashboard({ user, userRole }) {
         userName={userInfo?.fullName}
         userRole={userInfo?.role}
       />
-      <main className="main-content">
+      <main className="main-content staff-dashboard">
         <header className="page-header">
           <h1><FaCalendarAlt /> Quản lý lịch hẹn</h1>
           <p>Xem xét, phân công và theo dõi các lịch hẹn của khách hàng.</p>
