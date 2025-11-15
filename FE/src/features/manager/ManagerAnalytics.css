@@ -1,7 +1,5 @@
-/* Manager Analytics - Reuse Admin styles */
 @import '../admin/AdminAnalytics.css';
 
-/* Override/additions specific to manager */
 .manager-analytics .admin-header h1 {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
