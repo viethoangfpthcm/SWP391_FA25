@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
@@ -36,7 +35,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     List<Booking> findByServiceCenter_IdOrderByBookingDateDesc(Integer centerId);
 
     List<Booking> findByOrderByBookingDateDesc();
-
     @Query("SELECT b.status, COUNT(b.bookingId) " +
             "FROM Booking b " +
             "WHERE YEAR(b.bookingDate) = :year AND MONTH(b.bookingDate) = :month " +

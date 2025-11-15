@@ -79,4 +79,14 @@ public class CustomerDashboardController {
         dashboardService.deleteVehicle(licensePlate);
         return ResponseEntity.ok("Vehicle deleted successfully");
     }
+    /**
+     * Lấy danh sách các Model xe (ví dụ: "VinFast VF 3",....)
+     * để hiển thị cho Customer chọn khi thêm xe mới.
+     * GET /api/customer/vehicle-models
+     */
+    @GetMapping("/vehicle-models")
+    public ResponseEntity<List<String>> getAvailableVehicleModels() {
+        List<String> models = dashboardService.getAvailableVehicleModels();
+        return ResponseEntity.ok(models);
+    }
 }

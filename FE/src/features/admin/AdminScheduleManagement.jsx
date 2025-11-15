@@ -17,6 +17,7 @@ import Loading from '@components/ui/Loading.jsx';
 import ConfirmationModal from '@components/ui/ConfirmationModal.jsx';
 import { API_BASE_URL } from "@config/api.js";
 import apiRequest from '@services/api.js';
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 export default function AdminScheduleManagement() {
     const [schedules, setSchedules] = useState([]);
@@ -46,7 +47,7 @@ export default function AdminScheduleManagement() {
     const [partTypes, setPartTypes] = useState([]);
 
     const navigate = useNavigate();
-    
+
 
     const getToken = () => localStorage.getItem("token");
     // Toggle this to true while debugging auth issues so the app does not auto-logout on 401/403
@@ -182,17 +183,17 @@ export default function AdminScheduleManagement() {
         setIsDeleting(true);
         setError(null);
         try {
-                const token = getToken();
-                console.log('confirmDelete: scheduleId=', scheduleToDeleteId, 'tokenPresent=', !!token, 'tokenLen=', token ? token.length : 0);
-                const res = await fetch(`${API_BASE_URL}/api/admin/schedules/${scheduleToDeleteId}`, {
-                    method: 'DELETE',
-                    headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
-                });
-                console.log('confirmDelete: response status=', res.status);
+            const token = getToken();
+            console.log('confirmDelete: scheduleId=', scheduleToDeleteId, 'tokenPresent=', !!token, 'tokenLen=', token ? token.length : 0);
+            const res = await fetch(`${API_BASE_URL}/api/admin/schedules/${scheduleToDeleteId}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+            });
+            console.log('confirmDelete: response status=', res.status);
             if (res.status === 401) { localStorage.clear(); navigate('/'); return; }
             if (!res.ok) {
                 let message = 'Không thể xóa lịch trình.';
-                try { const data = await res.json(); message = data.message || data.error || message; } catch(e){}
+                try { const data = await res.json(); message = data.message || data.error || message; } catch (e) { }
                 throw new Error(message);
             }
             // success
@@ -438,120 +439,99 @@ export default function AdminScheduleManagement() {
         }));
     };
 
-    // LƯU ITEMS – KHÔNG BẮT BUỘC part_type_id
-    const saveAllItems = async () => {
+    // LƯU ITEMS 
+   const saveAllItems = async () => {
         const token = getToken();
-        if (!token) return alert("Phiên hết hạn!");
+        if (!token) {
+            alert("Phiên hết hạn!");
+            navigate('/');
+            return;
+        }
 
         try {
-            // Debug: log token presence (don't log full token in prod)
-            console.log("saveAllItems: token present?", !!token, "tokenLen=", token ? token.length : 0);
-
-            // Quick validation: check token validity before attempting multiple POSTs.
-            // This avoids partial writes and gives a clearer error message early.
-            try {
-                const chk = await fetch(`${API_BASE_URL}/api/users/account/current`, {
-                    headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
-                    credentials: 'include'
-                });
-                if (chk.status === 401 || chk.status === 403) {
-                    const txt = await chk.text().catch(() => '');
-                    console.error('token validation failed', { status: chk.status, body: txt });
-                    if (AUTH_DEBUG_NO_LOGOUT) {
-                        alert(`Auth error ${chk.status}: ${txt || 'no body'} (debug mode - not logging out)`);
-                        return;
-                    }
-                    alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
-                    localStorage.clear();
-                    navigate('/');
-                    return;
-                }
-            } catch (e) {
-                console.warn('token validation request failed', e);
-                // proceed — the later requests will surface the exact error
-            }
             for (const item of itemsModal.items) {
+                // 1. Validate Tên
                 if (!item.itemName?.trim()) {
                     alert("Tên công việc không được để trống!");
                     return;
                 }
 
-                // Build payload matching backend schema (use snake_case keys expected by backend)
+                // 2. Validate Part Type (Bắt buộc)
+                if (item.part_type_id == null || item.part_type_id === "" || item.part_type_id === 0) {
+                    alert(`Vui lòng chọn "Loại linh kiện" cho công việc: ${item.itemName}`);
+                    return;
+                }
+
+                // 3. Chuẩn bị dữ liệu payload
                 const itemData = {
-                    plan_id: itemsModal.plan.id,
-                    item_name: item.itemName.trim(),
-                    action_type: item.actionType || "INSPECT",
-                    part_type_id: Number.isFinite(item.part_type_id) ? item.part_type_id : null,
+                    planId: itemsModal.plan.id,     
+                    plan_id: itemsModal.plan.id,       
+                    
+                    itemName: item.itemName.trim(),
+                    item_name: item.itemName.trim(),   
+                    
+                    actionType: item.actionType || "INSPECT",  
+                    action_type: item.actionType || "INSPECT", 
+                    
+                    partTypeId: Number(item.part_type_id),  
+                    part_type_id: Number(item.part_type_id),  
+                    
                     note: item.note?.trim() || ""
                 };
 
+                let url = "";
+                let method = "";
+
                 if (item.isNew || item.id.toString().startsWith('temp_')) {
-                    // Thêm item mới
-                        try {
-                            const created = await apiRequest('/api/admin/plan-items', {
-                                method: 'POST',
-                                body: JSON.stringify(itemData),
-                            });
-                            // created returned but not currently used - continue
-                        } catch (err) {
-                            console.error('plan-items POST error via apiRequest', err);
-                            // apiRequest throws error with status and data when non-ok
-                            if (err.status === 401 || err.status === 403) {
-                                console.error('plan-items POST 401/403', { status: err.status, body: err.data });
-                                if (AUTH_DEBUG_NO_LOGOUT) {
-                                    alert(`Auth error ${err.status}: ${err.data || 'no body'} (debug mode - not logging out)`);
-                                    return;
-                                }
-                                alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
-                                localStorage.clear();
-                                navigate('/');
-                                return;
-                            }
-                            throw err;
-                        }
+                    url = `${API_BASE_URL}/api/admin/plan-items`;
+                    method = 'POST';
                 } else if (item.modified) {
-                    // Cập nhật item đã tồn tại
-                    try {
-                        const updated = await apiRequest(`/api/admin/plan-items/${item.id}`, {
-                            method: 'PUT',
-                            body: JSON.stringify(itemData),
-                        });
-                    } catch (err) {
-                        console.error('plan-items PUT error via apiRequest', err);
-                        if (err.status === 401 || err.status === 403) {
-                            console.error('plan-items PUT 401/403', { status: err.status, body: err.data });
-                            if (AUTH_DEBUG_NO_LOGOUT) {
-                                alert(`Auth error ${err.status}: ${err.data || 'no body'} (debug mode - not logging out)`);
-                                return;
-                            }
-                            alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
-                            localStorage.clear();
-                            navigate('/');
-                            return;
-                        }
-                        throw err;
-                    }
+                    url = `${API_BASE_URL}/api/admin/plan-items/${item.id}`;
+                    method = 'PUT';
+                } else {
+                    continue;
+                }
+                const res = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(itemData),
+                });
+
+                if (res.status === 401 || res.status === 403) {
+                    alert('Phiên đăng nhập đã hết hạn.');
+                    localStorage.clear();
+                    navigate('/');
+                    return;
+                }
+
+                if (!res.ok) {
+                    const errText = await res.text().catch(() => '');
+                    throw new Error(`Lỗi khi lưu "${item.itemName}": ${errText}`);
                 }
             }
 
-            alert("Đã lưu công việc thành công!");
+            alert("Đã lưu tất cả công việc thành công!");
             setItemsModal({ open: false, plan: null, items: [], loading: false });
-            
-            // Refresh lại plans để hiển thị items mới
+
             if (selectedSchedule?.id) {
                 await fetchPlans(selectedSchedule.id);
             }
+
         } catch (err) {
             console.error("Lỗi khi lưu items:", err);
             alert("Lỗi: " + err.message);
         }
     };
 
-    // TẠO 1 PLAN RIÊNG LẺ (dùng khi plan là temp và user bấm Sửa công việc)
+    // TẠO 1 PLAN RIÊNG LẺ 
     const createPlan = async (plan) => {
         const token = getToken();
         if (!token) throw new Error('Phiên hết hạn!');
 
+        // Chuẩn hóa dữ liệu số
         const planData = {
             scheduleId: plan.scheduleId || selectedSchedule?.id,
             maintenanceNo: parseInt(plan.maintenanceNo) || 0,
@@ -562,21 +542,29 @@ export default function AdminScheduleManagement() {
         };
 
         try {
-            const created = await apiRequest('/api/admin/plans', {
+            const res = await fetch(`${API_BASE_URL}/api/admin/plans`, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, 
+                },
                 body: JSON.stringify(planData),
             });
-            return created;
-        } catch (err) {
-            console.error('createPlan error via apiRequest', err);
-            if (err.status === 401 || err.status === 403) {
-                if (AUTH_DEBUG_NO_LOGOUT) {
-                    throw new Error(`Auth error ${err.status}: ${err.data || 'no body'}`);
-                }
+
+            if (res.status === 401 || res.status === 403) {
                 localStorage.clear();
                 navigate('/');
                 throw new Error('Phiên đăng nhập đã hết hạn.');
             }
+
+            if (!res.ok) {
+                const errText = await res.text();
+                throw new Error(errText || "Lỗi khi tạo mốc bảo dưỡng");
+            }
+
+            return await res.json();
+        } catch (err) {
+            console.error('createPlan error:', err);
             throw err;
         }
     };
@@ -689,15 +677,9 @@ export default function AdminScheduleManagement() {
     const filteredSchedules = filterVehicle === "all" ? schedules : schedules.filter(s => s.vehicleModel === filterVehicle);
     const vehicleModels = [...new Set(schedules.map(s => s.vehicleModel))];
 
-    if (loading && !userInfo) {
+    if (loading) {
         return (
-            <div className="dashboard-container">
-                <Sidebar userName={userInfo?.fullName} userRole={userInfo?.role} />
-                <main className="main-content loading-state">
-                    <Loading inline />
-                    <p>Đang tải dữ liệu lịch trình...</p>
-                </main>
-            </div>
+            <Loading text="Đang tải dữ liệu hệ thống..." />
         );
     }
 
@@ -873,9 +855,10 @@ export default function AdminScheduleManagement() {
                                                 </div>
                                                 <div className="form-group">
                                                     <label>Loại hành động</label>
-                                                    <select value={item.actionType || "INSPECT"} onChange={e => updateItem(item.id, "actionType", e.target.value)}>
+                                                    <select value={item.actionType ?? "INSPECT"} onChange={e => updateItem(item.id, "actionType", e.target.value)}>
                                                         <option value="INSPECT">Kiểm tra</option>
                                                         <option value="REPLACE">Thay thế</option>
+                                                        <option value="SERVICE">Dịch vụ</option>
                                                     </select>
                                                 </div>
                                                 <div className="form-group">
@@ -912,7 +895,7 @@ export default function AdminScheduleManagement() {
                                                 </div>
                                                 <div className="form-group">
                                                     <label>Ghi chú</label>
-                                                        <textarea value={item.note || ""} onChange={e => updateItem(item.id, "note", e.target.value)} placeholder="Chi tiết..." />
+                                                    <textarea value={item.note || ""} onChange={e => updateItem(item.id, "note", e.target.value)} placeholder="Chi tiết..." />
                                                 </div>
                                             </div>
                                         ))}

@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 public class VehicleOverviewDTO {
     @Pattern(
-            regexp = "^(41|5[0-9])[A-Z\\d][- ]?\\d{3}[.]?\\d{2}$",
+            regexp = "^[1-9]\\d[A-Z\\d][- ]?\\d{3}[.]?\\d{2}$",
             message = "Biển số xe không hợp lệ hoặc không phải của TP.HCM."
     )
     private String licensePlate;

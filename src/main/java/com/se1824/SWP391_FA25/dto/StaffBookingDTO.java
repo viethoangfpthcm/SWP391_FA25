@@ -23,4 +23,5 @@ public class StaffBookingDTO {
     String technicianName;
     String ChecklistStatus;
     Boolean hasFeedback;
+    String planName;
 }

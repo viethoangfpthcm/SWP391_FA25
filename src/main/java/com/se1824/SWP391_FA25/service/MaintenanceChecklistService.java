@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ public class MaintenanceChecklistService {
     VehicleRepository vehicleRepo;
     AuthenticationService authService;
     static ConcurrentHashMap<Integer, Object> checklistLocks = new ConcurrentHashMap<>();
+
     /**
      * Lấy danh sách Checklist TÓM TẮT cho Technician đang đăng nhập
      */
@@ -298,7 +300,7 @@ public class MaintenanceChecklistService {
 
                     if (detail.getPlanItem() != null) {
                         detailRes.setItemName(detail.getPlanItem().getItemName());
-                        detailRes.setActionType(detail.getPlanItem().getActionType());
+                        detailRes.setActionType(String.valueOf(detail.getPlanItem().getActionType()));
 
                         Integer partTypeId = detail.getPlanItem().getPartType().getId();
                         if (partTypeId != null) {
@@ -378,7 +380,10 @@ public class MaintenanceChecklistService {
         // 3. ÁP DỤNG LOGIC ƯU TIÊN: Chọn gói bảo dưỡng có mốc cao hơn (IntervalKm lớn hơn) trong 2 gói.
 
         // So sánh 2 gói: Chọn gói có mốc KM lớn hơn.
-        if (planByKm.getIntervalKm() >= planByMonth.getIntervalKm()) {
+        if (Objects.equals(planByKm.getIntervalKm(), planByMonth.getIntervalKm())){
+            return planByMonth;
+        }
+        if (planByKm.getIntervalKm() > planByMonth.getIntervalKm()) {
             return planByKm;
         } else {
             return planByMonth;
@@ -522,7 +527,9 @@ public class MaintenanceChecklistService {
                 }
                 part.setQuantity(part.getQuantity() - 1);
                 partRepo.save(part);
+                detail.setQuantity(1);
             }
+            detail.setCompletedAt(LocalDateTime.now());
         }
         checklist.setEndTime(LocalDateTime.now()); // Ghi lại thời gian kết thúc
 
@@ -576,7 +583,7 @@ public class MaintenanceChecklistService {
 
         // Lấy thông tin Staff đang đăng nhập
         Users currentStaff = authenticationService.getCurrentAccount();
-        if (currentStaff == null || currentStaff.getRole() != UserRole.STAFF || currentStaff.getCenter() == null) {
+        if (currentStaff == null || (currentStaff.getRole() != UserRole.STAFF && currentStaff.getRole() != UserRole.MANAGER) || currentStaff.getCenter() == null ) {
             log.warn("Unauthorized access attempt for checklist by booking ID: {}. User not STAFF or missing center.", bookingId);
             throw new AccessDeniedException("User is not authorized or not associated with a service center.");
         }
@@ -632,6 +639,7 @@ public class MaintenanceChecklistService {
         }
         return mapChecklistToResponseWithDetails(checklist);
     }
+
     private void checkAndSetChecklistPendingApproval(Integer checklistId) {
         MaintenanceChecklist checklist = checklistRepo.findById(checklistId).orElse(null);
         if (checklist == null || checklist.getStatus() != ChecklistStatus.IN_PROGRESS) {

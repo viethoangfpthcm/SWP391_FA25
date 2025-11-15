@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -144,7 +146,7 @@ public class BookingService {
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             response.setLaborCost(totalLabor);
-            response.setMaterialCost(totalMaterial);
+            response.setMaterialCost(totalMaterial.add(BigDecimal.valueOf(100000)));
 
             response.setChecklistDetails(approvedDetails); // Chi tiết hạng mục đã được phê duyệt
         }
@@ -179,7 +181,24 @@ public class BookingService {
 
         ServiceCenter center = serviceCenterRepo.findById(request.getCenterId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service center not found with ID: " + request.getCenterId()));
+        LocalDateTime bookingDateTime = request.getBookingDate();
+        LocalTime bookingTime = bookingDateTime.toLocalTime();
 
+        // 2. Lấy giờ làm việc của trung tâm
+        LocalTime openingHour = center.getOpeningHour();
+        LocalTime closingHour = center.getClosingHour();
+        if (bookingDateTime.isBefore(LocalDateTime.now())) {
+            throw new InvalidDataException("Can booking for the past.");
+        }
+        if (bookingTime.isBefore(openingHour) || !bookingTime.isBefore(closingHour)) {
+            throw new InvalidDataException(
+                    String.format("Hour booking (%s) must be available between open and close time (từ %s đến %s).",
+                            bookingTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                            openingHour.format(DateTimeFormatter.ofPattern("HH:mm")),
+                            closingHour.format(DateTimeFormatter.ofPattern("HH:mm"))
+                    )
+            );
+        }
         // Tìm MaintenancePlan mà khách hàng đã chọn
         MaintenancePlan selectedPlan = planRepo.findById(request.getMaintenancePlanId())
                 .orElseThrow(() -> new ResourceNotFoundException("Maintenance Plan not found with ID: " + request.getMaintenancePlanId()));

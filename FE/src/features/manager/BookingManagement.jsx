@@ -5,6 +5,7 @@ import Sidebar from "@components/layout/Sidebar.jsx";
 import { API_BASE_URL } from "@config/api.js";
 import { FaCalendarAlt, FaEye, FaClipboardList, FaComments, FaTimes } from "react-icons/fa";
 import "./BookingManagement.css";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 export default function BookingManagement() {
   // Helper: parse server datetime strings (handles excessive fractional seconds like .0086813)
@@ -35,6 +36,7 @@ export default function BookingManagement() {
   };
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const showLoading = useMinimumDelay(loading, 1000);
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedChecklist, setSelectedChecklist] = useState(null);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
@@ -129,13 +131,11 @@ export default function BookingManagement() {
     return booking.status === filterStatus;
   });
 
-  if (loading) {
-    return (
-      <div className="booking-management-loading">
-        <Loading inline />
-      </div>
-    );
-  }
+   if (showLoading) {
+  return (
+    <Loading text="Đang tải lịch hẹn..." />
+  );
+}
 
   return (
     <div className="admin-dashboard-container">

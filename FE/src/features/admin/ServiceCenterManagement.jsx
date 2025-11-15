@@ -16,6 +16,7 @@ import ConfirmationModal from "@components/ui/ConfirmationModal.jsx";
 import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 // --- Helper Functions ---
 const isValidPhone = (phone) => {
@@ -31,12 +32,6 @@ const isValidName = (name) => {
   return nameRegex.test(name.trim());
 };
 
-const isValidTime = (time) => {
-  if (!time) return false;
-  const normalized = time.replace(/\s+/g, "");
-  const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-  return timeRegex.test(normalized);
-};
 // --- End Helpers ---
 
 if (import.meta.env.MODE !== "development") {
@@ -45,6 +40,7 @@ if (import.meta.env.MODE !== "development") {
 export default function ServiceCenterManagement() {
   const [centers, setCenters] = useState([]);
   const [loading, setLoading] = useState(true);
+  const showLoading = useMinimumDelay(loading, 1000);
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -122,16 +118,16 @@ export default function ServiceCenterManagement() {
         name: center.name || "",
         address: center.address || "",
         phone: center.phone || "",
-        openingHour: center.openingHour || "07:00",
-        closingHour: center.closingHour || "20:00",
+        openingHour: center.openingHour || "",
+        closingHour: center.closingHour || "",
       });
     } else {
       setFormData({
         name: "",
         address: "",
         phone: "",
-        openingHour: "08:00",
-        closingHour: "18:00"
+        openingHour: "",
+        closingHour: ""
       });
     }
   };
@@ -148,12 +144,6 @@ export default function ServiceCenterManagement() {
     if (!formData.phone || !isValidPhone(formData.phone)) {
       errors.phone = "Số điện thoại không đúng định dạng VN (10 số).";
     }
-    if (!formData.openingHour || !isValidTime(formData.openingHour)) {
-      errors.openingHour = "Giờ mở cửa không hợp lệ (định dạng HH:MM).";
-    }
-    if (!formData.closingHour || !isValidTime(formData.closingHour)) {
-      errors.closingHour = "Giờ đóng cửa không hợp lệ (định dạng HH:MM).";
-    }
     if (formData.openingHour && formData.closingHour &&
       formData.openingHour >= formData.closingHour) {
       errors.closingHour = "Giờ đóng cửa phải sau giờ mở cửa.";
@@ -169,17 +159,17 @@ export default function ServiceCenterManagement() {
     setActionLoading(true);
 
     try {
-      const method = editingCenter ? "PUT" : "POST";
-      const endpoint = editingCenter
-        ? `${API_BASE_URL}/api/admin/service-centers/${editingCenter.id}`
+      const method = formData.id ? "PUT" : "POST";
+      const endpoint = formData.id
+        ? `${API_BASE_URL}/api/admin/service-centers/${formData.id}`
         : `${API_BASE_URL}/api/admin/service-centers`;
 
       const body = {
         name: formData.name.trim(),
         address: formData.address.trim(),
         phone: formData.phone.trim(),
-        openingHour: formData.openingHour.trim(),
-        closingHour: formData.closingHour.trim(),
+        openingHour: formData.openingHour.trim() ,
+        closingHour: formData.closingHour.trim() ,
       };
 
       const res = await fetch(endpoint, {
@@ -263,17 +253,9 @@ export default function ServiceCenterManagement() {
     navigate(`/admin/parts/${centerId}`);
   };
 
-  if (loading) {
+ if (showLoading) {
     return (
-      <div className="scm-container">
-        <Sidebar userName={userInfo.fullName} userRole={userInfo.role} />
-        <main className="scm-content">
-          <div className="scm-loading">
-            <Loading inline />
-            <p>Đang tải dữ liệu trung tâm...</p>
-          </div>
-        </main>
-      </div>
+      <Loading text="Đang tải dữ liệu trung tâm..." />
     );
   }
 

@@ -2,10 +2,7 @@ package com.se1824.SWP391_FA25.service;
 
 import com.se1824.SWP391_FA25.config.VNPayConfig;
 import com.se1824.SWP391_FA25.entity.*;
-import com.se1824.SWP391_FA25.enums.ApprovalStatus;
-import com.se1824.SWP391_FA25.enums.BookingStatus;
-import com.se1824.SWP391_FA25.enums.ChecklistStatus;
-import com.se1824.SWP391_FA25.enums.PaymentStatus;
+import com.se1824.SWP391_FA25.enums.*;
 import com.se1824.SWP391_FA25.exception.exceptions.InvalidDataException;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
 import com.se1824.SWP391_FA25.repository.*;
@@ -40,7 +37,6 @@ public class PaymentService {
 
     @Transactional
     public String createVnPayPayment(Integer bookingId, String ipAddress) {
-        // (Hàm này của bạn đã OK, giữ nguyên)
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with ID: " + bookingId));
 
@@ -62,7 +58,7 @@ public class PaymentService {
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalAmount = totalLabor.add(totalMaterial);
+        BigDecimal totalAmount = totalLabor.add(totalMaterial.add(BigDecimal.valueOf(100000)));
 
         if (checklist.getStatus() != ChecklistStatus.COMPLETED) {
             throw new InvalidDataException("Cannot create payment for an incomplete checklist. Current status: " + checklist.getStatus());
@@ -205,7 +201,7 @@ public class PaymentService {
                             .filter(s -> s.getMaintenanceNo() != null && s.getMaintenanceNo().equals(completedMaintenanceNo))
                             .findFirst()
                             .ifPresent(schedule -> {
-                                schedule.setStatus("ON_TIME");
+                                schedule.setStatus(VehicleScheduleStatus.ON_TIME);
                                 vehicleScheduleRepository.save(schedule);
                             });
                 }

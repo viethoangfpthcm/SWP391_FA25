@@ -12,4 +12,5 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
     // Lấy feedback đã published của 1 center
     List<Feedback> findByBooking_ServiceCenter_IdAndIsPublishedTrue(Integer centerId);
     boolean existsByBooking_BookingId(Integer bookingId);
+    List<Feedback> findByIsPublishedTrue();
 }

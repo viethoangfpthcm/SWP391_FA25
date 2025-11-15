@@ -14,6 +14,12 @@ export default function KmModal({ actualKm, setActualKm, onConfirm, onCancel }) 
             if (e.target.value === "" || parseFloat(e.target.value) >= 0) setActualKm(e.target.value);
           }}
           min="0"
+          style={{
+            backgroundColor: actualKm ? "#e8f7e4" : "white",
+            border: `1px solid ${actualKm ? "#28a745" : "#ccc"}`,
+            padding: "8px",
+            borderRadius: "6px",
+          }}
         />
         <div className="modal-buttons">
           <Button onClick={onConfirm} className="confirm-btn">Xác nhận</Button>

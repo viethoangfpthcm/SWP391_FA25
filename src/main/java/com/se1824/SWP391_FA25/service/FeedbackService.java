@@ -7,7 +7,6 @@ import com.se1824.SWP391_FA25.entity.Feedback;
 import com.se1824.SWP391_FA25.entity.Users;
 import com.se1824.SWP391_FA25.enums.BookingStatus;
 import com.se1824.SWP391_FA25.exception.exceptions.ResourceNotFoundException;
-import com.se1824.SWP391_FA25.repository.BookingRepository;
 import com.se1824.SWP391_FA25.repository.FeedbackRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,11 +117,17 @@ public class FeedbackService {
      * Lấy thống kê (trung bình, số lượng) và danh sách feedback
      * đã published của 1 center.
      */
-    public FeedbackStatsDTO getFeedbackStatsByCenter(Integer centerId) {
-        // 1. Lấy danh sách Feedback (Entity) từ DB
-        List<Feedback> feedbacks = feedbackRepository.findByBooking_ServiceCenter_IdAndIsPublishedTrue(centerId);
+    public FeedbackStatsDTO getFeedbackStats(Integer centerId) {
 
-        // 2. Tính toán thống kê
+        List<Feedback> feedbacks;
+
+        if (centerId != null) {
+            feedbacks = feedbackRepository.findByBooking_ServiceCenter_IdAndIsPublishedTrue(centerId);
+        } else {
+            feedbacks = feedbackRepository.findByIsPublishedTrue();
+        }
+
+        // 2. Tính toán thống kê (Phần này giữ nguyên)
         long totalRatings = feedbacks.size();
 
         double averageRating = 0.0;
@@ -136,6 +141,7 @@ public class FeedbackService {
         List<FeedbackDTO> feedbackDTOs = feedbacks.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
+
         FeedbackStatsDTO stats = new FeedbackStatsDTO();
         stats.setAverageRating(averageRating);
         stats.setTotalRatings(totalRatings);
@@ -147,7 +153,7 @@ public class FeedbackService {
     /**
      * Helper method để chuyển Entity (Feedback) sang DTO (FeedbackDTO).
      */
-    private FeedbackDTO convertToDto(Feedback feedback) {
+    public FeedbackDTO convertToDto(Feedback feedback) {
         FeedbackDTO dto = new FeedbackDTO();
         dto.setFeedbackId(feedback.getFeedbackId());
         dto.setBookingId(feedback.getBooking().getBookingId());

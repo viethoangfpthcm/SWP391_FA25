@@ -41,7 +41,7 @@
   height: 60px;
   border-radius: 12px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  color: rgb(255, 255, 255);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,16 +60,16 @@
   flex: 1;
 }
 
-.stat-label {
+.stat-label-payment {
   margin: 0;
-  color: #365d98 !important;
+  color: #365d98;
   font-size: 0.9rem;
   font-weight: 600;
 }
 
-.stat-value {
+.stat-value-payment {
   margin: 0.25rem 0 0 0;
-  color: #07265b !important;
+  color: #000000 ;
   font-size: 1.5rem;
   font-weight: 700;
 }

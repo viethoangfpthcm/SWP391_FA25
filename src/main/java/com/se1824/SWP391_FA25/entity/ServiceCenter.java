@@ -6,6 +6,7 @@ import lombok.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -31,6 +32,12 @@ public class ServiceCenter {
 
     @Column(name = "phone", length = 20)
     String phone;
+
+    @Column(name = "opening_hour")
+    private LocalTime openingHour;
+
+    @Column(name = "closing_hour")
+    private LocalTime closingHour;
 
     @OneToMany(mappedBy = "serviceCenter", cascade = CascadeType.ALL)
     @JsonIgnore

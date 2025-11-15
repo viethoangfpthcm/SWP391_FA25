@@ -1,7 +1,3 @@
-/* ==========================================================
-   STAFF DASHBOARD - BOOKING MANAGEMENT STYLE
-   Cleaned + Optimized by GPT-5
-   ========================================================== */
 
 /* --- Layout chính --- */
 .dashboard-container {
@@ -370,24 +366,64 @@
   font-size: 1.2rem;
 }
 
-/* --- Responsive --- */
-@media (max-width: 1200px) {
-  .data-table th, .data-table td { padding: 12px 12px; }
+.checklist-items-table thead {
+  background: linear-gradient(135deg, #6d28d9 0%, #4f46e5 100%);
 }
 
-@media (max-width: 992px) {
-  .main-content { padding: 20px; margin-left: 250px; }
-  .data-table th, .data-table td { padding: 12px 10px; font-size: 0.88rem; }
-  .technician-select-wrapper { min-width: 180px; }
+/* Table text */
+.checklist-items-table th {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.9rem;
 }
 
-@media (max-width: 768px) {
-  .main-content { margin-left: 0; width: 100%; max-width: 100%; padding: 20px 15px; }
-  .actions-bar { flex-direction: column; align-items: stretch; padding: 15px; margin-bottom: 20px; }
-  .filter-group { width: 100%; flex-direction: column; align-items: flex-start; gap: 5px; }
-  .status-filter-select { width: 100%; }
-  .data-table { min-width: 800px; table-layout: fixed; }
-  .data-table th, .data-table td { white-space: nowrap; padding: 10px 8px; font-size: 0.85rem; }
-  .btn-action { padding: 5px 10px; font-size: 0.8rem; }
-  .status-badge { padding: 4px 8px; font-size: 0.7rem; min-width: 80px; }
+.checklist-items-table td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.checklist-items-table tr:hover {
+  background-color: #f9fafb;
+  transition: background-color 0.2s ease;
+}
+
+/* --- Badge màu hành động --- */
+.badge-action {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 9999px;
+  padding: 4px 10px;
+  text-align: center;
+  text-transform: uppercase;
+  min-width: 90px;
+}
+
+.badge-replace {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.badge-repair {
+  background-color: #e0f2fe;
+  color: #075985;
+}
+
+.badge-adjust {
+  background-color: #ede9fe;
+  color: #5b21b6;
+}
+
+.badge-good {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+/* Make cell centered if only badge */
+.checklist-items-table td:nth-child(2) {
+  text-align: center;
 }

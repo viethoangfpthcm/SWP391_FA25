@@ -8,10 +8,12 @@ import FiltersBar from "./shared/UserFiltersBar";
 import UserTable from "./shared/UserTable";
 import "./ManagerDashboard.css";
 import { API_BASE_URL } from "@config/api.js";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 export default function ManagerDashboard() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const showLoading = useMinimumDelay(loading, 1000);
   const [userInfo, setUserInfo] = useState(null);
   const [filterRole, setFilterRole] = useState("all");
   const [filterActive, setFilterActive] = useState("all");
@@ -89,9 +91,11 @@ export default function ManagerDashboard() {
     return roleMatch && activeMatch;
   });
 
-  if (loading) {
-    return <Loading />;
-  }
+   if (showLoading) {
+  return (
+    <Loading text="Đang tải dữ liệu người dùng..." />
+  );
+}
 
   return (
     <div className="admin-dashboard-container">

@@ -6,7 +6,7 @@ import { FaSpinner, FaFloppyDisk, FaEye, FaCircleCheck, FaTriangleExclamation, F
 import "./CheckList.css";
 import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
-
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 // Các trạng thái Status đã được định nghĩa trong Backend
 const STATUS_OPTIONS = ["GOOD", "ADJUSTMENT", "REPAIR", "REPLACE"];
@@ -33,6 +33,7 @@ export default function CheckList({ user }) {
   const [checklist, setChecklist] = useState(null);
   const [checklistList, setChecklistList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const showLoading = useMinimumDelay(loading, 1000);
   const [isUpdating, setIsUpdating] = useState(false);
   const [viewMode, setViewMode] = useState("list");
   const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
@@ -337,19 +338,12 @@ export default function CheckList({ user }) {
   };
 
   // --- Render Logic ---
-  if (loading) {
-    return (
-      <div className="checklist-page technician-view">
-        <Sidebar user={user} />
-        <div className="content">
-          <div className="loading-container">
-            <Loading inline /> Đang tải dữ liệu...
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+  if (showLoading) {
+  return (
+    <Loading text="Đang tải báo cáo kỹ thuật..." />
+  );
+}
+ 
 
   if (viewMode === "list") {
     return (

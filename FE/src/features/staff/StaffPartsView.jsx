@@ -4,6 +4,7 @@ import Sidebar from "@components/layout/Sidebar.jsx";
 import Loading from "@components/ui/Loading.jsx";
 import Button from "@components/ui/Button.jsx";
 import { API_BASE_URL } from "@config/api.js";
+import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 import "./StaffPartsView.css";
 
 const StaffPartsView = () => {
@@ -12,7 +13,7 @@ const StaffPartsView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const showLoading = useMinimumDelay(loading, 1000);
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -91,111 +92,113 @@ const StaffPartsView = () => {
             <FaExclamationTriangle /> {error}
           </div>
         )}
-
-        <div className="parts-toolbar">
-          <div className="search-box">
-            <FaSearch />
-            <input
-              type="text"
-              placeholder="Tìm kiếm phụ tùng (tên, ID, hãng)..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+        {showLoading ? (
+          <div className="loading-container">
+            <Loading text="Đang tải danh sách phụ tùng..." />
           </div>
-          <div className="parts-count">
-            Tổng: <strong>{filteredParts.length}</strong> phụ tùng
-          </div>
-        </div>
+        ) : (
+          <>
+            <div className="parts-toolbar">
+              <div className="search-box">
+                <FaSearch />
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm phụ tùng (tên, ID, hãng)..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="parts-count">
+                Tổng: <strong>{filteredParts.length}</strong> phụ tùng
+              </div>
+            </div>
 
-        <div className="table-card">
-          <div className="table-wrapper">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Tên phụ tùng</th>
-                  <th>Loại</th>
-                  <th>Số lượng</th>
-                  <th>Đơn giá</th>
-                  <th>Chi phí vật liệu</th>
-                  <th>Chi phí nhân công</th>
-                  <th>Trạng thái</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan="9" className="empty-state">
-                      <Loading inline /> Đang tải danh sách phụ tùng...
-                    </td>
-                  </tr>
-                ) : filteredParts.length > 0 ? (
-                  filteredParts.map((part) => (
-                    <tr key={part.id}>
-                      <td>
-                        <span className="cell-main">#{part.id}</span>
-                      </td>
-                      <td>
-                        <span className="cell-main">{part.name}</span>
-                      </td>
-                      <td>
-                        <span className="cell-sub">{part.partType?.name || "N/A"}</span>
-                      </td>
-                      <td>
-                        <span
-                          className={`stock-badge ${
-                            part.quantity > 10
-                              ? "stock-high"
-                              : part.quantity > 0
-                              ? "stock-low"
-                              : "stock-out"
-                          }`}
-                        >
-                          {part.quantity || 0}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="cell-main">
-                          {formatCurrency(part.unitPrice || 0)}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="cell-sub">
-                          {formatCurrency(part.materialCost || 0)}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="cell-sub">
-                          {formatCurrency(part.laborCost || 0)}
-                        </span>
-                      </td>
-                      <td>
-                        <span
-                          className={`status-badge ${
-                            part.quantity > 0 ? "status-available" : "status-out"
-                          }`}
-                        >
-                          {part.quantity > 0 ? "Còn hàng" : "Hết hàng"}
-                        </span>
-                      </td>
+            <div className="table-card">
+              <div className="table-wrapper">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Tên phụ tùng</th>
+                      <th>Loại</th>
+                      <th>Số lượng</th>
+                      <th>Đơn giá</th>
+                      <th>Chi phí vật liệu</th>
+                      <th>Chi phí nhân công</th>
+                      <th>Trạng thái</th>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="9" className="empty-state">
-                      {searchTerm
-                        ? `Không tìm thấy phụ tùng nào với từ khóa "${searchTerm}"`
-                        : "Chưa có phụ tùng nào trong hệ thống"}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                  </thead>
+                  <tbody>
+                    {filteredParts.length > 0 ? (
+                      filteredParts.map((part) => (
+                        <tr key={part.id}>
+                          <td>
+                            <span className="cell-main">#{part.id}</span>
+                          </td>
+                          <td>
+                            <span className="cell-main">{part.name}</span>
+                          </td>
+                          <td>
+                            <span className="cell-sub">
+                              {part.partType?.name || "N/A"}
+                            </span>
+                          </td>
+                          <td>
+                            <span
+                              className={`stock-badge ${part.quantity > 10
+                                ? "stock-high"
+                                : part.quantity > 0
+                                  ? "stock-low"
+                                  : "stock-out"
+                                }`}
+                            >
+                              {part.quantity || 0}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="cell-main">
+                              {formatCurrency(part.unitPrice || 0)}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="cell-sub">
+                              {formatCurrency(part.materialCost || 0)}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="cell-sub">
+                              {formatCurrency(part.laborCost || 0)}
+                            </span>
+                          </td>
+                          <td>
+                            <span
+                              className={`status-badge ${part.quantity > 0 ? "status-available" : "status-out"
+                                }`}
+                            >
+                              {part.quantity > 0 ? "Còn hàng" : "Hết hàng"}
+                            </span>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="9" className="empty-state">
+                          {searchTerm
+                            ? `Không tìm thấy phụ tùng nào với từ khóa "${searchTerm}"`
+                            : "Chưa có phụ tùng nào trong hệ thống"}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
       </main>
     </div>
   );
 };
 
 export default StaffPartsView;
+
