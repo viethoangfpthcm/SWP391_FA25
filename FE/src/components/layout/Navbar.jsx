@@ -41,13 +41,12 @@ export default function Navbar() {
           </>
         )}
 
-        {/* Các trang riêng khi đã đăng nhập */}
+        {/* Các trang riêng khi khách đã đăng nhập */}
         {isLoggedIn && (
           <>
             <Link to="/customer/dashboard">Bảng điều khiển</Link>
             <Link to="/appoint">Dịch Vụ</Link>
             <Link to="/about">Về Chúng Tôi</Link>
-            
             <Link to="/report1">Biên Bản</Link>
           </>
         )}

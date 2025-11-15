@@ -1,7 +1,3 @@
-/* Minimal dashboard-level styles
-   - Component-level styles live in their own CSS files under components/
-   - This file keeps only page/layout + necessary overrides used by the
-     dashboard container and portal/modal overrides. */
 
 :root {
   --dashboard-max-width: 1200px;
@@ -49,9 +45,7 @@
   z-index: 1;
 }
 
-/* Make the main content a grid so sections can be laid out cleanly.
-   This doesn't require markup changes — it improves flow when there
-   are one or more `.dashboard-section` children. */
+
 .dashboard-content {
   display: grid;
   grid-template-columns: 1fr;
@@ -59,9 +53,6 @@
   gap: 28px;
 }
 
-/* Subtle grid overlay to visually separate horizontal/vertical areas.
-   Uses very low-contrast lines so it matches the dark theme from the
-   project screenshot. */
 .dashboard-content::before {
   content: "";
   position: absolute;
@@ -115,12 +106,10 @@
   border-radius: 4px;
 }
 
-/* If sections are stacked without an explicit .section-divider, add a soft separator */
 .dashboard-section + .dashboard-section {
   box-shadow: 0 10px 30px rgba(0,0,0,0.7);
 }
 
-/* Loading block used by the page while initial data loads */
 .loading-container {
   display: flex;
   align-items: center;
@@ -143,16 +132,11 @@
   color: #e9eaea;
 }
 
-/* Minimal modal override so customer dashboard (and its portaled modals)
-   show consistent light text on dark translucent backgrounds. Component
-   CSS files provide detailed modal styles; keep only the small, high-
-   specificity rule here to ensure consistency. */
 .dashboard-page .modal-content,
 .dashboard-page .modal-content * {
   color: #ffffff !important;
 }
 
-/* Keep inputs/textareas inside dashboard modals readable */
 .dashboard-page .modal-content input,
 .dashboard-page .modal-content select,
 .dashboard-page .modal-content textarea {
@@ -160,15 +144,13 @@
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* Small responsive tweak for main content width on very small screens */
 @media (max-width: 480px) {
   .dashboard-content { padding: 14px; }
   .dashboard-content h1 { font-size: 1.4rem; }
 }
 
-/* End of minimal dashboard-level CSS */
 
-/* 5. Placeholder (chữ mờ) bên trong input */
+/* (chữ mờ) bên trong input */
 .modal-content:not(.customer-modal) input::placeholder {
-  color: #777777; /* Màu xám cho chữ mờ */
+  color: #777777; 
 }

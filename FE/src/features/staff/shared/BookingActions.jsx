@@ -33,15 +33,17 @@ export default function BookingActions({
           className="btn-action btn-approve"
           onClick={() => onApprove(bookingId)}
           disabled={actionLoading === bookingId}
+          title="Duyệt"
         >
-          {actionLoading === bookingId ? <Loading inline /> : <FaCheck />} Duyệt
+          {actionLoading === bookingId ? <Loading inline /> : <FaCheck />} <span className="btn-label">Duyệt</span>
         </Button>
         <Button
           className="btn-action btn-decline"
           onClick={() => onDecline(bookingId)}
           disabled={actionLoading === bookingId}
+          title="Từ chối"
         >
-          {actionLoading === bookingId ? <Loading inline /> : <FaTimes />} Từ chối
+          {actionLoading === bookingId ? <Loading inline /> : <FaTimes />} <span className="btn-label">Từ chối</span>
         </Button>
       </div>
     );
@@ -54,8 +56,9 @@ export default function BookingActions({
           className="btn-action btn-assign"
           onClick={() => onAssign(bookingId)}
           disabled={!selectedTechnicians[bookingId] || actionLoading === bookingId}
+          title="Phân công"
         >
-          {actionLoading === bookingId ? <Loading inline /> : <FaCheck />} Phân công
+         {actionLoading === bookingId ? <Loading inline /> : <FaCheck />} <span className="btn-label">Phân công</span>
         </Button>
       </div>
     );
@@ -67,8 +70,9 @@ export default function BookingActions({
         className="btn-action btn-handover"
         onClick={() => onHandover(bookingId)}
         disabled={actionLoading === bookingId}
+        title="Bàn giao"
       >
-        {actionLoading === bookingId ? <Loading inline /> : <FaCheck />} Bàn giao
+        {actionLoading === bookingId ? <Loading inline /> : <FaCheck />} <span className="btn-label">Bàn giao</span>
       </Button>
     );
   }
@@ -82,7 +86,7 @@ export default function BookingActions({
           disabled={actionLoading === bookingId}
           title="Xem chi tiết checklist"
         >
-          <FaEye /> Xem
+         <FaEye /> <span className="btn-label">Xem</span>
         </Button>
         {(isPaid || isCompleted) && (
           <>
@@ -91,14 +95,14 @@ export default function BookingActions({
               onClick={() => onViewPayment(bookingId)}
               title="Xem thông tin thanh toán"
             >
-              <FaDollarSign /> Payment
+            <FaDollarSign /> <span className="btn-label">Payment</span>
             </Button>
             <Button
               className="btn-action btn-feedback"
               onClick={() => onViewFeedback(bookingId)}
               title="Xem feedback khách hàng"
             >
-              <FaComments /> Feedback
+            <FaComments /> <span className="btn-label">Feedback</span>
             </Button>
           </>
         )}
