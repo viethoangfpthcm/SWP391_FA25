@@ -74,7 +74,7 @@ export default function ProfilePage({ user }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // ✅ Validation phía client
+        // Validation phía client
         if (!/^[\p{L} ]+$/u.test(formData.fullName)) {
             showToast("Họ và tên chỉ được chứa chữ cái và khoảng trắng", "error");
             return;

@@ -12,7 +12,7 @@ import Loading from '@components/ui/Loading.jsx';
 import "./ManagerAnalytics.css";
 import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
-// Import graph components (reuse từ admin)
+// Import graph 
 import RevenueChart from "../admin/graphs/RevenueChart.jsx";
 import BookingStatsChart from "../admin/graphs/BookingStatsChart.jsx";
 import PartsUsageChart from "../admin/graphs/PartsUsageChart.jsx";
@@ -37,7 +37,6 @@ export default function ManagerAnalytics() {
 
     const token = localStorage.getItem("token");
 
-    // --- Fetch User Info ---
     const fetchUserInfo = async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
@@ -61,7 +60,6 @@ export default function ManagerAnalytics() {
         }
     };
 
-    // --- Fetch Revenue Data (Manager Center Only) ---
     const fetchRevenueData = async () => {
         try {
             const url = `${API_BASE_URL}/api/manager/analytics/revenue?month=${selectedMonth}&year=${selectedYear}`;
@@ -81,7 +79,6 @@ export default function ManagerAnalytics() {
         }
     };
 
-    // --- Fetch Parts Usage Data ---
     const fetchPartsData = async () => {
         try {
             const url = `${API_BASE_URL}/api/manager/analytics/parts?month=${selectedMonth}&year=${selectedYear}`;
@@ -99,7 +96,6 @@ export default function ManagerAnalytics() {
         }
     };
 
-    // --- Fetch Booking Stats ---
     const fetchBookingStatsData = async () => {
         try {
             const url = `${API_BASE_URL}/api/manager/analytics/bookings?month=${selectedMonth}&year=${selectedYear}`;
@@ -119,7 +115,6 @@ export default function ManagerAnalytics() {
         }
     };
 
-    // --- Fetch Feedback Data ---
     const fetchFeedbackData = async () => {
         try {
             const url = `${API_BASE_URL}/api/manager/analytics/feedbacks`;
@@ -137,7 +132,6 @@ export default function ManagerAnalytics() {
         }
     };
 
-    // --- useEffects ---
     useEffect(() => {
         if (!token) {
             navigate("/");
@@ -152,7 +146,6 @@ export default function ManagerAnalytics() {
         setLoading(true);
         setError(null);
 
-        // Promise.allSettled để các API fail độc lập không ảnh hưởng nhau
         Promise.allSettled([
             fetchRevenueData(),
             fetchPartsData(),
@@ -161,7 +154,6 @@ export default function ManagerAnalytics() {
         ]).finally(() => setLoading(false));
     }, [selectedMonth, selectedYear, userInfo]);
 
-    // --- Render helpers ---
     const renderMonthOptions = () => Array.from({ length: 12 }, (_, i) => (
         <option key={i + 1} value={i + 1}>Tháng {i + 1}</option>
     ));

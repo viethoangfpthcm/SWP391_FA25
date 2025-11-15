@@ -25,7 +25,7 @@ import { API_BASE_URL } from "@config/api.js";
 import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 
-// --- Helper Functions for Validation ---
+
 const isValidEmail = (email) => {
   if (!email) return false;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -34,11 +34,11 @@ const isValidEmail = (email) => {
 
 const isValidPhone = (phone) => {
   if (!phone) return false;
-  // Vietnamese phone number regex (10 digits)
+  
   const phoneRegex = /^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-6|8|9]|9[0-4|6-9])[0-9]{7}$/;
   return phoneRegex.test(phone);
 };
-// --- End Helper Functions ---
+// 
 
 if (import.meta.env.MODE !== "development") {
 }
@@ -50,13 +50,13 @@ export default function AdminDashboard() {
   const [filterCenter, setFilterCenter] = useState("all");
   const [filterActive, setFilterActive] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true); // Loading for initial user list
+  const [loading, setLoading] = useState(true); 
   const showLoading = useMinimumDelay(loading, 1000);
-  const [error, setError] = useState(null); // General error (fetch, delete, submit API failure)
-  const [actionLoading, setActionLoading] = useState(false); // Loading for SAVE action in form
+  const [error, setError] = useState(null); 
+  const [actionLoading, setActionLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const getToken = () => localStorage.getItem("token");
-  const [editingUser, setEditingUser] = useState(null); // Store user being edited
+  const [editingUser, setEditingUser] = useState(null); 
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -65,19 +65,18 @@ export default function AdminDashboard() {
     centerId: "",
     password: "",
   });
-  const [formErrors, setFormErrors] = useState({}); // State to hold form validation errors
-  const [userInfo, setUserInfo] = useState(null);
+  const [formErrors, setFormErrors] = useState({}); 
   const navigate = useNavigate();
 
-  // --- States for Confirmation Modal ---
+  
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [userToDeleteId, setUserToDeleteId] = useState(null);
-  const [isDeleting, setIsDeleting] = useState(false); // Loading state specifically for delete action
+  const [isDeleting, setIsDeleting] = useState(false); 
   const [isToggling, setIsToggling] = useState(false);
 
   const token = localStorage.getItem("token");
 
-  // Fetch current admin user info
+ 
   const fetchUserInfo = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
@@ -91,7 +90,7 @@ export default function AdminDashboard() {
         return;
       }
 
-      // Check if response is JSON
+    
       const contentType = res.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         console.error("User info response is not JSON:", contentType);
@@ -104,7 +103,7 @@ export default function AdminDashboard() {
       setUserInfo({ fullName: data.fullName, role: data.role });
     } catch (err) {
       console.error("Fetch User Info Error:", err);
-      // Displaying error might be annoying here if transient
+      
     }
   };
 
@@ -121,13 +120,13 @@ export default function AdminDashboard() {
         return;
       }
       const data = await res.json();
-      setCenters(data); // [{id, name, address,...}]
+      setCenters(data);
     } catch (err) {
       console.error("Fetch centers error:", err);
     }
   };
 
-  // Fetch list of users
+ 
   const fetchUsers = async () => {
     try {
       setError(null);
@@ -144,7 +143,6 @@ export default function AdminDashboard() {
         return;
       }
 
-      // Check if response is JSON
       const contentType = res.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         console.error("Users response is not JSON:", contentType);
@@ -165,7 +163,7 @@ export default function AdminDashboard() {
     }
   };
 
-  // Initial data fetch
+  
   useEffect(() => {
     if (!token) {
       navigate("/");
@@ -213,31 +211,31 @@ export default function AdminDashboard() {
       );
     });
 
-  // Handle input changes in the form
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => {
       const newData = { ...prev, [name]: value };
       if (name === "role" && value === "CUSTOMER") {
-        newData.centerId = ""; // Clear centerId if role is Customer
+        newData.centerId = ""; 
       }
       return newData;
     });
-    // Clear validation error for the field being changed
+   
     if (formErrors[name]) {
       setFormErrors(prev => ({ ...prev, [name]: null }));
     }
-    // Clear general submit error when user starts editing again
+ 
     if (error) setError(null);
   };
 
-  // Open the modal form for adding or editing
+ 
   const openForm = (user = null) => {
     setEditingUser(user);
-    setFormErrors({}); // Clear previous validation errors
-    setError(null);     // Clear previous general submit error
+    setFormErrors({}); 
+    setError(null);     
     setShowForm(true);
-    if (user) { // Populate form for editing
+    if (user) { 
       setFormData({
         userId: user.userId,
         fullName: user.fullName || "",
@@ -245,16 +243,16 @@ export default function AdminDashboard() {
         phone: user.phone || "",
         role: user.role || "",
         centerId: user.centerId || "",
-        password: "", // Always clear password field for editing
+        password: "", 
       });
-    } else { // Reset form for adding
+    } else { 
       setFormData({
         fullName: "", email: "", phone: "", role: "", centerId: "", password: "",
       });
     }
   };
 
-  // Validate the form data client-side
+
   const validateForm = () => {
     const errors = {};
     if (!formData.fullName || formData.fullName.trim() === "") {
@@ -269,30 +267,30 @@ export default function AdminDashboard() {
     if (!formData.role) {
       errors.role = "Vui lòng chọn vai trò.";
     }
-    // Password required only when adding a new user
+   
     if (!editingUser && (!formData.password || formData.password.length < 6)) {
       errors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
     }
-    // Center ID required (and must be positive number) for Staff/Technician
+  
     const centerIdValue = formData.centerId ? String(formData.centerId).trim() : "";
     if ((formData.role === "STAFF" || formData.role === "TECHNICIAN" || formData.role === "MANAGER") && (centerIdValue === "" || isNaN(parseInt(centerIdValue)) || parseInt(centerIdValue) <= 0)) {
       errors.centerId = "Center ID là bắt buộc cho Staff/Technician/Manager.";
     }
 
-    setFormErrors(errors); // Update the error state
-    return Object.keys(errors).length === 0; // Return true if valid
+    setFormErrors(errors); 
+    return Object.keys(errors).length === 0; 
   };
 
-  // Handle form submission (Create or Update API call)
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Clear previous general errors
+    setError(null); 
 
     if (!validateForm()) {
-      return; // Don't submit if validation fails
+      return;
     }
 
-    setActionLoading(true); // Show loading spinner on save button
+    setActionLoading(true); 
 
     try {
       const method = editingUser ? "PUT" : "POST";
@@ -304,9 +302,9 @@ export default function AdminDashboard() {
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         role: formData.role,
-        ...(editingUser ? {} : { password: formData.password }), // Only send password on create
+        ...(editingUser ? {} : { password: formData.password }), 
         ...((formData.role !== "CUSTOMER" && formData.centerId) && {
-          centerId: parseInt(formData.centerId) // Send centerId if applicable
+          centerId: parseInt(formData.centerId) 
         })
       };
       const res = await fetch(endpoint, {
@@ -318,53 +316,53 @@ export default function AdminDashboard() {
         body: JSON.stringify(requestBody),
       });
 
-      // Handle response errors (including validation errors from backend)
+
       if (!res.ok) {
         let errorMsg = "Có lỗi xảy ra khi lưu.";
         let fieldErrors = {};
         try {
           const errorData = await res.json();
           errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
-          // Check if backend returned field-specific errors
+        
           if (errorData.fieldErrors && typeof errorData.fieldErrors === 'object') {
             fieldErrors = errorData.fieldErrors;
-            setFormErrors(prev => ({ ...prev, ...fieldErrors })); // Set field errors state
-            errorMsg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin."; // More generic message
+            setFormErrors(prev => ({ ...prev, ...fieldErrors })); 
+            errorMsg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin."; 
           }
         } catch (parseError) {
           errorMsg = `Lỗi ${res.status}. Không thể đọc chi tiết lỗi.`;
         }
-        throw new Error(errorMsg); // Throw error to be caught below
+        throw new Error(errorMsg); 
       }
 
       // --- Success ---
-      await fetchUsers();   // Refresh the user list on success
-      setShowForm(false);   // Close the modal
-      setEditingUser(null); // Reset editing state
+      await fetchUsers();   
+      setShowForm(false);   
+      setEditingUser(null); 
 
 
     } catch (err) {
       console.error("Submit error:", err);
-      // Display general submit error inside the modal
+      
       setError(err.message || "Không thể thực hiện yêu cầu.");
     } finally {
-      setActionLoading(false); // Stop loading spinner on save button
+      setActionLoading(false); 
     }
   };
 
-  // --- DELETE ACTION: Opens Confirmation Modal ---
+  
   const handleDeleteClick = (userId) => {
-    setUserToDeleteId(userId); // Set the ID to be deleted
-    setShowConfirmModal(true); // Show the confirmation modal
-    setError(null);            // Clear any previous general error
+    setUserToDeleteId(userId); 
+    setShowConfirmModal(true); 
+    setError(null);            
   };
 
-  // --- Actual DELETE API call (triggered by confirmation modal) ---
+  
   const confirmDelete = async () => {
     if (!userToDeleteId) return;
 
-    setIsDeleting(true); // Start delete loading indicator
-    setError(null);      // Clear previous error
+    setIsDeleting(true); 
+    setError(null);     
 
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/users/${userToDeleteId}`, {
@@ -385,18 +383,18 @@ export default function AdminDashboard() {
         throw new Error(errorMsg);
       }
 
-      // --- Success ---
-      setShowConfirmModal(false); // Close confirmation modal
+   
+      setShowConfirmModal(false); 
       setUserToDeleteId(null);
-      await fetchUsers(); // Refresh user list
+      await fetchUsers(); 
 
 
     } catch (err) {
       console.error("Delete Error:", err);
-      // Display error 
+      
       setError(err.message || "Xóa người dùng thất bại.");
     } finally {
-      setIsDeleting(false); // Stop delete loading indicator
+      setIsDeleting(false); 
     }
   };
 
@@ -448,21 +446,19 @@ export default function AdminDashboard() {
     }
   };
 
-  // --- Close Confirmation Modal ---
+
   const cancelDelete = () => {
     setShowConfirmModal(false);
     setUserToDeleteId(null);
-    setError(null); // Clear error related to delete confirmation
+    setError(null); 
   };
 
-  // Initial loading state screen
   if (showLoading) {
     return (
       <Loading text="Đang tải dữ liệu người dùng..." />
     );
   }
 
-  // Main component render
   return (
     <div className="dashboard-container">
       <Sidebar userName={userInfo?.fullName || "Admin"} userRole={userInfo?.role || "ADMIN"} />
@@ -473,7 +469,7 @@ export default function AdminDashboard() {
           <p>Thêm, chỉnh sửa và quản lý người dùng trong hệ thống.</p>
         </header>
 
-        {/* Display General Errors (fetch errors, delete errors) when FORM IS CLOSED */}
+      
         {error && !showForm && (
           <div className="error-message general-error">
             <FaExclamationTriangle /> {error}
@@ -500,7 +496,7 @@ export default function AdminDashboard() {
             disabled={actionLoading || isDeleting || isToggling}
           />
         </div>
-        {/* User List Table (extracted) */}
+     
         <UserTable
           filteredUsers={filteredUsers}
           loading={loading}
@@ -512,7 +508,7 @@ export default function AdminDashboard() {
           onToggleActive={(user) => handleToggleActive(user)}
         />
 
-        {/* Add/Edit User Modal Form (extracted) */}
+      
         <UserForm
           showForm={showForm}
           editingUser={editingUser}
@@ -526,13 +522,13 @@ export default function AdminDashboard() {
           centers={centers}
         />
 
-        {/* --- Confirmation Modal for Deletion --- */}
+      
         <ConfirmationModal
           visible={showConfirmModal}
           message={`Bạn có chắc chắn muốn xóa người dùng ID: ${userToDeleteId}? Hành động này không thể hoàn tác.`}
           onConfirm={confirmDelete}
           onClose={cancelDelete}
-          loading={isDeleting} // Pass the delete loading state
+          loading={isDeleting} 
         />
 
       </main>

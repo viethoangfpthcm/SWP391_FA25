@@ -40,10 +40,9 @@ export default function AdminAnalytics() {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
 
-    // Hook: hiển thị loading tối thiểu để UX mượt hơn
+    // Hook Loading
     const showLoading = useMinimumDelay(loading, 1000);
 
-    // ===== Fetch user info =====
     const fetchUserInfo = async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
@@ -58,7 +57,6 @@ export default function AdminAnalytics() {
         }
     };
 
-    // ===== Fetch service centers =====
     const fetchCenters = async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/api/admin/service-centers`, {
@@ -73,7 +71,6 @@ export default function AdminAnalytics() {
         }
     };
 
-    // ===== Fetch revenue =====
     const fetchRevenueData = async () => {
         try {
             let url;
@@ -93,7 +90,6 @@ export default function AdminAnalytics() {
         }
     };
 
-    // ===== Fetch parts usage =====
     const fetchPartsData = async () => {
         try {
             if (selectedCenter === "all") {
@@ -115,7 +111,6 @@ export default function AdminAnalytics() {
         }
     };
 
-    // ===== Fetch booking stats =====
     const fetchBookingStatsData = async () => {
         try {
             const centerId = selectedCenter !== "all" ? Number(selectedCenter) : null;
@@ -134,7 +129,6 @@ export default function AdminAnalytics() {
         }
     };
 
-    // ===== Fetch feedback =====
     const fetchFeedbackData = async () => {
         try {
             if (selectedCenter === "all") {
@@ -158,7 +152,6 @@ export default function AdminAnalytics() {
         }
     };
 
-    // ===== useEffects =====
     useEffect(() => {
         if (!token) { navigate("/"); return; }
         setLoading(true);
@@ -174,7 +167,6 @@ export default function AdminAnalytics() {
             .finally(() => setLoading(false));
     }, [selectedCenter, selectedMonth, selectedYear, userInfo]);
 
-    // ===== Render helpers =====
     const renderMonthOptions = () => Array.from({ length: 12 }, (_, i) => (
         <option key={i + 1} value={i + 1}>Tháng {i + 1}</option>
     ));
@@ -183,7 +175,6 @@ export default function AdminAnalytics() {
         return [<option key={currentYear} value={currentYear}>Năm {currentYear}</option>];
     };
 
-    // ===== Render =====
    if (showLoading) {
     return (
       <Loading text="Đang tải thống kê..." />
