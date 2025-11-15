@@ -38,7 +38,7 @@ export default function PaymentManagement() {
     const badges = {
       PENDING: { text: "Chờ thanh toán", className: "payment-pending", icon: <FaTimes /> },
       PAID: { text: "Đã thanh toán", className: "payment-paid", icon: <FaCheck /> },
-      REFUNDED: { text: "Đã hoàn tiền", className: "payment-refunded", icon: <FaCheck /> },
+      FAILED: { text: "Thất bại", className: "payment-failed", icon: <FaCheck /> },
     };
     return badges[status] || { text: status, className: "payment-default", icon: null };
   };

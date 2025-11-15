@@ -5,6 +5,25 @@ import "./BookingStatsChart.css";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+const getVietnameseLabel = (englishLabel) => {
+    if (!englishLabel) return "Không rõ";
+
+    const statusMap = {
+        "ASSIGNED": "Đã phân công",
+        "IN_PROGRESS": "Đang tiến hành",
+        "PENDING": "Đang chờ",
+        "COMPLETED": "Hoàn thành",
+        "PAID": "Đã thanh toán",
+        "CANCELLED": "Đã hủy",
+        "DECLINED": "Đã từ chối",
+    };
+
+    // Chuẩn hóa nhãn để tìm kiếm (loại bỏ khoảng trắng, chuyển về Title Case/dạng chuẩn)
+    const normalizedLabel = englishLabel.replace(/ /g, "_");
+
+    return statusMap[normalizedLabel] || englishLabel;
+};
+
 export default function BookingStatsChart({ chartData }) {
     if (!chartData || !chartData.labels || chartData.labels.length === 0) {
         return <p className="chart-placeholder">Không có dữ liệu booking.</p>;
@@ -21,9 +40,9 @@ export default function BookingStatsChart({ chartData }) {
     };
 
     const defaultColor = ["#6b7280", "#4b5563"];
-
+    const vietnameseLabels = chartData.labels.map(getVietnameseLabel);
     const data = {
-        labels: chartData.labels,
+        labels: vietnameseLabels,
         datasets: [
             {
                 data: chartData.counts,
@@ -53,13 +72,13 @@ export default function BookingStatsChart({ chartData }) {
             legend: {
                 position: "bottom",
                 labels: {
-                    color: "#0f172a", 
+                    color: "#0f172a",
                     font: { size: 14, weight: "600" },
-                    boxWidth: 20,     
-                    boxHeight: 14,    
-                    padding: 16,      
-                    usePointStyle: true, 
-                    pointStyle: "rectRounded", 
+                    boxWidth: 20,
+                    boxHeight: 14,
+                    padding: 16,
+                    usePointStyle: true,
+                    pointStyle: "rectRounded",
                 },
             },
         },

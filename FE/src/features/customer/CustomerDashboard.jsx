@@ -138,7 +138,7 @@ function CustomerDashboard() {
       }).bookingDate
       : null
   };
-  const activeStatuses = ['PENDING', 'IN_PROGRESS'];  // 🔥 CHỈ 2 CÁI NÀY
+  const activeStatuses = ['PENDING', 'IN_PROGRESS'];  
   const activeBookings = bookings
     .filter(b => activeStatuses.includes(b.status))
     .sort((a, b) => new Date(a.bookingDate) - new Date(b.bookingDate));

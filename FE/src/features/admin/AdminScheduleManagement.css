@@ -172,12 +172,12 @@
   /* Width cho từng cột */
    .data-table th:nth-child(1),
 .data-table td:nth-child(1) {
-  width: 1%;
+  width: 3%;
 }
  .data-table th:nth-child(2),
 .data-table td:nth-child(2) {
   width: 22%;
-  text-align: center;
+  text-align: left;
 }
 
 /* MÔ TẢ — Không cần chiếm quá nhiều */

@@ -5,6 +5,19 @@ import Button from "@components/ui/Button.jsx";
 import { API_BASE_URL } from "@config/api.js";
 import "./ViewPaymentModal.css";
 
+const formatPaymentStatus = (status) => {
+  switch (status?.toUpperCase()) {
+    case "PENDING":
+      return "Đang chờ";
+    case "PAID":
+      return "Đã thanh toán";
+    case "FAILED":
+      return "Thất bại";
+    default:
+      return status || "N/A";
+  }
+};
+
 const ViewPaymentModal = ({ bookingId, onClose }) => {
   const [payment, setPayment] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -81,7 +94,7 @@ const ViewPaymentModal = ({ bookingId, onClose }) => {
                 </div>
                 <div className="payment-status">
                   <span className={`status-badge status-${payment.status?.toLowerCase()}`}>
-                    {payment.status || "N/A"}
+                    {formatPaymentStatus(payment.status)}
                   </span>
                 </div>
               </div>

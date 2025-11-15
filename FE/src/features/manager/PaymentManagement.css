@@ -174,9 +174,9 @@
   color: #065f46;
 }
 
-.payment-refunded {
-  background: #e0e7ff;
-  color: #4338ca;
+.payment-failed {
+  background: #ffe0e0;
+  color: #ca3838;
 }
 
 .payment-default {

@@ -11,6 +11,7 @@ export default function UserTable({
   onEdit,
   onDelete,
   onToggleActive,
+  getVietnameseRole,
 }) {
   return (
     <div className="table-card">
@@ -34,7 +35,9 @@ export default function UserTable({
                   <td>{user.email}</td>
                   <td>{user.phone}</td>
                   <td>
-                    <span className={`role-badge role-${user.role?.toLowerCase()}`}>{user.role}</span>
+                    <span className={`role-badge role-${user.role?.toLowerCase()}`}>
+                      {getVietnameseRole ? getVietnameseRole(user.role) : user.role}
+                    </span>
                   </td>
                   <td>{user.centerName || "—"}</td>
                   <td>

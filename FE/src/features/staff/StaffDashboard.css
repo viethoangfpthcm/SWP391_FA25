@@ -143,67 +143,71 @@
   /* --- Cột --- */
   .data-table th:nth-child(1),
   .data-table td:nth-child(1) {
-    width: 60px;
+    width: 10%;
   }
 
   /* Cột Ngày hẹn */
   .data-table th:nth-child(2),
   .data-table td:nth-child(2) {
-    width: 120px;
+    width: 20%;
   }
 
   /* Cột Khách hàng */
   .data-table th:nth-child(3),
   .data-table td:nth-child(3) {
-    width: 160px;
+    width: 25%;
+    text-align: left;
   }
 
   /* Cột Điện thoại */
   .data-table th:nth-child(4),
   .data-table td:nth-child(4) {
-    width: 120px;
+    width: 15%;
+    text-align: left;
   }
 
   /* Cột Biển số */
   .data-table th:nth-child(5),
   .data-table td:nth-child(5) {
-    width: 130px;
+    width: 20%;
+    
   }
 
   /* Cột Dòng xe */
   .data-table th:nth-child(6),
   .data-table td:nth-child(6) {
-    width: 120px;
+    width: 20%;
   }
 
   /* Cột số Km */
   .data-table th:nth-child(7),
   .data-table td:nth-child(7) {
-    width: 90px;
+    width: 15%;
   }
 
   /* Cột KTV */
   .data-table th:nth-child(8),
   .data-table td:nth-child(8) {
-    width: 150px;
+    width: 30%;
+    text-align: left;
   }
 
   /* Cột Trạng thái */
   .data-table th:nth-child(9),
   .data-table td:nth-child(9) {
-    width: 120px;
+    width: 20%;
   }
 
   /* Cột Thao tác – tránh bị tụt xuống dòng */
   .data-table th:nth-child(10),
   .data-table td:nth-child(10) {
-    width: 350px;
+    width: 75%;
     text-align: center;
   }
 
   /* Flex trong thao tác */
   .data-table td:nth-child(10) {
-    display: flex;
+    display: flex-end;
     justify-content: center;
     align-items: center;
     gap: 6px;
@@ -415,7 +419,7 @@
 
   .btn-action:disabled {
     background-color: #d1d5db;
-    color: #6b7280;
+    color: #000000;
     cursor: not-allowed;
     opacity: 0.8;
     box-shadow: none;

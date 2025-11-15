@@ -5,26 +5,92 @@
 
 .booking-list-container h3 {
   color: #fefefe;
+  margin: 0;
 }
 
-/* Layout 2 cột */
-.booking-grid {
+.booking-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.status-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-filter label {
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.status-filter-select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  min-width: 200px;
+  transition: all 0.2s ease;
+}
+
+.status-filter-select:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.status-filter-select:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+}
+
+.status-filter-select option {
+  background: #2a2a3e;
+  color: #fff;
+}
+
+.no-bookings {
+  text-align: center;
+  color: #aaa;
+  padding: 40px 20px;
+  font-size: 1rem;
+  font-style: italic;
+  grid-column: 1 / -1;
+}
+
+.booking-grid-auto {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 20px;
   width: 100%;
 }
 
 @media (max-width: 768px) {
-  .booking-grid {
+  .booking-grid-auto {
     grid-template-columns: 1fr;
   }
-}
-
-.booking-column {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  
+  .booking-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .status-filter {
+    width: 100%;
+  }
+  
+  .status-filter-select {
+    width: 100%;
+    min-width: unset;
+  }
 }
 
 .booking-group-title {
@@ -92,22 +158,25 @@
   text-transform: uppercase;
 }
 
-/* Border colors */
+/* Border colors - Đầy đủ tất cả trạng thái */
 .booking-item.status-pending { border-left-color: #f0ad4e; }
-.booking-item.status-completed { border-left-color: #28a745; }
-.booking-item.status-declined,
-.booking-item.status-cancelled { border-left-color: #d9534f; }
+.booking-item.status-approved { border-left-color: #5cb85c; }
+.booking-item.status-assigned { border-left-color: #5bc0de; }
 .booking-item.status-in_progress { border-left-color: #0275d8; }
+.booking-item.status-completed { border-left-color: #28a745; }
 .booking-item.status-paid { border-left-color: #17a2b8; }
+.booking-item.status-cancelled { border-left-color: #d9534f; }
+.booking-item.status-declined { border-left-color: #d9534f; }
 
-/* Label colors */
 .status-label-pending { background-color: #f0ad4e; }
-.status-label-completed { background-color: #28a745; }
-.status-label-declined,
-.status-label-cancelled { background-color: #d9534f; }
+.status-label-approved { background-color: #5cb85c; }
+.status-label-assigned { background-color: #5bc0de; }
 .status-label-in_progress { background-color: #0275d8; }
+.status-label-completed { background-color: #28a745; }
+.status-label-paid { background-color: #17a2b8; }
+.status-label-cancelled { background-color: #d9534f; }
+.status-label-declined { background-color: #d9534f; }
 
-/* Cancel button */
 .btn-cancel-small {
   margin-top: 8px;
   background: rgba(255, 255, 255, 0.15);

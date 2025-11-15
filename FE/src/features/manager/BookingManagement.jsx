@@ -184,7 +184,7 @@ export default function BookingManagement() {
                     <th>Ngày hẹn</th>
                     <th>Dịch vụ</th>
                     <th>Trạng thái</th>
-                    <th>Thợ</th>
+                    <th>Kỹ thuật viên</th>
                     <th>Thao tác</th>
                   </tr>
                 </thead>
@@ -280,7 +280,7 @@ export default function BookingManagement() {
                       <p><strong>Biển số:</strong> {selectedChecklist.vehicleNumberPlate}</p>
                       <p><strong>Km hiện tại:</strong> {selectedChecklist.currentKm?.toLocaleString()} km</p>
                       <p><strong>Km bảo dưỡng:</strong> {selectedChecklist.maintenanceKm?.toLocaleString()} km</p>
-                      <p><strong>Thợ:</strong> {selectedChecklist.technicianName}</p>
+                      <p><strong>Kỹ thuật viên:</strong> {selectedChecklist.technicianName}</p>
                       <p><strong>Trạng thái:</strong> 
                         <span className={`status-badge ${selectedChecklist.status === 'COMPLETED' ? 'status-completed' : 'status-inprogress'}`}>
                           {selectedChecklist.status === 'COMPLETED' ? 'Hoàn thành' : 'Đang xử lý'}

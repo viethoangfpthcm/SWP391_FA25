@@ -117,6 +117,15 @@ const formatCurrency = (amount) => {
     currency: 'VND' 
   }).format(amount);
 };
+const getVietnameseStatus = (status) => {
+    if (!status) return "Đã hủy"; 
+    const statusMap = {
+        PENDING: "Đang chờ",
+        PAID: "Đã thanh toán",
+        FAILED: "Thất bại",
+    };
+    return statusMap[status.toUpperCase()] || status;
+};
 
   const formatDate = (dateString) =>
     dateString
@@ -174,9 +183,9 @@ const formatCurrency = (amount) => {
               onChange={(e) => setFilterStatus(e.target.value)}
             >
               <option value="all">Tất cả</option>
-              <option value="PENDING">Pending</option>
-              <option value="PAID">Paid</option>
-              <option value="FAILED">Failed</option>
+              <option value="PENDING">Đang chờ</option>
+              <option value="PAID">Đã thanh toán</option>
+              <option value="FAILED">Thất bại</option>
             </select>
           </div>
 
@@ -245,7 +254,7 @@ const formatCurrency = (amount) => {
                             payment.status
                           )}`}
                         >
-                          {payment.status}
+                          {getVietnameseStatus(payment.status)}
                         </span>
                       </td>
                     </tr>

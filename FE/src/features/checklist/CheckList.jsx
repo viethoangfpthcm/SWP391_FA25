@@ -8,7 +8,6 @@ import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
-// Các trạng thái Status đã được định nghĩa trong Backend
 const STATUS_OPTIONS = ["GOOD", "ADJUSTMENT", "REPAIR", "REPLACE"];
 const formatChecklistStatus = (status) => {
   switch (status) {
@@ -25,6 +24,14 @@ const formatApprovalStatus = (status) => {
     case 'PENDING': return 'Chờ duyệt';
     default: return 'Chờ duyệt';
   }
+};
+const formatActionType = (actionType) => {
+    switch (actionType?.toUpperCase()) {
+        case 'INSPECT': return 'Kiểm tra';
+        case 'REPLACE': return 'Thay thế định kỳ';
+        case 'SERVICE': return 'Bảo dưỡng định kỳ';
+        default: return actionType || 'N/A';
+    }
 };
 
 export default function CheckList({ user }) {
@@ -54,7 +61,6 @@ export default function CheckList({ user }) {
   // Toast notification state
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
-  // State để lưu các thay đổi tạm thời của Technician (Status, Note, Part ID)
   const [detailUpdates, setDetailUpdates] = useState({});
 
   /**
@@ -67,11 +73,8 @@ export default function CheckList({ user }) {
     }, 4000);
   };
 
-  /**
-   * HÀM HELPER: Xử lý nhãn trong dropdown Trạng thái KV
-   */
+
   const getCustomStatusLabel = (statusValue, itemName) => {
-    // 1. Logic tùy chỉnh: Áp dụng BẢO DƯỠNG cho REPLACE nếu là hạng mục điều hòa
     if (
       statusValue === "REPLACE" &&
       itemName && itemName.toLowerCase() === "bảo dưỡng hệ thống điều hòa".toLowerCase()
@@ -89,7 +92,6 @@ export default function CheckList({ user }) {
     }
   };
 
-  // Backend đang dùng /api/technician/my-checklists/{bookingId}, nên ta dùng bookingId để fetch detail
   const bookingId = searchParams.get('bookingId');
   const token = localStorage.getItem("token");
 
@@ -135,7 +137,6 @@ export default function CheckList({ user }) {
   const fetchChecklistList = async () => {
     setLoading(true);
     try {
-      // API này trả về List<MaintenanceChecklistSummaryResponse>
       const apiUrl = `${API_BASE_URL}/api/technician/my-checklists`;
 
       const res = await fetch(apiUrl, {
@@ -155,11 +156,10 @@ export default function CheckList({ user }) {
     }
   };
 
-  // Fetch chi tiết 1 checklist theo bookingId (trả về FULL DTO)
+
   const fetchChecklist = async (id) => {
     setLoading(true);
     try {
-      // API này trả về MaintenanceChecklistResponse (có details)
       const apiUrl = `${API_BASE_URL}/api/technician/my-checklists/${id}`;
 
       const res = await fetch(apiUrl, {
@@ -206,8 +206,6 @@ export default function CheckList({ user }) {
       return statusChanged || noteChanged || partChanged || laborCostChanged || materialCostChanged;
     });
   };
-
-  // Hàm gọi API để cập nhật TẤT CẢ các chi tiết đã thay đổi
   const handleSaveAllChanges = async () => {
     if (!checklist || !checklist.details) return;
 
@@ -249,7 +247,6 @@ export default function CheckList({ user }) {
         try {
           const apiUrl = `${API_BASE_URL}/api/technician/update-detail/${detail.id}`;
 
-          // --- CẬP NHẬT BODY TRONG FETCH ---
           const res = await fetch(apiUrl, {
             method: 'PUT',
             headers: {
@@ -266,7 +263,7 @@ export default function CheckList({ user }) {
               materialCost: updates.status === "REPAIR" ? (updates.materialCost || 0) : 0,
             }),
           });
-          // --- KẾT THÚC CẬP NHẬT BODY ---
+
 
           if (!res.ok) {
             throw new Error(`Cập nhật lỗi cho hạng mục ${detail.itemName}`);
@@ -445,7 +442,6 @@ export default function CheckList({ user }) {
   }
 
 
-  // RENDER CHI TIẾT CHECKLIST (Giữ nguyên)
   if (!checklist) {
     return (
       <div className="checklist-page">
@@ -522,8 +518,6 @@ export default function CheckList({ user }) {
             ← Quay lại danh sách
           </Button>
         </div>
-
-        {/* THÔNG TIN TỔNG QUAN (ĐÃ SỬA ĐỂ THÊM MODEL VÀ PLAN NAME) */}
         <div className="summary-section">
           <p><strong>Trạng thái:</strong> <span className={`status-badge ${checklist.status === 'IN_PROGRESS' ? 'in-progress' : 'COMPLETED'}`}> {formatChecklistStatus(checklist.status)}</span></p>
           <p><strong>Biển số xe:</strong> {checklist.vehicleNumberPlate}</p>
@@ -600,7 +594,7 @@ export default function CheckList({ user }) {
               }
               const totalCost = currentLaborCost + currentMaterialCost;
 
-              const displayActionType = detail.actionType;
+              const displayActionType = formatActionType(detail.actionType);
 
               return (
                 <tr key={detail.id} className={detail.approvalStatus === 'APPROVED' ? 'row-approved' : ''}>
@@ -619,7 +613,6 @@ export default function CheckList({ user }) {
 
                       {STATUS_OPTIONS.map(opt => (
                         <option key={opt} value={opt}>
-                          {/* Áp dụng logic tùy chỉnh */}
                           {getCustomStatusLabel(opt, detail.itemName)}
                         </option>
                       ))}
@@ -640,7 +633,6 @@ export default function CheckList({ user }) {
                   </td>
                   <td>
                     {isReplace ? (
-                      // Logic "REPLACE" (chọn Part) giữ nguyên
                       <select
                         value={currentUpdates.partId || ""}
                         onChange={(e) => handleDetailChange(detail.id, 'partId', parseInt(e.target.value) || null)}
@@ -663,7 +655,6 @@ export default function CheckList({ user }) {
                         })}
                       </select>
                     ) : (
-                      // SỬA CHỮA, TỐT, HIỆU CHỈNH đều hiển thị N/A ở cột này
                       <span className="text-gray-400">N/A</span>
                     )}
                   </td>

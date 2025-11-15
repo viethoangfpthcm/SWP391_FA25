@@ -3,6 +3,17 @@ import Button from '@components/ui/Button.jsx';
 import { FaTimes, FaStar } from 'react-icons/fa';
 import './BookingList.css';
 
+const STATUS_PRIORITY = {
+  PENDING: 1,
+  IN_PROGRESS: 2,
+  ASSIGNED: 3,
+  APPROVED: 4,
+  PAID: 5,
+  COMPLETED: 6,
+  CANCELLED: 7,
+  DECLINED: 8
+};
+
 export default function BookingList({
   title,
   bookings,
@@ -12,146 +23,155 @@ export default function BookingList({
   onFeedback,
   mode = "history" // "processing" hoặc "history"
 }) {
-const normalizeStatusClass = (statusObj) => {
-  if (!statusObj || !statusObj.className) return "pending";
+  const [selectedStatus, setSelectedStatus] = React.useState("ALL");
 
-  return statusObj.className
-    .toLowerCase()
-    .replace("-", "_"); // ép in-progress → in_progress
-};
+  const normalizeStatusClass = (statusObj) => {
+    if (!statusObj || !statusObj.className) return "pending";
 
-  // 👉 Hàm render booking item (TRUYỀN ĐẦY ĐỦ THAM SỐ)
-const renderBookingItem = (booking) => {
-  const statusObj = getStatusDisplay(booking.status);
-  const statusClass = normalizeStatusClass(statusObj);
+    return statusObj.className
+      .toLowerCase()
+      .replace("-", "_");
+  };
 
-  return (
-    <div
-      key={booking.bookingId}
-      className={`booking-item status-${statusClass}`}
-    >
-      <div className="booking-item-header">
-        <strong>{booking.vehiclePlate}</strong> ({booking.vehicleModel})
-        <span className={`booking-status status-label-${statusClass}`}>
-          {statusObj.text}
-        </span>
+  // Hàm sắp xếp bookings theo thứ tự ưu tiên
+  const sortBookingsByPriority = (bookingsArray) => {
+    return [...bookingsArray].sort((a, b) => {
+      // So sánh theo priority status trước
+      const priorityA = STATUS_PRIORITY[a.status] || 999;
+      const priorityB = STATUS_PRIORITY[b.status] || 999;
+      
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+      
+      // Nếu cùng priority, sắp xếp theo ngày (mới nhất lên đầu)
+      return new Date(b.bookingDate) - new Date(a.bookingDate);
+    });
+  };
+
+  // Hàm render booking item
+  const renderBookingItem = (booking) => {
+    const statusObj = getStatusDisplay(booking.status);
+    const statusClass = normalizeStatusClass(statusObj);
+
+    return (
+      <div
+        key={booking.bookingId}
+        className={`booking-item status-${statusClass}`}
+      >
+        <div className="booking-item-header">
+          <strong>{booking.vehiclePlate}</strong> ({booking.vehicleModel})
+          <span className={`booking-status status-label-${statusClass}`}>
+            {statusObj.text}
+          </span>
+        </div>
+
+        <p><strong>Trung tâm:</strong> {booking.centerName}</p>
+        <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
+
+        {booking.note && (
+          <p className="booking-note"><strong>Ghi chú:</strong> {booking.note}</p>
+        )}
+
+        {onCancel && booking.status === "PENDING" && (
+          <Button className="btn-cancel-small" onClick={() => onCancel(booking.bookingId)}>
+            <FaTimes /> Hủy
+          </Button>
+        )}
+
+        {onFeedback && booking.status === "COMPLETED" && (
+          <Button className="btn-feedback" onClick={() => onFeedback(booking.bookingId)}>
+            <FaStar /> {booking.hasFeedback ? "Sửa đánh giá" : "Đánh giá"}
+          </Button>
+        )}
       </div>
+    );
+  };
 
-      <p><strong>Trung tâm:</strong> {booking.centerName}</p>
-      <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
-
-      {booking.note && (
-        <p className="booking-note"><strong>Ghi chú:</strong> {booking.note}</p>
-      )}
-
-      {onCancel && booking.status === "PENDING" && (
-        <Button className="btn-cancel-small" onClick={() => onCancel(booking.bookingId)}>
-          <FaTimes /> Hủy
-        </Button>
-      )}
-
-      {onFeedback && booking.status === "COMPLETED" && (
-        <Button className="btn-feedback" onClick={() => onFeedback(booking.bookingId)}>
-          <FaStar /> {booking.hasFeedback ? "Sửa đánh giá" : "Đánh giá"}
-        </Button>
-      )}
-    </div>
-  );
-};
-
-
-
-  // ======================================================
-  // 1️⃣ MODE = PROCESSING → Chờ xử lý | Đang xử lý
-  // ======================================================
   if (mode === "processing") {
-    const pending = bookings
-      .filter(b => b.status === "PENDING")
-      .sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
+    // Lọc các booking đang xử lý
+    const activeStatuses = ["PENDING", "IN_PROGRESS", "ASSIGNED", "APPROVED", "PAID"];
+    const activeBookings = bookings.filter(b => activeStatuses.includes(b.status));
+    
+    // Filter theo status được chọn
+    const filteredBookings = selectedStatus === "ALL" 
+      ? activeBookings 
+      : activeBookings.filter(b => b.status === selectedStatus);
+    
+    // Sort theo priority
+    const sortedBookings = sortBookingsByPriority(filteredBookings);
 
-    const inProgress = bookings
-      .filter(b => b.status === "IN_PROGRESS")
-      .sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
+    // Lấy danh sách status có trong bookings
+    const availableStatuses = [...new Set(activeBookings.map(b => b.status))];
 
     return (
       <div className="booking-list-container">
-        <h3>{title}</h3>
-
-        <div className="booking-grid">
-
-          {/* LEFT COLUMN → Chờ xử lý */}
-          <div className="booking-column">
-            {pending.length > 0 && (
-              <h4 className="booking-group-title">Chờ xử lý</h4>
-            )}
-            {pending.map(booking => renderBookingItem(booking))}
+        <div className="booking-list-header">
+          <h3>{title}</h3>
+          <div className="status-filter">
+            <label>Lọc theo trạng thái:</label>
+            <select 
+              value={selectedStatus} 
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="status-filter-select"
+            >
+              <option value="ALL">Tất cả ({activeBookings.length})</option>
+              {availableStatuses.sort((a, b) => (STATUS_PRIORITY[a] || 999) - (STATUS_PRIORITY[b] || 999)).map(status => (
+                <option key={status} value={status}>
+                  {getStatusDisplay(status).text} ({activeBookings.filter(b => b.status === status).length})
+                </option>
+              ))}
+            </select>
           </div>
-
-          {/* RIGHT COLUMN → Đang xử lý */}
-          <div className="booking-column">
-            {inProgress.length > 0 && (
-              <h4 className="booking-group-title">Đang xử lý</h4>
-            )}
-            {inProgress.map(booking => renderBookingItem(booking))}
-          </div>
-
+        </div>
+        <div className="booking-grid-auto">
+          {sortedBookings.length > 0 ? (
+            sortedBookings.map(booking => renderBookingItem(booking))
+          ) : (
+            <p className="no-bookings">Không có lịch hẹn nào với trạng thái này.</p>
+          )}
         </div>
       </div>
     );
   }
 
+  // Mode history - hiển thị tất cả theo priority
+  // Filter theo status được chọn
+  const filteredBookings = selectedStatus === "ALL" 
+    ? bookings 
+    : bookings.filter(b => b.status === selectedStatus);
+  
+  const sortedBookings = sortBookingsByPriority(filteredBookings);
 
-  // ======================================================
-  // 2️⃣ MODE = HISTORY → Completed | Declined + Cancelled
-  // ======================================================
-  const completed = bookings
-    .filter(b => b.status === "COMPLETED")
-    .sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
-
-  const rightStatuses = ["DECLINED", "CANCELLED"];
-
-  const rightColumn = rightStatuses.flatMap(status =>
-    bookings
-      .filter(b => b.status === status)
-      .sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate))
-      .map(b => ({ ...b, groupStatus: status }))
-  );
+  // Lấy danh sách status có trong bookings
+  const availableStatuses = [...new Set(bookings.map(b => b.status))];
 
   return (
     <div className="booking-list-container">
-      <h3>{title}</h3>
-
-      <div className="booking-grid">
-
-        {/* LEFT COLUMN → Completed */}
-        <div className="booking-column">
-          {completed.length > 0 && (
-            <h4 className="booking-group-title">Hoàn thành</h4>
-          )}
-          {completed.map(booking => renderBookingItem(booking))}
+      <div className="booking-list-header">
+        <h3>{title}</h3>
+        <div className="status-filter">
+          <label>Lọc theo trạng thái:</label>
+          <select 
+            value={selectedStatus} 
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="status-filter-select"
+          >
+            <option value="ALL">Tất cả ({bookings.length})</option>
+            {availableStatuses.sort((a, b) => (STATUS_PRIORITY[a] || 999) - (STATUS_PRIORITY[b] || 999)).map(status => (
+              <option key={status} value={status}>
+                {getStatusDisplay(status).text} ({bookings.filter(b => b.status === status).length})
+              </option>
+            ))}
+          </select>
         </div>
-
-        {/* RIGHT COLUMN → Declined + Cancelled */}
-        <div className="booking-column">
-
-          {rightColumn.map((booking, index) => {
-            const showHeader =
-              index === 0 || booking.groupStatus !== rightColumn[index - 1].groupStatus;
-
-            return (
-              <React.Fragment key={booking.bookingId}>
-                {showHeader && (
-                  <h4 className="booking-group-title">
-                    {getStatusDisplay(booking.groupStatus).text}
-                  </h4>
-                )}
-
-                {renderBookingItem(booking)}
-              </React.Fragment>
-            );
-          })}
-        </div>
-
+      </div>
+      <div className="booking-grid-auto">
+        {sortedBookings.length > 0 ? (
+          sortedBookings.map(booking => renderBookingItem(booking))
+        ) : (
+          <p className="no-bookings">Không có lịch hẹn nào với trạng thái này.</p>
+        )}
       </div>
     </div>
   );

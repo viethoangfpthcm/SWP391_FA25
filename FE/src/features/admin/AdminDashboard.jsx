@@ -57,6 +57,26 @@ export default function AdminDashboard() {
   const [showForm, setShowForm] = useState(false);
   const getToken = () => localStorage.getItem("token");
   const [editingUser, setEditingUser] = useState(null); // Store user being edited
+  const rolesList = [
+    { value: "MANAGER", label: "Quản lý trung tâm" },
+    { value: "STAFF", label: "Nhân viên" },
+    { value: "TECHNICIAN", label: "Kỹ thuật viên" },
+    { value: "CUSTOMER", label: "Khách hàng" },
+  ];
+  const getVietnameseRole = (role) => {
+    if (!role) return "N/A";
+    
+    // Đảm bảo khớp với format của rolesList
+    const roleMap = {
+        ADMIN: "Quản trị viên",
+        MANAGER: "Quản lý trung tâm",
+        STAFF: "Nhân viên",
+        TECHNICIAN: "Kỹ thuật viên",
+        CUSTOMER: "Khách hàng",
+    };
+    
+    return roleMap[role.toUpperCase()] || role;
+};
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -496,6 +516,7 @@ export default function AdminDashboard() {
             filterCenter={filterCenter} setFilterCenter={setFilterCenter}
             filterActive={filterActive} setFilterActive={setFilterActive}
             centerList={centerList}
+            rolesList={rolesList}
             onAddClick={() => openForm()}
             disabled={actionLoading || isDeleting || isToggling}
           />
@@ -510,6 +531,7 @@ export default function AdminDashboard() {
           onEdit={(user) => openForm(user)}
           onDelete={(id) => handleDeleteClick(id)}
           onToggleActive={(user) => handleToggleActive(user)}
+          getVietnameseRole={getVietnameseRole}
         />
 
         {/* Add/Edit User Modal Form (extracted) */}

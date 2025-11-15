@@ -23,7 +23,16 @@ import Button from "@components/ui/Button.jsx";
 const Sidebar = ({ userName, userRole }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const getVietnameseRole = (role) => {
+    if (!role) return "Khách";
+    const roleMap = {
+        ADMIN: "Quản trị viên",
+        MANAGER: "Quản lý trung tâm",
+        STAFF: "Nhân viên",
+        TECHNICIAN: "Kỹ thuật viên",
+    };
+    return roleMap[role.toUpperCase()] || role;
+};
   const currentUserName = userName || localStorage.getItem("fullName") || "Người dùng";
   const currentUserRole = userRole || localStorage.getItem("role") || "Khách";
   const role = currentUserRole.toLowerCase();
@@ -70,7 +79,7 @@ const Sidebar = ({ userName, userRole }) => {
     <div className="sidebar open">
       <div className="user-info">
         <h3>{currentUserName}</h3>
-        <p>{currentUserRole}</p>
+        <p>{getVietnameseRole(currentUserRole)}</p>
       </div>
 
       <div className="menu">
@@ -147,7 +156,7 @@ const Sidebar = ({ userName, userRole }) => {
 
         {role === "manager" && (
           <>
-            <Link to="/manager" className={`menu-item ${isActive("/manager", true) ? "active" : ""}`}>
+            <Link to="/manager" className={`menu-item ${isActive("/manager", true) ? "active" : ""}`}>  
               <FaUserCog /> <span>Quản lý người dùng</span>
             </Link>
             <Link to="/manager/parts" className={`menu-item ${isActive("/manager/parts") ? "active" : ""}`}>

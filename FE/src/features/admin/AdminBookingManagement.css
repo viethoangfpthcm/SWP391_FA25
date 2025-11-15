@@ -593,6 +593,10 @@
   background: #cffafe; /* Màu xanh cyan nhạt */
   color: #0e7490;
 }
+.role-in-progress {
+  background: #f8fecf; /* Màu xanh cyan nhạt */
+  color: #87900e;
+}
 
 .role-cancelled {
   background: #fee2e2; /* Đỏ nhạt (giống declined) */
