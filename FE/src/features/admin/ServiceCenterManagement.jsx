@@ -18,7 +18,6 @@ import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
-// --- Helper Functions ---
 const isValidPhone = (phone) => {
   if (!phone) return false;
   const phoneRegex =
@@ -31,8 +30,6 @@ const isValidName = (name) => {
   const nameRegex = /^[\p{L}0-9\s]{2,}$/u;
   return nameRegex.test(name.trim());
 };
-
-// --- End Helpers ---
 
 if (import.meta.env.MODE !== "development") {
 }

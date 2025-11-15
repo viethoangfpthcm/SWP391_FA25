@@ -129,7 +129,6 @@ export default function PartManagement() {
           manufacturer: formData.manufacturer,
         };
 
-      console.log("Sending PUT request body:", body); // Debug log
 
       const response = await fetch(url, {
         method,
@@ -151,7 +150,6 @@ export default function PartManagement() {
         });
       } else {
         const errorData = await response.json();
-        console.error("API Error Response:", errorData); // Debug log
         setError(errorData.message || "Có lỗi xảy ra");
       }
     } catch (error) {
