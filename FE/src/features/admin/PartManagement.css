@@ -1,13 +1,13 @@
-
-.part-manager .modal-overlay {
+/* === FORM MODAL - GIỐNG Y MODAL MANAGER === */
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px); /* Hiệu ứng mờ phía sau */
+  -webkit-backdrop-filter: blur(8px); /* Safari support */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,8 +20,10 @@
   to { opacity: 1; }
 }
 
-/* === MODAL BOX === */
-.part-manager .modal.part-edit-modal {
+.modal-overlay .modal.part-edit-modal,
+.modal-overlay .part-edit-modal,
+.modal.part-edit-modal,
+.part-edit-modal {
   background: white;
   border-radius: 16px;
   max-width: 550px;
@@ -31,8 +33,10 @@
   overflow-x: hidden;
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
   animation: slideUp 0.3s ease;
-  border: none;
-  outline: none;
+  border: none !important; /* BỎ viền */
+  outline: none !important;
+  padding: 0 !important; /* BỎ padding gây ra viền trắng */
+  margin: 0 !important;
 }
 
 @keyframes slideUp {
@@ -66,8 +70,8 @@
   font-weight: 600;
 }
 
-/* === NÚT ĐÓNG MODAL === */
-.part-manager .btn-close-modal {
+/* Nút X trắng trên nền tím */
+.btn-close-modal {
   background: transparent;
   border: none;
   color: white;
@@ -92,14 +96,14 @@
   background: #fafafa;
 }
 
-.part-manager .form-group {
-  margin-bottom: 1rem;
+.part-form .form-group {
+  margin-bottom: 0.85rem; /* Giảm từ 1.25rem xuống 0.85rem */
 }
 
 .part-manager label {
   display: block;
   font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 6px; /* Giảm từ 8px xuống 6px */
   color: #4a5568;
   font-size: 0.9rem;
 }
@@ -107,7 +111,7 @@
 .part-manager input,
 .part-manager select {
   width: 100%;
-  padding: 0.65rem 0.9rem;
+  padding: 0.65rem 0.9rem; /* Giảm từ 0.75rem 1rem xuống 0.65rem 0.9rem */
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-size: 14px;
@@ -137,9 +141,9 @@
   font-weight: 500;
 }
 
-.part-manager .form-error {
-  margin: 0 2rem 1rem;
-  padding: 0.75rem 1rem;
+.form-error {
+  margin: 0 2rem 0.75rem; /* Giảm margin bottom */
+  padding: 0.65rem 0.9rem; /* Giảm padding */
   background: #fff5f5;
   border: 2px solid #fc8181;
   border-radius: 8px;
@@ -150,12 +154,12 @@
   gap: 8px;
 }
 
-/* === ACTION BUTTON TRONG FORM === */
-.part-manager .form-actions {
+/* === BUTTONS - GIỐNG MANAGER - GỌN === */
+.form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  padding: 1.25rem 2rem;
+  padding: 1.25rem 2rem; /* Giảm từ 1.5rem xuống 1.25rem */
   border-top: 2px solid #e2e8f0;
   background: white;
 }
@@ -164,7 +168,7 @@
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border: none;
-  padding: 0.65rem 1.5rem;
+  padding: 0.65rem 1.5rem; /* Giảm từ 0.75rem 1.75rem xuống 0.65rem 1.5rem */
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
@@ -181,7 +185,7 @@
   background: #e2e8f0;
   color: #4a5568;
   border: none;
-  padding: 0.65rem 1.5rem;
+  padding: 0.65rem 1.5rem; /* Giảm từ 0.75rem 1.75rem xuống 0.65rem 1.5rem */
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
@@ -193,44 +197,8 @@
   transform: translateY(-2px);
 }
 
-/* === BẢNG DỮ LIỆU === */
-.part-manager .data-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  font-size: 0.95rem;
-}
-
-.part-manager .data-table th {
-  background-color: #f5f6fa;
-  font-weight: 600;
-  text-align: left;
-  padding: 12px 16px;
-  color: #2c3e50;
-  border-bottom: 2px solid #e0e0e0;
-}
-
-.part-manager .data-table td {
-  padding: 12px 16px;
-  border-bottom: 1px solid #eee;
-  vertical-align: middle;
-}
-
-.part-manager .numeric-cell {
-  text-align: right;
-}
-
-/* === HÀNG TRỐNG === */
-.part-manager .empty-state-row {
-  text-align: center;
-  color: #888;
-  font-style: italic;
-}
-
-/* === NÚT HÀNH ĐỘNG TRONG BẢNG === */
-.part-manager .action-buttons-cell {
+/* === ACTION BUTTONS IN TABLE === */
+.action-buttons-cell {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -270,15 +238,85 @@
   transform: translateY(-2px);
 }
 
-/* === THANH HÀNH ĐỘNG (BACK + ADD) === */
-.part-manager .actions-bar {
+/* === TABLE STYLE IMPROVEMENTS === */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.data-table th {
+  background-color: #f5f6fa;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 12px;
+  color: #2c3e50;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.numeric-cell {
+  text-align: right;
+}
+
+.empty-state-row {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+/* === ERROR BOX === */
+.error-message {
+  background: #fdecea;
+  color: #c0392b;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* === FIX BUTTON POSITION + LAYOUT === */
+.actions-bar {
+  display: flex;
+  justify-content: flex-start; /* đưa nút sang trái */
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.btn-back {
+  background-color: #555;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+}
+/* --- Thanh hành động (Back + Add) --- */
+.actions-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 16px 0;
 }
 
-.part-manager .btn-back {
+/* Nút quay lại căn trái */
+.btn-back {
   background-color: #6c757d;
   color: #fff;
   border: none;
@@ -293,7 +331,8 @@
   transform: translateY(-2px);
 }
 
-.part-manager .btn-add {
+/* Nút thêm phụ tùng căn phải */
+.btn-add {
   background-color: #007bff;
   color: white;
   border: none;
@@ -420,11 +459,23 @@
   margin-left: auto;
 }
 
-/* Giữ chiều cao ổn định */
-.part-manager .btn-back,
-.part-manager .btn-add {
-  height: 40px;
+/* Căn giữa icon + text */
+.btn-action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
+  height: 36px; /* đảm bảo không bị “mất nửa nút” */
+  min-width: 70px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+.data-table td,
+.data-table th {
+  padding: 12px 16px;
+  vertical-align: middle;
 }
