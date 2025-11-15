@@ -58,14 +58,9 @@ export default function CheckList({ user }) {
       detail.approvalStatus?.toUpperCase() === 'PENDING'
     );
   };
-  // Toast notification state
+
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
-
   const [detailUpdates, setDetailUpdates] = useState({});
-
-  /**
-   * HÀM HELPER: Hiển thị toast notification
-   */
   const showToast = (message, type = "success") => {
     setToast({ show: true, message, type });
     setTimeout(() => {
@@ -94,8 +89,6 @@ export default function CheckList({ user }) {
 
   const bookingId = searchParams.get('bookingId');
   const token = localStorage.getItem("token");
-
-  // 1. Fetch dữ liệu khi component được load
   useEffect(() => {
     if (bookingId) {
       setViewMode("detail");
@@ -188,8 +181,6 @@ export default function CheckList({ user }) {
       }
     }));
   };
-
-  // Kiểm tra xem có thay đổi nào chưa lưu không
   const hasUnsavedChanges = () => {
     if (!checklist || !checklist.details) return false;
 
@@ -208,8 +199,6 @@ export default function CheckList({ user }) {
   };
   const handleSaveAllChanges = async () => {
     if (!checklist || !checklist.details) return;
-
-    // Lọc ra các detail có thay đổi
     const changedDetails = checklist.details.filter(detail => {
       const updates = detailUpdates[detail.id];
       if (!updates) return false;
@@ -226,7 +215,6 @@ export default function CheckList({ user }) {
       showToast("Không có thay đổi nào để lưu", "info");
       return;
     }
-
     // Validation: Kiểm tra REPLACE phải có Part
     for (const detail of changedDetails) {
       const updates = detailUpdates[detail.id];
@@ -241,7 +229,6 @@ export default function CheckList({ user }) {
     let failCount = 0;
 
     try {
-      // Cập nhật từng detail
       for (const detail of changedDetails) {
         const updates = detailUpdates[detail.id];
         try {
@@ -257,8 +244,6 @@ export default function CheckList({ user }) {
               status: updates.status,
               note: updates.note,
               partId: updates.status === "REPLACE" ? updates.partId : null,
-
-              // Chỉ gửi chi phí nếu là REPAIR, nếu không gửi 0
               laborCost: updates.status === "REPAIR" ? (updates.laborCost || 0) : 0,
               materialCost: updates.status === "REPAIR" ? (updates.materialCost || 0) : 0,
             }),
@@ -274,8 +259,6 @@ export default function CheckList({ user }) {
           failCount++;
         }
       }
-
-      // Tải lại checklist để thấy chi phí mới từ Backend
       await fetchChecklist(bookingId);
 
       if (failCount === 0) {
@@ -293,23 +276,19 @@ export default function CheckList({ user }) {
   };
 
   const executeCompleteChecklist = async () => {
-    setCompleteConfirmLoading(true); // Bật loading của modal
-    setIsUpdating(true); // Bật loading của trang 
+    setCompleteConfirmLoading(true); 
+    setIsUpdating(true); 
 
     try {
-      // API hoàn thành dùng Checklist ID, không phải Booking ID
       const apiUrl = `${API_BASE_URL}/api/technician/${checklist.id}/complete`;
-
       const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
       });
-
       if (!res.ok) {
         const errorDetail = await res.text();
         throw new Error(`Hoàn thành lỗi: ${errorDetail}`);
       }
-
       showToast("Checklist đã được hoàn thành thành công!", "success");
       await fetchChecklist(bookingId);
 
@@ -317,24 +296,20 @@ export default function CheckList({ user }) {
       console.error("Lỗi hoàn thành checklist:", error);
       showToast(`Hoàn thành thất bại: ${error.message}`, "error");
     } finally {
-      setIsUpdating(false); // Tắt loading của trang
-      setCompleteConfirmLoading(false); // Tắt loading của modal
-      setShowCompleteConfirm(false); // Đóng modal
+      setIsUpdating(false); 
+      setCompleteConfirmLoading(false); 
+      setShowCompleteConfirm(false); 
     }
   };
 
-  // Hàm gọi API để hoàn thành Checklist
   const handleCompleteChecklist = async () => {
     setShowCompleteConfirm(true);
   };
 
-  // Xem chi tiết checklist
   const handleViewDetail = (bookingId) => {
-    // Chuyển sang URL với bookingId để trigger fetchChecklist
     navigate(`/checklist?bookingId=${bookingId}`);
   };
 
-  // --- Render Logic ---
   if (showLoading) {
   return (
     <Loading text="Đang tải báo cáo kỹ thuật..." />
@@ -347,7 +322,6 @@ export default function CheckList({ user }) {
       <div className="checklist-page">
         <Sidebar user={user} />
         <div className="content">
-          {/* Toast Notification */}
           {toast.show && (
             <div className={`toast-notification toast-${toast.type}`}>
               <div className="toast-icon">
@@ -376,14 +350,14 @@ export default function CheckList({ user }) {
                 <div className="form-actions">
                   <Button
                     onClick={() => setShowCompleteConfirm(false)}
-                    className="btn-cancel" // Giả sử bạn có class cho nút Hủy
+                    className="btn-cancel" 
                     disabled={completeConfirmLoading}
                   >
                     Hủy bỏ
                   </Button>
                   <Button
                     onClick={executeCompleteChecklist}
-                    className="btn-save" // Giả sử bạn có class cho nút Đồng ý
+                    className="btn-save" 
                     disabled={completeConfirmLoading}
                   >
                     {completeConfirmLoading ? <Loading inline /> : 'Xác nhận'}
@@ -558,8 +532,6 @@ export default function CheckList({ user }) {
             </small>
           )}
         </div>
-
-        {/* BẢNG CHI TIẾT */}
         <table className="checklist-table">
           <thead>
             <tr>
@@ -684,7 +656,6 @@ export default function CheckList({ user }) {
                       currentLaborCost.toLocaleString('vi-VN')
                     )}
                   </td>
-                  {/* CỘT 7: CHI PHÍ VẬT TƯ */}
                   <td className="cost-cell">
                     {(currentStatus === "REPAIR") ? (
                       <input
@@ -714,8 +685,6 @@ export default function CheckList({ user }) {
             })}
           </tbody>
         </table>
-
-        {/* NÚT LƯU THAY ĐỔI - Hiển thị ở cuối bảng */}
         {(checklist.status === 'IN_PROGRESS' ||
           (checklist.status === 'PENDING_APPROVAL' && hasDeclinedItems())) && (
             <div className="save-changes-section">

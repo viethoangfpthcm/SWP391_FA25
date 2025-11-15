@@ -21,7 +21,7 @@ export default function BookingList({
   getStatusDisplay,
   onCancel,
   onFeedback,
-  mode = "history" // "processing" hoặc "history"
+  mode = "history"
 }) {
   const [selectedStatus, setSelectedStatus] = React.useState("ALL");
 
@@ -33,7 +33,7 @@ export default function BookingList({
       .replace("-", "_");
   };
 
-  // Hàm sắp xếp bookings theo thứ tự ưu tiên
+  //  sắp xếp bookings theo thứ tự ưu tiên
   const sortBookingsByPriority = (bookingsArray) => {
     return [...bookingsArray].sort((a, b) => {
       // So sánh theo priority status trước
@@ -42,18 +42,14 @@ export default function BookingList({
       
       if (priorityA !== priorityB) {
         return priorityA - priorityB;
-      }
-      
-      // Nếu cùng priority, sắp xếp theo ngày (mới nhất lên đầu)
+      }     
+      // sắp xếp theo ngày (mới nhất lên đầu)
       return new Date(b.bookingDate) - new Date(a.bookingDate);
     });
   };
-
-  // Hàm render booking item
   const renderBookingItem = (booking) => {
     const statusObj = getStatusDisplay(booking.status);
     const statusClass = normalizeStatusClass(statusObj);
-
     return (
       <div
         key={booking.bookingId}
@@ -65,20 +61,16 @@ export default function BookingList({
             {statusObj.text}
           </span>
         </div>
-
         <p><strong>Trung tâm:</strong> {booking.centerName}</p>
         <p><strong>Ngày hẹn:</strong> {new Date(booking.bookingDate).toLocaleString('vi-VN')}</p>
-
         {booking.note && (
           <p className="booking-note"><strong>Ghi chú:</strong> {booking.note}</p>
         )}
-
         {onCancel && booking.status === "PENDING" && (
           <Button className="btn-cancel-small" onClick={() => onCancel(booking.bookingId)}>
             <FaTimes /> Hủy
           </Button>
         )}
-
         {onFeedback && booking.status === "COMPLETED" && (
           <Button className="btn-feedback" onClick={() => onFeedback(booking.bookingId)}>
             <FaStar /> {booking.hasFeedback ? "Sửa đánh giá" : "Đánh giá"}
@@ -89,21 +81,13 @@ export default function BookingList({
   };
 
   if (mode === "processing") {
-    // Lọc các booking đang xử lý
     const activeStatuses = ["PENDING", "IN_PROGRESS", "ASSIGNED", "APPROVED", "PAID"];
     const activeBookings = bookings.filter(b => activeStatuses.includes(b.status));
-    
-    // Filter theo status được chọn
     const filteredBookings = selectedStatus === "ALL" 
       ? activeBookings 
       : activeBookings.filter(b => b.status === selectedStatus);
-    
-    // Sort theo priority
     const sortedBookings = sortBookingsByPriority(filteredBookings);
-
-    // Lấy danh sách status có trong bookings
     const availableStatuses = [...new Set(activeBookings.map(b => b.status))];
-
     return (
       <div className="booking-list-container">
         <div className="booking-list-header">
@@ -134,16 +118,11 @@ export default function BookingList({
       </div>
     );
   }
-
-  // Mode history - hiển thị tất cả theo priority
-  // Filter theo status được chọn
   const filteredBookings = selectedStatus === "ALL" 
     ? bookings 
     : bookings.filter(b => b.status === selectedStatus);
   
   const sortedBookings = sortBookingsByPriority(filteredBookings);
-
-  // Lấy danh sách status có trong bookings
   const availableStatuses = [...new Set(bookings.map(b => b.status))];
 
   return (

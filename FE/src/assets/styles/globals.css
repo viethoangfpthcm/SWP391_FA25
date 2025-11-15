@@ -1,4 +1,3 @@
-/* Global design variables */
 :root{
   --primary-1: #0ea5ff;
   --primary-2: #0066ff;
@@ -9,7 +8,6 @@
   --btn-padding: 12px 20px;
 }
 
-/* Base button style to match Button.css */
 .btn, .app-btn, .btn-save, .btn-confirm, .btn-action, .btn-add, .btn-delete, .login-btn, .scm-btn-save, .btn-back, .back-button {
   display:inline-flex;
   align-items:center;
@@ -28,33 +26,25 @@
 .btn:disabled, .app-btn:disabled, button:disabled{ opacity:0.6; cursor:not-allowed }
 .btn:hover:not(:disabled), .app-btn:hover:not(:disabled){ transform:translateY(-1px) }
 
-/* Variants */
 .btn-cancel, .btn-back, .btn-action.btn-cancel { background:transparent; color:var(--primary-2); border:1px solid rgba(255,255,255,0.06); box-shadow:none }
 .btn-confirm.btn-danger, .btn-delete { background:linear-gradient(90deg,#ff6b6b,#e02424); }
 .btn-confirm { padding:10px 16px }
 
-/* Small action buttons */
 .btn-action{ padding:8px 10px; border-radius:8px; font-size:0.95rem }
 .btn-approve{ background:linear-gradient(90deg,#10b981,#059669) }
 .btn-decline{ background:linear-gradient(90deg,#f97316,#ef4444) }
 
-/* Close modal / icon buttons */
 .close-modal-btn, .clear-error-btn { background:transparent; border:none; color:var(--muted); font-size:1.1rem; padding:6px }
 
-/* Loading spinner used inside buttons */
 .spin-inline{ display:inline-block; margin-right:8px; animation:spin 1s linear infinite }
 @keyframes spin{ to{ transform:rotate(360deg) } }
 
-/* Global small helpers */
 .back-button{ background:transparent; color:var(--primary-2); padding:6px 10px }
 
-/* Modal overlay baseline to ensure uniform look */
 .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:2147483647 !important; pointer-events:auto }
 .modal{ background: #0b1220; padding:20px; border-radius:12px; color:#fff; min-width:320px }
 
-/* Confirmation modal specifics */
 .confirmation-modal { max-width:420px }
 .confirmation-actions { display:flex; gap:12px; justify-content:flex-end; margin-top:18px }
 
-/* Form save/cancel group */
 .form-actions{ display:flex; gap:12px; justify-content:flex-end }

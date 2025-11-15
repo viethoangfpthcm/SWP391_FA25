@@ -1,4 +1,3 @@
-/* === LOGIN FORM PAGE === */
 .login-page {
   height: 100vh;
   width: 100%;
@@ -12,7 +11,6 @@
   animation: fadeInBg 1s ease forwards;
 }
 
-/* === WELCOME TEXT === */
 .welcome-text::before {
   content: "";
   position: absolute;
@@ -72,8 +70,6 @@
   font-family: "Poppins", sans-serif;
 }
 
-
-/* === CONTAINER === */
 .login-container {
   background: rgba(0, 20, 50, 0.8);
   backdrop-filter: blur(25px);
@@ -89,7 +85,6 @@
   border: 1px solid rgba(0, 180, 255, 0.2);
 }
 
-/* === TABS NGAY TRÊN ĐẦU EMAIL === */
 .tabs-top {
   display: flex;
   justify-content: center;
@@ -125,7 +120,6 @@
   box-shadow: 0 0 15px rgba(0, 180, 255, 0.6);
 }
 
-/* === FORM === */
 .form-box {
   display: flex;
   flex-direction: column;
@@ -163,7 +157,6 @@ input::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* === CHECKBOX === */
 .checkbox-wrapper {
   display: flex;
   align-items: center;
@@ -174,7 +167,6 @@ input::placeholder {
   animation: fadeIn 1.1s ease forwards;
 }
 
-/* === BUTTON === */
 .login-btn {
   background: linear-gradient(90deg, #007bff, #00b4ff);
   border: none;
@@ -194,7 +186,6 @@ input::placeholder {
   box-shadow: 0 0 25px rgba(0, 180, 255, 0.7);
 }
 
-/* === FORGOT PASSWORD LINK === */
 .forgot-link {
   color: #7ed6ff;
   text-align: center;
@@ -212,7 +203,6 @@ input::placeholder {
   transform: scale(1.05);
 }
 
-/* === BACK LINK === */
 .back-link {
   display: block;
   text-align: center;
@@ -231,7 +221,6 @@ input::placeholder {
   text-decoration: none;
 }
 
-/* === MESSAGE === */
 .error-msg {
   margin-top: 15px;
   color: #ff6b6b;
@@ -248,7 +237,6 @@ input::placeholder {
   animation: fadeIn 0.8s ease forwards;
 }
 
-/* === RESET PASSWORD === */
 .reset-title {
   text-align: center;
   font-size: 1.4rem;
@@ -258,7 +246,6 @@ input::placeholder {
   animation: fadeInDown 0.8s ease forwards;
 }
 
-/* === ANIMATIONS === */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -290,7 +277,6 @@ input::placeholder {
   75% { transform: translateX(5px); }
 }
 
-/* === RESPONSIVE === */
 @media (max-width: 768px) {
   .login-container {
     width: 90%;

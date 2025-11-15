@@ -1,18 +1,15 @@
-/* Tổng thể trang */
 .technician-page {
   display: flex;
   min-height: 100vh;
   background-color: #f9fafb;
 }
 
-/* Nội dung chính */
 .content {
   flex: 1;
   margin-left: 260px;
   padding: 20px 30px;
 }
 
-/* Header */
 .header {
   display: flex;
   justify-content: space-between;
@@ -47,27 +44,16 @@
   color: #2b9a86;
 }
 
-/* ======= KHỐI THỐNG KÊ ======= */
-/* ======= KHỐI THỐNG KÊ (Bản "Gọn") ======= */
 .card {
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-
-  /* THAY ĐỔI CHÍNH: Chuyển sang Flexbox */
   display: flex;
   align-items: center;
-  /* Căn giữa theo chiều dọc */
   gap: 16px;
-  /* Khoảng cách giữa icon và text */
   padding: 20px;
-  /* Giảm padding */
-
-  /* Dùng border-left thay vì top sẽ đẹp hơn với layout này */
   border-left: 5px solid transparent;
   border-top: none;
-  /* Bỏ border-top cũ */
-
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -76,50 +62,38 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
-/* Icon */
 .card .icon-wrapper {
   width: 44px;
-  /* Giảm kích thước 1 chút */
   height: 44px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  /* Giảm kích thước 1 chút */
   color: white;
-
   margin-bottom: 0;
-  /* Bỏ margin-bottom */
   flex-shrink: 0;
-  /* Ngăn icon bị co lại */
 }
 
-/* Khối text (Tiêu đề + Số) */
 .card .card-content {
   flex-grow: 1;
-  /* Tự động chiếm không gian còn lại */
 }
 
 .card h3 {
   font-size: 15px;
-  /* Giảm 1 chút */
   color: #555;
   margin: 0 0 2px 0;
-  /* Chỉ thêm 1 chút margin-bottom */
   text-align: left;
 }
 
 .card p {
   font-size: 22px;
-  /* Giảm 1 chút */
   font-weight: bold;
   color: #333;
   margin: 0;
   text-align: left;
 }
 
-/* Màu riêng (đổi sang border-left) */
 .card.pending {
   border-left-color: #fbbf24;
 }
@@ -152,7 +126,6 @@
   background-color: #6366f1;
 }
 
-/* ======= KHỐI THỐNG KÊ ======= */
 .summary-cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -160,7 +133,6 @@
   margin-bottom: 30px;
 }
 
-/* ======= DANH SÁCH NHIỆM VỤ ======= */
 .task-section {
   background-color: #ffffff;
   border-radius: 10px;
@@ -228,7 +200,6 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Header nhiệm vụ */
 .task-header {
   display: flex;
   justify-content: space-between;
@@ -262,14 +233,13 @@
   color: white;
 }
 
-/* Body nhiệm vụ */
 .task-body p {
   margin: 4px 0;
   color: #374151;
   font-size: 14px;
 }
 
-/* Footer nhiệm vụ */
+
 .task-footer {
   margin-top: 15px;
   text-align: right;
@@ -305,7 +275,6 @@
   background-color: #2563eb;
 }
 
-/* Loading */
 .loading {
   text-align: center;
   margin-top: 100px;
@@ -313,7 +282,6 @@
   color: #278598;
 }
 
-/* No task message */
 .no-task {
   text-align: center;
   padding: 40px;
@@ -321,11 +289,9 @@
   font-size: 16px;
 }
 
-/* Responsive nhỏ hơn 768px */
 @media (max-width: 768px) {
   .summary-cards {
     grid-template-columns: 1fr;
-    /* 1 cột */
   }
 
   .content {
@@ -426,7 +392,6 @@
   background-color: #dc2626;
 }
 
-/* Hiệu ứng animation modal */
 @keyframes fadeIn {
   from {
     opacity: 0;

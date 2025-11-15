@@ -5,7 +5,6 @@ const ProtectedRoute = ({ children, requiredRole }) => {
   const role = localStorage.getItem("role")?.toUpperCase();
 
   if (!token) {
-    // Chưa login → chuyển về login
     return <Navigate to="/login" replace />;
   }
 

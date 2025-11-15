@@ -1,4 +1,3 @@
-/* ===== PROFESSIONAL LOADING OVERLAY ===== */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -19,7 +18,6 @@
   to { opacity: 1; }
 }
 
-/* ===== CENTERED LOADING CONTAINER ===== */
 .loading-content {
   display: flex;
   flex-direction: column;
@@ -30,7 +28,6 @@
   padding: 40px;
 }
 
-/* ===== MODERN SPINNER - CLEAN DESIGN ===== */
 .loading-spinner {
   position: relative;
   width: 120px;
@@ -41,9 +38,6 @@
   justify-content: center;
 }
 
-/* No more spinning rings - just car and gear */
-
-/* ===== CENTER LOGO/ICON ===== */
 .spinner-logo {
   position: absolute;
   top: 50%;
@@ -57,19 +51,16 @@
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
 }
 
-/* Left wheel rotation */
 .wheel-left {
   transform-origin: 28px 56px;
   animation: rotateWheel 1.5s linear infinite;
 }
 
-/* Right wheel rotation */
 .wheel-right {
   transform-origin: 52px 56px;
   animation: rotateWheel 1.5s linear infinite;
 }
 
-/* Gear rotation */
 .gear-icon {
   transform-origin: 90px 40px;
   animation: rotateGear 3s linear infinite;
@@ -93,7 +84,6 @@
   }
 }
 
-/* ===== LOADING TEXT ===== */
 .loading-text {
   font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 1.25rem;
@@ -106,7 +96,6 @@
   line-height: 1.5;
 }
 
-/* ===== ANIMATED DOTS ===== */
 .loading-dots {
   display: flex;
   gap: 10px;
@@ -148,7 +137,6 @@
   }
 }
 
-/* ===== INLINE LOADING SPINNER ===== */
 .inline-loading {
   display: inline-block;
   vertical-align: middle;
@@ -187,7 +175,6 @@
   }
 }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .loading-spinner {
     width: 100px;

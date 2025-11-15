@@ -60,7 +60,7 @@
   background-image:
     linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size: 100% 120px, 120px 100%; /* horizontal lines every 120px, vertical every 120px */
+  background-size: 100% 120px, 120px 100%; 
   pointer-events: none;
   z-index: 0;
   border-radius: 4px;
@@ -76,9 +76,9 @@
 
 .dashboard-section {
   padding: 22px;
-  margin: 0; /* spacing handled by grid gap */
+  margin: 0; 
   background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border: 1px solid rgba(255,255,255,0.09); /* stronger border for clearer separation */
+  border: 1px solid rgba(255,255,255,0.09); 
   border-radius: 12px;
   box-shadow: 0 8px 28px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.02);
   position: relative;
@@ -149,8 +149,6 @@
   .dashboard-content h1 { font-size: 1.4rem; }
 }
 
-
-/* (chữ mờ) bên trong input */
 .modal-content:not(.customer-modal) input::placeholder {
   color: #777777; 
 }

@@ -1,4 +1,3 @@
-// src/features/customer/profile/ProfileModal.jsx
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import Button from '@components/ui/Button.jsx';
@@ -20,7 +19,6 @@ export default function ProfileModal({
   return (
     <ModalPortal>
       <div className="modal-overlay" onClick={onClose}>
-        {/* dùng booking-form-modal để kế thừa toàn bộ style kính mờ */}
         <div
           className="modal-content booking-form-modal customer-modal"
           onClick={(e) => e.stopPropagation()}

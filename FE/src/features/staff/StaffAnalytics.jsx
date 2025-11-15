@@ -20,17 +20,14 @@ const StaffAnalytics = () => {
   const [bookingStatsData, setBookingStatsData] = useState(null);
   const [feedbackData, setFeedbackData] = useState(null);
 
-  // Filter states
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-  // Use minimum delay hook for better UX (show loading for at least 1 second)
   const showLoading = useMinimumDelay(loading, 1000);
 
 
   const token = localStorage.getItem("token");
 
-  // Fetch user info on mount ONLY
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -41,19 +38,15 @@ const StaffAnalytics = () => {
         console.error("Error parsing user info:", err);
       }
     }
-  }, []); // EMPTY dependency - chỉ chạy 1 lần khi mount
+  }, []); 
 
-  // Fetch analytics when filters change (bao gồm cả lần đầu mount)
   useEffect(() => {
     fetchAllAnalytics();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMonth, selectedYear]); // Chỉ khi filter thay đổi
+  }, [selectedMonth, selectedYear]); 
 
   const fetchAllAnalytics = async () => {
     setLoading(true);
     setError(null);
-
-    // Safety timeout: force stop loading sau 5 giây
     const timeout = setTimeout(() => {
       console.warn("Analytics loading timeout - forcing stop");
       setLoading(false);

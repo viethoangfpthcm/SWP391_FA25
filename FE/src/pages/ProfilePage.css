@@ -33,9 +33,6 @@
     margin-right: 10px;
 }
 
-
-
-/* Khung chứa form */
 .profile-form-container {
     max-width: 700px;
     margin: 0 auto;
@@ -46,7 +43,6 @@
     border: 1px solid #e5e7eb;
 }
 
-/* Mỗi nhóm (label + input) */
 .form-group {
    
     margin-bottom: 24px;

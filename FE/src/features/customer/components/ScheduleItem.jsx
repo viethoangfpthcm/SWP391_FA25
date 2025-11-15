@@ -1,14 +1,12 @@
 import React from 'react';
-import { FaCheckCircle, FaExclamationTriangle, FaCalendarAlt, FaLock } from 'react-icons/fa';
+import { FaCheckCircle, FaExclamationTriangle, FaCalendarAlt,} from 'react-icons/fa';
 import Button from '@components/ui/Button.jsx';
 import './ScheduleItem.css';
 
 const getStatusIcon = (status) => {
   switch (status) {
     case 'ON_TIME': return <FaCheckCircle className="status-icon on-time" title="Đã hoàn thành" />;
-    case 'EXPIRED': return <FaExclamationTriangle className="status-icon expired" title="Đã bỏ qua" />;
     case 'NEXT_TIME': return <FaCalendarAlt className="status-icon next-time" title="Lượt bảo dưỡng tiếp theo" />;
-    case 'LOCKED': return <FaLock className="status-icon locked" title="Cần hoàn thành lần trước" />;
     case 'OVERDUE': return <FaExclamationTriangle className="status-icon overdue" title="Quá hạn bảo dưỡng" />;
     default: return null;
   }

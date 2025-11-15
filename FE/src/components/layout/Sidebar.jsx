@@ -26,13 +26,13 @@ const Sidebar = ({ userName, userRole }) => {
   const getVietnameseRole = (role) => {
     if (!role) return "Khách";
     const roleMap = {
-        ADMIN: "Quản trị viên",
-        MANAGER: "Quản lý trung tâm",
-        STAFF: "Nhân viên",
-        TECHNICIAN: "Kỹ thuật viên",
+      ADMIN: "Quản trị viên",
+      MANAGER: "Quản lý trung tâm",
+      STAFF: "Nhân viên",
+      TECHNICIAN: "Kỹ thuật viên",
     };
     return roleMap[role.toUpperCase()] || role;
-};
+  };
   const currentUserName = userName || localStorage.getItem("fullName") || "Người dùng";
   const currentUserRole = userRole || localStorage.getItem("role") || "Khách";
   const role = currentUserRole.toLowerCase();
@@ -144,7 +144,7 @@ const Sidebar = ({ userName, userRole }) => {
             >
               <FaChartLine /> <span>Phân tích thống kê</span>
             </Link>
-<Link
+            <Link
               to="/admin/update"
               className={`menu-item ${isActive("/admin/update") ? "active" : ""}`}
             >
@@ -156,7 +156,7 @@ const Sidebar = ({ userName, userRole }) => {
 
         {role === "manager" && (
           <>
-            <Link to="/manager" className={`menu-item ${isActive("/manager", true) ? "active" : ""}`}>  
+            <Link to="/manager" className={`menu-item ${isActive("/manager", true) ? "active" : ""}`}>
               <FaUserCog /> <span>Quản lý người dùng</span>
             </Link>
             <Link to="/manager/parts" className={`menu-item ${isActive("/manager/parts") ? "active" : ""}`}>

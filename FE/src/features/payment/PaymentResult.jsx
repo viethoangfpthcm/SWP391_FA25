@@ -12,13 +12,11 @@ export default function PaymentResult() {
   const navigate = useNavigate();
   const responseCode = searchParams.get('vnp_ResponseCode');
   const transactionNo = searchParams.get('vnp_TransactionNo');
-  const amount = searchParams.get('vnp_Amount') ? Number(searchParams.get('vnp_Amount')) / 100 : 0; // VNPay trả về số tiền * 100
+  const amount = searchParams.get('vnp_Amount') ? Number(searchParams.get('vnp_Amount')) / 100 : 0; 
   const isSuccess = responseCode === '00';
   const token = localStorage.getItem('token');
   const customerId = localStorage.getItem('userId');
   
-
-  // Cập nhật danh sách reports khi thanh toán thành công
   useEffect(() => {
     if (isSuccess && token && customerId) {
       const fetchReportsList = async () => {
@@ -30,7 +28,6 @@ export default function PaymentResult() {
             const processedData = data
               .filter(r => r.status !== 'COMPLETED')
               .sort((a, b) => (b.createdDate ? new Date(b.createdDate) : 0) - (a.createdDate ? new Date(a.createdDate) : 0));
-            // Lưu vào localStorage hoặc context nếu cần
           }
         } catch (err) {
           console.error('Lỗi tải danh sách reports:', err);
@@ -38,16 +35,8 @@ export default function PaymentResult() {
       };
       fetchReportsList();
     }
-
-    // // Tự động chuyển hướng sau 5 giây
-    // const timer = setTimeout(() => {
-    //   navigate('/report1'); // 
-    // }, 5000);
-
-    // return () => clearTimeout(timer);
   }, [navigate, isSuccess, token, customerId]);
 
-  // Kiểm tra token và redirect nếu không đăng nhập
   useEffect(() => {
     if (!token || !customerId) {
       navigate('/');

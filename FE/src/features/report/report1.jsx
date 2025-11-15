@@ -14,7 +14,6 @@ import Button from '@components/ui/Button.jsx';
 import Loading from '@components/ui/Loading.jsx';
 import { API_BASE_URL } from "@config/api.js";
 
-// Hàm format nằm ngoài component
 const formatTechStatus = (status) => {
   switch (status) {
     case 'GOOD': return 'Tốt';
@@ -27,7 +26,6 @@ const formatTechStatus = (status) => {
 };
 
 export default function Report1() {
-  // === State ===
   const [reportsList, setReportsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -45,8 +43,6 @@ export default function Report1() {
   const token = localStorage.getItem("token");
   const customerId = localStorage.getItem("userId");
 
-
-  // === Hàm xử lý ===
   const showToast = (message, type = "success") => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
@@ -55,7 +51,7 @@ export default function Report1() {
   useEffect(() => {
     const fetchReportsList = async () => {
       setLoading(true);
-      setError(''); // Reset lỗi trước khi fetch
+      setError(''); 
       if (!token || !customerId) {
         setError("Vui lòng đăng nhập.");
         setLoading(false);
@@ -74,7 +70,7 @@ export default function Report1() {
           } else {
             throw new Error(`Lỗi tải danh sách: ${response.status}`);
           }
-          return; // Dừng lại nếu có lỗi
+          return; 
         }
 
         const data = await response.json();
@@ -201,8 +197,6 @@ export default function Report1() {
 
   const handleSubmitApprovals = async () => {
     if (!currentReport || !originalReport) return;
-
-    // Tìm tất cả hạng mục có thay đổi (về status hoặc note)
     const changes = currentReport.details.filter(d => {
       const original = originalReport.details.find(o => o.id === d.id);
       if (!original) return false;
@@ -249,11 +243,10 @@ export default function Report1() {
     if (errorCount > 0) {
       const failedIds = results.filter(r => r.status === 'rejected').map(r => r.id).join(', ');
       showToast(`Lỗi: ${errorCount} mục thất bại (ID: ${failedIds}). Vui lòng tải lại.`, "error");
-      // Tải lại chi tiết modal để đồng bộ với server
       handleViewDetails(currentReport.bookingId);
     } else {
       showToast(`Đã cập nhật ${successCount} mục!`, "success");
-      handleCloseModal(); // Thành công, đóng modal (sẽ trigger tải lại list)
+      handleCloseModal(); 
     }
   };
 
@@ -267,7 +260,6 @@ export default function Report1() {
     }
   };
 
-  // ---------------- RENDER ----------------
   if (loading) return (<div className="report-page"><Navbar /><main className="report-container"><div className="loading-state"><Loading inline /> Đang tải...</div></main><Footer /></div>);
   if (error) return (<div className="report-page"><Navbar /><main className="report-container"><div className="no-data-card"><h3><FaXmark /> {error}</h3></div></main><Footer /></div>);
 
@@ -482,7 +474,7 @@ export default function Report1() {
           </div>
         ) : (
           <div className="car-report-grid">
-            {/* 🔹 Nhóm danh sách theo biển số xe */}
+            {/* Nhóm danh sách theo biển số xe */}
             {Object.entries(
               reportsList.reduce((acc, report) => {
                 const car = report.vehicleNumberPlate || "Không rõ";

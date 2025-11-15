@@ -23,10 +23,8 @@ function VehicleMaintenanceSchedule() {
   const navigate = useNavigate();
 
   const [nextTimePlanId, setNextTimePlanId] = useState(null);
-
   const [hasActiveBooking, setHasActiveBooking] = useState(false);
   const [activeBookings, setActiveBookings] = useState([]);
-
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [selectedPlanForBooking, setSelectedPlanForBooking] = useState(null);
   const [bookingFormData, setBookingFormData] = useState({
@@ -41,18 +39,11 @@ function VehicleMaintenanceSchedule() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successModalMessage, setSuccessModalMessage] = useState('');
   const [successModalAction, setSuccessModalAction] = useState(null);
-
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmModalMessage, setConfirmModalMessage] = useState('');
-  const [onConfirmAction, setOnConfirmAction] = useState(null); // Hàm sẽ chạy khi bấm "Xác nhận"
-
-  // Danh sách trung tâm
-
+  const [onConfirmAction, setOnConfirmAction] = useState(null); 
   const [serviceCenters, setServiceCenters] = useState([]);
 
-  
-
-  // useEffect (Không đổi)
   useEffect(() => {
 
     const fetchServiceCenters = async () => {
@@ -98,8 +89,6 @@ function VehicleMaintenanceSchedule() {
         setSchedule([]);
         setHasActiveBooking(false);
         setActiveBookings([]);
-
-        // --- 1. Fetch Lịch Bảo Dưỡng ---
         const scheduleResponse = await fetch(`${API_BASE_URL}/api/customer/maintenance-schedule?licensePlate=${encodeURIComponent(licensePlate)}`, {
           headers: { "Authorization": `Bearer ${token}`, "Accept": "application/json" },
         });
@@ -159,34 +148,6 @@ function VehicleMaintenanceSchedule() {
     fetchScheduleAndBookings();
   }, [licensePlate, navigate]);
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'ON_TIME':
-        return <FaCheckCircle className="status-icon on-time" title="Đã hoàn thành" />;
-      case 'EXPIRED':
-        return <FaExclamationTriangle className="status-icon expired" title="Đã bỏ qua" />;
-      case 'NEXT_TIME':
-        return <FaCalendarAlt className="status-icon next-time" title="Lượt bảo dưỡng tiếp theo" />;
-      case 'LOCKED':
-        return <FaLock className="status-icon locked" title="Cần hoàn thành lần trước" />;
-      case 'OVERDUE':
-        return <FaExclamationTriangle className="status-icon overdue" title="Quá hạn bảo dưỡng" />;
-      default:
-        return <FaTools className="status-icon unknown" title="Chưa xác định" />;
-    }
-  };
-
-  const getStatusLabel = (status) => {
-    switch (status) {
-      case 'ON_TIME': return 'Đã hoàn thành';
-      case 'EXPIRED': return 'Đã bỏ qua';
-      case 'NEXT_TIME': return 'Có thể đặt lịch';
-      case 'LOCKED': return 'Chưa thể đặt lịch';
-      case 'OVERDUE': return 'Đã quá hạn';
-      default: return 'Không xác định';
-    }
-  };
-
   const handleBookAppointmentClick = (plan) => {
     setError('');
     if (hasActiveBooking) {
@@ -209,15 +170,11 @@ function VehicleMaintenanceSchedule() {
   setBookingLoading(true);
   setBookingError('');
   const token = localStorage.getItem("token");
-
-  // --- Kiểm tra các trường bắt buộc ---
   if (!bookingFormData.centerId || !bookingFormData.bookingDate || !bookingFormData.bookingTime) {
     setBookingError("Vui lòng chọn trung tâm, ngày và giờ hẹn.");
     setBookingLoading(false);
     return;
   }
-
-  // --- Lấy thông tin trung tâm được chọn ---
   const selectedCenter = serviceCenters.find(
     (c) => c.id === parseInt(bookingFormData.centerId)
   );
@@ -252,7 +209,6 @@ function VehicleMaintenanceSchedule() {
     return;
   }
 
-  // --- Nếu hợp lệ, gửi API đặt lịch ---
   try {
     const bookingDateTime = `${bookingFormData.bookingDate}T${bookingFormData.bookingTime}:00`;
     const payload = {
@@ -288,7 +244,6 @@ function VehicleMaintenanceSchedule() {
       }
     }
 
-    // --- Thành công ---
     setShowBookingForm(false);
     setSuccessModalMessage(
       "Đặt lịch thành công! Chúng tôi sẽ sớm liên hệ với bạn để xác nhận."
@@ -310,7 +265,6 @@ function VehicleMaintenanceSchedule() {
     setShowConfirmModal(true); // Mở modal hỏi
   };
 
-  // Bước 2: Hàm này chứa logic, được gọi bởi nút "Xác nhận" trên modal
   const executeCancelBooking = async (bookingId) => {
     setBookingLoading(true);
     setError('');
@@ -334,8 +288,6 @@ function VehicleMaintenanceSchedule() {
           throw new Error(`Lỗi ${response.status}: ${errorText}`);
         }
       }
-
-      // Cập nhật lại UI
       const updatedActiveBookings = activeBookings.filter(b => b.bookingId !== bookingId);
       setActiveBookings(updatedActiveBookings);
       if (updatedActiveBookings.length === 0) {
@@ -352,7 +304,6 @@ function VehicleMaintenanceSchedule() {
       setError(err.message || "Đã xảy ra lỗi khi hủy lịch hẹn.");
     } finally {
       setBookingLoading(false);
-      // Quan trọng: Đóng modal confirm lại
       setShowConfirmModal(false);
     }
   };

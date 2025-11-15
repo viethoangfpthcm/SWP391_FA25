@@ -12,7 +12,6 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
   const navigate = useNavigate();
   const location = useLocation();
 
-
   //  Xử lý redirect về từ VNPay
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -94,8 +93,6 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
           <FaCreditCard className="icon" />
           <span>Thanh toán ngay với VNPay</span>
         </Button>
-
-        {/*  Overlay loading nằm tách riêng, không đẩy layout */}
         {loading && (
           <div className="fixed-overlay">
             <div className="loading-box">
@@ -105,7 +102,6 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
           </div>
         )}
       </div>
-
       {error && <p className="payment-error-message"> {error}</p>}
 
       <style jsx>{`
@@ -235,5 +231,5 @@ export default function VnPayPaymentButton({ bookingId, totalAmount, className =
     `}</style>
     </div>
   );
-
+//  css bên trong file.jsx
 }

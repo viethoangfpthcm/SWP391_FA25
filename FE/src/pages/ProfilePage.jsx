@@ -11,16 +11,13 @@ export default function ProfilePage({ user }) {
     const [isUpdating, setIsUpdating] = useState(false);
     const [formData, setFormData] = useState({
         fullName: "",
-        email: "", // Email sẽ không cho sửa
+        email: "", 
         phone: "",
-        password: "", // Mật khẩu mới (để trống nếu không đổi)
+        password: "", 
     });
 
-    // Toast notification state
     const [toast, setToast] = useState({ show: false, message: "", type: "" });
     const token = localStorage.getItem("token");
-
-    // Hàm hiển thị toast
     const showToast = (message, type = "success") => {
         setToast({ show: true, message, type });
         setTimeout(() => {
@@ -28,8 +25,6 @@ export default function ProfilePage({ user }) {
         }, 4000);
     };
     
-
-    // 1. Lấy thông tin profile khi tải trang
     useEffect(() => {
         const fetchProfile = async () => {
             setLoading(true);
@@ -46,9 +41,9 @@ export default function ProfilePage({ user }) {
 
                 setFormData({
                     fullName: data.fullName || "",
-                    email: data.email || "", // Email không cho sửa
+                    email: data.email || "", 
                     phone: data.phone || "",
-                    password: "", // Luôn reset ô password
+                    password: "", 
                 });
 
             } catch (error) {
@@ -61,7 +56,6 @@ export default function ProfilePage({ user }) {
         fetchProfile();
     }, [token]);
 
-    // 2. Xử lý khi gõ vào form
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -70,11 +64,9 @@ export default function ProfilePage({ user }) {
         }));
     };
 
-    // 3. Xử lý khi nhấn nút "Lưu"
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validation phía client
         if (!/^[\p{L} ]+$/u.test(formData.fullName)) {
             showToast("Họ và tên chỉ được chứa chữ cái và khoảng trắng", "error");
             return;
@@ -90,15 +82,12 @@ export default function ProfilePage({ user }) {
         }
 
         setIsUpdating(true);
-
-        // Chuẩn bị dữ liệu gửi đi
         const updateData = {
             fullName: formData.fullName,
             phone: formData.phone,
             email: formData.email,
         };
 
-        // Chỉ gửi password nếu có
         if (formData.password && formData.password.trim() !== "") {
             updateData.password = formData.password;
         }
@@ -121,8 +110,6 @@ export default function ProfilePage({ user }) {
             if (!res.ok) {
                 throw new Error(data.message || data || `Lỗi ${res.status}`);
             }
-
-            // Cập nhật thành công
             localStorage.setItem("fullName", data.fullName);
             showToast("Cập nhật thông tin thành công!", "success");
 
@@ -140,7 +127,6 @@ export default function ProfilePage({ user }) {
             <Sidebar user={user} />
 
             <div className="content">
-                {/* Toast Notification */}
                 {toast.show && (
                     <div className={`toast-notification toast-${toast.type}`}>
                         <div className="toast-icon">

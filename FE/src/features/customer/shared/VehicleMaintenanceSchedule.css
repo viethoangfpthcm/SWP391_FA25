@@ -1,4 +1,3 @@
-/* Page layout for vehicle schedule (kept minimal) */
 .schedule-page {
   display: flex;
   flex-direction: column;
@@ -27,7 +26,6 @@
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
 
-/* keep small utility for back-button */
 .back-button {
   display: block;
   margin: 40px auto 20px auto;

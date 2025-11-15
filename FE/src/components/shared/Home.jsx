@@ -15,7 +15,6 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      {/* --- Hero Section --- */}
       <section className="home-hero">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
@@ -79,8 +78,6 @@ const Home = () => {
           <img className="VFbrand" src="/VFbrand.png" alt="Authorized Service Center" />
         </motion.div>
       </section>
-
-      {/* --- Partner Section --- */}
       <section className="home-partners">
         <h3>Được ủy quyền bởi VINFAST với các dòng xe VF3, VF5, VF7, VF9</h3>
         <div className="partner-carousel">

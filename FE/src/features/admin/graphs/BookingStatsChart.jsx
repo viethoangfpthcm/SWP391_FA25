@@ -10,6 +10,7 @@ const getVietnameseLabel = (englishLabel) => {
 
     const statusMap = {
         "ASSIGNED": "Đã phân công",
+        "APPROVED": "Đã duyệt",
         "IN_PROGRESS": "Đang tiến hành",
         "PENDING": "Đang chờ",
         "COMPLETED": "Hoàn thành",
@@ -17,8 +18,6 @@ const getVietnameseLabel = (englishLabel) => {
         "CANCELLED": "Đã hủy",
         "DECLINED": "Đã từ chối",
     };
-
-    // Chuẩn hóa nhãn để tìm kiếm (loại bỏ khoảng trắng, chuyển về Title Case/dạng chuẩn)
     const normalizedLabel = englishLabel.replace(/ /g, "_");
 
     return statusMap[normalizedLabel] || englishLabel;
@@ -32,6 +31,7 @@ export default function BookingStatsChart({ chartData }) {
     const statusColors = {
         "Assigned": ["#a855f7", "#9333ea"],     // tím
         "In_Progress": ["#facc15", "#eab308"],  // vàng
+        "Approved": ["#14b8a6", "#0d9488"], // xanh ngọc
         "Pending": ["#fb923c", "#f97316"],      // cam
         "Completed": ["#22c55e", "#16a34a"],    // xanh lá
         "Paid": ["#0ea5e9", "#0284c7"],         // xanh cyan

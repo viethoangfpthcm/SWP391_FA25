@@ -258,7 +258,7 @@ function App() {
         }
       />
 
-      {/* Report */}
+      {/* technical report */}
       <Route
         path="/report1"
         element={
