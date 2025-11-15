@@ -1,7 +1,7 @@
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement } from "chart.js";
-import "./FeedbackGaugeChart.css";
+
 
 ChartJS.register(ArcElement);
 
