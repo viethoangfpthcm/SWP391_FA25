@@ -5,8 +5,8 @@ export default function TechnicianHeader({ userInfo }) {
     <header className="header">
       <div className="header-left">
         <div className="header-text">
-          <h1>EV SERVICE</h1>
-          <p>Technician Management System</p>
+          <h1>Trung tâm bảo dưỡng</h1>
+          <p>Quản lý kỹ thuật viên</p>
         </div>
       </div>
       <div className="header-right">
