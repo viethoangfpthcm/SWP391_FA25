@@ -11,7 +11,7 @@ const ProtectedRoute = ({ children, requiredRole }) => {
 
   if (requiredRole && role !== requiredRole.toUpperCase()) {
     // Role không đúng → chuyển đến trang chính theo role (nếu có),
-    // tránh đẩy người dùng về /home chung chung.
+
     const lowerRole = (localStorage.getItem("role") || "").toLowerCase();
     let defaultPath = "/home";
     switch (lowerRole) {

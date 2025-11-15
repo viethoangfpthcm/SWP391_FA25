@@ -25,7 +25,7 @@ import { API_BASE_URL } from "@config/api.js";
 import { useMinimumDelay } from "@/hooks/useMinimumDelay.js";
 
 
-
+// ===== Validation helpers =====
 const isValidEmail = (email) => {
   if (!email) return false;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -34,29 +34,39 @@ const isValidEmail = (email) => {
 
 const isValidPhone = (phone) => {
   if (!phone) return false;
-  
   const phoneRegex = /^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-6|8|9]|9[0-4|6-9])[0-9]{7}$/;
   return phoneRegex.test(phone);
 };
-// 
 
-if (import.meta.env.MODE !== "development") {
-}
 
 export default function AdminDashboard() {
+
+  // ===== Global state =====
   const [users, setUsers] = useState([]);
   const [filterRole, setFilterRole] = useState("all");
   const [centers, setCenters] = useState([]);
   const [filterCenter, setFilterCenter] = useState("all");
   const [filterActive, setFilterActive] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const showLoading = useMinimumDelay(loading, 1000);
-  const [error, setError] = useState(null); 
+  const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
+
   const [showForm, setShowForm] = useState(false);
+
+  // ===== FIXED: userInfo state (was missing) =====
+  const [userInfo, setUserInfo] = useState({
+    fullName: "Admin",
+    role: "ADMIN",
+  });
+
   const getToken = () => localStorage.getItem("token");
-  const [editingUser, setEditingUser] = useState(null); 
+  const token = getToken();
+  const navigate = useNavigate();
+
+  // form
+  const [editingUser, setEditingUser] = useState(null);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -65,177 +75,196 @@ export default function AdminDashboard() {
     centerId: "",
     password: "",
   });
-  const [formErrors, setFormErrors] = useState({}); 
-  const navigate = useNavigate();
+  const [formErrors, setFormErrors] = useState({});
 
-  
+  // Delete & Toggle
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [userToDeleteId, setUserToDeleteId] = useState(null);
-  const [isDeleting, setIsDeleting] = useState(false); 
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
 
-  const token = localStorage.getItem("token");
 
- 
+  // ===== Fetch User Info =====
   const fetchUserInfo = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/users/account/current`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (res.status === 401) {
-        localStorage.clear(); navigate("/"); return;
+        localStorage.clear();
+        navigate("/");
+        return;
       }
+
       if (!res.ok) {
         console.error("Failed to fetch user info:", res.status);
         return;
       }
 
-    
       const contentType = res.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
-        console.error("User info response is not JSON:", contentType);
+        console.error("User info response invalid:", contentType);
         return;
       }
 
       const data = await res.json();
+
+      setUserInfo({
+        fullName: data.fullName || "Admin",
+        role: data.role || "ADMIN"
+      });
+
       localStorage.setItem("fullName", data.fullName || "Admin");
       localStorage.setItem("role", data.role || "ADMIN");
-      setUserInfo({ fullName: data.fullName, role: data.role });
+
     } catch (err) {
       console.error("Fetch User Info Error:", err);
-      
     }
   };
 
+
+  // ===== Fetch Centers =====
   const fetchCenters = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/service-centers`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (res.status === 401) {
-        localStorage.clear(); navigate("/"); return;
+        localStorage.clear();
+        navigate("/");
+        return;
       }
+
       if (!res.ok) {
         console.error("Failed to fetch centers:", res.status);
         return;
       }
+
       const data = await res.json();
       setCenters(data);
+
     } catch (err) {
       console.error("Fetch centers error:", err);
     }
   };
 
- 
+
+  // ===== Fetch Users =====
   const fetchUsers = async () => {
     try {
       setError(null);
       setLoading(true);
+
       const res = await fetch(`${API_BASE_URL}/api/admin/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (res.status === 401) {
-        localStorage.clear(); navigate("/"); return;
+        localStorage.clear();
+        navigate("/");
+        return;
       }
+
       if (!res.ok) {
         setError(`Lỗi tải danh sách người dùng (${res.status})`);
-        setLoading(false);
         return;
       }
 
       const contentType = res.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
-        console.error("Users response is not JSON:", contentType);
         const text = await res.text();
-        console.error("Response body:", text.substring(0, 200));
-        setError("API trả về dữ liệu không hợp lệ. Vui lòng kiểm tra backend.");
-        setLoading(false);
+        console.error("Users response invalid:", text.substring(0, 200));
+        setError("API trả về dữ liệu không hợp lệ.");
         return;
       }
 
       const data = await res.json();
       setUsers(Array.isArray(data) ? data : []);
+
     } catch (err) {
       console.error("Fetch Users Error:", err);
-      setError("Không thể tải danh sách nguời dùng. Vui lòng thử lại.");
+      setError("Không thể tải danh sách người dùng. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
   };
 
-  
+
+  // ===== Initial Load =====
   useEffect(() => {
     if (!token) {
       navigate("/");
       return;
     }
+
     fetchUserInfo();
     fetchUsers();
     fetchCenters();
   }, [token, navigate]);
 
+
+  // ===== Memoized center list =====
   const centerList = useMemo(() => {
-
-    const centers = users
-      .map(user => user.centerName)
-      .filter(Boolean);
-
-
-    return [...new Set(centers)].sort();
+    const c = users.map(u => u.centerName).filter(Boolean);
+    return [...new Set(c)].sort();
   }, [users]);
 
 
+  // ===== Filter Users =====
   const filteredUsers = users
-    .filter(user => {
-      if (filterRole === "all") return true;
-      return user.role && user.role.toLowerCase() === filterRole.toLowerCase();
-    })
-    .filter(user => {
+    .filter(u => filterRole === "all" ? true : (u.role?.toLowerCase() === filterRole.toLowerCase()))
+    .filter(u => {
       if (filterCenter === "all") return true;
-      if (filterCenter === "none") return !user.centerName;
-      return user.centerName === filterCenter;
+      if (filterCenter === "none") return !u.centerName;
+      return u.centerName === filterCenter;
     })
-    .filter(user => {
+    .filter(u => {
       if (filterActive === "all") return true;
-      if (filterActive === "true") return !!user.isActive;
-      if (filterActive === "false") return !user.isActive;
+      if (filterActive === "true") return !!u.isActive;
+      if (filterActive === "false") return !u.isActive;
       return true;
     })
-    .filter(user => {
+    .filter(u => {
       const keyword = searchTerm.toLowerCase().trim();
       if (!keyword) return true;
       return (
-        user.fullName?.toLowerCase().includes(keyword) ||
-        user.email?.toLowerCase().includes(keyword) ||
-        user.phone?.toLowerCase().includes(keyword)
+        u.fullName?.toLowerCase().includes(keyword) ||
+        u.email?.toLowerCase().includes(keyword) ||
+        u.phone?.toLowerCase().includes(keyword)
       );
     });
 
-  
+
+  // ===== Handle Change =====
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
+
+    setFormData(prev => {
       const newData = { ...prev, [name]: value };
       if (name === "role" && value === "CUSTOMER") {
-        newData.centerId = ""; 
+        newData.centerId = "";
       }
       return newData;
     });
-   
+
     if (formErrors[name]) {
       setFormErrors(prev => ({ ...prev, [name]: null }));
     }
- 
+
     if (error) setError(null);
   };
 
- 
+
+  // ===== Open Form =====
   const openForm = (user = null) => {
     setEditingUser(user);
-    setFormErrors({}); 
-    setError(null);     
+    setFormErrors({});
+    setError(null);
     setShowForm(true);
-    if (user) { 
+
+    if (user) {
       setFormData({
         userId: user.userId,
         fullName: user.fullName || "",
@@ -243,126 +272,127 @@ export default function AdminDashboard() {
         phone: user.phone || "",
         role: user.role || "",
         centerId: user.centerId || "",
-        password: "", 
+        password: "",
       });
-    } else { 
+    } else {
       setFormData({
-        fullName: "", email: "", phone: "", role: "", centerId: "", password: "",
+        fullName: "",
+        email: "",
+        phone: "",
+        role: "",
+        centerId: "",
+        password: "",
       });
     }
   };
 
 
+  // ===== Validate Form =====
   const validateForm = () => {
     const errors = {};
-    if (!formData.fullName || formData.fullName.trim() === "") {
+
+    if (!formData.fullName.trim()) {
       errors.fullName = "Họ tên không được để trống.";
     }
     if (!formData.email || !isValidEmail(formData.email.trim())) {
       errors.email = "Email không đúng định dạng.";
     }
     if (!formData.phone || !isValidPhone(formData.phone.trim())) {
-      errors.phone = "Số điện thoại không đúng định dạng VN (10 số).";
+      errors.phone = "Số điện thoại không đúng định dạng.";
     }
     if (!formData.role) {
       errors.role = "Vui lòng chọn vai trò.";
     }
-   
     if (!editingUser && (!formData.password || formData.password.length < 6)) {
       errors.password = "Mật khẩu phải có ít nhất 6 ký tự.";
     }
-  
+
     const centerIdValue = formData.centerId ? String(formData.centerId).trim() : "";
-    if ((formData.role === "STAFF" || formData.role === "TECHNICIAN" || formData.role === "MANAGER") && (centerIdValue === "" || isNaN(parseInt(centerIdValue)) || parseInt(centerIdValue) <= 0)) {
-      errors.centerId = "Center ID là bắt buộc cho Staff/Technician/Manager.";
+    if (
+      ["STAFF", "TECHNICIAN", "MANAGER"].includes(formData.role) &&
+      (!centerIdValue || isNaN(parseInt(centerIdValue)) || parseInt(centerIdValue) <= 0)
+    ) {
+      errors.centerId = "Center ID là bắt buộc.";
     }
 
-    setFormErrors(errors); 
-    return Object.keys(errors).length === 0; 
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
-  
+
+  // ===== Submit Form =====
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); 
+    setError(null);
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
-    setActionLoading(true); 
+    setActionLoading(true);
 
     try {
       const method = editingUser ? "PUT" : "POST";
       const endpoint = editingUser
         ? `${API_BASE_URL}/api/admin/users-update?userIdToUpdate=${editingUser.userId}`
         : `${API_BASE_URL}/api/admin/users-create`;
-      const requestBody = {
+
+      const body = {
         fullName: formData.fullName.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         role: formData.role,
-        ...(editingUser ? {} : { password: formData.password }), 
+        ...(editingUser ? {} : { password: formData.password }),
         ...((formData.role !== "CUSTOMER" && formData.centerId) && {
-          centerId: parseInt(formData.centerId) 
+          centerId: parseInt(formData.centerId)
         })
       };
+
       const res = await fetch(endpoint, {
         method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getToken()}`,
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(body),
       });
 
-
       if (!res.ok) {
-        let errorMsg = "Có lỗi xảy ra khi lưu.";
-        let fieldErrors = {};
+        let errorMsg = "Có lỗi khi lưu.";
         try {
-          const errorData = await res.json();
-          errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
-        
-          if (errorData.fieldErrors && typeof errorData.fieldErrors === 'object') {
-            fieldErrors = errorData.fieldErrors;
-            setFormErrors(prev => ({ ...prev, ...fieldErrors })); 
-            errorMsg = "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại các thông tin."; 
+          const errData = await res.json();
+          errorMsg = errData.message || errorMsg;
+
+          if (errData.fieldErrors) {
+            setFormErrors(prev => ({ ...prev, ...errData.fieldErrors }));
           }
-        } catch (parseError) {
-          errorMsg = `Lỗi ${res.status}. Không thể đọc chi tiết lỗi.`;
-        }
-        throw new Error(errorMsg); 
+
+        } catch (e) {}
+        throw new Error(errorMsg);
       }
 
-      // --- Success ---
-      await fetchUsers();   
-      setShowForm(false);   
-      setEditingUser(null); 
-
+      await fetchUsers();
+      setShowForm(false);
+      setEditingUser(null);
 
     } catch (err) {
-      console.error("Submit error:", err);
-      
       setError(err.message || "Không thể thực hiện yêu cầu.");
     } finally {
-      setActionLoading(false); 
+      setActionLoading(false);
     }
   };
 
-  
-  const handleDeleteClick = (userId) => {
-    setUserToDeleteId(userId); 
-    setShowConfirmModal(true); 
-    setError(null);            
+
+  // ===== Delete User =====
+  const handleDeleteClick = (id) => {
+    setUserToDeleteId(id);
+    setShowConfirmModal(true);
+    setError(null);
   };
 
-  
   const confirmDelete = async () => {
     if (!userToDeleteId) return;
 
-    setIsDeleting(true); 
-    setError(null);     
+    setIsDeleting(true);
+    setError(null);
 
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/users/${userToDeleteId}`, {
@@ -371,105 +401,101 @@ export default function AdminDashboard() {
       });
 
       if (res.status === 401) {
-        localStorage.clear(); navigate("/"); return;
+        localStorage.clear();
+        navigate("/");
+        return;
       }
 
       if (!res.ok) {
-        let errorMsg = "Không thể xóa người dùng.";
+        let msg = "Không thể xóa người dùng.";
         try {
-          const errorData = await res.json();
-          errorMsg = errorData.message || errorData.error || `Lỗi ${res.status}`;
-        } catch (e) { }
-        throw new Error(errorMsg);
+          const errData = await res.json();
+          msg = errData.message || msg;
+        } catch (e) {}
+        throw new Error(msg);
       }
 
-   
-      setShowConfirmModal(false); 
+      setShowConfirmModal(false);
       setUserToDeleteId(null);
-      await fetchUsers(); 
-
+      fetchUsers();
 
     } catch (err) {
-      console.error("Delete Error:", err);
-      
-      setError(err.message || "Xóa người dùng thất bại.");
+      setError(err.message);
     } finally {
-      setIsDeleting(false); 
+      setIsDeleting(false);
     }
   };
 
-  const handleToggleActive = async (userToToggle) => {
+  const cancelDelete = () => {
+    setShowConfirmModal(false);
+    setUserToDeleteId(null);
+    setError(null);
+  };
+
+
+  // ===== Toggle Active =====
+  const handleToggleActive = async (user) => {
     if (actionLoading || isDeleting || isToggling) return;
 
     setIsToggling(true);
     setError(null);
 
-    const newIsActive = !userToToggle.isActive;
+    const newIsActive = !user.isActive;
 
     try {
       const res = await fetch(
-        `${API_BASE_URL}/api/admin/user/active?userId=${userToToggle.userId}&isActive=${newIsActive}`,
+        `${API_BASE_URL}/api/admin/user/active?userId=${user.userId}&isActive=${newIsActive}`,
         {
           method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Accept": "application/json",
-          },
-        });
-
-      if (res.status === 401) {
-        localStorage.clear(); navigate("/"); return;
-      }
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
 
       if (!res.ok) {
-        let errorMsg = `Không thể cập nhật trạng thái. (Lỗi ${res.status})`;
+        let msg = `Không thể cập nhật trạng thái. (Lỗi ${res.status})`;
         try {
-          const errorData = await res.json();
-          errorMsg = errorData.message || errorData.error || errorMsg;
-        } catch (e) { }
-        throw new Error(errorMsg);
+          const errData = await res.json();
+          msg = errData.message || msg;
+        } catch {}
+        throw new Error(msg);
       }
 
-      setUsers(prevUsers =>
-        prevUsers.map(u =>
-          u.userId === userToToggle.userId
-            ? { ...u, isActive: newIsActive }
-            : u
+      setUsers(prev =>
+        prev.map(u =>
+          u.userId === user.userId ? { ...u, isActive: newIsActive } : u
         )
       );
 
     } catch (err) {
-      console.error("Toggle Active Error:", err);
-      setError(err.message || "Cập nhật trạng thái thất bại.");
+      setError(err.message);
     } finally {
       setIsToggling(false);
     }
   };
 
 
-  const cancelDelete = () => {
-    setShowConfirmModal(false);
-    setUserToDeleteId(null);
-    setError(null); 
-  };
-
+  // ===== Loading Screen =====
   if (showLoading) {
-    return (
-      <Loading text="Đang tải dữ liệu người dùng..." />
-    );
+    return <Loading text="Đang tải dữ liệu người dùng..." />;
   }
 
+
+  // ===== Render =====
   return (
     <div className="dashboard-container">
-      <Sidebar userName={userInfo?.fullName || "Admin"} userRole={userInfo?.role || "ADMIN"} />
+      
+      <Sidebar
+        userName={userInfo?.fullName || "Admin"}
+        userRole={userInfo?.role || "ADMIN"}
+      />
 
       <main className="main-content">
+
         <header className="page-header">
-          <h1> <FaUserCog /> Quản lí người dùng </h1>
+          <h1><FaUserCog /> Quản lí người dùng</h1>
           <p>Thêm, chỉnh sửa và quản lý người dùng trong hệ thống.</p>
         </header>
 
-      
         {error && !showForm && (
           <div className="error-message general-error">
             <FaExclamationTriangle /> {error}
@@ -481,7 +507,7 @@ export default function AdminDashboard() {
             <FaSearch />
             <input
               type="text"
-              placeholder="Tìm kiếm theo tên, email hoặc số điện thoại..."
+              placeholder="Tìm kiếm..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -496,7 +522,7 @@ export default function AdminDashboard() {
             disabled={actionLoading || isDeleting || isToggling}
           />
         </div>
-     
+
         <UserTable
           filteredUsers={filteredUsers}
           loading={loading}
@@ -504,11 +530,10 @@ export default function AdminDashboard() {
           isDeleting={isDeleting}
           isToggling={isToggling}
           onEdit={(user) => openForm(user)}
-          onDelete={(id) => handleDeleteClick(id)}
-          onToggleActive={(user) => handleToggleActive(user)}
+          onDelete={handleDeleteClick}
+          onToggleActive={handleToggleActive}
         />
 
-      
         <UserForm
           showForm={showForm}
           editingUser={editingUser}
@@ -522,13 +547,12 @@ export default function AdminDashboard() {
           centers={centers}
         />
 
-      
         <ConfirmationModal
           visible={showConfirmModal}
-          message={`Bạn có chắc chắn muốn xóa người dùng ID: ${userToDeleteId}? Hành động này không thể hoàn tác.`}
+          message={`Bạn có chắc chắn muốn xóa người dùng ID: ${userToDeleteId}?`}
           onConfirm={confirmDelete}
           onClose={cancelDelete}
-          loading={isDeleting} 
+          loading={isDeleting}
         />
 
       </main>

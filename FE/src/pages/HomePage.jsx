@@ -26,7 +26,7 @@ export default function Homepage() {
           defaultPath = "/technicantask";
           break;
         case "customer":
-          defaultPath = "/customer/dashboard";
+          defaultPath = "/home";
           break;
         default:
           defaultPath = "/home";
